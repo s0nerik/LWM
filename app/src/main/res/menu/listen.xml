@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.lwm.app.activity.BroadcastActivity" >
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:icon="@drawable/ic_action_network_wifi"
+        android:id="@+id/action_listen"
+        android:title="@string/action_connect"
+        app:showAsAction="ifRoom" />
+
+</menu>

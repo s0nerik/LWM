@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Listen With Me!</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_connect">Connect</string>
+    <string name="action_connect">Connect to the stream</string>
+    <string name="action_broadcast">Broadcast</string>
+    <string name="btn_broadcast">Broadcast</string>
+    <string name="btn_listen">Listen</string>
+    <string name="artists_list_item_caption_albums">Albums:</string>
+    <string name="now_playing">Now playing</string>
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
+
+    <string-array name="spinner_names">
+        <item>All songs</item>
+        <item>Artists</item>
+        <item>Albums</item>
+    </string-array>
+
+    <string-array name="drawer_items">
+        <item>Broadcast</item>
+        <item>Listen</item>
+    </string-array>
+
+</resources>

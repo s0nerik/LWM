@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--<item name="android:dropDownListViewStyle">@style/SpinnerCompatStyle</item>-->
+    </style>
+
+    <!--<style name="SpinnerCompatStyle" parent="android:style/Widget.ListView.DropDown">-->
+        <!--<item name="android:divider">#ff222222</item>-->
+        <!--<item name="android:dividerHeight">1dp</item>-->
+    <!--</style>-->
+
+    <style name="Card">
+        <item name="android:background">@drawable/list_item_background</item>
+        <item name="android:checkMark">@null</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+</resources>
