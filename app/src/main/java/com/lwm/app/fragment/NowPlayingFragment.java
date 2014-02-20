@@ -38,6 +38,9 @@ public class NowPlayingFragment extends Fragment {
 
     public void setAlbumArtFromUri(Uri uri){
         albumArt.setImageURI(uri);
+        if(albumArt.getDrawable() == null){
+            albumArt.setImageResource(R.drawable.ic_launcher);
+        }
     }
 
 }

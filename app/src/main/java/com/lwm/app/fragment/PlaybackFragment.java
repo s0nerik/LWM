@@ -79,8 +79,11 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         this.seekBar.setProgress(percents);
     }
 
-    public void setAlbumArtFromUri(Uri uri) {
+    public void setAlbumArtFromUri(Uri uri){
         albumArt.setImageURI(uri);
+        if(albumArt.getDrawable() == null){
+            setDefaultAlbumArt();
+        }
     }
 
     public void setDefaultAlbumArt() {

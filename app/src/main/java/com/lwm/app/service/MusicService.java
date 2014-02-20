@@ -105,23 +105,6 @@ public class MusicService extends Service {
 
     }
 
-    //Debug
-    private void monitorPosition(){
-        new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    for(int i=0;i<60;i++){
-                        Log.d(App.TAG, "currentPos: "+player.getCurrentListPosition());
-                        Thread.sleep(1000);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
     private void pause() {
         Log.d(App.TAG, "MusicService.pause()");
         player.pause();
