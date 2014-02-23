@@ -87,7 +87,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     }
 
     public void setDefaultAlbumArt() {
-        albumArt.setImageResource(R.drawable.ic_launcher);
+        albumArt.setImageResource(R.drawable.no_cover);
     }
 
     public void setPlayButton(boolean playing){
