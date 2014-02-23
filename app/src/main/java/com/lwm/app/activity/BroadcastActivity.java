@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -137,7 +136,7 @@ public class BroadcastActivity extends BasicActivity {
     }
 
     private void showNowPlayingBar(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nowPlaying = fragmentManager.findFragmentById(R.id.fragment_now_playing);
         fragmentManager.beginTransaction()
                 .show(nowPlaying)

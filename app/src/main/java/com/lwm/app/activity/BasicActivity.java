@@ -2,6 +2,7 @@ package com.lwm.app.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -27,9 +28,13 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
     protected FragmentManager fragmentManager = getSupportFragmentManager();
     protected DrawerLayout drawerLayout;
     protected ActionBarDrawerToggle drawerToggle;
+    protected SharedPreferences state;
+    protected ActionBar actionBar;
+    protected ListView drawerList;
+    protected int activePlaylist;
 
     protected void initActionBar(){
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setDisplayShowTitleEnabled(false);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -46,73 +51,25 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
     protected void initNavigationDrawer(){
 
         String[] items = getResources().getStringArray(R.array.drawer_items);
-//        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
         drawerList.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, items));
+                R.layout.drawer_item,
+                items));
+
         // Set the list's click listener
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                switch(i){
-                    case 0:
-                        break;
-                    case 1:
-
-                        new Thread(new Runnable(){
-
-                            @Override
-                            public void run() {
-                                WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                                if (wifiManager != null) {
-                                    if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
-                                        WifiInfo info = wifiManager.getConnectionInfo();
-                                        if (info == null || !WifiAP.AP_NAME.equals(info.getSSID())) {
-                                            // Device is connected to different AP or not connected at all
-                                            Connectivity.connectToOpenAP(BasicActivity.this, WifiAP.AP_NAME);
-                                        }
-                                    }else{
-                                        // Wifi is disabled, so let's turn it on and connect
-                                        wifiManager.setWifiEnabled(true);
-
-                                        // Wait until it Wifi is enabled
-                                        try {
-                                            while(!wifiManager.isWifiEnabled()){
-                                                Thread.sleep(500);
-                                            }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Connectivity.connectToOpenAP(BasicActivity.this, WifiAP.AP_NAME);
-
-                                        // Wait until Wifi is really connected
-                                        try {
-                                            while(!Connectivity.isConnectedWifi(BasicActivity.this)){
-                                                Thread.sleep(500);
-                                            }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-
-                                startStreamPlayback();
-
-                            }
-                        }).start();
-
-//                        Intent intent = new Intent(BroadcastActivity.this, ListenActivity.class);
-//                        startActivity(intent);
-                        break;
-                }
-
+                showSelectedPlaylist(i);
+                state.edit().putInt("current_filter", i).commit();
             }
-
         });
+
+        activePlaylist = state.getInt("current_filter", 0);
+        drawerList.setItemChecked(activePlaylist, true);
+        showSelectedPlaylist(activePlaylist);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
@@ -126,30 +83,87 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        state = getPreferences(MODE_PRIVATE);
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         drawerToggle.syncState();
     }
 
-    @Override
-    public boolean onNavigationItemSelected(int i, long l) {
-
+    protected void showSelectedPlaylist(int i){
         switch(i){
             case 0: // All songs
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new SongsListFragment())
                         .commit();
-                return true;
+                break;
             case 1: // Artists
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new ArtistsListFragment())
                         .commit();
-                return true;
+                break;
             case 2: // Albums
 //                fragmentManager.beginTransaction()
 //                        .replace(R.id.container, new AlbumsListFragment())
 //                        .commit();
+                break;
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(int i, long l) {
+
+        switch(i){
+            case 0:
+                return true;
+
+            case 1:
+                new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        if (wifiManager != null) {
+                            if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
+                                WifiInfo info = wifiManager.getConnectionInfo();
+                                if (info == null || !WifiAP.AP_NAME.equals(info.getSSID())) {
+                                    // Device is connected to different AP or not connected at all
+                                    Connectivity.connectToOpenAP(BasicActivity.this, WifiAP.AP_NAME);
+                                }
+                            }else{
+                                // Wifi is disabled, so let's turn it on and connect
+                                wifiManager.setWifiEnabled(true);
+
+                                // Wait until it Wifi is enabled
+                                try {
+                                    while(!wifiManager.isWifiEnabled()){
+                                        Thread.sleep(500);
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                Connectivity.connectToOpenAP(BasicActivity.this, WifiAP.AP_NAME);
+
+                                // Wait until Wifi is really connected
+                                try {
+                                    while(!Connectivity.isConnectedWifi(BasicActivity.this)){
+                                        Thread.sleep(500);
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        startStreamPlayback();
+                    }
+                }).start();
+
+//                        Intent intent = new Intent(BroadcastActivity.this, ListenActivity.class);
+//                        startActivity(intent);
                 return true;
 
             default:

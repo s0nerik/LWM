@@ -14,14 +14,14 @@
     <string name="drawer_close">Close drawer</string>
 
     <string-array name="spinner_names">
-        <item>All songs</item>
-        <item>Artists</item>
-        <item>Albums</item>
+        <item>Player</item>
+        <item>Receiver</item>
     </string-array>
 
     <string-array name="drawer_items">
-        <item>Broadcast</item>
-        <item>Listen</item>
+        <item>All songs</item>
+        <item>Artists</item>
+        <item>Albums</item>
     </string-array>
 
 </resources>
