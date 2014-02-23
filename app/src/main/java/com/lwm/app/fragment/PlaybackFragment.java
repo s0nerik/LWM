@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.lwm.app.R;
+import com.lwm.app.async.AlbumArtGetter;
 import com.lwm.app.model.MusicPlayer;
 import com.lwm.app.service.MusicService;
 
@@ -80,10 +81,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        albumArt.setImageURI(uri);
-        if(albumArt.getDrawable() == null){
-            setDefaultAlbumArt();
-        }
+        new AlbumArtGetter(getActivity(), albumArt).execute(uri);
     }
 
     public void setDefaultAlbumArt() {

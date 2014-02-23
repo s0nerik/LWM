@@ -41,49 +41,53 @@ public class MusicService extends Service {
 
         Log.d(App.TAG, "MusicService.onStartCommand");
 
-        String action = intent.getAction();
+        String action = null;
+        if(intent != null){
+            action = intent.getAction();
 
-        switch(action){
-            case ACTION_PLAY_SONG:
-                Log.d(App.TAG, "MusicService: ACTION_PLAY_SONG");
-                int pos = intent.getIntExtra(MusicPlayer.PLAYLIST_POSITION, -1);
-                play(pos);
-                sendBroadcast(new Intent(MusicPlayer.PLAYBACK_STARTED));
-                break;
+            switch(action){
+                case ACTION_PLAY_SONG:
+                    Log.d(App.TAG, "MusicService: ACTION_PLAY_SONG");
+                    int pos = intent.getIntExtra(MusicPlayer.PLAYLIST_POSITION, -1);
+                    play(pos);
+                    sendBroadcast(new Intent(MusicPlayer.PLAYBACK_STARTED));
+                    break;
 
-            case ACTION_PAUSE_SONG:
-                Log.d(App.TAG, "MusicService: ACTION_PAUSE_SONG");
-                player.pause();
-                sendBroadcast(new Intent(MusicPlayer.PLAYBACK_PAUSED));
-                break;
+                case ACTION_PAUSE_SONG:
+                    Log.d(App.TAG, "MusicService: ACTION_PAUSE_SONG");
+                    player.pause();
+                    sendBroadcast(new Intent(MusicPlayer.PLAYBACK_PAUSED));
+                    break;
 
-            case ACTION_UNPAUSE_SONG:
-                Log.d(App.TAG, "MusicService: ACTION_UNPAUSE_SONG");
-                player.start();
-                sendBroadcast(new Intent(MusicPlayer.PLAYBACK_STARTED));
-                break;
+                case ACTION_UNPAUSE_SONG:
+                    Log.d(App.TAG, "MusicService: ACTION_UNPAUSE_SONG");
+                    player.start();
+                    sendBroadcast(new Intent(MusicPlayer.PLAYBACK_STARTED));
+                    break;
 
-            case ACTION_SONG_SEEK_TO:
-                Log.d(App.TAG, "MusicService: ACTION_SONG_SEEK_TO");
-                int newPos = intent.getIntExtra(MusicPlayer.SEEK_POSITION, -1);
-                Log.d(App.TAG, "MusicService: seekTo("+newPos+")");
-                player.seekTo(newPos);
-                break;
+                case ACTION_SONG_SEEK_TO:
+                    Log.d(App.TAG, "MusicService: ACTION_SONG_SEEK_TO");
+                    int newPos = intent.getIntExtra(MusicPlayer.SEEK_POSITION, -1);
+                    Log.d(App.TAG, "MusicService: seekTo("+newPos+")");
+                    player.seekTo(newPos);
+                    break;
 
-            case ACTION_NEXT_SONG:
-                Log.d(App.TAG, "MusicService: ACTION_NEXT_SONG");
-                player.nextSong();
-                break;
+                case ACTION_NEXT_SONG:
+                    Log.d(App.TAG, "MusicService: ACTION_NEXT_SONG");
+                    player.nextSong();
+                    break;
 
-            case ACTION_PREV_SONG:
-                Log.d(App.TAG, "MusicService: ACTION_PREV_SONG");
-                player.prevSong();
-                break;
+                case ACTION_PREV_SONG:
+                    Log.d(App.TAG, "MusicService: ACTION_PREV_SONG");
+                    player.prevSong();
+                    break;
 
-            case ACTION_PLAY_STREAM:
-                Log.d(App.TAG, "MusicService: ACTION_PLAY_STREAM");
-                playStream();
-                break;
+                case ACTION_PLAY_STREAM:
+                    Log.d(App.TAG, "MusicService: ACTION_PLAY_STREAM");
+                    playStream();
+                    break;
+            }
+
         }
         return Service.START_STICKY;
     }

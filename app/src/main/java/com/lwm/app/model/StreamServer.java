@@ -8,12 +8,14 @@ import com.lwm.app.service.MusicService;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
 public class StreamServer extends NanoHTTPD {
 
     private HashSet<String> clients = new HashSet<>();
+    private HashMap<String, Boolean> ready = new HashMap<>();
 
     public StreamServer() {
         super(8888);
@@ -57,8 +59,8 @@ public class StreamServer extends NanoHTTPD {
                         Random rnd = new Random();
                         String etag = Integer.toHexString( rnd.nextInt() );
 
-                        res.addHeader( "Connection", "Keep-alive");
-                        res.addHeader( "ETag", etag);
+                        res.addHeader("Connection", "Keep-alive");
+                        res.addHeader("ETag", etag);
                         res.setChunkedTransfer(true);
                         return res;
 

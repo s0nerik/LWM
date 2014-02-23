@@ -14,6 +14,7 @@ public class App extends Application {
     public static final String PAUSE = "/pause";
     public static final String PLAY = "/play";
     public static final String SEEK_TO = "/seekTo/";
+    public static final String CLIENT_READY = "/client_ready";
     public static final String TAG = "LWM";
 
     @Override
