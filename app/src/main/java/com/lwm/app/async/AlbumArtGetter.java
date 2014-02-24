@@ -12,9 +12,9 @@ import com.lwm.app.R;
 import java.io.IOException;
 
 public class AlbumArtGetter extends AsyncTask<Uri, Void, Void> {
-    Context context;
-    ImageView albumArt;
-    Bitmap cover;
+    private Context context;
+    private ImageView albumArt;
+    private Bitmap cover;
     boolean found = true;
 
     public AlbumArtGetter(Context context, ImageView albumArt){

@@ -1,4 +1,3 @@
-/*
 package com.lwm.app.helper;
 
 import android.content.Context;
@@ -7,14 +6,14 @@ import android.provider.MediaStore;
 
 public class AlbumsCursorGetter {
 
-    private Artist artist;
+    private String artist;
     private Context caller;
 
     private final String[] projection = {
             MediaStore.Audio.Albums._ID,
             MediaStore.Audio.Albums.ALBUM,
             MediaStore.Audio.Albums.ALBUM_ART,
-            MediaStore.Audio.Albums.ARTIST,
+            MediaStore.Audio.Albums.ARTIST
 //            MediaStore.Audio.Albums.ALBUM_ID
     };
 
@@ -31,7 +30,7 @@ public class AlbumsCursorGetter {
         this.caller = caller;
     }
 
-    public AlbumsCursorGetter(Context caller, Artist artist) {
+    public AlbumsCursorGetter(Context caller, String artist) {
         this.caller = caller;
         this.artist = artist;
     }
@@ -40,7 +39,7 @@ public class AlbumsCursorGetter {
 
         if(artist != null){
             selection = MediaStore.Audio.Artists.Albums.ARTIST + " = ?";
-            selectionArgs = new String[]{artist.getName()};
+            selectionArgs = new String[]{artist};
         }
 
         return caller.getContentResolver().query(
@@ -54,4 +53,3 @@ public class AlbumsCursorGetter {
     }
 
 }
-*/

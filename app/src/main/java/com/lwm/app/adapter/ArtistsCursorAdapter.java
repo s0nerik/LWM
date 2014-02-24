@@ -2,6 +2,7 @@ package com.lwm.app.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,12 @@ import android.widget.TextView;
 import com.lwm.app.R;
 import com.lwm.app.helper.ArtistsCursorGetter;
 
-public class ArtistsCursorAdapter extends BasicCursorAdapter {
+public class ArtistsCursorAdapter extends CursorAdapter {
 
-    public ArtistsCursorAdapter(Context context, Cursor c) {
-        super(context, c);
+    Context context;
+
+    public ArtistsCursorAdapter(Context context, ArtistsCursorGetter c) {
+        super(context, c.getArtists());
         this.context = context;
     }
 

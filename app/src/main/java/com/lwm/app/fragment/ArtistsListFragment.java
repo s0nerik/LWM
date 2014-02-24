@@ -1,6 +1,5 @@
 package com.lwm.app.fragment;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -24,10 +23,10 @@ public class ArtistsListFragment extends ListFragment {
                              Bundle savedInstanceState) {
 
         ArtistsCursorGetter cursorGetter = new ArtistsCursorGetter(getActivity());
-        Cursor cursor = cursorGetter.getArtists();
+//        Cursor cursor = cursorGetter.getArtists();
 
-        assert cursor != null;
-        ListAdapter adapter = new ArtistsCursorAdapter(getActivity(), cursor);
+//        assert cursor != null;
+        ListAdapter adapter = new ArtistsCursorAdapter(getActivity(), cursorGetter);
 
         setListAdapter(adapter);
 

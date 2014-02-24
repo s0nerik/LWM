@@ -1,4 +1,3 @@
-/*
 package com.lwm.app.adapter;
 
 import android.content.Context;
@@ -15,8 +14,8 @@ import com.lwm.app.helper.AlbumsCursorGetter;
 
 public class AlbumsCursorAdapter extends BasicCursorAdapter {
 
-    public AlbumsCursorAdapter(Context context, Cursor c) {
-        super(context, c);
+    public AlbumsCursorAdapter(Context context, AlbumsCursorGetter c) {
+        super(context, c.getAlbums());
         this.context = context;
     }
 
@@ -50,14 +49,11 @@ public class AlbumsCursorAdapter extends BasicCursorAdapter {
 
         holder.artist.setText(cursor.getString(AlbumsCursorGetter.ARTIST));
 
-        */
-/* Get art work from getAlbumart *//*
-
         Bitmap art=getAlbumart(cursor.getLong(AlbumsCursorGetter._ID));
         if(art!=null)
             holder.coverAlbum.setImageBitmap(art);
         else
-            holder.coverAlbum.setImageResource(R.drawable.ic_no_cover);
+            holder.coverAlbum.setImageResource(R.drawable.no_cover);
     }
 
-}*/
+}

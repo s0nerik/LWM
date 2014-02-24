@@ -22,8 +22,6 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<String> {
         this.context = context;
         this.values = values;
         this.icons = icons;
-//        values = context.getResources().getStringArray(R.array.drawer_items);
-//        icons = context.getResources().obtainTypedArray(R.array.drawer_icons);
     }
 
     static class ViewHolder {

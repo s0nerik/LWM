@@ -10,20 +10,20 @@ import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.lwm.app.R;
 import com.lwm.app.helper.SongsCursorGetter;
-import com.lwm.app.lib.QuickAdapter;
 
 import java.io.FileDescriptor;
 
-public class SongsCursorAdapter extends QuickAdapter {
+public class SongsCursorAdapter extends CursorAdapter {
 
     Context context;
 
     public SongsCursorAdapter(Context context, SongsCursorGetter cursorGetter) {
-        super(context, cursorGetter);
+        super(context, cursorGetter.getSongs());
         this.context = context;
     }
 

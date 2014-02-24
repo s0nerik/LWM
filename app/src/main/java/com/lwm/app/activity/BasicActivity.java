@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
+import com.lwm.app.fragment.AlbumsListFragment;
 import com.lwm.app.fragment.ArtistsListFragment;
 import com.lwm.app.fragment.SongsListFragment;
 import com.lwm.app.lib.Connectivity;
@@ -108,9 +109,9 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                         .commit();
                 break;
             case 2: // Albums
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.container, new AlbumsListFragment())
-//                        .commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new AlbumsListFragment())
+                        .commit();
                 break;
         }
     }
