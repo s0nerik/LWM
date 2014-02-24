@@ -106,7 +106,7 @@ public class BroadcastActivity extends BasicActivity {
         if(broadcastButton == null) return;
 
         if(show)
-            MenuItemCompat.setActionView(broadcastButton, R.layout.actionbar_broadcast_progress);
+            MenuItemCompat.setActionView(broadcastButton, R.layout.progress_actionbar_broadcast);
         else
             MenuItemCompat.setActionView(broadcastButton, null);
 

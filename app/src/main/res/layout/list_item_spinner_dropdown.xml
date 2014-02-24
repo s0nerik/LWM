@@ -2,13 +2,11 @@
 
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
-    android:background="@drawable/drawer_item_background_selector"
+    style="?android:attr/spinnerDropDownItemStyle"
+    android:background="@drawable/selector_spinner_dropdown_item_background"
     android:checkMark="@null"
-    android:textColor="@color/drawer_item_textcolor_selector"
+    android:textColor="@color/selector_spinner_dropdown_item_textcolor"
     android:singleLine="true"
-    android:textSize="18sp"
-    android:paddingLeft="5dp"
-    android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:ellipsize="marquee" />

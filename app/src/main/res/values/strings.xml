@@ -24,4 +24,10 @@
         <item>Albums</item>
     </string-array>
 
+    <string-array name="drawer_icons">
+        <item>@drawable/selector_ic_drawer_songs</item>
+        <item>@drawable/selector_ic_drawer_artists</item>
+        <item>@drawable/selector_ic_drawer_albums</item>
+    </string-array>
+
 </resources>

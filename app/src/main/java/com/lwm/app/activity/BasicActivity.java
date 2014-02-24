@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.lwm.app.R;
+import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.fragment.ArtistsListFragment;
 import com.lwm.app.fragment.SongsListFragment;
 import com.lwm.app.lib.Connectivity;
@@ -41,7 +42,7 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                 actionBar.getThemedContext(),
                 R.array.spinner_names,
                 android.R.layout.simple_list_item_1);
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
         actionBar.setListNavigationCallbacks(adapter, this);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -50,13 +51,12 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
 
     protected void initNavigationDrawer(){
 
-        String[] items = getResources().getStringArray(R.array.drawer_items);
         drawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
-        drawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_item,
-                items));
+        drawerList.setAdapter(new NavigationDrawerListAdapter(this,
+                getResources().getStringArray(R.array.drawer_items),
+                getResources().obtainTypedArray(R.array.drawer_icons)));
 
         // Set the list's click listener
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener(){

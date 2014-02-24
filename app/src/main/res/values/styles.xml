@@ -11,7 +11,7 @@
     <!--</style>-->
 
     <style name="Card">
-        <item name="android:background">@drawable/list_item_background</item>
+        <item name="android:background">@drawable/background_list_item</item>
         <item name="android:checkMark">@null</item>
         <item name="android:paddingBottom">4dp</item>
     </style>

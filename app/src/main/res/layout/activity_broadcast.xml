@@ -31,9 +31,9 @@
         android:layout_width="180dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:divider="@color/list_background"
+        android:divider="@color/drawer_divider"
         android:dividerHeight="1dp"
         android:choiceMode="singleChoice"
-        android:background="#fff"/>
+        android:background="@color/drawer_background"/>
 
 </android.support.v4.widget.DrawerLayout>
