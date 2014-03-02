@@ -13,6 +13,12 @@
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
 
+
+    <string name="pref_header_ap">Access Point settings</string>
+    <string name="title_ap_name_preference">Access Point name</string>
+    <string name="summary_ap_name_preference">Give name to your AP</string>
+
+
     <string-array name="spinner_names">
         <item>Player</item>
         <item>Receiver</item>

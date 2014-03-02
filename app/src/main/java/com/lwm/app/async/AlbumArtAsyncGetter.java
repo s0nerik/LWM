@@ -10,16 +10,20 @@ import android.widget.ImageView;
 import com.lwm.app.R;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
-public class AlbumArtGetter extends AsyncTask<Uri, Void, Void> {
+public class AlbumArtAsyncGetter extends AsyncTask<Uri, Void, Void> {
     private Context context;
     private ImageView albumArt;
     private Bitmap cover;
     boolean found = true;
 
-    public AlbumArtGetter(Context context, ImageView albumArt){
+    private final WeakReference<ImageView> imageViewReference;
+
+    public AlbumArtAsyncGetter(Context context, ImageView albumArt){
         this.context = context;
         this.albumArt = albumArt;
+        imageViewReference = new WeakReference(albumArt);
     }
 
     @Override
@@ -27,7 +31,7 @@ public class AlbumArtGetter extends AsyncTask<Uri, Void, Void> {
         try {
             cover = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             found = false;
         }
         return null;
@@ -35,7 +39,14 @@ public class AlbumArtGetter extends AsyncTask<Uri, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if(found)   albumArt.setImageBitmap(cover);
-        else        albumArt.setImageResource(R.drawable.no_cover);
+        if (imageViewReference != null) {
+            ImageView imageView = imageViewReference.get();
+            if (imageView != null) {
+                if(found)   albumArt.setImageBitmap(cover);
+                else        albumArt.setImageResource(R.drawable.no_cover);
+            }
+        }
+//        if(found)   albumArt.setImageBitmap(cover);
+//        else        albumArt.setImageResource(R.drawable.no_cover);
     }
 }

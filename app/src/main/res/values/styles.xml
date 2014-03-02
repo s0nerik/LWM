@@ -10,6 +10,17 @@
         <!--<item name="android:dividerHeight">1dp</item>-->
     <!--</style>-->
 
+    <style name="SeekBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_horizontal</item>
+        <item name="android:indeterminateDrawable">@drawable/progress_horizontal</item>
+        <item name="android:minHeight">20dip</item>
+        <item name="android:maxHeight">20dip</item>
+        <item name="android:thumb">@null</item>
+        <item name="android:thumbOffset">0dp</item>
+        <item name="android:focusable">true</item>
+    </style>
+
     <style name="Card">
         <item name="android:background">@drawable/background_list_item</item>
         <item name="android:checkMark">@null</item>

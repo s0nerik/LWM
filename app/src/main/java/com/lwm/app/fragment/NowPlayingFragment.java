@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.lwm.app.R;
-import com.lwm.app.async.AlbumArtGetter;
+import com.lwm.app.async.AlbumArtAsyncGetter;
 import com.lwm.app.model.MusicPlayer;
 import com.lwm.app.service.MusicService;
 
@@ -38,7 +38,7 @@ public class NowPlayingFragment extends Fragment {
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        new AlbumArtGetter(getActivity(), albumArt).execute(uri);
+        new AlbumArtAsyncGetter(getActivity(), albumArt).execute(uri);
     }
 
 }

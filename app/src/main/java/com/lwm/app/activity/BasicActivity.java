@@ -20,6 +20,7 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.fragment.AlbumsListFragment;
 import com.lwm.app.fragment.ArtistsListFragment;
+import com.lwm.app.fragment.PlayersAroundFragment;
 import com.lwm.app.fragment.SongsListFragment;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.lib.WifiAP;
@@ -124,6 +125,9 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                 return true;
 
             case 1:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new PlayersAroundFragment(), "players_around_list")
+                        .commit();
                 new Thread(new Runnable(){
                     @Override
                     public void run() {

@@ -10,6 +10,7 @@ public class App extends Application {
     public static final String SERVER_ADDRESS = "http://192.168.43.1:8888";
     public static final String IP = "/ip/";
     public static final String CURRENT_POSITION = "/position";
+    public static final String CURRENT_INFO = "/info";
     public static final String STREAM = "/stream";
     public static final String PAUSE = "/pause";
     public static final String PLAY = "/play";

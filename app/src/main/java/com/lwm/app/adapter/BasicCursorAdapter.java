@@ -16,6 +16,8 @@ import java.io.FileDescriptor;
 public abstract class BasicCursorAdapter extends CursorAdapter {
 
     protected Context context;
+    protected final Uri artworkUri = Uri
+            .parse("content://media/external/audio/albumart");
 
     public BasicCursorAdapter(Context context, Cursor c) {
         super(context, c);
@@ -30,6 +32,9 @@ public abstract class BasicCursorAdapter extends CursorAdapter {
     @Override
     public abstract void bindView(View view, Context context, Cursor cursor);
 
+    public Uri getArtworkUriForId(Long album_id){
+        return ContentUris.withAppendedId(artworkUri, album_id);
+    }
 
     /**
      * Gets the albumart. fetches the album art and set's the image view to the reteived file
@@ -42,10 +47,7 @@ public abstract class BasicCursorAdapter extends CursorAdapter {
         Bitmap bm = null;
         try
         {
-            final Uri sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-
-            Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
+            Uri uri = ContentUris.withAppendedId(artworkUri, album_id);
 
             ParcelFileDescriptor pfd = context.getContentResolver()
                     .openFileDescriptor(uri, "r");

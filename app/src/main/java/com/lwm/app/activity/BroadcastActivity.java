@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,9 +19,13 @@ import android.widget.TextView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.fragment.NowPlayingFragment;
+import com.lwm.app.fragment.PlayersAroundFragment;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.model.MusicPlayer;
 import com.lwm.app.service.MusicService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BroadcastActivity extends BasicActivity {
 
@@ -54,6 +59,16 @@ public class BroadcastActivity extends BasicActivity {
 
                     nowPlaying.setAlbumArtFromUri(MusicService.getCurrentPlayer().getCurrentAlbumArtUri());
                     break;
+                case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
+                    Log.d(App.TAG, "SCAN_RESULTS_AVAILABLE_ACTION");
+                    List<String> ssids = new ArrayList<>();
+                    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                    for(ScanResult result:wm.getScanResults()){
+                        ssids.add(result.SSID);
+                    }
+                    PlayersAroundFragment fragment = (PlayersAroundFragment) fragmentManager.findFragmentByTag("players_around_list");
+                    fragment.setSSIDs(ssids);
+                    break;
             }
         }
     };
@@ -80,6 +95,7 @@ public class BroadcastActivity extends BasicActivity {
         super.onResume();
         registerReceiver(onBroadcast, new IntentFilter(MusicPlayer.SONG_CHANGED));
         registerReceiver(onBroadcast, new IntentFilter(MusicPlayer.PLAYBACK_STARTED));
+        registerReceiver(onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         if(MusicService.getCurrentPlayer() != null){
             showNowPlayingBar();
         }
@@ -120,6 +136,7 @@ public class BroadcastActivity extends BasicActivity {
         int id = item.getItemId();
         switch(id){
             case R.id.action_settings:
+                startActivity(new Intent(this, PreferenceActivity.class));
                 return true;
             case R.id.action_broadcast:
                 WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -136,7 +153,6 @@ public class BroadcastActivity extends BasicActivity {
     }
 
     private void showNowPlayingBar(){
-//        FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nowPlaying = fragmentManager.findFragmentById(R.id.fragment_now_playing);
         fragmentManager.beginTransaction()
                 .show(nowPlaying)

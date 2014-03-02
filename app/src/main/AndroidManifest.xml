@@ -45,6 +45,9 @@
         <activity
             android:name=".activity.ListenActivity" />
 
+        <activity
+            android:name=".activity.PreferenceActivity" />
+
     </application>
 
 </manifest>

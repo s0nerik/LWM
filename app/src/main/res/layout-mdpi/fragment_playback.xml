@@ -40,44 +40,48 @@
         android:layout_height="200dp"
         android:scaleType="fitXY"
         android:id="@+id/fragment_playback_cover"
-        android:layout_above="@+id/fragment_playback_seekBar"
+        android:layout_above="@+id/fragment_playback_seekBar_line"
         android:src="@drawable/no_cover"
         android:layout_centerInParent="true"
         android:layout_marginBottom="15dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_playback_now_position"
-        android:text="0:00"
-        android:textColor="@android:color/white"
-        android:layout_alignTop="@+id/fragment_playback_seekBar"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_playback_last_position"
-        android:text="3:00"
-        android:textColor="@android:color/white"
-        android:layout_alignTop="@+id/fragment_playback_seekBar"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="4dp" />
-
-    <SeekBar
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/fragment_playback_seekBar_line"
         android:layout_above="@+id/fragment_playback_play_pause"
-        android:layout_marginBottom="2dp"
-        android:id="@+id/fragment_playback_seekBar"
-        android:layout_toLeftOf="@+id/fragment_playback_last_position"
-        android:layout_toRightOf="@+id/fragment_playback_now_position"
-        android:progress="50" />
+        android:layout_marginBottom="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_playback_now_position"
+            android:text="0:00"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_playback_seekBar"
+            android:layout_weight="1"
+            style="@style/SeekBar"
+            android:progress="50"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_playback_last_position"
+            android:text="3:00"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="5dp" />
+
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
