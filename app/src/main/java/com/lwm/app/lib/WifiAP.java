@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.lwm.app.activity.BroadcastActivity;
@@ -28,7 +29,8 @@ public class WifiAP {
     private WifiManager wifi;
     private String TAG = "WifiAP";
 
-    public static String AP_NAME = "Listen With Me!";
+    private String AP_NAME;
+    public static String AP_NAME_POSTFIX = " [LWM]";
 
     private int stateWifiWasIn = -1;
 
@@ -39,6 +41,8 @@ public class WifiAP {
             wifi = wifihandler;
         }
 
+        AP_NAME = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("ap_name", "Listen With Me!");
         boolean wifiApIsOn = getWifiAPState()==WIFI_AP_STATE_ENABLED || getWifiAPState()==WIFI_AP_STATE_ENABLING;
         new SetWifiAPTask(!wifiApIsOn,false,context).execute();
     }
@@ -47,7 +51,7 @@ public class WifiAP {
         Log.d(TAG, "*** setWifiApEnabled CALLED **** " + enabled);
 
         WifiConfiguration config = new WifiConfiguration();
-        config.SSID = "Listen With Me!";
+        config.SSID = AP_NAME+AP_NAME_POSTFIX;
         config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
 
         //remember wirelesses current state

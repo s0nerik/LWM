@@ -18,10 +18,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 
-public class StreamPlayer {
+public class StreamPlayer extends MediaPlayer{
 
     private Context context;
-    private MediaPlayer player;
 
     private static final Uri STREAM_URI = Uri.parse(App.SERVER_ADDRESS+App.STREAM);
 
@@ -35,12 +34,12 @@ public class StreamPlayer {
     }
 
     private void initNewPlayer(){
-        player = new MediaPlayer();
+//        player = new MediaPlayer();
         initOnPreparedListener();
     }
 
     private void initOnPreparedListener(){
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 Log.d("LWM", "StreamPlayer: onPrepared");
@@ -53,10 +52,10 @@ public class StreamPlayer {
 
         new AddressSender().execute();
 
-        player.reset();
+        reset();
         try {
-            player.setDataSource(context, STREAM_URI);
-            player.prepareAsync();
+            setDataSource(context, STREAM_URI);
+            prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,14 +71,14 @@ public class StreamPlayer {
 //    }
 
     public String getCurrentDurationInMinutes(){
-        int seconds = player.getDuration()/1000;
+        int seconds = getDuration()/1000;
         int minutes = seconds/60;
         seconds -= minutes*60;
         return minutes+":"+String.format("%02d",seconds);
     }
 
     public String getCurrentPositionInMinutes(){
-        int seconds = player.getCurrentPosition()/1000;
+        int seconds = getCurrentPosition()/1000;
         int minutes = seconds/60;
         seconds -= minutes*60;
         return minutes+":"+String.format("%02d",seconds);
@@ -105,8 +104,8 @@ public class StreamPlayer {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            player.seekTo(pos);
-            player.start();
+            seekTo(pos);
+            start();
         }
     }
 

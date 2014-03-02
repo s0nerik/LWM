@@ -1,10 +1,7 @@
 package com.lwm.app.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -22,8 +19,6 @@ import com.lwm.app.fragment.AlbumsListFragment;
 import com.lwm.app.fragment.ArtistsListFragment;
 import com.lwm.app.fragment.PlayersAroundFragment;
 import com.lwm.app.fragment.SongsListFragment;
-import com.lwm.app.lib.Connectivity;
-import com.lwm.app.lib.WifiAP;
 import com.lwm.app.service.MusicService;
 
 public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
@@ -128,44 +123,6 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new PlayersAroundFragment(), "players_around_list")
                         .commit();
-                new Thread(new Runnable(){
-                    @Override
-                    public void run() {
-                        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                        if (wifiManager != null) {
-                            if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
-                                WifiInfo info = wifiManager.getConnectionInfo();
-                                if (info == null || !WifiAP.AP_NAME.equals(info.getSSID())) {
-                                    // Device is connected to different AP or not connected at all
-                                    Connectivity.connectToOpenAP(BasicActivity.this, WifiAP.AP_NAME);
-                                }
-                            }else{
-                                // Wifi is disabled, so let's turn it on and connect
-                                wifiManager.setWifiEnabled(true);
-
-                                // Wait until it Wifi is enabled
-                                try {
-                                    while(!wifiManager.isWifiEnabled()){
-                                        Thread.sleep(500);
-                                    }
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                Connectivity.connectToOpenAP(BasicActivity.this, WifiAP.AP_NAME);
-
-                                // Wait until Wifi is really connected
-                                try {
-                                    while(!Connectivity.isConnectedWifi(BasicActivity.this)){
-                                        Thread.sleep(500);
-                                    }
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        startStreamPlayback();
-                    }
-                }).start();
 
 //                        Intent intent = new Intent(BroadcastActivity.this, ListenActivity.class);
 //                        startActivity(intent);

@@ -31,9 +31,9 @@ public class NowPlayingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        MusicPlayer player = MusicService.getCurrentPlayer();
+        MusicPlayer player = (MusicPlayer) MusicService.getCurrentPlayer();
         if(player != null){
-            setAlbumArtFromUri(MusicService.getCurrentPlayer().getCurrentAlbumArtUri());
+            setAlbumArtFromUri(player.getCurrentAlbumArtUri());
         }
     }
 

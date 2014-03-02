@@ -93,6 +93,12 @@ public class PlaybackActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+
+        playbackFragment.setPlayButton(player.isPlaying());
+        playbackFragment.setTitle(player.getCurrentTitle());
+        playbackFragment.setArtist(player.getCurrentArtist());
+        playbackFragment.setDuration(player.getCurrentDurationInMinutes());
+        playbackFragment.setAlbumArtFromUri(player.getCurrentAlbumArtUri());
     }
 
     private void initActionBar(){

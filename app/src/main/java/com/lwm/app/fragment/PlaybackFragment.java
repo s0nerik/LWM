@@ -27,7 +27,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     private TextView duration;
     private SeekBar seekBar;
     private ImageView albumArt;
-
     private ImageView playPauseButton;
 
     @Override
@@ -44,20 +43,10 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
         seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
-
-        MusicPlayer player = MusicService.getCurrentPlayer();
-
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
-        setPlayButton(player.isPlaying());
 
         seekBar.setMax(SEEK_BAR_MAX);
         seekBar.setOnSeekBarChangeListener(this);
-
-        title.setText(MusicService.getCurrentPlayer().getCurrentTitle());
-        artist.setText(MusicService.getCurrentPlayer().getCurrentArtist());
-        duration.setText(MusicService.getCurrentPlayer().getCurrentDurationInMinutes());
-
-        setAlbumArtFromUri(player.getCurrentAlbumArtUri());
     }
 
     public void setTitle(String title) {

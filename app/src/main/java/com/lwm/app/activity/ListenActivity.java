@@ -1,6 +1,5 @@
 package com.lwm.app.activity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,9 +9,11 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.fragment.PlaybackFragment;
 
 public class ListenActivity extends ActionBarActivity {
+
+    PlaybackFragment playbackFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +21,16 @@ public class ListenActivity extends ActionBarActivity {
         Log.d(App.TAG, "ListenActivity.onCreate()");
         setContentView(R.layout.activity_listen);
         initActionBar();
-        Intent intent = new Intent(this, MusicService.class);
-        intent.setAction(MusicService.ACTION_PLAY_STREAM);
-        startService(intent);
+
+        if(savedInstanceState == null){
+            Bundle extras = getIntent().getExtras();
+            if(extras != null){
+                playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+                playbackFragment.setArtist(extras.getString("artist"));
+                playbackFragment.setTitle(extras.getString("title"));
+                playbackFragment.setDuration(extras.getString("duration"));
+            }
+        }
     }
 
     private void initActionBar(){
