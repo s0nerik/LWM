@@ -87,11 +87,7 @@ public class PlaybackActivity extends ActionBarActivity {
         player = MusicService.getCurrentPlayer();
         duration = player.getDuration();
         seekBarUpdateTimer.schedule(new SeekBarUpdateTask(), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
 
         playbackFragment.setPlayButton(player.isPlaying());
