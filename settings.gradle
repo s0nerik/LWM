@@ -1,1 +1,1 @@
-include ':app', ':libs:UnifiedPreference'
+include ':app', ':libs:UnifiedPreference', ':libs:StackBlur'

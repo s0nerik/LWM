@@ -2,6 +2,7 @@
 
 <com.lwm.app.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pixlui="http://schemas.android.com/apk/com.neopixl.pixlui"
     style="@style/Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -39,18 +40,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-            <TextView
+
+            <com.neopixl.pixlui.components.textview.TextView
                 android:id="@+id/songs_list_item_title"
                 android:checkMark="@null"
                 android:padding="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
 
-            <TextView
+                pixlui:typeface="Roboto-Regular.ttf" />
+
+            <com.neopixl.pixlui.components.textview.TextView
                 android:id="@+id/songs_list_item_duration"
                 android:checkMark="@null"
                 android:padding="6dp"
@@ -58,11 +61,13 @@
                 android:layout_height="match_parent"
                 android:textSize="16sp"
                 android:text="3:00"
-                android:fontFamily="sans-serif"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+
+                pixlui:typeface="Roboto-Thin.ttf" />
+
         </LinearLayout>
 
-        <TextView
+        <com.neopixl.pixlui.components.textview.TextView
             android:id="@+id/songs_list_item_artist"
             android:checkMark="@null"
             android:paddingLeft="6dp"
@@ -71,9 +76,10 @@
             android:layout_weight="1"
             android:textSize="18sp"
             android:textColor="#666666"
-            android:fontFamily="sans-serif"
             android:gravity="start"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+
+            pixlui:typeface="Roboto-Light.ttf" />
 
     </LinearLayout>
 

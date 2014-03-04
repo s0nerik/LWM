@@ -1,39 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pixlui="http://schemas.android.com/apk/com.neopixl.pixlui"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_playback_layout"
     android:background="@drawable/background_playback">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/fragment_playback_title"
-        android:text="Waking The Demon"
-        android:textSize="28sp"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:textColor="#ffffff"
-        android:layout_gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
+    <!--<com.lwm.app.custom_view.AutoScrollingTextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:id="@+id/fragment_playback_title"-->
+        <!--android:text="Waking The Demon"-->
+        <!--android:textSize="28sp"-->
+        <!--android:singleLine="true"-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/fragment_playback_artist"
-        android:text="Bullet For My Valentine"
-        android:textSize="18sp"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:textColor="#ffbbbbbb"
-        android:typeface="normal"
-        android:layout_gravity="center"
-        android:layout_below="@+id/fragment_playback_title"
-        android:layout_centerHorizontal="true" />
+        <!--android:ellipsize="marquee"-->
+        <!--android:scrollHorizontally="true"-->
+        <!--android:marqueeRepeatLimit="marquee_forever"-->
+
+        <!--android:textColor="#ffffff"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="15dp"-->
+
+        <!--pixlui:typeface="Roboto-Regular.ttf" />-->
+
+    <!--<com.neopixl.pixlui.components.textview.TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:id="@+id/fragment_playback_artist"-->
+        <!--android:text="Bullet For My Valentine"-->
+        <!--android:textSize="18sp"-->
+        <!--android:singleLine="true"-->
+        <!--android:ellipsize="marquee"-->
+        <!--android:textColor="#ffbbbbbb"-->
+        <!--android:typeface="normal"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_below="@+id/fragment_playback_title"-->
+        <!--android:layout_centerHorizontal="true"-->
+
+        <!--pixlui:typeface="Roboto-Thin.ttf" />-->
 
     <ImageView
         android:layout_width="200dp"

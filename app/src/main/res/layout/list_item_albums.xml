@@ -2,6 +2,7 @@
 
 <com.lwm.app.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pixlui="http://schemas.android.com/apk/com.neopixl.pixlui"
     style="@style/Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,17 +22,19 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
+        <com.neopixl.pixlui.components.textview.TextView
             android:id="@+id/albums_list_item_album"
             android:checkMark="@null"
             android:padding="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:fontFamily="sans-serif"
+
+            pixlui:typeface="Roboto-Regular.ttf"
+
             android:gravity="center_vertical" />
 
-        <TextView
+        <com.neopixl.pixlui.components.textview.TextView
             android:id="@+id/albums_list_item_artist"
             android:checkMark="@null"
             android:paddingLeft="6dp"
@@ -40,7 +43,9 @@
             android:layout_weight="1"
             android:textSize="18sp"
             android:textColor="#666666"
-            android:fontFamily="sans-serif"
+
+            pixlui:typeface="Roboto-Thin.ttf"
+
             android:gravity="start"
             android:layout_height="0dp" />
 

@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import com.lwm.app.R;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 
 public class AlbumArtAsyncGetter extends AsyncTask<Uri, Void, Void> {
     private Context context;
@@ -18,12 +17,9 @@ public class AlbumArtAsyncGetter extends AsyncTask<Uri, Void, Void> {
     private Bitmap cover;
     boolean found = true;
 
-    private final WeakReference<ImageView> imageViewReference;
-
     public AlbumArtAsyncGetter(Context context, ImageView albumArt){
         this.context = context;
         this.albumArt = albumArt;
-        imageViewReference = new WeakReference(albumArt);
     }
 
     @Override
@@ -39,14 +35,8 @@ public class AlbumArtAsyncGetter extends AsyncTask<Uri, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (imageViewReference != null) {
-            ImageView imageView = imageViewReference.get();
-            if (imageView != null) {
-                if(found)   albumArt.setImageBitmap(cover);
-                else        albumArt.setImageResource(R.drawable.no_cover);
-            }
-        }
-//        if(found)   albumArt.setImageBitmap(cover);
-//        else        albumArt.setImageResource(R.drawable.no_cover);
+        if(found)   albumArt.setImageBitmap(cover);
+        else        albumArt.setImageResource(R.drawable.no_cover);
     }
+
 }

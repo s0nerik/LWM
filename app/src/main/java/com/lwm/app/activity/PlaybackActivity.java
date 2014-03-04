@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.lwm.app.R;
@@ -24,6 +25,7 @@ public class PlaybackActivity extends ActionBarActivity {
 
     PlaybackFragment playbackFragment;
     MusicPlayer player;
+    ActionBar actionBar;
     int duration;
 
     Timer seekBarUpdateTimer = new Timer();
@@ -40,8 +42,10 @@ public class PlaybackActivity extends ActionBarActivity {
                     player = MusicService.getCurrentPlayer();
 
                     // Now playing fragment changes
-                    playbackFragment.setTitle(player.getCurrentTitle());
-                    playbackFragment.setArtist(player.getCurrentArtist());
+                    actionBar.setTitle(player.getCurrentTitle());
+                    actionBar.setSubtitle(player.getCurrentArtist());
+//                    playbackFragment.setTitle(player.getCurrentTitle());
+//                    playbackFragment.setArtist(player.getCurrentArtist());
                     playbackFragment.setDuration(player.getCurrentDurationInMinutes());
 
                     duration = player.getDuration();
@@ -59,6 +63,7 @@ public class PlaybackActivity extends ActionBarActivity {
                         playbackFragment.setDefaultAlbumArt();
                     }
 
+                    playbackFragment.setBackgroundImageUri(player.getCurrentAlbumArtUri());
                     break;
 
                 case MusicPlayer.PLAYBACK_PAUSED:
@@ -78,30 +83,34 @@ public class PlaybackActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playback);
+        player = MusicService.getCurrentPlayer();
+        actionBar = getSupportActionBar();
         initActionBar();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        player = MusicService.getCurrentPlayer();
         duration = player.getDuration();
         seekBarUpdateTimer.schedule(new SeekBarUpdateTask(), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
 
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
 
         playbackFragment.setPlayButton(player.isPlaying());
-        playbackFragment.setTitle(player.getCurrentTitle());
-        playbackFragment.setArtist(player.getCurrentArtist());
+//        playbackFragment.setTitle(player.getCurrentTitle());
+//        playbackFragment.setArtist(player.getCurrentArtist());
         playbackFragment.setDuration(player.getCurrentDurationInMinutes());
         playbackFragment.setAlbumArtFromUri(player.getCurrentAlbumArtUri());
+        playbackFragment.setBackgroundImageUri(player.getCurrentAlbumArtUri());
     }
 
     private void initActionBar(){
-        ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-        actionBar.setTitle(R.string.now_playing);
-        actionBar.hide();
+        actionBar.setTitle(player.getCurrentTitle());
+        actionBar.setSubtitle(player.getCurrentArtist());
+        actionBar.setIcon(R.drawable.ic_playback_activity);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.hide();
     }
 
     @Override
@@ -138,22 +147,6 @@ public class PlaybackActivity extends ActionBarActivity {
         }
     }
 
-//    public void onNextButtonClicked(View v){
-//        startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_NEXT_SONG));
-//    }
-//
-//    public void onPrevButtonClicked(View v){
-//        startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_PREV_SONG));
-//    }
-//
-//    public void onPauseButtonClicked(View v){
-//        if(MusicService.getCurrentPlayer().isPlaying()){
-//            startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_PAUSE_SONG));
-//        }else{
-//            startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_UNPAUSE_SONG));
-//        }
-//    }
-
     private class SeekBarUpdateTask extends TimerTask {
         int progress;
         @Override
@@ -167,6 +160,18 @@ public class PlaybackActivity extends ActionBarActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+//                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
