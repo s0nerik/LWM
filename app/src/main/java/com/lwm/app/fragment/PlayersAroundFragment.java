@@ -15,7 +15,6 @@ import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.async.ListenActivityStarter;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.service.MusicService;
@@ -99,7 +98,7 @@ public class PlayersAroundFragment extends ListFragment {
         Intent intent = new Intent(getActivity(), MusicService.class);
         intent.setAction(MusicService.ACTION_PLAY_STREAM);
         getActivity().startService(intent);
-        new ListenActivityStarter(getActivity()).execute();
+//        new ListenActivityStarter(getActivity()).execute();
     }
 
 }

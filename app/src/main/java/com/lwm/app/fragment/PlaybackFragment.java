@@ -137,26 +137,29 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
             } catch (IOException e) {
                 bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
             }
-            newDrawable = new BitmapDrawable(getResources(), bitmap);
+            try{
+                newDrawable = new BitmapDrawable(getResources(), bitmap);
+            }catch (IllegalStateException e){}
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Drawable oldDrawable = bg.getDrawable();
+            if(newDrawable != null){
+                Drawable oldDrawable = bg.getDrawable();
 
-            if(oldDrawable instanceof TransitionDrawable){
-                oldDrawable = ((TransitionDrawable) oldDrawable).getDrawable(1);
+                if(oldDrawable instanceof TransitionDrawable){
+                    oldDrawable = ((TransitionDrawable) oldDrawable).getDrawable(1);
+                }
+
+                drawables[0] = oldDrawable;
+                drawables[1] = newDrawable;
+                transitionDrawable = new TransitionDrawable(drawables);
+
+                bg.setImageDrawable(transitionDrawable);
+                transitionDrawable.startTransition(1000);
             }
-
-            drawables[0] = oldDrawable;
-            drawables[1] = newDrawable;
-            transitionDrawable = new TransitionDrawable(drawables);
-
-            bg.setImageDrawable(transitionDrawable);
-            transitionDrawable.startTransition(1000);
         }
-
     }
 
 }
