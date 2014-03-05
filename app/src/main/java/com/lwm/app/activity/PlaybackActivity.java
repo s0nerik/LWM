@@ -17,9 +17,9 @@ import com.lwm.app.R;
 import com.lwm.app.fragment.PlaybackFragment;
 import com.lwm.app.model.MusicPlayer;
 import com.lwm.app.service.MusicService;
+import com.lwm.app.task.SeekBarUpdateTask;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class PlaybackActivity extends ActionBarActivity {
 
@@ -27,7 +27,6 @@ public class PlaybackActivity extends ActionBarActivity {
     MusicPlayer player;
     ActionBar actionBar;
     int currentAlbumId;
-    int duration;
 
     Timer seekBarUpdateTimer = new Timer();
 
@@ -45,12 +44,10 @@ public class PlaybackActivity extends ActionBarActivity {
                     // Now playing fragment changes
                     playbackFragment.setDuration(player.getCurrentDurationInMinutes());
 
-                    duration = player.getDuration();
-
                     seekBarUpdateTimer.cancel();
                     seekBarUpdateTimer.purge();
                     seekBarUpdateTimer = new Timer();
-                    seekBarUpdateTimer.schedule(new SeekBarUpdateTask(), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
+                    seekBarUpdateTimer.schedule(new SeekBarUpdateTask(playbackFragment, player, player.getDuration()), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
                     playbackFragment.setPlayButton(true);
 
                     if(i.hasExtra(MusicPlayer.ALBUM_ART_URI)){
@@ -92,10 +89,9 @@ public class PlaybackActivity extends ActionBarActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        duration = player.getDuration();
-        seekBarUpdateTimer.schedule(new SeekBarUpdateTask(), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
-
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+
+        seekBarUpdateTimer.schedule(new SeekBarUpdateTask(playbackFragment, player, player.getDuration()), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
 
         playbackFragment.setPlayButton(player.isPlaying());
         playbackFragment.setDuration(player.getCurrentDurationInMinutes());
@@ -143,21 +139,12 @@ public class PlaybackActivity extends ActionBarActivity {
                     startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_UNPAUSE_SONG));
                 }
                 break;
-        }
-    }
 
-    private class SeekBarUpdateTask extends TimerTask {
-        int progress;
-        @Override
-        public void run() {
-            progress = (int) (player.getCurrentPosition()/(float) duration * PlaybackFragment.SEEK_BAR_MAX);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    playbackFragment.setSeekBarPosition(progress);
-                    playbackFragment.setCurrentTime(player.getCurrentPositionInMinutes());
-                }
-            });
+            case R.id.fragment_playback_shuffle_button:
+                break;
+
+            case R.id.fragment_playback_repeat_button:
+                break;
         }
     }
 

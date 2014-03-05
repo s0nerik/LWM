@@ -62,15 +62,17 @@ public class BroadcastActivity extends BasicActivity {
 
                 case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
                     Log.d(App.TAG, "SCAN_RESULTS_AVAILABLE_ACTION");
-                    List<String> ssids = new ArrayList<>();
-                    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-                    for(ScanResult result:wm.getScanResults()){
-                        if(result.SSID.endsWith(WifiAP.AP_NAME_POSTFIX)){
-                            ssids.add(result.SSID.replace(WifiAP.AP_NAME_POSTFIX, ""));
-                        }
-                    }
                     PlayersAroundFragment fragment = (PlayersAroundFragment) fragmentManager.findFragmentByTag("players_around_list");
-                    fragment.setSSIDs(ssids);
+                    if(fragment != null){
+                        List<String> ssids = new ArrayList<>();
+                        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                        for(ScanResult result:wm.getScanResults()){
+                            if(result.SSID.endsWith(WifiAP.AP_NAME_POSTFIX)){
+                                ssids.add(result.SSID.replace(WifiAP.AP_NAME_POSTFIX, ""));
+                            }
+                        }
+                        fragment.setSSIDs(ssids);
+                    }
                     break;
             }
         }

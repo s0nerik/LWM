@@ -90,6 +90,7 @@
             android:src="@drawable/ic_shuffle_active"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_shuffle_button"
+            android:onClick="onControlButtonClicked"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
@@ -98,7 +99,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_prev"
+            android:src="@drawable/ic_prev"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_prev"
             android:onClick="onControlButtonClicked"
@@ -110,7 +111,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_pause"
+            android:src="@drawable/ic_pause"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_play_pause"
             android:onClick="onControlButtonClicked"
@@ -122,7 +123,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_next"
+            android:src="@drawable/ic_next"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_next"
             android:onClick="onControlButtonClicked"
@@ -137,6 +138,7 @@
             android:src="@drawable/ic_repeat"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_repeat_button"
+            android:onClick="onControlButtonClicked"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"

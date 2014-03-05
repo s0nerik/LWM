@@ -118,6 +118,10 @@ public class MusicService extends Service {
         return player;
     }
 
+    public static StreamPlayer getCurrentStreamPlayer(){
+        return streamPlayer;
+    }
+
             // TODO: start activity with info about current playing song from stream.
 
 /*        @Override

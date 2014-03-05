@@ -1,17 +1,16 @@
 package com.lwm.app.model;
 
 import android.util.Log;
-import android.util.Xml;
 
 import com.lwm.app.App;
 import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.service.MusicService;
 
-import org.xmlpull.v1.XmlSerializer;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -70,7 +69,8 @@ public class StreamServer extends NanoHTTPD {
 
                     case App.CURRENT_INFO:
                         Log.d(App.TAG, "StreamServer: CURRENT_INFO");
-                        return new Response(Response.Status.OK, "application/xml", getSongInfoXml());
+//                        return new Response(Response.Status.OK, "application/xml", getSongInfoXml());
+                        return new Response(Response.Status.OK, "application/json", getSongInfoJSON());
 
                     case App.CURRENT_POSITION:
                         Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
@@ -82,39 +82,55 @@ public class StreamServer extends NanoHTTPD {
         }
     }
 
-    private String getSongInfoXml(){
-        XmlSerializer serializer = Xml.newSerializer();
-        StringWriter writer = new StringWriter();
+//    private String getSongInfoXml(){
+//        XmlSerializer serializer = Xml.newSerializer();
+//        StringWriter writer = new StringWriter();
+//        MusicPlayer mp = MusicService.getCurrentPlayer();
+//        try {
+//            serializer.setOutput(writer);
+//
+//            serializer.startDocument("UTF-8", true);
+//                serializer.startTag("", "song");
+//
+//                    serializer.startTag("", "artist");
+//                        serializer.text(mp.getCurrentArtist());
+//                    serializer.endTag("", "artist");
+//
+//                    serializer.startTag("", "title");
+//                        serializer.text(mp.getCurrentTitle());
+//                    serializer.endTag("", "title");
+//
+//                    serializer.startTag("", "album");
+//                        serializer.text(mp.getCurrentAlbum());
+//                    serializer.endTag("", "album");
+//
+//                    serializer.startTag("", "duration");
+//                        serializer.text(mp.getCurrentDurationInMinutes());
+//                    serializer.endTag("", "duration");
+//
+//                serializer.endTag("", "song");
+//            serializer.endDocument();
+//
+//            return writer.toString();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    private String getSongInfoJSON(){
         MusicPlayer mp = MusicService.getCurrentPlayer();
+        JSONObject jsonObject = new JSONObject();
         try {
-            serializer.setOutput(writer);
-
-            serializer.startDocument("UTF-8", true);
-                serializer.startTag("", "song");
-
-                    serializer.startTag("", "artist");
-                        serializer.text(mp.getCurrentArtist());
-                    serializer.endTag("", "artist");
-
-                    serializer.startTag("", "title");
-                        serializer.text(mp.getCurrentTitle());
-                    serializer.endTag("", "title");
-
-                    serializer.startTag("", "album");
-                        serializer.text(mp.getCurrentAlbum());
-                    serializer.endTag("", "album");
-
-                    serializer.startTag("", "duration");
-                        serializer.text(mp.getCurrentDurationInMinutes());
-                    serializer.endTag("", "duration");
-
-                serializer.endTag("", "song");
-            serializer.endDocument();
-
-            return writer.toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            jsonObject.put("artist", mp.getCurrentArtist());
+            jsonObject.put("title", mp.getCurrentTitle());
+            jsonObject.put("album", mp.getCurrentAlbum());
+            jsonObject.put("duration", mp.getCurrentDuration());
+            jsonObject.put("duration_minutes", mp.getCurrentDurationInMinutes());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        return jsonObject.toString();
     }
 
 }

@@ -89,12 +89,16 @@ public class StreamPlayer extends MediaPlayer{
         HttpGet httpGetPosition = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_POSITION);
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         int pos;
+        long correctionStart, correctionEnd, correction;
 
         @Override
         protected Void doInBackground(Void... aVoid){
 
             try {
+                correctionStart = System.currentTimeMillis();
                 pos = Integer.parseInt(httpclient.execute(httpGetPosition, responseHandler));
+                correctionEnd = System.currentTimeMillis();
+                correction = correctionEnd - correctionStart;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,7 +108,7 @@ public class StreamPlayer extends MediaPlayer{
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            seekTo(pos);
+            seekTo(pos+(int)correction);
             start();
         }
     }

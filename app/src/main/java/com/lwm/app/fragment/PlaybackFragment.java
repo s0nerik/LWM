@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,8 +40,14 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     private TextView duration;
     private SeekBar seekBar;
     private ImageView albumArt;
-    private ImageView playPauseButton;
     private ImageView background;
+
+    // Playback control buttons
+    private ImageView playPauseButton;
+    private ImageView nextButton;
+    private ImageView prevButton;
+    private ImageView shuffleButton;
+    private ImageView repeatButton;
 
     private Drawable[] drawables;
     private TransitionDrawable transitionDrawable;
@@ -56,12 +64,23 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
         seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
+
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
+        nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
+        prevButton = (ImageView) view.findViewById(R.id.fragment_playback_prev);
+        shuffleButton = (ImageView) view.findViewById(R.id.fragment_playback_shuffle_button);
+        repeatButton = (ImageView) view.findViewById(R.id.fragment_playback_repeat_button);
 
         background = (ImageView) view.findViewById(R.id.fragment_playback_background);
 
         noCover = BitmapFactory.decodeResource(getActivity().getResources(),
                 R.drawable.no_cover);
+
+        playPauseButton.setOnTouchListener(onControlButtonTouchListener);
+        nextButton.setOnTouchListener(onControlButtonTouchListener);
+        prevButton.setOnTouchListener(onControlButtonTouchListener);
+        shuffleButton.setOnTouchListener(onControlButtonTouchListener);
+        repeatButton.setOnTouchListener(onControlButtonTouchListener);
 
         drawables = new Drawable[]{background.getDrawable(), background.getDrawable()};
         transitionDrawable = new TransitionDrawable(drawables);
@@ -97,9 +116,9 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     public void setPlayButton(boolean playing){
         if(playing){
-            playPauseButton.setImageDrawable(getResources().getDrawable(R.drawable.button_pause));
+            playPauseButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
         }else{
-            playPauseButton.setImageDrawable(getResources().getDrawable(R.drawable.button_play));
+            playPauseButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
         }
     }
 
@@ -161,5 +180,20 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
             }
         }
     }
+
+    View.OnTouchListener onControlButtonTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                //Button Pressed
+                view.setBackgroundColor(Color.parseColor("#5533b5e5"));
+            }
+            if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                //finger was lifted
+                view.setBackgroundColor(Color.TRANSPARENT);
+            }
+            return false;
+        }
+    };
 
 }
