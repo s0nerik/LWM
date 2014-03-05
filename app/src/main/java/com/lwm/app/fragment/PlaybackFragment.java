@@ -3,7 +3,10 @@ package com.lwm.app.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -29,15 +31,18 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     public static final int SEEK_BAR_MAX = 100;
     public static final int SEEK_BAR_UPDATE_INTERVAL = 1000;
+    private static final int BLUR_RADIUS = 50;
+    private static Bitmap noCover;
 
-    private TextView title;
-    private TextView artist;
     private TextView currentTime;
     private TextView duration;
     private SeekBar seekBar;
     private ImageView albumArt;
     private ImageView playPauseButton;
-    private RelativeLayout layout;
+    private ImageView background;
+
+    private Drawable[] drawables;
+    private TransitionDrawable transitionDrawable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,26 +52,23 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        title = (TextView) view.findViewById(R.id.fragment_playback_title);
-        artist = (TextView) view.findViewById(R.id.fragment_playback_artist);
         duration = (TextView) view.findViewById(R.id.fragment_playback_last_position);
         currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
         seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
 
-        layout = (RelativeLayout) view.findViewById(R.id.fragment_playback_layout);
+        background = (ImageView) view.findViewById(R.id.fragment_playback_background);
+
+        noCover = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.no_cover);
+
+        drawables = new Drawable[]{background.getDrawable(), background.getDrawable()};
+        transitionDrawable = new TransitionDrawable(drawables);
+        transitionDrawable.setCrossFadeEnabled(true);
 
         seekBar.setMax(SEEK_BAR_MAX);
         seekBar.setOnSeekBarChangeListener(this);
-    }
-
-    public void setTitle(String title) {
-        this.title.setText(title);
-    }
-
-    public void setArtist(String artist) {
-        this.artist.setText(artist);
     }
 
     public void setCurrentTime(String currentTime) {
@@ -90,7 +92,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     }
 
     public void setBackgroundImageUri(Uri uri){
-        new BackgroundChanger(getActivity(), layout).execute(uri);
+        new BackgroundChanger(getActivity(), background).execute(uri);
     }
 
     public void setPlayButton(boolean playing){
@@ -118,31 +120,41 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     private class BackgroundChanger extends AsyncTask<Uri, Void, Void> {
         private Context context;
-        private RelativeLayout layout;
+        private ImageView bg;
         private Bitmap bitmap;
-        boolean found = true;
+        private BitmapDrawable newDrawable;
 
-        public BackgroundChanger(Context context, RelativeLayout layout){
+        public BackgroundChanger(Context context, ImageView bg){
             this.context = context;
-            this.layout = layout;
+            this.bg = bg;
         }
 
         @Override
         protected Void doInBackground(Uri... uri) {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
-                bitmap = new StackBlurManager(bitmap).processNatively(50);
+                bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
             } catch (IOException e) {
-//            e.printStackTrace();
-                found = false;
+                bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
             }
+            newDrawable = new BitmapDrawable(getResources(), bitmap);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(found)   layout.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
-            else        layout.setBackgroundColor(getResources().getColor(android.R.color.black));
+            Drawable oldDrawable = bg.getDrawable();
+
+            if(oldDrawable instanceof TransitionDrawable){
+                oldDrawable = ((TransitionDrawable) oldDrawable).getDrawable(1);
+            }
+
+            drawables[0] = oldDrawable;
+            drawables[1] = newDrawable;
+            transitionDrawable = new TransitionDrawable(drawables);
+
+            bg.setImageDrawable(transitionDrawable);
+            transitionDrawable.startTransition(1000);
         }
 
     }

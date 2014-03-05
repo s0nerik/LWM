@@ -26,6 +26,7 @@ public class PlaybackActivity extends ActionBarActivity {
     PlaybackFragment playbackFragment;
     MusicPlayer player;
     ActionBar actionBar;
+    int currentAlbumId;
     int duration;
 
     Timer seekBarUpdateTimer = new Timer();
@@ -33,19 +34,15 @@ public class PlaybackActivity extends ActionBarActivity {
     private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent i) {
-
             String action = i.getAction();
-
             switch(action){
-
                 case MusicPlayer.SONG_CHANGED:
                     player = MusicService.getCurrentPlayer();
 
-                    // Now playing fragment changes
                     actionBar.setTitle(player.getCurrentTitle());
                     actionBar.setSubtitle(player.getCurrentArtist());
-//                    playbackFragment.setTitle(player.getCurrentTitle());
-//                    playbackFragment.setArtist(player.getCurrentArtist());
+
+                    // Now playing fragment changes
                     playbackFragment.setDuration(player.getCurrentDurationInMinutes());
 
                     duration = player.getDuration();
@@ -63,7 +60,11 @@ public class PlaybackActivity extends ActionBarActivity {
                         playbackFragment.setDefaultAlbumArt();
                     }
 
-                    playbackFragment.setBackgroundImageUri(player.getCurrentAlbumArtUri());
+                    int newAlbumId = player.getCurrentAlbumId();
+                    if(newAlbumId != currentAlbumId){
+                        playbackFragment.setBackgroundImageUri(player.getCurrentAlbumArtUri());
+                        currentAlbumId = newAlbumId;
+                    }
                     break;
 
                 case MusicPlayer.PLAYBACK_PAUSED:
@@ -97,11 +98,10 @@ public class PlaybackActivity extends ActionBarActivity {
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
 
         playbackFragment.setPlayButton(player.isPlaying());
-//        playbackFragment.setTitle(player.getCurrentTitle());
-//        playbackFragment.setArtist(player.getCurrentArtist());
         playbackFragment.setDuration(player.getCurrentDurationInMinutes());
         playbackFragment.setAlbumArtFromUri(player.getCurrentAlbumArtUri());
         playbackFragment.setBackgroundImageUri(player.getCurrentAlbumArtUri());
+        currentAlbumId = player.getCurrentAlbumId();
     }
 
     private void initActionBar(){
@@ -110,7 +110,6 @@ public class PlaybackActivity extends ActionBarActivity {
         actionBar.setSubtitle(player.getCurrentArtist());
         actionBar.setIcon(R.drawable.ic_playback_activity);
         actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.hide();
     }
 
     @Override

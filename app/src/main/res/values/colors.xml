@@ -5,7 +5,7 @@
     <color name="list_background">#ffdddddd</color>
     <color name="drawer_item_text_inactive">#59585B</color>
     <color name="drawer_item_text_active">#FFFFFF</color>
-    <color name="drawer_item_background_active">#57B2E4</color>
+    <color name="drawer_item_background_active">#33b5e5</color>
     <color name="drawer_divider">#DBDBDB</color>
     <color name="drawer_background">#EDEDED</color>
 </resources>

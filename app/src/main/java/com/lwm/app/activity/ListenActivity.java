@@ -26,8 +26,6 @@ public class ListenActivity extends ActionBarActivity {
             Bundle extras = getIntent().getExtras();
             if(extras != null){
                 playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
-                playbackFragment.setArtist(extras.getString("artist"));
-                playbackFragment.setTitle(extras.getString("title"));
                 playbackFragment.setDuration(extras.getString("duration"));
             }
         }
