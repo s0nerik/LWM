@@ -14,7 +14,7 @@ public class MusicServerService extends Service {
     public void onCreate() {
         super.onCreate();
         try {
-            new StreamServer().start();
+            new StreamServer(this).start();
         } catch (IOException e) {
             e.printStackTrace();
         }

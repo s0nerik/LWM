@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.async.AlbumArtAsyncGetter;
+import com.lwm.app.async.RemoteAlbumArtAsyncGetter;
 import com.lwm.app.model.MusicPlayer;
 import com.lwm.app.service.MusicService;
 
@@ -104,6 +105,10 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     public void setAlbumArtFromUri(Uri uri){
         new AlbumArtAsyncGetter(getActivity(), albumArt).execute(uri);
+    }
+
+    public void setRemoteAlbumArt(){
+        new RemoteAlbumArtAsyncGetter(albumArt).execute();
     }
 
     public void setDefaultAlbumArt() {

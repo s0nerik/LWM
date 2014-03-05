@@ -49,6 +49,7 @@ public class ListenActivity extends ActionBarActivity {
         super.onPostCreate(savedInstanceState);
         StreamPlayer streamPlayer = MusicService.getCurrentStreamPlayer();
         seekBarUpdateTimer.schedule(new SeekBarUpdateTask(playbackFragment, streamPlayer, duration), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
+        playbackFragment.setRemoteAlbumArt();
     }
 
     private void initActionBar(){

@@ -1,5 +1,6 @@
 package com.lwm.app.model;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.lwm.app.App;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -19,9 +21,11 @@ public class StreamServer extends NanoHTTPD {
 
     private HashSet<String> clients = new HashSet<>();
     private HashMap<String, Boolean> ready = new HashMap<>();
+    private Context context;
 
-    public StreamServer() {
+    public StreamServer(Context context) {
         super(8888);
+        this.context = context;
     }
 
     @Override
@@ -69,53 +73,34 @@ public class StreamServer extends NanoHTTPD {
 
                     case App.CURRENT_INFO:
                         Log.d(App.TAG, "StreamServer: CURRENT_INFO");
-//                        return new Response(Response.Status.OK, "application/xml", getSongInfoXml());
                         return new Response(Response.Status.OK, "application/json", getSongInfoJSON());
 
                     case App.CURRENT_POSITION:
                         Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
                         return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(MusicService.getCurrentPlayer().getCurrentPosition()));
+
+                    case App.CURRENT_ALBUMART:
+                        Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
+                        InputStream is = null;
+                        try {
+                            is = context.getContentResolver().openInputStream(MusicService.getCurrentPlayer().getCurrentAlbumArtUri());
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        return new Response(Response.Status.OK, "image", is);
+//                        if(path.endsWith(".png")){
+//                            return new Response(Response.Status.OK, "image/png", is);
+//                        }else if(path.endsWith(".jpg") || path.endsWith(".jpeg")){
+//                            return new Response(Response.Status.OK, "image/jpeg", is);
+//                        }else{
+//                            return new Response(Response.Status.OK, "image", is);
+//                        }
                 }
 
             default:
                 return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "Only POST and GET are supported.");
         }
     }
-
-//    private String getSongInfoXml(){
-//        XmlSerializer serializer = Xml.newSerializer();
-//        StringWriter writer = new StringWriter();
-//        MusicPlayer mp = MusicService.getCurrentPlayer();
-//        try {
-//            serializer.setOutput(writer);
-//
-//            serializer.startDocument("UTF-8", true);
-//                serializer.startTag("", "song");
-//
-//                    serializer.startTag("", "artist");
-//                        serializer.text(mp.getCurrentArtist());
-//                    serializer.endTag("", "artist");
-//
-//                    serializer.startTag("", "title");
-//                        serializer.text(mp.getCurrentTitle());
-//                    serializer.endTag("", "title");
-//
-//                    serializer.startTag("", "album");
-//                        serializer.text(mp.getCurrentAlbum());
-//                    serializer.endTag("", "album");
-//
-//                    serializer.startTag("", "duration");
-//                        serializer.text(mp.getCurrentDurationInMinutes());
-//                    serializer.endTag("", "duration");
-//
-//                serializer.endTag("", "song");
-//            serializer.endDocument();
-//
-//            return writer.toString();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     private String getSongInfoJSON(){
         MusicPlayer mp = MusicService.getCurrentPlayer();
