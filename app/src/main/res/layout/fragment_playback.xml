@@ -79,10 +79,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:id="@+id/fragment_playback_controls"
         android:layout_height="wrap_content"
+        android:id="@+id/fragment_playback_controls"
         android:background="#55000000"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -90,34 +90,46 @@
             android:src="@drawable/ic_shuffle_active"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_shuffle_button"
-            android:padding="15dp" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_prev"
             android:layout_weight="1"
-            android:padding="15dp"
             android:id="@+id/fragment_playback_prev"
-            android:onClick="onControlButtonClicked" />
+            android:onClick="onControlButtonClicked"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_pause"
             android:layout_weight="1"
-            android:padding="15dp"
             android:id="@+id/fragment_playback_play_pause"
-            android:onClick="onControlButtonClicked" />
+            android:onClick="onControlButtonClicked"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_next"
             android:layout_weight="1"
-            android:padding="15dp"
             android:id="@+id/fragment_playback_next"
-            android:onClick="onControlButtonClicked" />
+            android:onClick="onControlButtonClicked"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -125,7 +137,10 @@
             android:src="@drawable/ic_repeat"
             android:layout_weight="1"
             android:id="@+id/fragment_playback_repeat_button"
-            android:padding="15dp" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp" />
 
     </LinearLayout>
 
