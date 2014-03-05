@@ -34,8 +34,10 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
             HttpResponse response = httpclient.execute(httpGetAlbumArt);
             InputStream is = response.getEntity().getContent();
             cover = BitmapFactory.decodeStream(is);
+            if(cover == null){
+                found = false;
+            }
         } catch (IOException e) {
-//            e.printStackTrace();
             found = false;
         }
         return null;
