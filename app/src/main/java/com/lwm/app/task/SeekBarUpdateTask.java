@@ -1,28 +1,22 @@
 package com.lwm.app.task;
 
-import android.media.MediaPlayer;
 import android.support.v4.app.FragmentActivity;
 
 import com.lwm.app.fragment.PlaybackFragment;
-import com.lwm.app.model.MusicPlayer;
-import com.lwm.app.model.StreamPlayer;
+import com.lwm.app.model.BasePlayer;
 
 import java.util.TimerTask;
 
 public class SeekBarUpdateTask extends TimerTask {
 
     private int duration;
-    private MediaPlayer player;
+    private BasePlayer player;
     private PlaybackFragment playbackFragment;
     private FragmentActivity parentActivity;
-    private boolean isStream = false;
 
-    public <T extends MediaPlayer> SeekBarUpdateTask(PlaybackFragment playbackFragment, T player, int duration){
+    public SeekBarUpdateTask(PlaybackFragment playbackFragment, BasePlayer player, int duration){
         this.playbackFragment = playbackFragment;
         this.player = player;
-        if(player instanceof StreamPlayer){
-            isStream = true;
-        }
         parentActivity = playbackFragment.getActivity();
         this.duration = duration;
     }
@@ -35,11 +29,7 @@ public class SeekBarUpdateTask extends TimerTask {
             @Override
             public void run() {
                 playbackFragment.setSeekBarPosition(progress);
-                if(isStream){
-                    playbackFragment.setCurrentTime(((StreamPlayer) player).getCurrentPositionInMinutes());
-                }else{
-                    playbackFragment.setCurrentTime(((MusicPlayer) player).getCurrentPositionInMinutes());
-                }
+                playbackFragment.setCurrentTime(player.getCurrentPositionInMinutes());
             }
         });
     }

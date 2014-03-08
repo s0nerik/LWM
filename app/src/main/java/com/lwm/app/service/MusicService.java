@@ -7,7 +7,8 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.helper.SongsCursorGetter;
-import com.lwm.app.model.MusicPlayer;
+import com.lwm.app.model.BasePlayer;
+import com.lwm.app.model.LocalPlayer;
 import com.lwm.app.model.StreamPlayer;
 
 public class MusicService extends Service {
@@ -28,7 +29,7 @@ public class MusicService extends Service {
     public static final String ACTION_STREAM_PAUSE = "com.lwm.player.action.STREAM_PAUSE";
     public static final String ACTION_STREAM_UNPAUSE = "com.lwm.player.action.STREAM_UNPAUSE";
 
-    private static MusicPlayer player;
+    private static LocalPlayer player;
     private static StreamPlayer streamPlayer;
 
     @Override
@@ -48,26 +49,26 @@ public class MusicService extends Service {
             switch(action){
                 case ACTION_PLAY_SONG:
                     Log.d(App.TAG, "MusicService: ACTION_PLAY_SONG");
-                    int pos = intent.getIntExtra(MusicPlayer.PLAYLIST_POSITION, -1);
+                    int pos = intent.getIntExtra(BasePlayer.PLAYLIST_POSITION, -1);
                     play(pos);
-                    sendBroadcast(new Intent(MusicPlayer.PLAYBACK_STARTED));
+                    sendBroadcast(new Intent(BasePlayer.PLAYBACK_STARTED));
                     break;
 
                 case ACTION_PAUSE_SONG:
                     Log.d(App.TAG, "MusicService: ACTION_PAUSE_SONG");
                     player.pause();
-                    sendBroadcast(new Intent(MusicPlayer.PLAYBACK_PAUSED));
+                    sendBroadcast(new Intent(BasePlayer.PLAYBACK_PAUSED));
                     break;
 
                 case ACTION_UNPAUSE_SONG:
                     Log.d(App.TAG, "MusicService: ACTION_UNPAUSE_SONG");
                     player.start();
-                    sendBroadcast(new Intent(MusicPlayer.PLAYBACK_STARTED));
+                    sendBroadcast(new Intent(BasePlayer.PLAYBACK_STARTED));
                     break;
 
                 case ACTION_SONG_SEEK_TO:
                     Log.d(App.TAG, "MusicService: ACTION_SONG_SEEK_TO");
-                    int newPos = intent.getIntExtra(MusicPlayer.SEEK_POSITION, -1);
+                    int newPos = intent.getIntExtra(BasePlayer.SEEK_POSITION, -1);
                     Log.d(App.TAG, "MusicService: seekTo("+newPos+")");
                     player.seekTo(newPos);
                     break;
@@ -93,14 +94,28 @@ public class MusicService extends Service {
     }
 
     private void play(int pos){
+        Log.d(App.TAG, "MusicService.play()");
+
+        if(streamPlayer != null){
+            streamPlayer.stop();
+            streamPlayer.release();
+            streamPlayer = null;
+        }
+
         if(player == null){
-            player = new MusicPlayer(this, new SongsCursorGetter(this).getSongs());
+            player = new LocalPlayer(this, new SongsCursorGetter(this).getSongs());
         }
         player.play(pos);
     }
 
     private void playStream() {
         Log.d(App.TAG, "MusicService.playStream()");
+
+        if(player != null){
+            player.stop();
+            player.release();
+            player = null;
+        }
 
         if(streamPlayer == null){
             streamPlayer = new StreamPlayer(this);
@@ -114,7 +129,7 @@ public class MusicService extends Service {
         player.pause();
     }
 
-    public static MusicPlayer getCurrentPlayer(){
+    public static LocalPlayer getCurrentLocalPlayer(){
         return player;
     }
 

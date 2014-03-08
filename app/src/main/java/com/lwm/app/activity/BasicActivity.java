@@ -123,9 +123,6 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new PlayersAroundFragment(), "players_around_list")
                         .commit();
-
-//                        Intent intent = new Intent(BroadcastActivity.this, ListenActivity.class);
-//                        startActivity(intent);
                 return true;
 
             default:

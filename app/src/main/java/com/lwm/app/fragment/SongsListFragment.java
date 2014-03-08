@@ -15,7 +15,8 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsCursorAdapter;
 import com.lwm.app.helper.SongsCursorGetter;
-import com.lwm.app.model.MusicPlayer;
+import com.lwm.app.model.BasePlayer;
+import com.lwm.app.model.LocalPlayer;
 import com.lwm.app.service.MusicService;
 
 public class SongsListFragment extends ListFragment {
@@ -42,7 +43,7 @@ public class SongsListFragment extends ListFragment {
     public void onResume() {
         super.onResume();
 
-        MusicPlayer mp = MusicService.getCurrentPlayer();
+        LocalPlayer mp = MusicService.getCurrentLocalPlayer();
         if(mp != null){
             ListView listView = (ListView) getActivity().findViewById(android.R.id.list);
             listView.setItemChecked(mp.getCurrentListPosition(), true);
@@ -55,7 +56,7 @@ public class SongsListFragment extends ListFragment {
         Intent intent = new Intent(getActivity(), MusicService.class);
 
         intent.setAction(MusicService.ACTION_PLAY_SONG);
-        intent.putExtra(MusicPlayer.PLAYLIST_POSITION, position);
+        intent.putExtra(BasePlayer.PLAYLIST_POSITION, position);
 
         Log.d(App.TAG, ".startService");
 

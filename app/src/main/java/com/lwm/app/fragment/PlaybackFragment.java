@@ -25,7 +25,7 @@ import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.async.AlbumArtAsyncGetter;
 import com.lwm.app.async.RemoteAlbumArtAsyncGetter;
-import com.lwm.app.model.MusicPlayer;
+import com.lwm.app.model.BasePlayer;
 import com.lwm.app.service.MusicService;
 
 import java.io.IOException;
@@ -111,6 +111,10 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         new RemoteAlbumArtAsyncGetter(albumArt).execute();
     }
 
+    public void setCurrentAlbumArt(){
+        setAlbumArtFromUri(MusicService.getCurrentLocalPlayer().getCurrentAlbumArtUri());
+    }
+
     public void setDefaultAlbumArt() {
         albumArt.setImageResource(R.drawable.no_cover);
     }
@@ -132,7 +136,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         if(fromUser){
             getActivity().startService(new Intent(getActivity(), MusicService.class)
                     .setAction(MusicService.ACTION_SONG_SEEK_TO)
-                    .putExtra(MusicPlayer.SEEK_POSITION, (int)((progress/100.0)*MusicService.getCurrentPlayer().getDuration())));
+                    .putExtra(BasePlayer.SEEK_POSITION, (int)((progress/100.0)*MusicService.getCurrentLocalPlayer().getDuration())));
         }
     }
 

@@ -14,29 +14,21 @@ import com.lwm.app.helper.SongsCursorGetter;
 
 import java.io.IOException;
 
-public class MusicPlayer extends MediaPlayer {
+public class LocalPlayer extends BasePlayer {
 
     private int currentListPosition;
     private int listSize;
     private Cursor playlist;
     private Context context;
 
-    public static final String SONG_CHANGED = "song_changed";
-    public static final String PLAYBACK_STARTED = "playback_started";
-    public static final String PLAYBACK_PAUSED = "playback_paused";
-    public static final String PLAYLIST_POSITION = "playlist_position";
-    public static final String CURRENT_POSITION = "current_position";
-    public static final String SEEK_POSITION = "seek_position";
-    public static final String ALBUM_ART_URI = "album_art_uri";
-
     private Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
 
-    public MusicPlayer(Context context){
+    public LocalPlayer(Context context){
         this.context = context;
         initOnCompletionListener();
     }
 
-    public MusicPlayer(Context context, Cursor playlist){
+    public LocalPlayer(Context context, Cursor playlist){
         this.context = context;
         initOnCompletionListener();
         setPlaylist(playlist);
@@ -47,7 +39,7 @@ public class MusicPlayer extends MediaPlayer {
         setOnCompletionListener(new OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                Log.d("LWM", "MusicPlayer: onCompletion");
+                Log.d("LWM", "LocalPlayer: onCompletion");
 
                 nextSong();
             }
@@ -81,22 +73,17 @@ public class MusicPlayer extends MediaPlayer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(App.TAG, "MusicPlayer: play("+position+")");
+        Log.d(App.TAG, "LocalPlayer: play("+position+")");
     }
 
+    @Override
     public void nextSong() {
         if(++currentListPosition < listSize){
             play(currentListPosition);
-            Log.d(App.TAG, "MusicPlayer: nextSong");
+            Log.d(App.TAG, "LocalPlayer: nextSong");
 
             Intent intent = new Intent(SONG_CHANGED);
             intent.putExtra(PLAYLIST_POSITION, currentListPosition);
-
-            Uri albumArtUri = getCurrentAlbumArtUri();
-
-            if (albumArtUri != null) {
-                intent.putExtra(ALBUM_ART_URI, albumArtUri.toString());
-            }
 
             context.sendBroadcast(intent);
         }else{
@@ -106,19 +93,14 @@ public class MusicPlayer extends MediaPlayer {
         }
     }
 
+    @Override
     public void prevSong(){
-        Log.d(App.TAG, "MusicPlayer: prevSong");
+        Log.d(App.TAG, "LocalPlayer: prevSong");
 
         if(--currentListPosition >= 0){
             play(currentListPosition);
             Intent intent = new Intent(SONG_CHANGED);
             intent.putExtra(PLAYLIST_POSITION, currentListPosition);
-
-            Uri albumArtUri = getCurrentAlbumArtUri();
-
-            if (albumArtUri != null) {
-                intent.putExtra(ALBUM_ART_URI, albumArtUri.toString());
-            }
 
             context.sendBroadcast(intent);
         }else{
@@ -128,6 +110,7 @@ public class MusicPlayer extends MediaPlayer {
         }
     }
 
+    @Override
     public void togglePause(){
         if (isPlaying()){
             pause();
@@ -158,20 +141,6 @@ public class MusicPlayer extends MediaPlayer {
 
     public Uri getCurrentAlbumArtUri(){
         return ContentUris.withAppendedId(artworkUri, getCurrentAlbumId());
-    }
-
-    public String getCurrentDurationInMinutes(){
-        int seconds = getDuration()/1000;
-        int minutes = seconds/60;
-        seconds -= minutes*60;
-        return minutes+":"+String.format("%02d",seconds);
-    }
-
-    public String getCurrentPositionInMinutes(){
-        int seconds = getCurrentPosition()/1000;
-        int minutes = seconds/60;
-        seconds -= minutes*60;
-        return minutes+":"+String.format("%02d",seconds);
     }
 
     public int getCurrentListPosition() {

@@ -21,7 +21,8 @@ import com.lwm.app.R;
 import com.lwm.app.fragment.NowPlayingFragment;
 import com.lwm.app.fragment.PlayersAroundFragment;
 import com.lwm.app.lib.WifiAP;
-import com.lwm.app.model.MusicPlayer;
+import com.lwm.app.model.BasePlayer;
+import com.lwm.app.model.LocalPlayer;
 import com.lwm.app.service.MusicService;
 
 import java.util.ArrayList;
@@ -36,15 +37,15 @@ public class BroadcastActivity extends BasicActivity {
         @Override
         public void onReceive(Context context, Intent i) {
             switch(i.getAction()){
-                case MusicPlayer.PLAYBACK_STARTED:
-                    Log.d(App.TAG, "Received MusicPlayer.PLAYBACK_STARTED");
+                case BasePlayer.PLAYBACK_STARTED:
+                    Log.d(App.TAG, "Received LocalPlayer.PLAYBACK_STARTED");
                     showNowPlayingBar();
-                    nowPlaying.setAlbumArtFromUri(MusicService.getCurrentPlayer().getCurrentAlbumArtUri());
+                    nowPlaying.setAlbumArtFromUri(MusicService.getCurrentLocalPlayer().getCurrentAlbumArtUri());
                     break;
 
-                case MusicPlayer.SONG_CHANGED:
+                case BasePlayer.SONG_CHANGED:
                     // ListView changes
-                    int playlistPosition = i.getIntExtra(MusicPlayer.PLAYLIST_POSITION, -1);
+                    int playlistPosition = i.getIntExtra(BasePlayer.PLAYLIST_POSITION, -1);
 
                     assert playlistPosition != -1;
                     ListView listView = (ListView) findViewById(android.R.id.list);
@@ -52,12 +53,12 @@ public class BroadcastActivity extends BasicActivity {
 
                     // Now playing fragment changes
                     TextView title = (TextView) findViewById(R.id.now_playing_bar_song);
-                    title.setText(MusicService.getCurrentPlayer().getCurrentTitle());
+                    title.setText(MusicService.getCurrentLocalPlayer().getCurrentTitle());
 
                     TextView artist = (TextView) findViewById(R.id.now_playing_bar_artist);
-                    artist.setText(MusicService.getCurrentPlayer().getCurrentArtist());
+                    artist.setText(MusicService.getCurrentLocalPlayer().getCurrentArtist());
 
-                    nowPlaying.setAlbumArtFromUri(MusicService.getCurrentPlayer().getCurrentAlbumArtUri());
+                    nowPlaying.setAlbumArtFromUri(MusicService.getCurrentLocalPlayer().getCurrentAlbumArtUri());
                     break;
 
                 case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
@@ -98,10 +99,10 @@ public class BroadcastActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(onBroadcast, new IntentFilter(MusicPlayer.SONG_CHANGED));
-        registerReceiver(onBroadcast, new IntentFilter(MusicPlayer.PLAYBACK_STARTED));
+        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.SONG_CHANGED));
+        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_STARTED));
         registerReceiver(onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        if(MusicService.getCurrentPlayer() != null){
+        if(MusicService.getCurrentLocalPlayer() != null){
             showNowPlayingBar();
         }
     }
@@ -153,7 +154,7 @@ public class BroadcastActivity extends BasicActivity {
     }
 
     public void onNowPlayingButtonClicked(View v){
-        Intent intent = new Intent(this, PlaybackActivity.class);
+        Intent intent = new Intent(this, LocalPlaybackActivity.class);
         startActivity(intent);
     }
 
@@ -163,7 +164,7 @@ public class BroadcastActivity extends BasicActivity {
                 .show(nowPlaying)
                 .commit();
 
-        MusicPlayer player = MusicService.getCurrentPlayer();
+        LocalPlayer player = MusicService.getCurrentLocalPlayer();
         TextView artist = (TextView) findViewById(R.id.now_playing_bar_artist);
         artist.setText(player.getCurrentArtist());
 

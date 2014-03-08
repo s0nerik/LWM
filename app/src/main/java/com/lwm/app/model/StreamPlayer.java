@@ -18,7 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 
-public class StreamPlayer extends MediaPlayer{
+public class StreamPlayer extends BasePlayer {
 
     private Context context;
 
@@ -62,26 +62,23 @@ public class StreamPlayer extends MediaPlayer{
         Log.d(App.TAG, "StreamPlayer: play()");
     }
 
-//    public void togglePause(){
-//        if (isPlaying()){
-//            pause();
-//        }else{
-//            start();
-//        }
-//    }
-
-    public String getCurrentDurationInMinutes(){
-        int seconds = getDuration()/1000;
-        int minutes = seconds/60;
-        seconds -= minutes*60;
-        return minutes+":"+String.format("%02d",seconds);
+    @Override
+    public void nextSong() {
+        // TODO: this
     }
 
-    public String getCurrentPositionInMinutes(){
-        int seconds = getCurrentPosition()/1000;
-        int minutes = seconds/60;
-        seconds -= minutes*60;
-        return minutes+":"+String.format("%02d",seconds);
+    @Override
+    public void prevSong() {
+        // TODO: this
+    }
+
+    @Override
+    public void togglePause(){
+        if (isPlaying()){
+            pause();
+        }else{
+            start();
+        }
     }
 
     private class GetPositionAndStart extends AsyncTask<Void, Void, Void> {

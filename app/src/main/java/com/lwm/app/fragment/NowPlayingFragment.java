@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.lwm.app.R;
 import com.lwm.app.async.AlbumArtAsyncGetter;
-import com.lwm.app.model.MusicPlayer;
+import com.lwm.app.model.LocalPlayer;
 import com.lwm.app.service.MusicService;
 
 public class NowPlayingFragment extends Fragment {
@@ -31,7 +31,7 @@ public class NowPlayingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        MusicPlayer player = (MusicPlayer) MusicService.getCurrentPlayer();
+        LocalPlayer player = MusicService.getCurrentLocalPlayer();
         if(player != null){
             setAlbumArtFromUri(player.getCurrentAlbumArtUri());
         }

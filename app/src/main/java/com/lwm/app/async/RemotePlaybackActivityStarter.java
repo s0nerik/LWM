@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.lwm.app.App;
-import com.lwm.app.activity.ListenActivity;
+import com.lwm.app.activity.RemotePlaybackActivity;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class ListenActivityStarter extends AsyncTask<Void, Void, Void> {
+public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
 
     private String artist;
     private String title;
@@ -36,7 +36,7 @@ public class ListenActivityStarter extends AsyncTask<Void, Void, Void> {
 
     ProgressDialog progressDialog;
 
-    public ListenActivityStarter(Context context){
+    public RemotePlaybackActivityStarter(Context context){
         this.context = context;
     }
 
@@ -65,7 +65,7 @@ public class ListenActivityStarter extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         progressDialog.dismiss();
-        Intent intent = new Intent(context, ListenActivity.class);
+        Intent intent = new Intent(context, RemotePlaybackActivity.class);
         intent.putExtra("artist", artist);
         intent.putExtra("album", album);
         intent.putExtra("title", title);

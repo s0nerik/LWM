@@ -58,7 +58,7 @@ public class StreamServer extends NanoHTTPD {
                         FileInputStream fis = null;
                         try {
 
-                            fis = new FileInputStream(MusicService.getCurrentPlayer().getCurrentSource());
+                            fis = new FileInputStream(MusicService.getCurrentLocalPlayer().getCurrentSource());
 
                         } catch (FileNotFoundException e) {e.printStackTrace();}
 
@@ -77,13 +77,13 @@ public class StreamServer extends NanoHTTPD {
 
                     case App.CURRENT_POSITION:
                         Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
-                        return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(MusicService.getCurrentPlayer().getCurrentPosition()));
+                        return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(MusicService.getCurrentLocalPlayer().getCurrentPosition()));
 
                     case App.CURRENT_ALBUMART:
                         Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
                         InputStream is = null;
                         try {
-                            is = context.getContentResolver().openInputStream(MusicService.getCurrentPlayer().getCurrentAlbumArtUri());
+                            is = context.getContentResolver().openInputStream(MusicService.getCurrentLocalPlayer().getCurrentAlbumArtUri());
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -103,7 +103,7 @@ public class StreamServer extends NanoHTTPD {
     }
 
     private String getSongInfoJSON(){
-        MusicPlayer mp = MusicService.getCurrentPlayer();
+        LocalPlayer mp = MusicService.getCurrentLocalPlayer();
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("artist", mp.getCurrentArtist());

@@ -10,11 +10,11 @@ import android.widget.ListAdapter;
 import com.lwm.app.R;
 import com.lwm.app.adapter.ArtistsCursorAdapter;
 import com.lwm.app.helper.ArtistsCursorGetter;
-//import com.lwm.app.model.MusicPlayer;
+//import com.lwm.app.model.LocalPlayer;
 
 public class ArtistsListFragment extends ListFragment {
 
-//    MusicPlayer mp = MusicPlayer.getInstance();
+//    LocalPlayer mp = LocalPlayer.getInstance();
 
     public ArtistsListFragment() {}
 
