@@ -3,6 +3,7 @@ package com.lwm.app.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -22,13 +23,19 @@ import com.lwm.app.fragment.SongsListFragment;
 
 public abstract class BasicActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
+    public static final String DRAWER_SELECTION = "drawer_selection";
+    public static final String SPINNER_SELECTION = "spinner_selection";
+
+    protected enum DrawerItem { SONGS, ARTISTS, ALBUMS, PLAYLISTS }
+    protected enum SpinnerItems { PLAYER, RECEIVER }
+
     protected FragmentManager fragmentManager = getSupportFragmentManager();
     protected DrawerLayout drawerLayout;
     protected ActionBarDrawerToggle drawerToggle;
-    protected SharedPreferences state;
+    protected SharedPreferences sharedPreferences;
     protected ActionBar actionBar;
     protected ListView drawerList;
-    protected int activePlaylist;
+    protected int activeFragment;
 
     protected void initActionBar(){
         actionBar = getSupportActionBar();
@@ -58,14 +65,14 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showSelectedPlaylist(i);
-                state.edit().putInt("current_filter", i).commit();
+                showSelectedFragment(i);
+                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).commit();
             }
         });
 
-        activePlaylist = state.getInt("current_filter", 0);
-        drawerList.setItemChecked(activePlaylist, true);
-        showSelectedPlaylist(activePlaylist);
+        activeFragment = sharedPreferences.getInt(DRAWER_SELECTION, 0);
+        drawerList.setItemChecked(activeFragment, true);
+        showSelectedFragment(activeFragment);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
@@ -81,7 +88,7 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        state = getPreferences(MODE_PRIVATE);
+        sharedPreferences = getPreferences(MODE_PRIVATE);
     }
 
     @Override
@@ -91,39 +98,37 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
         drawerToggle.syncState();
     }
 
-    protected void showSelectedPlaylist(int i){
-        switch(i){
-            case 0: // All songs
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new SongsListFragment())
-                        .commit();
-                break;
-            case 1: // Artists
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new ArtistsListFragment())
-                        .commit();
-                break;
-            case 2: // Albums
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new AlbumsListFragment())
-                        .commit();
-                break;
-            case 3: // Playlists
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new PlaylistFragment())
-                        .commit();
-                break;
+    protected void showSelectedFragment(int i){
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, getFragmentFromDrawer(i))
+                .commit();
+    }
+
+    private Fragment getFragmentFromDrawer(int i){
+        switch(DrawerItem.values()[i]){
+            case SONGS:
+                return new SongsListFragment();
+            case ARTISTS:
+                return new ArtistsListFragment();
+            case ALBUMS:
+                return new AlbumsListFragment();
+            case PLAYLISTS:
+                return new PlaylistFragment();
         }
+        return null;
     }
 
     @Override
     public boolean onNavigationItemSelected(int i, long l) {
-
-        switch(i){
-            case 0:
+        sharedPreferences.edit().putInt(SPINNER_SELECTION, i);
+        switch(SpinnerItems.values()[i]){
+            case PLAYER:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, getFragmentFromDrawer(sharedPreferences.getInt(DRAWER_SELECTION, 0)))
+                        .commit();
                 return true;
 
-            case 1:
+            case RECEIVER:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new PlayersAroundFragment(), "players_around_list")
                         .commit();
