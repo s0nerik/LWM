@@ -11,7 +11,8 @@
         android:layout_gravity="center_vertical"
         android:checkMark="@null"
         android:layout_width="48dp"
-        android:layout_height="48dp" />
+        android:layout_height="48dp"
+        android:layout_marginLeft="5dp" />
 
     <CheckedTextView
         android:id="@+id/drawer_item_text"

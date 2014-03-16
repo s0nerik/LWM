@@ -35,7 +35,11 @@ public class LocalPlayer extends BasePlayer {
             Log.d("LWM", "LocalPlayer: onCompletion");
 
             if(getCurrentPosition() > getDuration()-1000){
-                nextSong();
+                if(isRepeat()){
+                    play(currentListPosition);
+                }else{
+                    nextSong();
+                }
             }
         }
     };
@@ -52,6 +56,7 @@ public class LocalPlayer extends BasePlayer {
         setPlaylist(playlist);
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
+        setRepeat(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("repeat", false));
 //        setOnPreparedListener(onPreparedListener);
     }
 

@@ -36,11 +36,13 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
             player = App.getMusicService().getLocalPlayer();
             playbackFragment.setPlayButton(player.isPlaying());
             playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
+            playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
         }
     }
 
     @Override
     public void onControlButtonClicked(View v){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         switch(v.getId()){
             case R.id.fragment_playback_next:
                 player.nextSong();
@@ -59,13 +61,17 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
                 LocalPlayer.setShuffle(!LocalPlayer.isShuffle());
                 playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
 
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 editor.putBoolean("shuffle", LocalPlayer.isShuffle());
                 editor.commit();
 
                 break;
 
             case R.id.fragment_playback_repeat_button:
+                LocalPlayer.setRepeat(!LocalPlayer.isRepeat());
+                playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
+
+                editor.putBoolean("repeat", LocalPlayer.isRepeat());
+                editor.commit();
                 break;
         }
     }

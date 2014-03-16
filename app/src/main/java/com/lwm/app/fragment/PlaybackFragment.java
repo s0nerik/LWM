@@ -141,6 +141,14 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         }
     }
 
+    public void setRepeatButton(boolean enabled){
+        if(enabled){
+            repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_active));
+        }else{
+            repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat));
+        }
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if(fromUser){
