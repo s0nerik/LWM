@@ -51,6 +51,8 @@
                 android:gravity="center_vertical"
                 android:layout_weight="1"
 
+                android:singleLine="true"
+
                 android:textColor="@color/selector_songs_list_item_title"
 
                 pixlui:typeface="Roboto-Regular.ttf" />

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="checked">#33b5e5</color>
-    <color name="pressed">#09c</color>
+    <color name="checked">#4f535f</color>
+    <color name="pressed">#114f535f</color>
     <color name="list_background">#ffdddddd</color>
+
     <color name="drawer_item_text_inactive">#59585B</color>
     <color name="drawer_item_text_active">#FFFFFF</color>
-    <color name="drawer_item_background_active">#33b5e5</color>
+    <color name="drawer_item_background_active">#4f535f</color>
     <color name="drawer_divider">#DBDBDB</color>
     <color name="drawer_background">#EDEDED</color>
 

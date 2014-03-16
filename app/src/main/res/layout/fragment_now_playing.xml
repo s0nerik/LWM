@@ -24,17 +24,19 @@
         android:layout_marginLeft="5dp"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <com.neopixl.pixlui.components.textview.TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="6pt"
-            android:text="Now playing:"
-            android:textColor="#ff23b2ff" />
+            android:text="@string/now_playing_bar_header"
+            android:textColor="#ffcccccc"
+
+            pixlui:typeface="Roboto-ThinItalic.ttf" />
         
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#ffaaaaaa"/>
+            android:background="#ff555555"/>
 
         <LinearLayout
             android:orientation="vertical"

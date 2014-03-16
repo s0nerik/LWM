@@ -3,8 +3,7 @@ package com.lwm.app.custom_view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-
-import com.neopixl.pixlui.components.textview.TextView;
+import android.widget.TextView;
 
 public class AutoScrollingTextView extends TextView {
     public AutoScrollingTextView(Context context, AttributeSet attrs,

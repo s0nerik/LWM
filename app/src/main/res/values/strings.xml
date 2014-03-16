@@ -13,6 +13,7 @@
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
 
+    <string name="now_playing_bar_header">Now playing:</string>
 
     <string name="pref_header_ap">Access Point settings</string>
     <string name="title_ap_name_preference">Access Point name</string>

@@ -8,26 +8,27 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <LinearLayout
+    <com.lwm.app.custom_view.CheckedLinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.neopixl.pixlui.components.textview.TextView
+        <com.lwm.app.custom_view.CheckedTextView
             android:id="@+id/artists_list_item_artist"
             android:checkMark="@null"
             android:padding="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:textColor="@color/selector_songs_list_item_title"
             android:fontFamily="sans-serif"
             android:gravity="center_vertical"
 
             pixlui:typeface="Roboto-Regular.ttf" />
 
-        <com.neopixl.pixlui.components.textview.TextView
+        <com.lwm.app.custom_view.CheckedTextView
             android:id="@+id/artists_list_item_albums_count"
             android:checkMark="@null"
             android:paddingLeft="6dp"
@@ -35,14 +36,14 @@
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:textColor="#666666"
+            android:textColor="@color/selector_songs_list_item_artist"
             android:fontFamily="sans-serif"
             android:gravity="start"
             android:layout_height="0dp"
 
             pixlui:typeface="Roboto-Thin.ttf" />
 
-    </LinearLayout>
+    </com.lwm.app.custom_view.CheckedLinearLayout>
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->
