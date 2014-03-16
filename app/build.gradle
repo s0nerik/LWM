@@ -36,10 +36,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.1'
-    compile 'com.android.support:appcompat-v7:19.0.1'
     compile project(':libs:UnifiedPreference')
     compile project(':libs:StackBlur')
     compile files('libs/pixlui.jar')
     compile files('/mnt/Media/Develop/GitHub/LWM/libs/pixlui.jar')
+    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:support-v4:+'
 }

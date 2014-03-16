@@ -1,21 +1,18 @@
 package com.lwm.app.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.lwm.app.R;
 import com.lwm.app.fragment.PlaybackFragment;
-import com.lwm.app.model.BasePlayer;
+import com.lwm.app.model.Song;
+import com.lwm.app.player.BasePlayer;
 import com.lwm.app.task.SeekBarUpdateTask;
 
 import java.util.Timer;
@@ -25,34 +22,37 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     protected PlaybackFragment playbackFragment;
     protected MediaPlayer player;
     protected ActionBar actionBar;
-    protected int currentAlbumId;
+
+    protected MenuItem broadcastButton;
+
+    protected long currentAlbumId;
 
     protected Timer seekBarUpdateTimer = new Timer();
 
-    protected BroadcastReceiver onBroadcast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent i) {
-            String action = i.getAction();
-            switch(action){
-                case BasePlayer.SONG_CHANGED:
-                    onSongChanged(i);
-                    break;
+//    protected BroadcastReceiver onBroadcast = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent i) {
+//            String action = i.getAction();
+//            switch(action){
+//                case BasePlayer.SONG_CHANGED:
+//                    onSongChanged(i);
+//                    break;
+//
+////                case BasePlayer.PLAYBACK_PAUSED:
+////                    playbackFragment.setPlayButton(false);
+////                    break;
+////
+////                case BasePlayer.PLAYBACK_STARTED:
+////                    playbackFragment.setPlayButton(true);
+////                    break;
+//            }
+//
+//        }
+//    };
 
-                case BasePlayer.PLAYBACK_PAUSED:
-                    playbackFragment.setPlayButton(false);
-                    break;
-
-                case BasePlayer.PLAYBACK_STARTED:
-                    playbackFragment.setPlayButton(true);
-                    break;
-            }
-
-        }
-    };
-
-    protected abstract void onSongChanged(Intent i);
+//    protected abstract void onSongChanged(Intent i);
     public abstract void onControlButtonClicked(View v);
-    protected abstract void setSongInfo();
+    protected abstract void setSongInfo(Song song);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +67,33 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
     }
 
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.SONG_CHANGED));
+////        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_PAUSED));
+////        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_STARTED));
+//    }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        unregisterReceiver(onBroadcast);
+//    }
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.SONG_CHANGED));
-        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_PAUSED));
-        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_STARTED));
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.broadcast, menu);
+
+        broadcastButton = menu.findItem(R.id.action_broadcast);
+        return true;
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(onBroadcast);
+    protected void onStop() {
+        super.onStop();
+        cancelSeekBarUpdater();
     }
 
     @Override
@@ -93,9 +108,13 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     }
 
     protected void initActionBar(){
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+//        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#99000000")));
+//        actionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         actionBar.setIcon(R.drawable.ic_playback_activity);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        actionBar.setCustomView(inflater.inflate(R.layout.actionbar_listen, null));
     }
 
     protected void initSeekBarUpdater(BasePlayer player){
@@ -110,6 +129,11 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         seekBarUpdateTimer.purge();
         seekBarUpdateTimer = new Timer();
         seekBarUpdateTimer.schedule(new SeekBarUpdateTask(playbackFragment, player, duration), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
+    }
+
+    protected void cancelSeekBarUpdater(){
+        seekBarUpdateTimer.cancel();
+        seekBarUpdateTimer.purge();
     }
 
 }

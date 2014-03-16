@@ -1,6 +1,9 @@
-package com.lwm.app.model;
+package com.lwm.app.player;
 
 import android.media.MediaPlayer;
+import android.util.Log;
+
+import com.lwm.app.App;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -15,29 +18,59 @@ public abstract class BasePlayer extends MediaPlayer {
     public static final String SEEK_POSITION = "seek_position";
     public static final String ALBUM_ART_URI = "album_art_uri";
 
-    protected LinkedList<Integer> played;
-    protected boolean shuffle;
-    protected boolean repeat;
+    protected static LinkedList<Integer> played = new LinkedList<>();
+
+    protected boolean active = false;
+    protected static boolean shuffle;
+    protected static boolean repeat;
     protected Random generator = new Random();
+
+    protected PlayerListener playbackListener;
 
     public abstract void nextSong();
     public abstract void prevSong();
     public abstract void togglePause();
 
-    public boolean isShuffle() {
+    protected void setActive(){
+        active = true;
+    }
+
+    public boolean isInstanceActive(){
+        return active;
+    }
+
+    public static boolean isShuffle() {
         return shuffle;
     }
 
-    public void setShuffle(boolean shuffle) {
-        this.shuffle = shuffle;
+    public static void setShuffle(boolean flag) {
+        shuffle = flag;
     }
 
-    public boolean isRepeat() {
+    public static boolean isRepeat() {
         return repeat;
     }
 
-    public void setRepeat(boolean repeat) {
-        this.repeat = repeat;
+    public static void setRepeat(boolean flag) {
+        repeat = flag;
+    }
+
+    public void registerListener(PlayerListener listener){
+
+        Log.d(App.TAG, "BasePlayer: registerListener");
+
+        playbackListener = listener;
+    }
+
+    public void unregisterListener(){
+
+        Log.d(App.TAG, "BasePlayer: unregisterListener");
+
+        playbackListener = null;
+    }
+
+    public boolean isListenerAttached(){
+        return playbackListener != null;
     }
 
     public String getCurrentDurationInMinutes(){

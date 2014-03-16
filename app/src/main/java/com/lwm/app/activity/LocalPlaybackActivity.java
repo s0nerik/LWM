@@ -1,15 +1,25 @@
 package com.lwm.app.activity;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.model.LocalPlayer;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.lib.WifiAP;
+import com.lwm.app.lib.WifiAPListener;
+import com.lwm.app.model.Song;
+import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.PlayerListener;
 
-public class LocalPlaybackActivity extends PlaybackActivity {
+public class LocalPlaybackActivity extends PlaybackActivity implements
+        WifiAPListener, PlayerListener {
 
     private LocalPlayer player;
 
@@ -22,30 +32,37 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        player = MusicService.getCurrentLocalPlayer();
-        setSongInfo();
+        if(App.isMusicServiceBound()){
+            player = App.getMusicService().getLocalPlayer();
+            playbackFragment.setPlayButton(player.isPlaying());
+            playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
+        }
     }
 
     @Override
     public void onControlButtonClicked(View v){
         switch(v.getId()){
             case R.id.fragment_playback_next:
-                startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_NEXT_SONG));
+                player.nextSong();
                 break;
 
             case R.id.fragment_playback_prev:
-                startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_PREV_SONG));
+                player.prevSong();
                 break;
 
             case R.id.fragment_playback_play_pause:
-                if(player.isPlaying()){
-                    startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_PAUSE_SONG));
-                }else{
-                    startService(new Intent(this, MusicService.class).setAction(MusicService.ACTION_UNPAUSE_SONG));
-                }
+                player.togglePause();
+                playbackFragment.setPlayButton(player.isPlaying());
                 break;
 
             case R.id.fragment_playback_shuffle_button:
+                LocalPlayer.setShuffle(!LocalPlayer.isShuffle());
+                playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
+
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean("shuffle", LocalPlayer.isShuffle());
+                editor.commit();
+
                 break;
 
             case R.id.fragment_playback_repeat_button:
@@ -54,30 +71,38 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     }
 
     @Override
-    protected void onSongChanged(Intent i) {
-        player = MusicService.getCurrentLocalPlayer();
-        initSeekBarUpdater(player);
-        setSongInfo();
+    protected void onResume() {
+        super.onResume();
+        setSongInfo(player.getCurrentSong());
+        player.registerListener(this);
     }
 
     @Override
-    protected void setSongInfo() {
-        actionBar.setTitle(player.getCurrentTitle());
-        actionBar.setSubtitle(player.getCurrentArtist());
+    protected void onPause() {
+        super.onPause();
+        player.unregisterListener();
+    }
 
-        playbackFragment.setDuration(player.getCurrentDurationInMinutes());
+    @Override
+    protected void setSongInfo(Song song) {
+        View v = actionBar.getCustomView();
+        TextView title = (TextView) v.findViewById(R.id.title);
+        TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
+
+        title.setText(song.getTitle());
+        subtitle.setText(song.getArtist());
 
         initSeekBarUpdater(player);
 
         // Now playing fragment changes
-        playbackFragment.setDuration(player.getCurrentDurationInMinutes());
+        playbackFragment.setDuration(song.getDurationString());
         playbackFragment.setPlayButton(player.isPlaying());
-        playbackFragment.setCurrentAlbumArt();
 
         // Change background if album art has changed
-        int newAlbumId = player.getCurrentAlbumId();
+        long newAlbumId = song.getAlbumId();
         if(newAlbumId != currentAlbumId){
-            playbackFragment.setBackgroundImageUri(player.getCurrentAlbumArtUri());
+            playbackFragment.setAlbumArtFromUri(song.getAlbumArtUri());
+            playbackFragment.setBackgroundImageUri(song.getAlbumArtUri());
             currentAlbumId = newAlbumId;
         }
     }
@@ -89,8 +114,38 @@ public class LocalPlaybackActivity extends PlaybackActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.action_broadcast:
+                WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                WifiAP wifiAP = new WifiAP();
+                wifiAP.toggleWiFiAP(wm, this);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void setMenuProgressIndicator(boolean show){
+
+        if(broadcastButton == null) return;
+
+        if(show)
+            MenuItemCompat.setActionView(broadcastButton, R.layout.progress_actionbar_broadcast);
+        else
+            MenuItemCompat.setActionView(broadcastButton, null);
+
+    }
+
+    @Override
+    public void onEnableAP() {
+        setMenuProgressIndicator(true);
+    }
+
+    @Override
+    public void onAPEnabled() {
+        setMenuProgressIndicator(false);
+    }
+
+    @Override
+    public void onSongChanged(Song song) {
+        setSongInfo(song);
+    }
 }

@@ -22,8 +22,8 @@ public class SongsCursorAdapter extends CursorAdapter {
 
     Context context;
 
-    public SongsCursorAdapter(Context context, SongsCursorGetter cursorGetter) {
-        super(context, cursorGetter.getSongs());
+    public SongsCursorAdapter(Context context, SongsCursorGetter cursorGetter, boolean randomOrder) {
+        super(context, randomOrder ? cursorGetter.getSongsRandomOrder() : cursorGetter.getSongs());
         this.context = context;
     }
 

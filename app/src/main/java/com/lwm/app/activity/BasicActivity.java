@@ -1,6 +1,5 @@
 package com.lwm.app.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -18,10 +17,10 @@ import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.fragment.AlbumsListFragment;
 import com.lwm.app.fragment.ArtistsListFragment;
 import com.lwm.app.fragment.PlayersAroundFragment;
+import com.lwm.app.fragment.PlaylistFragment;
 import com.lwm.app.fragment.SongsListFragment;
-import com.lwm.app.service.MusicService;
 
-public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
+public abstract class BasicActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
     protected FragmentManager fragmentManager = getSupportFragmentManager();
     protected DrawerLayout drawerLayout;
@@ -109,6 +108,11 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                         .replace(R.id.container, new AlbumsListFragment())
                         .commit();
                 break;
+            case 3: // Playlists
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new PlaylistFragment())
+                        .commit();
+                break;
         }
     }
 
@@ -129,12 +133,6 @@ public class BasicActivity extends ActionBarActivity implements ActionBar.OnNavi
                 return true;
         }
 
-    }
-
-    protected void startStreamPlayback(){
-        Intent intent = new Intent(this, MusicService.class);
-        intent.setAction(MusicService.ACTION_PLAY_STREAM);
-        startService(intent);
     }
 
 }

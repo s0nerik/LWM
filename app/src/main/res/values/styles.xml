@@ -1,8 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!--<item name="android:dropDownListViewStyle">@style/SpinnerCompatStyle</item>-->
+    </style>
+
+    <style name="PlaybackActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/ActionBar</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="ActionBar" parent="Widget.AppCompat.Base.ActionBar">
+        <item name="background">@color/actionbar_semi_transparent</item>
+        <item name="android:background">@color/actionbar_semi_transparent</item>
+        <item name="displayOptions">showCustom|showHome</item>
+        <item name="android:displayOptions">showCustom|showHome</item>
+    </style>
+
+    <style name="SongTitle">
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
     </style>
 
     <style name="SeekBar" parent="android:Widget.SeekBar">

@@ -19,9 +19,7 @@ public class AlbumsListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter(getActivity());
-//        Cursor cursor = cursorGetter.getAlbums();
 
-//        assert cursor != null;
         ListAdapter adapter = new AlbumsCursorAdapter(getActivity(), cursorGetter);
 
         setListAdapter(adapter);

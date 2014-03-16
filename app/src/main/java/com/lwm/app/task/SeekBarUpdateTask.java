@@ -3,7 +3,7 @@ package com.lwm.app.task;
 import android.support.v4.app.FragmentActivity;
 
 import com.lwm.app.fragment.PlaybackFragment;
-import com.lwm.app.model.BasePlayer;
+import com.lwm.app.player.BasePlayer;
 
 import java.util.TimerTask;
 

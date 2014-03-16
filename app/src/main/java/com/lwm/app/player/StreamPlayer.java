@@ -1,4 +1,4 @@
-package com.lwm.app.model;
+package com.lwm.app.player;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -30,11 +30,6 @@ public class StreamPlayer extends BasePlayer {
 
     public StreamPlayer(Context context){
         this.context = context;
-        initNewPlayer();
-    }
-
-    private void initNewPlayer(){
-//        player = new MediaPlayer();
         initOnPreparedListener();
     }
 
@@ -49,7 +44,6 @@ public class StreamPlayer extends BasePlayer {
     }
 
     public void play(){
-
         new AddressSender().execute();
 
         reset();
@@ -59,6 +53,9 @@ public class StreamPlayer extends BasePlayer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        setActive();
+
         Log.d(App.TAG, "StreamPlayer: play()");
     }
 

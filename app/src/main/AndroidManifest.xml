@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         android:name=".App">
 
-        <service android:name=".service.MusicService" />
+        <service android:name=".service.MusicService" android:enabled="true" />
         <service android:name=".service.MusicServerService" />
 
         <activity
@@ -41,6 +41,7 @@
 
         <activity
             android:name=".activity.LocalPlaybackActivity"
+            android:theme="@style/PlaybackActivityStyle"
             android:parentActivityName=".activity.BroadcastActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

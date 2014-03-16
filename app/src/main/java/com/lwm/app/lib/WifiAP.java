@@ -8,8 +8,6 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.lwm.app.activity.BroadcastActivity;
-
 import java.lang.reflect.Method;
 
 public class WifiAP {
@@ -172,7 +170,7 @@ public class WifiAP {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            ((BroadcastActivity) context).setMenuProgressIndicator(true);
+            ((WifiAPListener) context).onEnableAP();
 
         }
 
@@ -180,7 +178,7 @@ public class WifiAP {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            ((BroadcastActivity) context).setMenuProgressIndicator(false);
+            ((WifiAPListener) context).onAPEnabled();
 
         }
 

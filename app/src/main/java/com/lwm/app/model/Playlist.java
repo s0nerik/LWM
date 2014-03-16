@@ -1,17 +1,56 @@
 package com.lwm.app.model;
 
-public interface Playlist {
+import android.database.Cursor;
 
-    public String getSource();
-    public void next();
-    public void prev();
-    public void moveTo(int pos);
-    public void setShuffle(boolean on);
-    public String getCurrentTitle();
-    public String getCurrentArtist();
-    public String getCurrentAlbum();
-    public int getCurrentDuration();
-    public int getCurrentAlbumId();
-    public int getCurrentListPosition();
+import com.lwm.app.helper.SongsCursorGetter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+public class Playlist {
+
+    private List<Song> songs = new ArrayList<>();
+//    private int currentPosition = 0;
+
+    public Playlist(Cursor cursor){
+        cursor.moveToFirst();
+        int i = 0;
+        while(cursor.moveToNext()){
+            songs.add(new Song(
+                    cursor.getLong(SongsCursorGetter._ID),
+                    cursor.getLong(SongsCursorGetter.ARTIST_ID),
+                    cursor.getLong(SongsCursorGetter.ALBUM_ID),
+                    cursor.getString(SongsCursorGetter.TITLE),
+                    cursor.getString(SongsCursorGetter.ARTIST),
+                    cursor.getString(SongsCursorGetter.ALBUM),
+                    cursor.getString(SongsCursorGetter.DATA),
+                    cursor.getInt(SongsCursorGetter.DURATION)
+            ));
+        }
+        cursor.close();
+    }
+
+//    public void next(){
+//        currentPosition++;
+//    }
+//
+//    public void prev(){
+//        currentPosition--;
+//    }
+//
+//    public void moveTo(int pos){
+//        currentPosition = pos;
+//    }
+
+    public Song getSong(int pos) {
+        return songs.get(pos);
+    }
+
+    public List<Song> getSongs() {
+        return songs;
+    }
+
+    public int size(){
+        return songs.size();
+    }
 }

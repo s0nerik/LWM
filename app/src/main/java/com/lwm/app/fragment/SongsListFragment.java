@@ -1,7 +1,6 @@
 package com.lwm.app.fragment;
 
-import android.content.Intent;
-import android.database.Cursor;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -13,26 +12,53 @@ import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.adapter.SongsCursorAdapter;
+import com.lwm.app.adapter.PlaylistAdapter;
 import com.lwm.app.helper.SongsCursorGetter;
-import com.lwm.app.model.BasePlayer;
-import com.lwm.app.model.LocalPlayer;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.model.Playlist;
+import com.lwm.app.player.LocalPlayer;
 
 public class SongsListFragment extends ListFragment {
 
+    OnSongSelectedListener mCallback;
+
+    private Playlist playlist;
+    private LocalPlayer player;
+    private ListView listView;
+    private int currentPosition = -1;
+
+    private boolean isFirstClick = true;
+
+    private final static int SMOOTH_SCROLL_MAX = 50;
+
     public SongsListFragment() {}
+
+    public interface OnSongSelectedListener {
+        public void onSongSelected(int position);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnSongSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnSongSelectedListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         SongsCursorGetter cursorGetter = new SongsCursorGetter(getActivity());
-        Cursor cursor = cursorGetter.getSongs();
 
-        assert cursor != null;
+        playlist = new Playlist(cursorGetter.getSongs());
 
-        ListAdapter adapter = new SongsCursorAdapter(getActivity(), cursorGetter);
+        ListAdapter adapter = new PlaylistAdapter(getActivity(), playlist);
 
         setListAdapter(adapter);
 
@@ -40,28 +66,52 @@ public class SongsListFragment extends ListFragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listView = (ListView) view.findViewById(android.R.id.list);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
-        LocalPlayer mp = MusicService.getCurrentLocalPlayer();
-        if(mp != null){
-            ListView listView = (ListView) getActivity().findViewById(android.R.id.list);
-            listView.setItemChecked(mp.getCurrentListPosition(), true);
+        if(App.isMusicServiceBound()){
+            int pos = App.getMusicService().getLocalPlayer().getCurrentListPosition();
+            listView.setItemChecked(pos, true);
+            listView.setSelection(pos);
+            currentPosition = pos;
         }
     }
 
     @Override
+    public void setSelection(int position) {
+        super.setSelection(position);
+        listView.setItemChecked(position, true);
+
+        Log.d(App.TAG, "setSelection: "+Math.abs(position - currentPosition));
+
+        if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
+            listView.smoothScrollToPosition(position);
+        }else{
+            listView.setSelection(position);
+        }
+        currentPosition = position;
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        Log.d(App.TAG, "SongsListFragment: onListItemClick");
+        if(App.isMusicServiceBound()){
 
-        Intent intent = new Intent(getActivity(), MusicService.class);
+            if(isFirstClick){
+                App.getMusicService().setLocalPlayer(new LocalPlayer(getActivity(), playlist));
+                isFirstClick = false;
+            }
 
-        intent.setAction(MusicService.ACTION_PLAY_SONG);
-        intent.putExtra(BasePlayer.PLAYLIST_POSITION, position);
-
-        Log.d(App.TAG, ".startService");
-
-        getActivity().startService(intent);
-
+            LocalPlayer player = App.getMusicService().getLocalPlayer();
+            player.play(position);
+        }
+        mCallback.onSongSelected(position);
     }
 
 }

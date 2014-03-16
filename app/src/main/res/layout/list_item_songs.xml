@@ -29,19 +29,19 @@
 
     <!--</FrameLayout>-->
 
-    <LinearLayout
+    <com.lwm.app.custom_view.CheckedLinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <com.lwm.app.custom_view.CheckedLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <com.neopixl.pixlui.components.textview.TextView
+            <com.lwm.app.custom_view.CheckedTextView
                 android:id="@+id/songs_list_item_title"
                 android:checkMark="@null"
                 android:padding="6dp"
@@ -51,9 +51,11 @@
                 android:gravity="center_vertical"
                 android:layout_weight="1"
 
+                android:textColor="@color/selector_songs_list_item_title"
+
                 pixlui:typeface="Roboto-Regular.ttf" />
 
-            <com.neopixl.pixlui.components.textview.TextView
+            <com.lwm.app.custom_view.CheckedTextView
                 android:id="@+id/songs_list_item_duration"
                 android:checkMark="@null"
                 android:padding="6dp"
@@ -63,11 +65,13 @@
                 android:text="3:00"
                 android:gravity="center_vertical"
 
+                android:textColor="@color/selector_songs_list_item_artist"
+
                 pixlui:typeface="Roboto-Thin.ttf" />
 
-        </LinearLayout>
+        </com.lwm.app.custom_view.CheckedLinearLayout>
 
-        <com.neopixl.pixlui.components.textview.TextView
+        <com.lwm.app.custom_view.CheckedTextView
             android:id="@+id/songs_list_item_artist"
             android:checkMark="@null"
             android:paddingLeft="6dp"
@@ -75,13 +79,15 @@
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:textColor="#666666"
+
+            android:textColor="@color/selector_songs_list_item_artist"
+
             android:gravity="start"
             android:layout_height="0dp"
 
             pixlui:typeface="Roboto-Thin.ttf" />
 
-    </LinearLayout>
+    </com.lwm.app.custom_view.CheckedLinearLayout>
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->

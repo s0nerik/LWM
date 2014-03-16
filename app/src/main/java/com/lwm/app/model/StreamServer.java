@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.lib.NanoHTTPD;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.player.LocalPlayer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +26,10 @@ public class StreamServer extends NanoHTTPD {
     public StreamServer(Context context) {
         super(8888);
         this.context = context;
+
+//        // Bind to MusicService
+//        Intent intent = new Intent(context, MusicService.class);
+//        context.bindService(intent, musicServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -51,6 +55,8 @@ public class StreamServer extends NanoHTTPD {
                 return new Response(Response.Status.OK, MIME_PLAINTEXT, "OK");
 
             case GET:
+                LocalPlayer player = App.getMusicService().getLocalPlayer();
+                Song song = player.getCurrentSong();
                 switch(uri){
 
                     case App.STREAM:
@@ -58,7 +64,7 @@ public class StreamServer extends NanoHTTPD {
                         FileInputStream fis = null;
                         try {
 
-                            fis = new FileInputStream(MusicService.getCurrentLocalPlayer().getCurrentSource());
+                            fis = new FileInputStream(song.getSource());
 
                         } catch (FileNotFoundException e) {e.printStackTrace();}
 
@@ -73,28 +79,21 @@ public class StreamServer extends NanoHTTPD {
 
                     case App.CURRENT_INFO:
                         Log.d(App.TAG, "StreamServer: CURRENT_INFO");
-                        return new Response(Response.Status.OK, "application/json", getSongInfoJSON());
+                        return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
 
                     case App.CURRENT_POSITION:
                         Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
-                        return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(MusicService.getCurrentLocalPlayer().getCurrentPosition()));
+                        return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(player.getCurrentPosition()));
 
                     case App.CURRENT_ALBUMART:
                         Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
                         InputStream is = null;
                         try {
-                            is = context.getContentResolver().openInputStream(MusicService.getCurrentLocalPlayer().getCurrentAlbumArtUri());
+                            is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
                         return new Response(Response.Status.OK, "image", is);
-//                        if(path.endsWith(".png")){
-//                            return new Response(Response.Status.OK, "image/png", is);
-//                        }else if(path.endsWith(".jpg") || path.endsWith(".jpeg")){
-//                            return new Response(Response.Status.OK, "image/jpeg", is);
-//                        }else{
-//                            return new Response(Response.Status.OK, "image", is);
-//                        }
                 }
 
             default:
@@ -102,15 +101,14 @@ public class StreamServer extends NanoHTTPD {
         }
     }
 
-    private String getSongInfoJSON(){
-        LocalPlayer mp = MusicService.getCurrentLocalPlayer();
+    private String getSongInfoJSON(Song song){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("artist", mp.getCurrentArtist());
-            jsonObject.put("title", mp.getCurrentTitle());
-            jsonObject.put("album", mp.getCurrentAlbum());
-            jsonObject.put("duration", mp.getCurrentDuration());
-            jsonObject.put("duration_minutes", mp.getCurrentDurationInMinutes());
+            jsonObject.put("artist", song.getArtist());
+            jsonObject.put("title", song.getTitle());
+            jsonObject.put("album", song.getAlbum());
+            jsonObject.put("duration", song.getDuration());
+            jsonObject.put("duration_minutes", song.getDurationString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

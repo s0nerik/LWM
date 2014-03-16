@@ -9,6 +9,7 @@ import com.lwm.app.lib.QuickAdapter;
 public class SongsCursorGetter implements QuickAdapter.DataSource{
 
     private Context caller;
+
     private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
     private String[] projection = {
             MediaStore.Audio.Media._ID,
@@ -20,6 +21,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
             MediaStore.Audio.Media.DISPLAY_NAME,
             MediaStore.Audio.Media.SIZE,
             MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.ARTIST_ID
     };
 
     public static final int _ID          = 0;
@@ -31,6 +33,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
     public static final int DISPLAY_NAME = 6;
     public static final int SIZE         = 7;
     public static final int ALBUM_ID     = 8;
+    public static final int ARTIST_ID    = 9;
 
     public SongsCursorGetter(Context caller){
         this.caller = caller;
@@ -47,6 +50,18 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
                         + MediaStore.Audio.Media.ALBUM_ID + " ASC, "
                         + MediaStore.Audio.Media.TRACK + " ASC, "
                         + MediaStore.Audio.Media.DISPLAY_NAME + " ASC"
+        );
+
+    }
+
+    public Cursor getSongsRandomOrder(){
+
+        return caller.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                "random()"
         );
 
     }

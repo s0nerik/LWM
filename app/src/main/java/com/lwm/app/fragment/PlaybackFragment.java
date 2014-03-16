@@ -1,7 +1,6 @@
 package com.lwm.app.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -22,11 +21,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.enrique.stackblur.StackBlurManager;
+import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.async.AlbumArtAsyncGetter;
 import com.lwm.app.async.RemoteAlbumArtAsyncGetter;
-import com.lwm.app.model.BasePlayer;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.player.LocalPlayer;
 
 import java.io.IOException;
 
@@ -43,6 +42,8 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     private ImageView albumArt;
     private ImageView background;
 
+    private LocalPlayer player;
+
     // Playback control buttons
     private ImageView playPauseButton;
     private ImageView nextButton;
@@ -55,6 +56,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        player = App.getMusicService().getLocalPlayer();
         return inflater.inflate(R.layout.fragment_playback, container, false);
     }
 
@@ -111,9 +113,9 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         new RemoteAlbumArtAsyncGetter(albumArt).execute();
     }
 
-    public void setCurrentAlbumArt(){
-        setAlbumArtFromUri(MusicService.getCurrentLocalPlayer().getCurrentAlbumArtUri());
-    }
+//    public void setCurrentAlbumArt(){
+//        setAlbumArtFromUri(MusicService.getLocalPlayer().getCurrentAlbumArtUri());
+//    }
 
     public void setDefaultAlbumArt() {
         albumArt.setImageResource(R.drawable.no_cover);
@@ -131,12 +133,24 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         }
     }
 
+    public void setShuffleButton(boolean enabled){
+        if(enabled){
+            shuffleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle_active));
+        }else{
+            shuffleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle));
+        }
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if(fromUser){
-            getActivity().startService(new Intent(getActivity(), MusicService.class)
-                    .setAction(MusicService.ACTION_SONG_SEEK_TO)
-                    .putExtra(BasePlayer.SEEK_POSITION, (int)((progress/100.0)*MusicService.getCurrentLocalPlayer().getDuration())));
+            if(App.isMusicServiceBound()){
+//                LocalPlayer player = App.getMusicService().getLocalPlayer();
+                player.seekTo((int)((progress/100.)*player.getDuration()));
+            }
+//            getActivity().startService(new Intent(getActivity(), MusicService.class)
+//                    .setAction(MusicService.ACTION_SONG_SEEK_TO)
+//                    .putExtra(BasePlayer.SEEK_POSITION, (int)((progress/100.0)*MusicService.getLocalPlayer().getDuration())));
         }
     }
 
@@ -161,6 +175,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         protected Void doInBackground(Uri... uri) {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
+                assert bitmap != null : "bitmap == null";
                 bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
             } catch (IOException e) {
                 bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);

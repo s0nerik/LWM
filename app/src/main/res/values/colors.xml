@@ -8,4 +8,12 @@
     <color name="drawer_item_background_active">#33b5e5</color>
     <color name="drawer_divider">#DBDBDB</color>
     <color name="drawer_background">#EDEDED</color>
+
+    <color name="songs_list_item_title_inactive">#000000</color>
+    <color name="songs_list_item_title_active">#ffffff</color>
+    <color name="songs_list_item_artist_inactive">#666666</color>
+    <color name="songs_list_item_artist_active">#eeeeee</color>
+    
+    <color name="actionbar_semi_transparent">#66000000</color>
+    
 </resources>
