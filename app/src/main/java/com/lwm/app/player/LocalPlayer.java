@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class LocalPlayer extends BasePlayer {
 
-    private int currentListPosition = 0;
+    private int currentListPosition = -1;
     private static int listSize;
     private static Playlist playlist;
     private Context context;
