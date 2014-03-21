@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Checkable;
 
-import com.neopixl.pixlui.components.textview.TextView;
+import com.danh32.fontify.TextView;
 
 public class CheckedTextView extends TextView implements Checkable {
 
@@ -21,10 +21,6 @@ public class CheckedTextView extends TextView implements Checkable {
 
     public CheckedTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public CheckedTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
     }
 
     @Override

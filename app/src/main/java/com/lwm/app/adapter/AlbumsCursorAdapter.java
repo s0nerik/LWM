@@ -23,8 +23,8 @@ public class AlbumsCursorAdapter extends BasicCursorAdapter {
     private final Uri artworkUri = Uri
             .parse("content://media/external/audio/albumart");
 
-    public AlbumsCursorAdapter(Context context, AlbumsCursorGetter c) {
-        super(context, c.getAlbums());
+    public AlbumsCursorAdapter(Context context, Cursor c) {
+        super(context, c);
         this.context = context;
     }
 

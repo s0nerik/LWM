@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:pixlui="http://schemas.android.com/apk/com.neopixl.pixlui"
+    xmlns:fontify="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="fill" >
@@ -11,7 +11,7 @@
         android:gravity="center_vertical"
         android:orientation="vertical" >
 
-        <TextView
+        <com.danh32.fontify.TextView
             style="@style/SongTitle"
             android:id="@+id/title"
             android:layout_width="match_parent"
@@ -24,9 +24,11 @@
             android:shadowColor="#000000"
             android:shadowDx="0"
             android:shadowDy="0"
-            android:shadowRadius="2" />
+            android:shadowRadius="2"
 
-        <com.neopixl.pixlui.components.textview.TextView
+            fontify:font="@string/FONT_ROBOTO_REGULAR" />
+
+        <com.danh32.fontify.TextView
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +44,7 @@
             android:shadowDy="0"
             android:shadowRadius="2"
 
-            pixlui:typeface="Roboto-Light.ttf" />
+            fontify:font="@string/FONT_ROBOTO_LIGHT" />
     </LinearLayout>
 
 </RelativeLayout>

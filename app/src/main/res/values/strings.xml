@@ -19,6 +19,12 @@
     <string name="title_ap_name_preference">Access Point name</string>
     <string name="summary_ap_name_preference">Give name to your AP</string>
 
+    <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>
+    <string name="FONT_ROBOTO_BOLD">fonts/Roboto-Bold.ttf</string>
+    <string name="FONT_ROBOTO_LIGHT">fonts/Roboto-Light.ttf</string>
+    <string name="FONT_ROBOTO_THIN">fonts/Roboto-Thin.ttf</string>
+    <string name="FONT_ROBOTO_LIGHT_ITALIC">fonts/Roboto-LightItalic.ttf</string>
+    <string name="FONT_ROBOTO_THIN_ITALIC">fonts/Roboto-ThinItalic.ttf</string>
 
     <string-array name="spinner_names">
         <item>Player</item>

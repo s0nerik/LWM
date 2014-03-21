@@ -227,7 +227,6 @@ public class BroadcastActivity extends BasicActivity implements
         ListFragment listFragment = (ListFragment) fm.findFragmentById(R.id.container);
         int pos = App.getMusicService().getLocalPlayer().getCurrentListPosition();
         listFragment.setSelection(pos);
-//        listFragment.getListView().setItemChecked(pos, true);
         showNowPlayingBar();
     }
 }

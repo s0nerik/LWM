@@ -13,18 +13,20 @@ public class AlbumsCursorGetter {
             MediaStore.Audio.Albums._ID,
             MediaStore.Audio.Albums.ALBUM,
             MediaStore.Audio.Albums.ALBUM_ART,
-            MediaStore.Audio.Albums.ARTIST
+            MediaStore.Audio.Albums.ARTIST,
+//            MediaStore.Audio.Albums.ALBUM_KEY
 //            MediaStore.Audio.Albums.ALBUM_ID
     };
 
     private String selection = null;
     private String[] selectionArgs = null;
 
-    public static final int _ID        = 0;
+    public static final int _ID          = 0;
     public static final int ALBUM        = 1;
     public static final int ALBUM_ART    = 2;
     public static final int ARTIST       = 3;
-    public static final int ALBUM_ID     = 4;
+//    public static final int ALBUM_KEY    = 4;
+//    public static final int ALBUM_ID     = 4;
 
     public AlbumsCursorGetter(Context caller) {
         this.caller = caller;

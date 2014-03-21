@@ -2,7 +2,7 @@
 
 <com.lwm.app.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:pixlui="http://schemas.android.com/apk/com.neopixl.pixlui"
+    xmlns:fontify="http://schemas.android.com/apk/res-auto"
     style="@style/Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
 
                 android:textColor="@color/selector_songs_list_item_title"
 
-                pixlui:typeface="Roboto-Regular.ttf" />
+                fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
             <com.lwm.app.custom_view.CheckedTextView
                 android:id="@+id/songs_list_item_duration"
@@ -69,7 +69,7 @@
 
                 android:textColor="@color/selector_songs_list_item_artist"
 
-                pixlui:typeface="Roboto-Thin.ttf" />
+                fontify:font="@string/FONT_ROBOTO_THIN" />
 
         </com.lwm.app.custom_view.CheckedLinearLayout>
 
@@ -87,7 +87,7 @@
             android:gravity="start"
             android:layout_height="0dp"
 
-            pixlui:typeface="Roboto-Thin.ttf" />
+            fontify:font="@string/FONT_ROBOTO_THIN" />
 
     </com.lwm.app.custom_view.CheckedLinearLayout>
 

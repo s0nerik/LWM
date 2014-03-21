@@ -14,7 +14,6 @@ public class Playlist {
 
     public Playlist(Cursor cursor){
         cursor.moveToFirst();
-        int i = 0;
         while(cursor.moveToNext()){
             songs.add(new Song(
                     cursor.getLong(SongsCursorGetter._ID),
