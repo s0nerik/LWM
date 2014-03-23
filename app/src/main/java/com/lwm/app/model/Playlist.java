@@ -13,18 +13,19 @@ public class Playlist {
 //    private int currentPosition = 0;
 
     public Playlist(Cursor cursor){
-        cursor.moveToFirst();
-        while(cursor.moveToNext()){
-            songs.add(new Song(
-                    cursor.getLong(SongsCursorGetter._ID),
-                    cursor.getLong(SongsCursorGetter.ARTIST_ID),
-                    cursor.getLong(SongsCursorGetter.ALBUM_ID),
-                    cursor.getString(SongsCursorGetter.TITLE),
-                    cursor.getString(SongsCursorGetter.ARTIST),
-                    cursor.getString(SongsCursorGetter.ALBUM),
-                    cursor.getString(SongsCursorGetter.DATA),
-                    cursor.getInt(SongsCursorGetter.DURATION)
-            ));
+        if(cursor.moveToFirst()) {
+            do{
+                songs.add(new Song(
+                        cursor.getLong(SongsCursorGetter._ID),
+                        cursor.getLong(SongsCursorGetter.ARTIST_ID),
+                        cursor.getLong(SongsCursorGetter.ALBUM_ID),
+                        cursor.getString(SongsCursorGetter.TITLE),
+                        cursor.getString(SongsCursorGetter.ARTIST),
+                        cursor.getString(SongsCursorGetter.ALBUM),
+                        cursor.getString(SongsCursorGetter.DATA),
+                        cursor.getInt(SongsCursorGetter.DURATION)
+                ));
+            }while(cursor.moveToNext());
         }
         cursor.close();
     }

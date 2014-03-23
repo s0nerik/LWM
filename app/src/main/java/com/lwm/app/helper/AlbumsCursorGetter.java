@@ -15,7 +15,7 @@ public class AlbumsCursorGetter {
             MediaStore.Audio.Albums.ALBUM_ART,
             MediaStore.Audio.Albums.ARTIST,
 //            MediaStore.Audio.Albums.ALBUM_KEY
-//            MediaStore.Audio.Albums.ALBUM_ID
+//            MediaStore.Audio.AudioColumns.ALBUM_ID
     };
 
     private String selection = null;

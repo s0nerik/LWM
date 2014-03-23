@@ -3,6 +3,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_checked="true" android:drawable="@color/checked" />
-    <item android:state_selected="true" android:drawable="@color/pressed" />
+    <item android:state_pressed="true" android:drawable="@color/actionbar_spinner_item_pressed" />
 
 </selector>

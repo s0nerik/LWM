@@ -18,8 +18,8 @@ import android.view.View;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.fragment.NowPlayingFragment;
+import com.lwm.app.fragment.OnSongSelectedListener;
 import com.lwm.app.fragment.PlayersAroundFragment;
-import com.lwm.app.fragment.SongsListFragment;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.model.Song;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BroadcastActivity extends BasicActivity implements
-        SongsListFragment.OnSongSelectedListener, WifiAPListener, PlayerListener {
+        OnSongSelectedListener, WifiAPListener, PlayerListener {
 
     private MusicService musicService;
     private NowPlayingFragment nowPlaying;
@@ -220,7 +220,6 @@ public class BroadcastActivity extends BasicActivity implements
 
     @Override
     public void onSongChanged(Song song) {
-
         Log.d(App.TAG, "BroadcastActivity: onSongChanged");
 
         FragmentManager fm = getSupportFragmentManager();

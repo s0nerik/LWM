@@ -32,10 +32,6 @@ public class SongsListFragment extends ListFragment {
 
     public SongsListFragment() {}
 
-    public interface OnSongSelectedListener {
-        public void onSongSelected(int position);
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

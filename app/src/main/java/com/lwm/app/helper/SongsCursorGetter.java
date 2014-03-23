@@ -62,37 +62,16 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
 
     }
 
-    public Cursor getSongs(String album){
-        Log.d(App.TAG, "album: "+album);
-//        String selection = MediaStore.Audio.Media.ALBUM_ID + " =?";
-        String selection = this.selection+" AND "+MediaStore.Audio.Media.ALBUM+"=?";
-
-        String[] selectionArgs = {album};
-        // Debug
-        Cursor x = caller.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                MediaStore.Audio.Media.ARTIST + " ASC, "
-                        + MediaStore.Audio.Media.ALBUM_ID + " ASC, "
-                        + MediaStore.Audio.Media.TRACK + " ASC, "
-                        + MediaStore.Audio.Media.DISPLAY_NAME + " ASC"
-        );
-
-        x.moveToFirst();
-        int i = x.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-        while(x.moveToNext()){
-            Log.d(App.TAG, "x: "+x.getString(i));
-        }
-        x.close();
+    public Cursor getSongs(long albumId){
+        Log.d(App.TAG, "album: "+albumId);
+        String selection = this.selection+" AND "+ MediaStore.Audio.AudioColumns.ALBUM_ID+" = ?";
+        String[] selectionArgs = {String.valueOf(albumId)};
 
         return caller.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
-                null,
-//                new String[]{albumKey},
+                selectionArgs,
                 MediaStore.Audio.Media.ARTIST + " ASC, "
                         + MediaStore.Audio.Media.ALBUM_ID + " ASC, "
                         + MediaStore.Audio.Media.TRACK + " ASC, "

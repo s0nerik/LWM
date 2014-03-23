@@ -15,26 +15,30 @@
         android:layout_width="60dp"
         android:layout_height="60dp" />
 
-    <LinearLayout
+    <com.lwm.app.custom_view.CheckedLinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.danh32.fontify.TextView
+        <CheckedTextView
             android:id="@+id/albums_list_item_album"
             android:checkMark="@null"
             android:padding="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:textColor="@color/selector_songs_list_item_title"
+
+            android:singleLine="true"
+            android:ellipsize="end"
 
             fontify:font="@string/FONT_ROBOTO_REGULAR"
 
             android:gravity="center_vertical" />
 
-        <com.danh32.fontify.TextView
+        <CheckedTextView
             android:id="@+id/albums_list_item_artist"
             android:checkMark="@null"
             android:paddingLeft="6dp"
@@ -42,14 +46,14 @@
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:textColor="#666666"
+            android:textColor="@color/selector_songs_list_item_artist"
 
             fontify:font="@string/FONT_ROBOTO_THIN"
 
-            android:gravity="start"
+            android:gravity="left"
             android:layout_height="0dp" />
 
-    </LinearLayout>
+    </com.lwm.app.custom_view.CheckedLinearLayout>
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->

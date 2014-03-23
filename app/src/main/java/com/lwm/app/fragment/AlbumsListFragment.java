@@ -35,13 +35,14 @@ public class AlbumsListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         albums.moveToPosition(position);
-        String album = albums.getString(AlbumsCursorGetter.ALBUM);
+        long albumId = albums.getLong(AlbumsCursorGetter._ID);
         albums.close();
         getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack("albums_fragment")
                 .replace(R.id.container,
                         new PlaylistFragment(
                             new Playlist(new SongsCursorGetter(getActivity())
-                                    .getSongs(album))))
+                                    .getSongs(albumId))))
                 .commit();
     }
 }
