@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/fragment_now_playing"
             android:layout_weight="0"
-            android:name="com.lwm.app.fragment.NowPlayingFragment"
+            android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
             tools:layout="@layout/fragment_now_playing" />
 
     </LinearLayout>

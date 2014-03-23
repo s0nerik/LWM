@@ -1,4 +1,4 @@
-package com.lwm.app.fragment;
+package com.lwm.app.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,22 +7,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.PlaylistAdapter;
-import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.player.LocalPlayer;
 
-public class SongsListFragment extends ListFragment {
-
-    OnSongSelectedListener mCallback;
+public class PlaylistFragment extends ListFragment {
 
     private Playlist playlist;
     private LocalPlayer player;
+
+    OnSongSelectedListener mCallback;
+
     private ListView listView;
     private int currentPosition = -1;
 
@@ -30,7 +29,13 @@ public class SongsListFragment extends ListFragment {
 
     private final static int SMOOTH_SCROLL_MAX = 50;
 
-    public SongsListFragment() {}
+    public PlaylistFragment() {
+        playlist = LocalPlayer.getPlaylist();
+    }
+
+    public PlaylistFragment(Playlist playlist){
+        this.playlist = playlist;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -47,18 +52,9 @@ public class SongsListFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        SongsCursorGetter cursorGetter = new SongsCursorGetter(getActivity());
-
-        playlist = new Playlist(cursorGetter.getSongs());
-
-        ListAdapter adapter = new PlaylistAdapter(getActivity(), playlist);
-
-        setListAdapter(adapter);
-
-        return inflater.inflate(R.layout.fragment_list_songs, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setListAdapter(new PlaylistAdapter(getActivity(), playlist));
+        return inflater.inflate(R.layout.fragment_playlist, container, false);
     }
 
     @Override
@@ -84,7 +80,7 @@ public class SongsListFragment extends ListFragment {
         super.setSelection(position);
         listView.setItemChecked(position, true);
 
-        Log.d(App.TAG, "setSelection: "+Math.abs(position - currentPosition));
+        Log.d(App.TAG, "setSelection: " + Math.abs(position - currentPosition));
 
         if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
             listView.smoothScrollToPosition(position);

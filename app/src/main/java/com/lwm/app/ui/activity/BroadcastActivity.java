@@ -1,4 +1,4 @@
-package com.lwm.app.activity;
+package com.lwm.app.ui.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,9 +17,9 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.fragment.NowPlayingFragment;
-import com.lwm.app.fragment.OnSongSelectedListener;
-import com.lwm.app.fragment.PlayersAroundFragment;
+import com.lwm.app.ui.fragment.NowPlayingFragment;
+import com.lwm.app.ui.fragment.OnSongSelectedListener;
+import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.model.Song;

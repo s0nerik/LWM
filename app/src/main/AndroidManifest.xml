@@ -21,7 +21,7 @@
         <service android:name=".service.MusicServerService" />
 
         <activity
-            android:name=".activity.BroadcastActivity"
+            android:name=".ui.activity.BroadcastActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,9 +40,9 @@
         </activity>
 
         <activity
-            android:name=".activity.LocalPlaybackActivity"
+            android:name=".ui.activity.LocalPlaybackActivity"
             android:theme="@style/PlaybackActivityStyle"
-            android:parentActivityName=".activity.BroadcastActivity" >
+            android:parentActivityName=".ui.activity.BroadcastActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,8 +50,8 @@
         </activity>
 
         <activity
-            android:name=".activity.RemotePlaybackActivity"
-            android:parentActivityName=".activity.BroadcastActivity" >
+            android:name=".ui.activity.RemotePlaybackActivity"
+            android:parentActivityName=".ui.activity.BroadcastActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -59,7 +59,7 @@
         </activity>
 
         <activity
-            android:name=".activity.PreferenceActivity" />
+            android:name=".ui.activity.PreferenceActivity" />
 
     </application>
 

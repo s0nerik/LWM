@@ -1,6 +1,8 @@
-package com.lwm.app.activity;
+package com.lwm.app.ui.activity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,11 +18,11 @@ import android.widget.ListView;
 
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
-import com.lwm.app.fragment.AlbumsListFragment;
-import com.lwm.app.fragment.ArtistsListFragment;
-import com.lwm.app.fragment.PlayersAroundFragment;
-import com.lwm.app.fragment.PlaylistFragment;
-import com.lwm.app.fragment.SongsListFragment;
+import com.lwm.app.ui.fragment.AlbumsListFragment;
+import com.lwm.app.ui.fragment.ArtistsListFragment;
+import com.lwm.app.ui.fragment.PlayersAroundFragment;
+import com.lwm.app.ui.fragment.PlaylistFragment;
+import com.lwm.app.ui.fragment.SongsListFragment;
 
 public abstract class BasicActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
@@ -138,6 +141,23 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
                 return true;
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                return true;
+            default:
+                return super.onKeyDown(keyCode, event);
+        }
     }
 
 }

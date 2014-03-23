@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.lwm.app.custom_view.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lwm.app.ui.custom_view.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="48dp"
     android:background="@drawable/selector_drawer_item_background"
     android:checkMark="@null"
     android:layout_width="match_parent">
 
-    <com.lwm.app.custom_view.CheckedImageView
+    <com.lwm.app.ui.custom_view.CheckedImageView
         android:id="@+id/drawer_item_icon"
         android:layout_gravity="center_vertical"
         android:checkMark="@null"
@@ -25,4 +25,4 @@
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:ellipsize="marquee" />
 
-</com.lwm.app.custom_view.CheckedLinearLayout>
+</com.lwm.app.ui.custom_view.CheckedLinearLayout>

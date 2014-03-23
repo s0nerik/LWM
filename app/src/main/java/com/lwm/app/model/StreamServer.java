@@ -3,12 +3,10 @@ package com.lwm.app.model;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.player.LocalPlayer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -102,18 +100,24 @@ public class StreamServer extends NanoHTTPD {
     }
 
     private String getSongInfoJSON(Song song){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("artist", song.getArtist());
-            jsonObject.put("title", song.getTitle());
-            jsonObject.put("album", song.getAlbum());
-            jsonObject.put("duration", song.getDuration());
-            jsonObject.put("duration_minutes", song.getDurationString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("artist", song.getArtist());
+//            jsonObject.put("title", song.getTitle());
+//            jsonObject.put("album", song.getAlbum());
+//            jsonObject.put("duration", song.getDuration());
+//            jsonObject.put("duration_minutes", song.getDurationString());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return jsonObject.toString();
 
-        return jsonObject.toString();
+        //Debug
+        String x = new Gson().toJson(song);
+        Log.d(App.TAG, "getSongInfoJSON: "+x);
+
+        return new Gson().toJson(song);
     }
 
 }

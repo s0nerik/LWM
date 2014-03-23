@@ -1,4 +1,4 @@
-package com.lwm.app.activity;
+package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
 

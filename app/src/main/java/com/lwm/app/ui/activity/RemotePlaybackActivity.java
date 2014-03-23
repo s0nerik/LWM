@@ -1,4 +1,4 @@
-package com.lwm.app.activity;
+package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,11 +7,11 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.fragment.PlaybackFragment;
 import com.lwm.app.model.Song;
+import com.lwm.app.player.PlayerListener;
 import com.lwm.app.player.StreamPlayer;
 
-public class RemotePlaybackActivity extends PlaybackActivity {
+public class RemotePlaybackActivity extends PlaybackActivity implements PlayerListener {
 
     private StreamPlayer player;
 
@@ -45,41 +45,40 @@ public class RemotePlaybackActivity extends PlaybackActivity {
 //    }
 
     @Override
-    protected void setSongInfo(Song song) {
-
-    }
-
-    @Override
     public void onControlButtonClicked(View v) {
 
     }
 
-//    @Override
-//    protected void setSongInfo() {
-//        playbackFragment.setDuration(durationString);
-//        initSeekBarUpdater(player, duration);
-//        actionBar.setTitle(title);
-//        actionBar.setSubtitle(artist);
-//        playbackFragment.setRemoteAlbumArt();
-//    }
+    @Override
+    protected void setSongInfo(Song song) {
+        durationString = song.getDurationString();
+        playbackFragment.setDuration(durationString);
+        duration = song.getDuration();
+        initSeekBarUpdater(player, duration);
+        title = song.getTitle();
+        actionBar.setTitle(title);
+        artist = song.getArtist();
+        actionBar.setSubtitle(artist);
+        playbackFragment.setRemoteAlbumArt();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(App.TAG, "RemotePlaybackActivity.onCreate()");
         setContentView(R.layout.activity_remote_playback);
+    }
 
-        if(savedInstanceState == null){
-            Bundle extras = getIntent().getExtras();
-            if(extras != null){
-                playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
-                title = extras.getString("title");
-                album = extras.getString("album");
-                artist = extras.getString("artist");
-                duration = extras.getInt("duration");
-                durationString = extras.getString("duration_string");
-            }
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        player.registerListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        player.unregisterListener();
     }
 
     @Override
@@ -93,4 +92,8 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSongChanged(Song song) {
+        setSongInfo(song);
+    }
 }

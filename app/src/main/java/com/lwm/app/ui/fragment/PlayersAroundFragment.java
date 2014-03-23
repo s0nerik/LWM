@@ -1,6 +1,7 @@
-package com.lwm.app.fragment;
+package com.lwm.app.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -14,9 +15,9 @@ import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.async.RemotePlaybackActivityStarter;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.lib.WifiAP;
+import com.lwm.app.ui.activity.RemotePlaybackActivity;
 
 import java.util.List;
 
@@ -98,7 +99,9 @@ public class PlayersAroundFragment extends ListFragment {
 //        Intent intent = new Intent(getActivity(), MusicService.class);
 //        intent.setAction(MusicService.ACTION_PLAY_STREAM);
 //        getActivity().startService(intent);
-        new RemotePlaybackActivityStarter(getActivity()).execute();
+//        new RemotePlaybackActivityStarter(getActivity()).execute();
+        Intent intent = new Intent(getActivity(), RemotePlaybackActivity.class);
+        getActivity().startActivity(intent);
     }
 
 }

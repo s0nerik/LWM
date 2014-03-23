@@ -1,4 +1,4 @@
-package com.lwm.app.fragment;
+package com.lwm.app.ui.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -33,7 +33,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     public static final int SEEK_BAR_MAX = 100;
     public static final int SEEK_BAR_UPDATE_INTERVAL = 1000;
-    private static final int BLUR_RADIUS = 50;
+    public static final int BLUR_RADIUS = 50;
     private static Bitmap noCover;
 
     private TextView currentTime;
@@ -110,7 +110,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     }
 
     public void setRemoteAlbumArt(){
-        new RemoteAlbumArtAsyncGetter(albumArt).execute();
+        new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background).execute();
     }
 
 //    public void setCurrentAlbumArt(){

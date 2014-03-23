@@ -8,7 +8,7 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.lwm.app.fragment.PlaybackFragment"
+        android:name="com.lwm.app.ui.fragment.PlaybackFragment"
         android:id="@+id/fragment_playback"
         tools:layout="@layout/fragment_playback" />
 

@@ -6,8 +6,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.lib.Connectivity;
+import com.lwm.app.model.Song;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -104,6 +106,44 @@ public class StreamPlayer extends BasePlayer {
         protected void onPostExecute(Void aVoid) {
             seekTo(pos+(int)correction);
             start();
+            new SongInfoGetter().execute();
+//            if(isListenerAttached()){
+//                playbackListener.onSongChanged(getCurrentSong());
+//            }
+        }
+    }
+
+    private class SongInfoGetter extends AsyncTask<Void, Void, Void> {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpGet httpGetPosition = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_INFO);
+        ResponseHandler<String> responseHandler = new BasicResponseHandler();
+        Song song;
+
+        @Override
+        protected Void doInBackground(Void... aVoid){
+
+            try {
+                String response = httpclient.execute(httpGetPosition, responseHandler);
+//                InputStream in = response.getEntity().getContent();
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+
+                //Debug
+                Log.d(App.TAG, "response: "+response);
+
+                song = new Gson().fromJson(response, Song.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            playbackListener.onSongChanged(song);
+//            if(isListenerAttached()){
+//                playbackListener.onSongChanged(getCurrentSong());
+//            }
         }
     }
 

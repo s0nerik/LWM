@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.lwm.app.custom_view.CheckedLinearLayout
+<com.lwm.app.ui.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     style="@style/Card"
@@ -8,14 +8,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <com.lwm.app.custom_view.CheckedLinearLayout
+    <com.lwm.app.ui.custom_view.CheckedLinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.lwm.app.custom_view.CheckedTextView
+        <com.lwm.app.ui.custom_view.CheckedTextView
             android:id="@+id/artists_list_item_artist"
             android:checkMark="@null"
             android:padding="6dp"
@@ -28,7 +28,7 @@
 
             fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
-        <com.lwm.app.custom_view.CheckedTextView
+        <com.lwm.app.ui.custom_view.CheckedTextView
             android:id="@+id/artists_list_item_albums_count"
             android:checkMark="@null"
             android:paddingLeft="6dp"
@@ -43,7 +43,7 @@
 
             fontify:font="@string/FONT_ROBOTO_THIN" />
 
-    </com.lwm.app.custom_view.CheckedLinearLayout>
+    </com.lwm.app.ui.custom_view.CheckedLinearLayout>
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->
@@ -52,4 +52,4 @@
         <!--android:src="@drawable/ic_action_play"-->
         <!--android:visibility="gone" />-->
 
-</com.lwm.app.custom_view.CheckedLinearLayout>
+</com.lwm.app.ui.custom_view.CheckedLinearLayout>

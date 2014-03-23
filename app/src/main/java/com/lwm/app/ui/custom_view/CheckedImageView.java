@@ -1,13 +1,12 @@
-package com.lwm.app.custom_view;
+package com.lwm.app.ui.custom_view;
 
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Checkable;
+import android.widget.ImageView;
 
-import com.danh32.fontify.TextView;
-
-public class CheckedTextView extends TextView implements Checkable {
+public class CheckedImageView extends ImageView implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
@@ -15,12 +14,17 @@ public class CheckedTextView extends TextView implements Checkable {
 
     private boolean checked = false;
 
-    public CheckedTextView(Context context) {
-        super(context);
+    @SuppressLint("NewApi")
+    public CheckedImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
-    public CheckedTextView(Context context, AttributeSet attrs) {
+    public CheckedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public CheckedImageView(Context context) {
+        super(context);
     }
 
     @Override
@@ -49,11 +53,4 @@ public class CheckedTextView extends TextView implements Checkable {
     public void toggle() {
         this.checked = !this.checked;
     }
-
-    @Override
-    public boolean performClick() {
-        toggle();
-        return super.performClick();
-    }
-
 }

@@ -10,21 +10,10 @@ import com.lwm.app.player.StreamPlayer;
 
 public class MusicService extends Service {
 
-//    public static final String ACTION_PLAY_SONG = "com.lwm.player.action.PLAY_SONG";
-//    public static final String ACTION_PAUSE_SONG = "com.lwm.player.action.PAUSE_SONG";
-//    public static final String ACTION_UNPAUSE_SONG = "com.lwm.player.action.UNPAUSE_SONG";
-//    public static final String ACTION_NEXT_SONG = "com.lwm.player.action.NEXT_SONG";
-//    public static final String ACTION_PREV_SONG = "com.lwm.player.action.PREV_SONG";
-//    public static final String ACTION_SONG_SEEK_TO = "com.lwm.player.action.SONG_SEEK_TO";
-//    public static final String ACTION_SHUFFLE_ON = "com.lwm.player.action.SHUFFLE_ON";
-//    public static final String ACTION_SHUFFLE_OFF = "com.lwm.player.action.SHUFFLE_OFF";
-//    public static final String ACTION_REPEAT_ON = "com.lwm.player.action.REPEAT_ON";
-//    public static final String ACTION_REPEAT_OFF = "com.lwm.player.action.REPEAT_OFF";
-//
-//    public static final String ACTION_PLAY_STREAM = "com.lwm.player.action.PLAY_STREAM";
-//    public static final String ACTION_STREAM_NEXT_SONG = "com.lwm.player.action.PLAY_STREAM";
-//    public static final String ACTION_STREAM_PAUSE = "com.lwm.player.action.STREAM_PAUSE";
-//    public static final String ACTION_STREAM_UNPAUSE = "com.lwm.player.action.STREAM_UNPAUSE";
+    public static int PLAYER_LOCAL = 0;
+    public static int PLAYER_STREAM = 1;
+
+    private int currentPlayerType;
 
     private LocalPlayer player;
     private StreamPlayer streamPlayer;
@@ -36,106 +25,6 @@ public class MusicService extends Service {
         return binder;
     }
 
-//    @Override
-//    public int onStartCommand(Intent intent, int flags, int startId) {
-//
-//        Log.d(App.TAG, "MusicService.onStartCommand");
-//
-////        String action = null;
-////        if(intent != null){
-////            action = intent.getAction();
-////
-////            switch(action){
-////                case ACTION_PLAY_SONG:
-////                    Log.d(App.TAG, "MusicService: ACTION_PLAY_SONG");
-////                    int pos = intent.getIntExtra(BasePlayer.PLAYLIST_POSITION, -1);
-////                    play(pos);
-////                    sendBroadcast(new Intent(BasePlayer.PLAYBACK_STARTED));
-////                    break;
-////
-////                case ACTION_PAUSE_SONG:
-////                    Log.d(App.TAG, "MusicService: ACTION_PAUSE_SONG");
-////                    player.pause();
-////                    sendBroadcast(new Intent(BasePlayer.PLAYBACK_PAUSED));
-////                    break;
-////
-////                case ACTION_UNPAUSE_SONG:
-////                    Log.d(App.TAG, "MusicService: ACTION_UNPAUSE_SONG");
-////                    player.start();
-////                    sendBroadcast(new Intent(BasePlayer.PLAYBACK_STARTED));
-////                    break;
-////
-////                case ACTION_SONG_SEEK_TO:
-////                    Log.d(App.TAG, "MusicService: ACTION_SONG_SEEK_TO");
-////                    int newPos = intent.getIntExtra(BasePlayer.SEEK_POSITION, -1);
-////                    Log.d(App.TAG, "MusicService: seekTo("+newPos+")");
-////                    player.seekTo(newPos);
-////                    break;
-////
-////                case ACTION_NEXT_SONG:
-////                    Log.d(App.TAG, "MusicService: ACTION_NEXT_SONG");
-////                    player.nextSong();
-////                    break;
-////
-////                case ACTION_PREV_SONG:
-////                    Log.d(App.TAG, "MusicService: ACTION_PREV_SONG");
-////                    player.prevSong();
-////                    break;
-////
-////                case ACTION_PLAY_STREAM:
-////                    Log.d(App.TAG, "MusicService: ACTION_PLAY_STREAM");
-////                    playStream();
-////                    break;
-////            }
-////
-////        }
-//        return Service.START_STICKY;
-//    }
-
-//    public void play(Playlist playlist, int pos){
-//        if(streamPlayer != null && streamPlayer.isPlaying()){
-//            streamPlayer.stop();
-//            streamPlayer.release();
-//            streamPlayer = null;
-//        }
-//
-//        if(player == null){
-//            player = new LocalPlayer(this, playlist);
-//        }
-//        player.play(pos);
-//    }
-
-//    private void play(int pos){
-//        Log.d(App.TAG, "MusicService.play()");
-//
-//        if(streamPlayer != null && streamPlayer.isPlaying()){
-//            streamPlayer.stop();
-//            streamPlayer.release();
-//            streamPlayer = null;
-//        }
-//
-//        if(player == null){
-//            player = new LocalPlayer(this, new SongsCursorGetter(this).getSongs());
-//        }
-//        player.play(pos);
-//    }
-
-//    private void playStream() {
-//        Log.d(App.TAG, "MusicService.playStream()");
-//
-//        if(player != null && player.isPlaying()){
-//            player.stop();
-//            player.release();
-//            player = null;
-//        }
-//
-//        if(streamPlayer == null){
-//            streamPlayer = new StreamPlayer(this);
-//        }
-//        streamPlayer.play();
-//
-//    }
-
     public void setLocalPlayer(LocalPlayer player){
         if(this.player != null){
             this.player.stop();
@@ -143,6 +32,7 @@ public class MusicService extends Service {
             this.player = null;
         }
         this.player = player;
+        currentPlayerType = PLAYER_LOCAL;
     }
 
     public LocalPlayer getLocalPlayer(){
@@ -156,6 +46,7 @@ public class MusicService extends Service {
             streamPlayer = null;
         }
 
+        currentPlayerType = PLAYER_LOCAL;
         return player;
     }
 
@@ -164,13 +55,20 @@ public class MusicService extends Service {
             streamPlayer = new StreamPlayer(this);
         }
 
-        if(player != null && player.isPlaying()){
-            player.stop();
+        if(player != null){
+            if(player.isPlaying()) {
+                player.stop();
+            }
             player.release();
             player = null;
         }
 
+        currentPlayerType = PLAYER_STREAM;
         return streamPlayer;
+    }
+
+    public int getCurrentPlayerType() {
+        return currentPlayerType;
     }
 
     public class MusicServiceBinder extends Binder {

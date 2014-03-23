@@ -1,4 +1,4 @@
-package com.lwm.app.fragment;
+package com.lwm.app.ui.fragment;
 
 import android.database.Cursor;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.lwm.app.activity;
+package com.lwm.app.ui.activity;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.lwm.app.R;
-import com.lwm.app.fragment.PlaybackFragment;
+import com.lwm.app.ui.fragment.PlaybackFragment;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.task.SeekBarUpdateTask;

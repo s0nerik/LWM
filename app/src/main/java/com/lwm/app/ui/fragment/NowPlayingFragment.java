@@ -1,4 +1,4 @@
-package com.lwm.app.fragment;
+package com.lwm.app.ui.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import com.lwm.app.R;
 import com.lwm.app.async.AlbumArtAsyncGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.service.MusicService;
 
 public class NowPlayingFragment extends Fragment {
 
@@ -58,10 +59,12 @@ public class NowPlayingFragment extends Fragment {
 //    }
 
     public void setCurrentAlbumArt(){
-        LocalPlayer player = App.getMusicService().getLocalPlayer();
-        if(player != null && player.getPlaylist() != null){
-            Song song = player.getCurrentSong();
-            setAlbumArtFromUri(song.getAlbumArtUri());
+        if(App.getMusicService().getCurrentPlayerType() == MusicService.PLAYER_LOCAL) {
+            LocalPlayer player = App.getMusicService().getLocalPlayer();
+            if (player != null && player.getPlaylist() != null) {
+                Song song = player.getCurrentSong();
+                setAlbumArtFromUri(song.getAlbumArtUri());
+            }
         }
     }
 

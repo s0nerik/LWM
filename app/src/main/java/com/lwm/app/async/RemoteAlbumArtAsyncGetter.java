@@ -1,12 +1,18 @@
 package com.lwm.app.async;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
+import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.ui.fragment.PlaybackFragment;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -17,15 +23,23 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
+    private Context context;
     private ImageView albumArt;
+    private ImageView bg;
     private Bitmap cover;
-    boolean found = true;
+    private Bitmap background;
+    private Drawable newDrawable;
+    private Drawable[] drawables;
+    private TransitionDrawable transitionDrawable;
 
     HttpClient httpclient = new DefaultHttpClient();
     HttpGet httpGetAlbumArt = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_ALBUMART);
 
-    public RemoteAlbumArtAsyncGetter(ImageView albumArt){
+    public RemoteAlbumArtAsyncGetter(Context context, ImageView albumArt, ImageView bg){
         this.albumArt = albumArt;
+        this.bg = bg;
+        this.context = context;
+        drawables = new Drawable[]{bg.getDrawable(), bg.getDrawable()};
     }
 
     @Override
@@ -35,18 +49,40 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
             InputStream is = response.getEntity().getContent();
             cover = BitmapFactory.decodeStream(is);
             if(cover == null){
-                found = false;
+                cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_cover);
             }
+            background = new StackBlurManager(cover).processNatively(PlaybackFragment.BLUR_RADIUS);
         } catch (IOException e) {
-            found = false;
+            e.printStackTrace();
+            cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_cover);
+            background = new StackBlurManager(cover).processNatively(PlaybackFragment.BLUR_RADIUS);
         }
+
+        try{
+            newDrawable = new BitmapDrawable(context.getResources(), background);
+        }catch (IllegalStateException e){}
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if(found)   albumArt.setImageBitmap(cover);
-        else        albumArt.setImageResource(R.drawable.no_cover);
+        albumArt.setImageBitmap(cover);
+
+        if(newDrawable != null){
+            Drawable oldDrawable = bg.getDrawable();
+
+            if(oldDrawable instanceof TransitionDrawable){
+                oldDrawable = ((TransitionDrawable) oldDrawable).getDrawable(1);
+            }
+
+            drawables[0] = oldDrawable;
+            drawables[1] = newDrawable;
+            transitionDrawable = new TransitionDrawable(drawables);
+
+            bg.setImageDrawable(transitionDrawable);
+            transitionDrawable.startTransition(1000);
+        }
+//        bg.setImageBitmap(background);
     }
 
 }

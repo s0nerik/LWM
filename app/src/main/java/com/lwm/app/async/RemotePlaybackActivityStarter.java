@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.lwm.app.App;
-import com.lwm.app.activity.RemotePlaybackActivity;
+import com.lwm.app.ui.activity.RemotePlaybackActivity;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;

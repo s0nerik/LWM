@@ -1,4 +1,4 @@
-package com.lwm.app.custom_view;
+package com.lwm.app.ui.custom_view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

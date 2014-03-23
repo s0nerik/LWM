@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.lwm.app.custom_view.CheckedLinearLayout
+<com.lwm.app.ui.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     style="@style/Card"
@@ -15,7 +15,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp" />
 
-    <com.lwm.app.custom_view.CheckedLinearLayout
+    <com.lwm.app.ui.custom_view.CheckedLinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:gravity="left"
             android:layout_height="0dp" />
 
-    </com.lwm.app.custom_view.CheckedLinearLayout>
+    </com.lwm.app.ui.custom_view.CheckedLinearLayout>
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->
@@ -62,4 +62,4 @@
         <!--android:src="@drawable/ic_action_play"-->
         <!--android:visibility="gone" />-->
 
-</com.lwm.app.custom_view.CheckedLinearLayout>
+</com.lwm.app.ui.custom_view.CheckedLinearLayout>
