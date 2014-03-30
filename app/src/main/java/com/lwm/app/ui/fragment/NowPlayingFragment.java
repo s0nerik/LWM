@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.async.AlbumArtAsyncGetter;
+import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicService;

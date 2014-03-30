@@ -95,7 +95,7 @@ public class PlayersAroundFragment extends ListFragment {
     }
 
     protected void startStreamPlayback(){
-        App.getMusicService().getStreamPlayer().play();
+        App.getMusicService().getStreamPlayer().playFromCurrentPosition();
 //        Intent intent = new Intent(getActivity(), MusicService.class);
 //        intent.setAction(MusicService.ACTION_PLAY_STREAM);
 //        getActivity().startService(intent);

@@ -1,4 +1,4 @@
-package com.lwm.app.async;
+package com.lwm.app.ui.async;
 
 import android.content.Context;
 import android.graphics.Bitmap;

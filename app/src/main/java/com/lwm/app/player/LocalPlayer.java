@@ -9,6 +9,8 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
+import com.lwm.app.server.StreamServer;
+import com.lwm.app.server.async.SwitchClientsSong;
 
 import java.io.IOException;
 
@@ -117,6 +119,11 @@ public class LocalPlayer extends BasePlayer {
             Toast t = Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT);
             t.show();
         }
+
+        if(StreamServer.hasClients()) {
+            pause();
+            new SwitchClientsSong().execute(SwitchClientsSong.NEXT);
+        }
     }
 
     @Override
@@ -140,6 +147,11 @@ public class LocalPlayer extends BasePlayer {
                 Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
                 t.show();
             }
+        }
+
+        if(StreamServer.hasClients()) {
+            pause();
+            new SwitchClientsSong().execute(SwitchClientsSong.PREV);
         }
     }
 

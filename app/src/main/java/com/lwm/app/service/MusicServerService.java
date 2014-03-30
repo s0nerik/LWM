@@ -4,7 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.lwm.app.model.StreamServer;
+import com.lwm.app.server.StreamServer;
 
 import java.io.IOException;
 

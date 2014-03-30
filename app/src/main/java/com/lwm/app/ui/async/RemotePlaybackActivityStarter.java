@@ -1,11 +1,11 @@
-package com.lwm.app.async;
+package com.lwm.app.ui.async;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
-import com.lwm.app.App;
+import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 
 import org.apache.http.client.HttpClient;
@@ -31,7 +31,7 @@ public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
     String tag;
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetInfo = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_INFO);
+    HttpGet httpGetInfo = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_INFO);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
     ProgressDialog progressDialog;

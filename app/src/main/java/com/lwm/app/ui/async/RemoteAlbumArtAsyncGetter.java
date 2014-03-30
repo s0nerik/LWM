@@ -1,4 +1,4 @@
-package com.lwm.app.async;
+package com.lwm.app.ui.async;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import com.enrique.stackblur.StackBlurManager;
-import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.fragment.PlaybackFragment;
 
 import org.apache.http.HttpResponse;
@@ -33,7 +33,7 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
     private TransitionDrawable transitionDrawable;
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetAlbumArt = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_ALBUMART);
+    HttpGet httpGetAlbumArt = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_ALBUMART);
 
     public RemoteAlbumArtAsyncGetter(Context context, ImageView albumArt, ImageView bg){
         this.albumArt = albumArt;

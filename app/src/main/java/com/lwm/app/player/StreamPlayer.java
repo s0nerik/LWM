@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.model.Song;
+import com.lwm.app.server.StreamServer;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -24,7 +25,7 @@ public class StreamPlayer extends BasePlayer {
 
     private Context context;
 
-    private static final Uri STREAM_URI = Uri.parse(App.SERVER_ADDRESS+App.STREAM);
+    private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+ StreamServer.STREAM);
 
     public static final String SONG_CHANGED = "song_changed";
     public static final String PLAYLIST_POSITION = "playlist_position";
@@ -45,7 +46,7 @@ public class StreamPlayer extends BasePlayer {
         });
     }
 
-    public void play(){
+    public void playFromCurrentPosition(){
         new AddressSender().execute();
 
         reset();
@@ -58,12 +59,21 @@ public class StreamPlayer extends BasePlayer {
 
         setActive();
 
-        Log.d(App.TAG, "StreamPlayer: play()");
+        Log.d(App.TAG, "StreamPlayer: playFromCurrentPosition()");
     }
 
     @Override
     public void nextSong() {
-        // TODO: this
+        Log.d(App.TAG, "StreamPlayer: nextSong");
+
+        reset();
+        try {
+            setDataSource(context, STREAM_URI);
+            prepare();
+            new ReadinessReporter().execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -82,7 +92,7 @@ public class StreamPlayer extends BasePlayer {
 
     private class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGetPosition = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_POSITION);
+        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_POSITION);
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         int pos;
         long correctionStart, correctionEnd, correction;
@@ -115,7 +125,7 @@ public class StreamPlayer extends BasePlayer {
 
     private class SongInfoGetter extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGetPosition = new HttpGet(App.SERVER_ADDRESS+App.CURRENT_INFO);
+        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_INFO);
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         Song song;
 
@@ -149,7 +159,7 @@ public class StreamPlayer extends BasePlayer {
 
     private class AddressSender extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostIP = new HttpPost(App.SERVER_ADDRESS+"/ip/"+ Connectivity.getIP(context));
+        HttpPost httpPostIP = new HttpPost(StreamServer.SERVER_ADDRESS+"/ip/"+ Connectivity.getIP(context));
 
         @Override
         protected Void doInBackground(Void... aVoid){
@@ -158,6 +168,25 @@ public class StreamPlayer extends BasePlayer {
                 httpclient.execute(httpPostIP);
             } catch (IOException e) {
                 Log.e(App.TAG, "Error: AddressSender");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+    }
+
+    private class ReadinessReporter extends AsyncTask<Void, Void, Void> {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPostReady = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_READY+Connectivity.getIP(context));
+
+        @Override
+        protected Void doInBackground(Void... aVoid){
+
+            try {
+                httpclient.execute(httpPostReady);
+            } catch (IOException e) {
+                Log.e(App.TAG, "Error: ReadinessReporter");
                 e.printStackTrace();
             }
 
