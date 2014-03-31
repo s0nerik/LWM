@@ -78,7 +78,16 @@ public class StreamPlayer extends BasePlayer {
 
     @Override
     public void prevSong() {
-        // TODO: this
+        Log.d(App.TAG, "StreamPlayer: prevSong");
+
+        reset();
+        try {
+            setDataSource(context, STREAM_URI);
+            prepare();
+            new ReadinessReporter().execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
