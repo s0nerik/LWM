@@ -1,6 +1,6 @@
 <resources>
     <dimen name="albumart_size">300dp</dimen>
     <dimen name="start_screen_portrait_button_size">225dp</dimen>
-    <dimen name="start_screen_land_button_size">260dp</dimen>
+    <dimen name="start_screen_land_button_size">265dp</dimen>
 
 </resources>

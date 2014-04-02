@@ -10,16 +10,16 @@
 
     <LinearLayout
         android:id="@+id/start_screen_local_music_button"
-        style="@style/StartScreenRoundButton"
+        style="@style/StartScreenRoundButtonLand"
         android:onClick="onPlayerTypeChosen"
 
         android:orientation="vertical"
         android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_centerInParent="true"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="25dp">
+        android:layout_marginRight="10dp"
+        android:layout_alignParentLeft="true">
 
         <com.caverock.androidsvg.SVGImageView
             android:id="@+id/start_screen_local_music_button_icon"
@@ -42,17 +42,15 @@
 
     <LinearLayout
         android:id="@+id/start_screen_remote_music_button"
-        style="@style/StartScreenRoundButton"
+        style="@style/StartScreenRoundButtonLand"
         android:onClick="onPlayerTypeChosen"
 
 
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
         android:layout_marginRight="25dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true">
 
         <com.caverock.androidsvg.SVGImageView
             android:id="@+id/start_screen_remote_music_button_icon"
