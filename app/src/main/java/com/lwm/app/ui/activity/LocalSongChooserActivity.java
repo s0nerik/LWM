@@ -46,7 +46,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_broadcast);
+        setContentView(R.layout.activity_local_song_chooser);
 
         initActionBar();
         initNavigationDrawer();

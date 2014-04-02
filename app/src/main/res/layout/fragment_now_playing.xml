@@ -6,7 +6,7 @@
 
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:background="#000000"
+    android:background="#ee000000"
     android:id="@+id/fragment_now_playing"
     android:onClick="onNowPlayingBarClicked"
     android:layout_height="wrap_content">
