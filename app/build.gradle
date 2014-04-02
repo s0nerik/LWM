@@ -45,4 +45,6 @@ dependencies {
     compile project(':libs:StackBlur')
     compile project(':libs:Fontify')
     compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.android.support:gridlayout-v7:+'
+    compile project(':libs:androidsvg')
 }

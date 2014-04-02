@@ -2,6 +2,8 @@ package com.lwm.app.ui.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -13,24 +15,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
-import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.ui.fragment.PlaylistFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 
-public abstract class BasicActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
+public abstract class BasicActivity extends ActionBarActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
-    public static final String SPINNER_SELECTION = "spinner_selection";
 
-    protected enum DrawerItem { SONGS, ARTISTS, ALBUMS, PLAYLISTS }
-    protected enum SpinnerItems { PLAYER, RECEIVER }
+    protected enum DrawerItems { SONGS, ARTISTS, ALBUMS, PLAYLISTS }
 
     protected FragmentManager fragmentManager = getSupportFragmentManager();
     protected DrawerLayout drawerLayout;
@@ -42,14 +40,7 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
 
     protected void initActionBar(){
         actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        actionBar.setDisplayShowTitleEnabled(false);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                actionBar.getThemedContext(),
-                R.array.spinner_names,
-                android.R.layout.simple_list_item_1);
-        adapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
-        actionBar.setListNavigationCallbacks(adapter, this);
+        actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
@@ -105,10 +96,12 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
         fragmentManager.beginTransaction()
                 .replace(R.id.container, getFragmentFromDrawer(i))
                 .commit();
+        activeFragment = i;
+        updateActionBarTitle();
     }
 
-    private Fragment getFragmentFromDrawer(int i){
-        switch(DrawerItem.values()[i]){
+    protected Fragment getFragmentFromDrawer(int i){
+        switch(DrawerItems.values()[i]){
             case SONGS:
                 return new SongsListFragment();
             case ARTISTS:
@@ -121,26 +114,34 @@ public abstract class BasicActivity extends ActionBarActivity implements ActionB
         return null;
     }
 
-    @Override
-    public boolean onNavigationItemSelected(int i, long l) {
-        sharedPreferences.edit().putInt(SPINNER_SELECTION, i);
-        switch(SpinnerItems.values()[i]){
-            case PLAYER:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, getFragmentFromDrawer(sharedPreferences.getInt(DRAWER_SELECTION, 0)))
-                        .commit();
-                return true;
-
-            case RECEIVER:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new PlayersAroundFragment(), "players_around_list")
-                        .commit();
-                return true;
-
+    protected void updateActionBarTitle(){
+        Resources resources = getResources();
+        String title;
+        Drawable icon;
+        switch(DrawerItems.values()[activeFragment]){
+            case SONGS:
+                title = resources.getString(R.string.actionbar_title_songs);
+                icon = resources.getDrawable(R.drawable.ic_drawer_songs_active);
+                break;
+            case ALBUMS:
+                title = resources.getString(R.string.actionbar_title_albums);
+                icon = resources.getDrawable(R.drawable.ic_drawer_albums_active);
+                break;
+            case ARTISTS:
+                title = resources.getString(R.string.actionbar_title_artists);
+                icon = resources.getDrawable(R.drawable.ic_drawer_artists_active);
+                break;
+            case PLAYLISTS:
+                title = resources.getString(R.string.actionbar_title_playlists);
+                icon = resources.getDrawable(R.drawable.ic_drawer_playlists_active);
+                break;
             default:
-                return true;
+                title = "Listen With Me!";
+                icon = resources.getDrawable(R.drawable.ic_launcher);
+                break;
         }
-
+        actionBar.setTitle(title);
+        actionBar.setIcon(icon);
     }
 
     @Override

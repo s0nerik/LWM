@@ -35,7 +35,7 @@ public abstract class BasePlayer extends MediaPlayer {
         active = true;
     }
 
-    public boolean isInstanceActive(){
+    public boolean isActive(){
         return active;
     }
 

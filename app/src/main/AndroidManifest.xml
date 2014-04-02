@@ -6,25 +6,35 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.net.conn.CONNECTIVITY_CHANGE" />
 
     <application
+        android:name="com.lwm.app.App"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".App">
-
-        <service android:name=".service.MusicService" android:enabled="true" />
-        <service android:name=".service.MusicServerService" />
+        android:theme="@style/AppTheme" >
+        <service
+            android:name="com.lwm.app.service.MusicService"
+            android:enabled="true" />
+        <service android:name="com.lwm.app.service.MusicServerService" />
 
         <activity
-            android:name=".ui.activity.BroadcastActivity"
+            android:name="com.lwm.app.ui.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.LocalSongChooserActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
 
                 <action android:name="com.lwm.player.action.PLAY_SONG" />
                 <action android:name="com.lwm.player.action.PAUSE_SONG" />
@@ -32,17 +42,16 @@
                 <action android:name="com.lwm.player.action.NEXT_SONG" />
                 <action android:name="com.lwm.player.action.PREV_SONG" />
                 <action android:name="com.lwm.player.action.SONG_SEEK_TO" />
-
                 <action android:name="com.lwm.player.action.PLAY_STREAM" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".ui.activity.LocalPlaybackActivity"
-            android:theme="@style/PlaybackActivityStyle"
-            android:parentActivityName=".ui.activity.BroadcastActivity" >
+            android:name="com.lwm.app.ui.activity.LocalPlaybackActivity"
+            android:parentActivityName=".ui.activity.LocalSongChooserActivity"
+            android:theme="@style/PlaybackActivityStyle" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,17 +59,21 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.RemotePlaybackActivity"
-            android:parentActivityName=".ui.activity.BroadcastActivity" >
+            android:name="com.lwm.app.ui.activity.RemotePlaybackActivity"
+            android:parentActivityName=".ui.activity.LocalSongChooserActivity" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.BroadcastActivity" />
         </activity>
 
-        <activity
-            android:name=".ui.activity.PreferenceActivity" />
+        <activity android:name="com.lwm.app.ui.activity.PreferenceActivity" />
 
+        <activity
+            android:name="com.lwm.app.ui.activity.StationChooserActivity"
+            android:label="@string/title_activity_station_chooser" >
+        </activity>
     </application>
 
 </manifest>

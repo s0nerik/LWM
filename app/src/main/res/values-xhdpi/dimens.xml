@@ -1,4 +1,5 @@
 <resources>
     <dimen name="albumart_size">300dp</dimen>
+    <dimen name="start_screen_portrait_button_size">225dp</dimen>
 
 </resources>

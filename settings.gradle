@@ -1,1 +1,1 @@
-include ':app', ':libs:UnifiedPreference', ':libs:StackBlur', ':libs:Fontify'
+include ':app', ':libs:UnifiedPreference', ':libs:StackBlur', ':libs:Fontify', ':libs:androidsvg'

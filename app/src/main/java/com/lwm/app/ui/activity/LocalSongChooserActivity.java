@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -17,20 +16,16 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.ui.fragment.NowPlayingFragment;
-import com.lwm.app.ui.fragment.OnSongSelectedListener;
-import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerListener;
 import com.lwm.app.service.MusicService;
+import com.lwm.app.ui.fragment.NowPlayingFragment;
+import com.lwm.app.ui.fragment.OnSongSelectedListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BroadcastActivity extends BasicActivity implements
+public class LocalSongChooserActivity extends BasicActivity implements
         OnSongSelectedListener, WifiAPListener, PlayerListener {
 
     private MusicService musicService;
@@ -41,20 +36,6 @@ public class BroadcastActivity extends BasicActivity implements
         @Override
         public void onReceive(Context context, Intent i) {
             switch(i.getAction()){
-                case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
-                    Log.d(App.TAG, "SCAN_RESULTS_AVAILABLE_ACTION");
-                    PlayersAroundFragment fragment = (PlayersAroundFragment) fragmentManager.findFragmentByTag("players_around_list");
-                    if(fragment != null){
-                        List<String> ssids = new ArrayList<>();
-                        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-                        for(ScanResult result:wm.getScanResults()){
-                            if(result.SSID.endsWith(WifiAP.AP_NAME_POSTFIX)){
-                                ssids.add(result.SSID.replace(WifiAP.AP_NAME_POSTFIX, ""));
-                            }
-                        }
-                        fragment.setSSIDs(ssids);
-                    }
-                    break;
                 case App.SERVICE_BOUND:
                     onServiceBound();
                     break;
@@ -70,13 +51,18 @@ public class BroadcastActivity extends BasicActivity implements
         initActionBar();
         initNavigationDrawer();
 
+        if(savedInstanceState == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, getFragmentFromDrawer(sharedPreferences.getInt(DRAWER_SELECTION, 0)))
+                    .commit();
+        }
+
         nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
 
         assert nowPlaying != null : "nowPlaying == null";
         fragmentManager.beginTransaction()
                 .hide(nowPlaying)
                 .commit();
-
     }
 
     private void onServiceBound(){
@@ -95,9 +81,8 @@ public class BroadcastActivity extends BasicActivity implements
 
     @Override
     protected void onResume() {
-        Log.d(App.TAG, "BroadcastActivity: onResume");
+        Log.d(App.TAG, "LocalSongChooserActivity: onResume");
         super.onResume();
-        registerReceiver(onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
 
         nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
@@ -108,13 +93,14 @@ public class BroadcastActivity extends BasicActivity implements
             if(player != null){
                 player.registerListener(this);
 
-                if(actionBar.getSelectedNavigationIndex() == 0 && player.isInstanceActive()){
+                if(player.isActive()){
                     showNowPlayingBar();
                 }
 
             }
         }
 
+        updateActionBarTitle();
     }
 
     @Override
@@ -220,7 +206,7 @@ public class BroadcastActivity extends BasicActivity implements
 
     @Override
     public void onSongChanged(Song song) {
-        Log.d(App.TAG, "BroadcastActivity: onSongChanged");
+        Log.d(App.TAG, "LocalSongChooserActivity: onSongChanged");
 
         FragmentManager fm = getSupportFragmentManager();
         ListFragment listFragment = (ListFragment) fm.findFragmentById(R.id.container);
@@ -228,4 +214,5 @@ public class BroadcastActivity extends BasicActivity implements
         listFragment.setSelection(pos);
         showNowPlayingBar();
     }
+
 }
