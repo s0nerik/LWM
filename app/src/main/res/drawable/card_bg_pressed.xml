@@ -19,10 +19,10 @@
 
             <solid android:color="@color/pressed" />
 
-            <padding android:bottom="2dp"
-                android:left="2dp"
-                android:right="2dp"
-                android:top="2dp" />
+            <!--<padding android:bottom="2dp"-->
+                <!--android:left="2dp"-->
+                <!--android:right="2dp"-->
+                <!--android:top="2dp" />-->
         </shape>
     </item>
 </layer-list>

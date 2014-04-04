@@ -7,13 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.lwm.app.R;
-import com.lwm.app.adapter.AlbumsCursorAdapter;
+import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.helper.AlbumsCursorGetter;
-import com.lwm.app.helper.SongsCursorGetter;
-import com.lwm.app.model.Playlist;
+import com.lwm.app.model.AlbumsList;
 
 public class AlbumsListFragment extends ListFragment {
 
@@ -26,23 +24,23 @@ public class AlbumsListFragment extends ListFragment {
 
         AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter(getActivity());
         albums = cursorGetter.getAlbums();
-        ListAdapter adapter = new AlbumsCursorAdapter(getActivity(), albums);
+        ListAdapter adapter = new AlbumsAdapter(getActivity(), new AlbumsList(albums));
         setListAdapter(adapter);
         return inflater.inflate(R.layout.fragment_list_albums, container, false);
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        albums.moveToPosition(position);
-        long albumId = albums.getLong(AlbumsCursorGetter._ID);
-        albums.close();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .addToBackStack("albums_fragment")
-                .replace(R.id.container,
-                        new PlaylistFragment(
-                            new Playlist(new SongsCursorGetter(getActivity())
-                                    .getSongs(albumId))))
-                .commit();
-    }
+//    @Override
+//    public void onListItemClick(ListView l, View v, int position, long id) {
+//        super.onListItemClick(l, v, position, id);
+//        albums.moveToPosition(position);
+//        long albumId = albums.getLong(AlbumsCursorGetter._ID);
+//        albums.close();
+//        getActivity().getSupportFragmentManager().beginTransaction()
+//                .addToBackStack("albums_fragment")
+//                .replace(R.id.container,
+//                        new PlaylistFragment(
+//                            new Playlist(new SongsCursorGetter(getActivity())
+//                                    .getSongs(albumId))))
+//                .commit();
+//    }
 }

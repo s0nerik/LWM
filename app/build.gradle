@@ -47,4 +47,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.android.support:gridlayout-v7:+'
     compile project(':libs:androidsvg')
+    compile files('../libs/universal-image-loader-1.9.1.jar')
 }

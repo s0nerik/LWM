@@ -14,6 +14,8 @@ public class AlbumsCursorGetter {
             MediaStore.Audio.Albums.ALBUM,
             MediaStore.Audio.Albums.ALBUM_ART,
             MediaStore.Audio.Albums.ARTIST,
+            MediaStore.Audio.Albums.FIRST_YEAR,
+            MediaStore.Audio.Albums.NUMBER_OF_SONGS,
 //            MediaStore.Audio.Albums.ALBUM_KEY
 //            MediaStore.Audio.AudioColumns.ALBUM_ID
     };
@@ -21,10 +23,12 @@ public class AlbumsCursorGetter {
     private String selection = null;
     private String[] selectionArgs = null;
 
-    public static final int _ID          = 0;
-    public static final int ALBUM        = 1;
-    public static final int ALBUM_ART    = 2;
-    public static final int ARTIST       = 3;
+    public static final int _ID             = 0;
+    public static final int ALBUM           = 1;
+    public static final int ALBUM_ART       = 2;
+    public static final int ARTIST          = 3;
+    public static final int FIRST_YEAR      = 4;
+    public static final int NUMBER_OF_SONGS = 5;
 //    public static final int ALBUM_KEY    = 4;
 //    public static final int ALBUM_ID     = 4;
 
