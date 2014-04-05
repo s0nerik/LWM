@@ -13,6 +13,7 @@ import com.lwm.app.server.StreamServer;
 import com.lwm.app.server.async.SwitchClientsSong;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class LocalPlayer extends BasePlayer {
 
@@ -20,6 +21,7 @@ public class LocalPlayer extends BasePlayer {
     private static int listSize;
     private static Playlist playlist;
     private Context context;
+    private ArrayList<Song> queue = new ArrayList<>();
 
     private OnPreparedListener onPreparedListener = new OnPreparedListener() {
         @Override

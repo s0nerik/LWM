@@ -16,9 +16,8 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
 
-            android:textSize="18sp"
+            android:textSize="@dimen/actionbar_primary_text_size"
             android:textColor="#ffffff"
 
             android:shadowColor="#000000"
@@ -30,13 +29,13 @@
 
         <com.danh32.fontify.TextView
             android:id="@+id/subtitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+
             android:maxLines="1"
             android:ellipsize="end"
             android:text=""
-            android:textSize="16sp"
+            android:textSize="@dimen/actionbar_secondary_text_size"
             android:textColor="#eeeeee"
 
             android:shadowColor="#000000"

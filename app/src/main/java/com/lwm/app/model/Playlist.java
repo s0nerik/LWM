@@ -10,7 +10,6 @@ import java.util.List;
 public class Playlist {
 
     private List<Song> songs = new ArrayList<>();
-//    private int currentPosition = 0;
 
     public Playlist(Cursor cursor){
         if(cursor.moveToFirst()) {
@@ -30,18 +29,6 @@ public class Playlist {
         cursor.close();
     }
 
-//    public void next(){
-//        currentPosition++;
-//    }
-//
-//    public void prev(){
-//        currentPosition--;
-//    }
-//
-//    public void moveTo(int pos){
-//        currentPosition = pos;
-//    }
-
     public Song getSong(int pos) {
         return songs.get(pos);
     }
@@ -50,7 +37,12 @@ public class Playlist {
         return songs;
     }
 
+    public void append(Playlist playlist){
+        songs.addAll(playlist.getSongs());
+    }
+
     public int size(){
         return songs.size();
     }
+
 }
