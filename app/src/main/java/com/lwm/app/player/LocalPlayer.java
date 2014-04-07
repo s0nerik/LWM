@@ -18,8 +18,7 @@ import java.util.ArrayList;
 public class LocalPlayer extends BasePlayer {
 
     private int currentListPosition = -1;
-    private static int listSize;
-    private static Playlist playlist;
+    private static Playlist playlist = new Playlist();
     private Context context;
     private ArrayList<Song> queue = new ArrayList<>();
 
@@ -66,7 +65,6 @@ public class LocalPlayer extends BasePlayer {
 
     public static void setPlaylist(Playlist newPlaylist){
         playlist = newPlaylist;
-        listSize = playlist.size();
     }
 
     public static Playlist getPlaylist(){
@@ -77,7 +75,7 @@ public class LocalPlayer extends BasePlayer {
         Log.d(App.TAG, "getCurrentSong");
 
 //        assert playlist != null : "playlist == null";
-        if(playlist != null){
+        if(!playlist.isEmpty()){
             return playlist.getSong(currentListPosition);
         }else{
             return null;
@@ -110,6 +108,8 @@ public class LocalPlayer extends BasePlayer {
         Log.d(App.TAG, "LocalPlayer: nextSong");
 
         played.add(currentListPosition);
+
+        int listSize = playlist.size();
 
         if(shuffle){
             currentListPosition = generator.nextInt(listSize-1);

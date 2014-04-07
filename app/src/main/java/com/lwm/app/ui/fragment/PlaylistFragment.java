@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -15,10 +18,12 @@ import com.lwm.app.adapter.PlaylistAdapter;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.player.LocalPlayer;
 
-public class PlaylistFragment extends ListFragment {
+public class PlaylistFragment extends ListFragment implements QueueManager {
 
-    private Playlist playlist;
+    protected Playlist playlist;
     private LocalPlayer player;
+
+    private MenuItem addToQueueButton;
 
     OnSongSelectedListener mCallback;
 
@@ -49,6 +54,12 @@ public class PlaylistFragment extends ListFragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnSongSelectedListener");
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -106,4 +117,26 @@ public class PlaylistFragment extends ListFragment {
         mCallback.onSongSelected(position);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.playlist, menu);
+        addToQueueButton = menu.findItem(R.id.action_add_to_queue);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_add_to_queue:
+                addToPlaybackQueue();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void addToPlaybackQueue() {
+        LocalPlayer.getPlaylist().append(playlist);
+    }
 }

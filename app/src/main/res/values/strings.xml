@@ -6,6 +6,7 @@
     <string name="btn_connect">Connect</string>
     <string name="action_connect">Connect to the stream</string>
     <string name="action_broadcast">Broadcast</string>
+    <string name="action_add_to_queue">Add to playback queue</string>
     <string name="btn_broadcast">Broadcast</string>
     <string name="btn_listen">Listen</string>
     <string name="artists_list_item_caption_albums">Albums:</string>
@@ -18,7 +19,12 @@
     <string name="summary_ap_name_preference">Give name to your AP</string>
     <string name="local_music">Local music</string>
     <string name="remote_music">Remote music</string>
-    // Font names    <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>
+    
+    <string name="songs_count_title">SONGS:</string>
+    <string name="year_title">YEAR:</string>
+
+    // Font names
+    <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>
     <string name="FONT_ROBOTO_BOLD">fonts/Roboto-Bold.ttf</string>
     <string name="FONT_ROBOTO_LIGHT">fonts/Roboto-Light.ttf</string>
     <string name="FONT_ROBOTO_THIN">fonts/Roboto-Thin.ttf</string>
@@ -44,10 +50,10 @@
     </string-array>
 
     <string name="title_activity_station_chooser">Choose a station</string>
-
     <string name="actionbar_title_songs">Songs</string>
     <string name="actionbar_title_albums">Albums</string>
     <string name="actionbar_title_artists">Artists</string>
     <string name="actionbar_title_playlists">Playlists</string>
+    <string name="title_activity_album_info">AlbumInfoActivity</string>
 
 </resources>

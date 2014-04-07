@@ -1,5 +1,6 @@
 package com.lwm.app.ui.fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -12,9 +13,8 @@ import android.widget.ListView;
 import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.helper.AlbumsCursorGetter;
-import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.AlbumsList;
-import com.lwm.app.model.Playlist;
+import com.lwm.app.ui.activity.AlbumInfoActivity;
 
 public class AlbumsListFragment extends ListFragment {
 
@@ -39,15 +39,19 @@ public class AlbumsListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-//        albums.moveToPosition(position);
-        long albumId = albumsList.getAlbums().get(position).getId();
-//        albums.close();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .addToBackStack("albums_fragment")
-                .replace(R.id.container,
-                        new PlaylistFragment(
-                            new Playlist(new SongsCursorGetter(getActivity())
-                                    .getSongs(albumId))))
-                .commit();
+////        albums.moveToPosition(position);
+//        long albumId = albumsList.getAlbums().get(position).getId();
+////        albums.close();
+//        getActivity().getSupportFragmentManager().beginTransaction()
+//                .addToBackStack("albums_fragment")
+//                .replace(R.id.container,
+//                        new PlaylistFragment(
+//                            new Playlist(new SongsCursorGetter(getActivity())
+//                                    .getSongs(albumId))))
+//                .commit();
+
+        Intent intent = new Intent(getActivity(), AlbumInfoActivity.class);
+        intent.putExtra("album_id", albumsList.getAlbums().get(position).getId());
+        startActivity(intent);
     }
 }

@@ -1,0 +1,85 @@
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="#eeeeee"
+    android:dividerHeight="1dp"
+    android:id="@android:id/list" />
+
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:fontify="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+    <!--tools:context="com.lwm.app.ui.activity.AlbumInfoActivity">-->
+
+    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:name="com.lwm.app.ui.fragment.PlaylistFragment"-->
+        <!--tools:layout="@layout/fragment_playlist" />-->
+
+    <!--&lt;!&ndash;<RelativeLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@drawable/background_main_activity">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="150dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="150dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/album_art"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_alignParentStart="true" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/songs_count_layout"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginTop="5dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_toRightOf="@+id/album_art">&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<com.danh32.fontify.TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="@string/songs_count_title"&ndash;&gt;-->
+                <!--&lt;!&ndash;fontify:font="@string/FONT_ROBOTO_REGULAR" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<com.danh32.fontify.TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/songs_count"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;fontify:font="@string/FONT_ROBOTO_REGULAR" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/year_layout"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_toRightOf="@+id/album_art"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_below="@+id/songs_count_layout"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginTop="5dp" >&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<com.danh32.fontify.TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="@string/year_title"&ndash;&gt;-->
+                <!--&lt;!&ndash;fontify:font="@string/FONT_ROBOTO_REGULAR" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<com.danh32.fontify.TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/year"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;fontify:font="@string/FONT_ROBOTO_REGULAR" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+<!--</FrameLayout>-->

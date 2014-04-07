@@ -61,7 +61,7 @@ public class NowPlayingFragment extends Fragment {
     public void setCurrentAlbumArt(){
         if(App.getMusicService().getCurrentPlayerType() == MusicService.PLAYER_LOCAL) {
             LocalPlayer player = App.getMusicService().getLocalPlayer();
-            if (player != null && player.getPlaylist() != null) {
+            if (player != null && player.isActive()) {
                 Song song = player.getCurrentSong();
                 setAlbumArtFromUri(song.getAlbumArtUri());
             }

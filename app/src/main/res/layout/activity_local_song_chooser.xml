@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,17 +13,17 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:id="@+id/container" />
 
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/fragment_now_playing"
-            android:layout_alignParentBottom="true"
             android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
             tools:layout="@layout/fragment_now_playing" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/left_drawer"

@@ -11,6 +11,8 @@ public class Playlist {
 
     private List<Song> songs = new ArrayList<>();
 
+    public Playlist(){}
+
     public Playlist(Cursor cursor){
         if(cursor.moveToFirst()) {
             do{
@@ -43,6 +45,10 @@ public class Playlist {
 
     public int size(){
         return songs.size();
+    }
+
+    public boolean isEmpty(){
+        return songs.isEmpty();
     }
 
 }

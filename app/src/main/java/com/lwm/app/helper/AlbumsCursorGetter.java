@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import com.lwm.app.model.Album;
+
 public class AlbumsCursorGetter {
 
     private String artist;
@@ -56,6 +58,25 @@ public class AlbumsCursorGetter {
                 MediaStore.Audio.Albums.DEFAULT_SORT_ORDER
         );
 
+    }
+
+    public Album getAlbumById(long id){
+        String selection = MediaStore.Audio.Albums._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        Cursor cursor = caller.getContentResolver().query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
+
+        cursor.moveToFirst();
+        return new Album(cursor.getInt(_ID),
+                cursor.getString(ALBUM),
+                cursor.getString(ARTIST),
+                cursor.getInt(FIRST_YEAR),
+                cursor.getString(ALBUM_ART),
+                cursor.getInt(NUMBER_OF_SONGS));
     }
 
 }
