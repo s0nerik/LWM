@@ -14,6 +14,7 @@
         android:padding="4dp"
         android:listSelector="@android:color/transparent"
         android:divider="@android:color/transparent"
+        android:fastScrollEnabled="true"
         android:dividerHeight="4dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

@@ -33,6 +33,7 @@
             android:id="@+id/songs_list_item_duration"
             android:checkMark="@null"
             android:padding="6dp"
+            android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="14sp"
