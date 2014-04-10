@@ -69,7 +69,6 @@
         </activity>
         <activity
             android:name="com.lwm.app.ui.activity.AlbumInfoActivity"
-            android:label="@string/title_activity_album_info"
             android:theme="@style/AppTheme.TranslucentActionBar"
             android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
 

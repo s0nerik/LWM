@@ -90,16 +90,4 @@
         <item name="android:paddingBottom">0dp</item>
     </style>
 
-    <style name="StartScreenRoundButton">
-        <item name="android:background">@drawable/selector_roundbutton</item>
-        <item name="android:layout_width">@dimen/start_screen_portrait_button_size</item>
-        <item name="android:layout_height">@dimen/start_screen_portrait_button_size</item>
-    </style>
-
-    <style name="StartScreenRoundButtonLand">
-        <item name="android:background">@drawable/selector_roundbutton</item>
-        <item name="android:layout_width">@dimen/start_screen_land_button_size</item>
-        <item name="android:layout_height">@dimen/start_screen_land_button_size</item>
-    </style>
-
 </resources>

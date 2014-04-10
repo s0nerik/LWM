@@ -9,6 +9,11 @@
             android:title="@string/title_ap_name_preference"
             android:summary="@string/summary_ap_name_preference" />
 
+        <CheckBoxPreference
+            android:key="ap_clients_can_manage"
+            android:title="@string/title_ap_clients_can_manage_preference"
+            android:summary="@string/summary_ap_clients_can_manage_preference" />
+
     <!--</PreferenceCategory>-->
 
 </PreferenceScreen>

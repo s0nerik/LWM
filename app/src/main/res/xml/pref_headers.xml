@@ -2,7 +2,7 @@
     xmlns:unified="http://schemas.android.com/apk/res-auto" >
 
     <header
-        unified:up_fragment="com.lwm.app.activity.PreferenceActivity$AccessPointSettingsFragment"
+        unified:up_fragment="com.lwm.app.ui.activity.PreferenceActivity$AccessPointSettingsFragment"
         unified:up_title="@string/pref_header_ap"
         unified:up_preferenceRes="@xml/pref_ap" />
 
