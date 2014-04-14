@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
+import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerListener;
@@ -32,12 +35,12 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(App.isMusicServiceBound()){
+//        if(App.isMusicServiceBound()){
             player = App.getMusicService().getLocalPlayer();
             playbackFragment.setPlayButton(player.isPlaying());
             playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
             playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
-        }
+//        }
     }
 
     @Override
@@ -79,9 +82,15 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        setSongInfo(player.getCurrentSong());
+        setSongInfo(LocalPlayer.getCurrentSong());
         player.registerListener(this);
     }
+
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        player.unregisterListener();
+//    }
 
     @Override
     protected void onPause() {
@@ -141,17 +150,44 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     }
 
     @Override
-    public void onEnableAP() {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.broadcast, menu);
+
+        broadcastButton = menu.findItem(R.id.action_broadcast);
+
+        setBroadcastButtonState(0);
+        return true;
+    }
+
+    @Override
+    public void onChangeAPState() {
         setMenuProgressIndicator(true);
     }
 
     @Override
-    public void onAPEnabled() {
+    public void onAPStateChanged() {
         setMenuProgressIndicator(false);
+        setBroadcastButtonState(4000);
     }
 
     @Override
     public void onSongChanged(Song song) {
         setSongInfo(song);
+    }
+
+    private void setBroadcastButtonState(int wait){
+        final WifiApManager manager = new WifiApManager(this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(manager.isWifiApEnabled()){
+                    broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
+                }else{
+                    broadcastButton.setIcon(R.drawable.ic_action_broadcast);
+                }
+            }
+        }, wait);
+
     }
 }

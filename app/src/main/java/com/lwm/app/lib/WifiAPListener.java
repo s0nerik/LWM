@@ -1,6 +1,6 @@
 package com.lwm.app.lib;
 
 public interface WifiAPListener {
-    public void onEnableAP();
-    public void onAPEnabled();
+    public void onChangeAPState();
+    public void onAPStateChanged();
 }

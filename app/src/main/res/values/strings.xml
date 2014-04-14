@@ -5,9 +5,12 @@
     <string name="app_name">Listen With Me!</string>
     <string name="action_settings">Settings</string>
     <string name="btn_connect">Connect</string>
+
     <string name="action_connect">Connect to the stream</string>
     <string name="action_broadcast">Broadcast</string>
     <string name="action_add_to_queue">Add to playback queue</string>
+    <string name="action_shuffle">Shuffle all</string>
+
     <string name="btn_broadcast">Broadcast</string>
     <string name="btn_listen">Listen</string>
     <string name="artists_list_item_caption_albums">Albums:</string>
@@ -39,6 +42,7 @@
     // AlbumInfoActivity
     <string name="songs_count_title">SONGS:</string>
     <string name="year_title">YEAR:</string>
+    <string name="year_unknown">UNKNOWN</string>
 
     // Font names
     <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>

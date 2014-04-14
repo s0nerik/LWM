@@ -1,26 +1,34 @@
 package com.lwm.app.player;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
-import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
-import com.lwm.app.server.async.SwitchClientsSong;
+import com.lwm.app.server.async.ClientManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class LocalPlayer extends BasePlayer {
 
-    private int currentListPosition = -1;
-    private static Playlist playlist = new Playlist();
     private Context context;
-    private ArrayList<Song> queue = new ArrayList<>();
+
+    private static boolean active;
+    private static int currentQueuePosition;
+    private static Song currentSong;
+    private static List<Song> queue;
+
+    private List<Integer> indexes = new ArrayList<>();
+
+    private Random generator = new Random();
 
     private OnPreparedListener onPreparedListener = new OnPreparedListener() {
         @Override
@@ -39,7 +47,7 @@ public class LocalPlayer extends BasePlayer {
 
             if(getCurrentPosition() > getDuration()-1000){
                 if(isRepeat()){
-                    play(currentListPosition);
+                    play(currentQueuePosition);
                 }else{
                     nextSong();
                 }
@@ -49,83 +57,99 @@ public class LocalPlayer extends BasePlayer {
 
     public LocalPlayer(Context context){
         this.context = context;
+        active = false;
+        currentQueuePosition = -1;
+        queue = new ArrayList<>();
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
 //        setOnPreparedListener(onPreparedListener);
     }
 
-    public LocalPlayer(Context context, Playlist playlist){
+    public LocalPlayer(Context context, List<Song> playlist){
         this.context = context;
-        setPlaylist(playlist);
+        active = false;
+        currentQueuePosition = -1;
+        queue = playlist;
         setOnCompletionListener(onCompletionListener);
-        setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
-        setRepeat(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("repeat", false));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        setShuffle(sharedPreferences.getBoolean("shuffle", false));
+        setRepeat(sharedPreferences.getBoolean("repeat", false));
 //        setOnPreparedListener(onPreparedListener);
     }
 
-    public static void setPlaylist(Playlist newPlaylist){
-        playlist = newPlaylist;
+    public static void setQueue(List<Song> newQueue){
+        queue = newQueue;
     }
 
-    public static Playlist getPlaylist(){
-        return playlist;
+    public static List<Song> getQueue(){
+        return queue;
     }
 
-    public Song getCurrentSong(){
+    public static Song getCurrentSong(){
         Log.d(App.TAG, "getCurrentSong");
 
-//        assert playlist != null : "playlist == null";
-        if(!playlist.isEmpty()){
-            return playlist.getSong(currentListPosition);
-        }else{
-            return null;
-        }
+        return currentSong;
+//        assert queue != null : "queue == null";
+//        if(!queue.isEmpty()){
+//            return queue.get(currentQueuePosition);
+//        }else{
+//            return null;
+//        }
     }
 
     public void play(int position){
-        currentListPosition = position;
+        currentQueuePosition = position;
+        currentSong = queue.get(position);
 
         reset();
         try {
-            assert playlist != null : "playlist == null";
-            setDataSource(playlist.getSong(position).getSource());
+            assert queue != null : "queue == null";
+            setDataSource(currentSong.getSource());
             prepare();
             start();
+            active = true;
             if(isListenerAttached()){
-                playbackListener.onSongChanged(getCurrentSong());
+                playbackListener.onSongChanged(currentSong);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        setActive();
+        if(StreamServer.hasClients()) {
+            pause();
+            new ClientManager().execute(ClientManager.Command.PLAY);
+        }
 
         Log.d(App.TAG, "LocalPlayer: play("+position+")");
+    }
+
+    public static boolean hasCurrentSong() {
+        return active;
     }
 
     @Override
     public void nextSong() {
         Log.d(App.TAG, "LocalPlayer: nextSong");
 
-        played.add(currentListPosition);
+        played.add(currentQueuePosition);
 
-        int listSize = playlist.size();
+        int listSize = queue.size();
 
         if(shuffle){
-            currentListPosition = generator.nextInt(listSize-1);
+            currentQueuePosition = generator.nextInt(listSize-1);
         }
-        if(++currentListPosition < listSize){
-            play(currentListPosition);
+        if(++currentQueuePosition < listSize){
+            play(currentQueuePosition);
         }else{
-            --currentListPosition;
+            --currentQueuePosition;
             Toast t = Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT);
             t.show();
         }
 
-        if(StreamServer.hasClients()) {
-            pause();
-            new SwitchClientsSong().execute(SwitchClientsSong.NEXT);
-        }
+//        if(StreamServer.hasClients()) {
+//            pause();
+//            new ClientManager().execute(ClientManager.NEXT);
+//        }
     }
 
     @Override
@@ -134,30 +158,28 @@ public class LocalPlayer extends BasePlayer {
 
         if(isShuffle()){
             if(!played.isEmpty()){
-                currentListPosition = played.pollLast();
-                play(currentListPosition);
+                currentQueuePosition = played.pollLast();
+                play(currentQueuePosition);
             }else{
                 Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
                 t.show();
             }
         }else{
-            if(--currentListPosition >= 0){
-                play(currentListPosition);
+            if(--currentQueuePosition >= 0){
+                play(currentQueuePosition);
                 Log.d(App.TAG, "LocalPlayer: nextSong");
             }else{
-                ++currentListPosition;
+                ++currentQueuePosition;
                 Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
                 t.show();
             }
         }
 
-        if(StreamServer.hasClients()) {
-            pause();
-            new SwitchClientsSong().execute(SwitchClientsSong.PREV);
-        }
+//        if(StreamServer.hasClients()) {
+//            pause();
+//            new ClientManager().execute(ClientManager.PREV);
+//        }
     }
-
-
 
     @Override
     public void togglePause(){
@@ -168,7 +190,20 @@ public class LocalPlayer extends BasePlayer {
         }
     }
 
-    public int getCurrentListPosition() {
-        return currentListPosition;
+    private void fillIndexes(int n){
+        for(int i=0;i<n;i++){
+            indexes.add(i);
+        }
+    }
+
+    private void addIndexes(int n){
+        int x = indexes.size();
+        for(int i=x;i<x+n;i++){
+            indexes.add(i);
+        }
+    }
+
+    public static int getCurrentQueuePosition() {
+        return currentQueuePosition;
     }
 }

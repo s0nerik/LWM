@@ -112,4 +112,14 @@ public class Song {
     public Uri getAlbumArtUri(){
         return ContentUris.withAppendedId(artworkUri, albumId);
     }
+
+    @Override
+    public int hashCode() {
+        return (int)(songId-(songId >>> 32));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o.hashCode() == hashCode();
+    }
 }

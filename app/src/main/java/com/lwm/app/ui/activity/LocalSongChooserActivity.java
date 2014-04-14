@@ -1,51 +1,72 @@
 package com.lwm.app.ui.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
-import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerListener;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.lib.WifiApManager;
+import com.lwm.app.ui.fragment.AlbumsListFragment;
+import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.OnSongSelectedListener;
+import com.lwm.app.ui.fragment.QueueFragment;
+import com.lwm.app.ui.fragment.SongsListFragment;
 
 public class LocalSongChooserActivity extends BasicActivity implements
-        OnSongSelectedListener, WifiAPListener, PlayerListener {
+        WifiAPListener, OnSongSelectedListener {
 
-    private MusicService musicService;
+    public static final String DRAWER_SELECTION = "drawer_selection";
+
+    private enum DrawerItems { SONGS, ARTISTS, ALBUMS, PLAYLISTS }
+
+//    private MusicService musicService;
     private NowPlayingFragment nowPlaying;
     private MenuItem broadcastButton;
 
-    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent i) {
-            switch(i.getAction()){
-                case App.SERVICE_BOUND:
-                    onServiceBound();
-                    break;
-            }
-        }
-    };
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private ActionBar actionBar;
+    private ActionBarDrawerToggle drawerToggle;
+    private int activeFragment;
+
+    private SharedPreferences sharedPreferences;
+
+//    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent i) {
+//            switch(i.getAction()){
+//                case App.SERVICE_BOUND:
+//                    onServiceBound();
+//                    break;
+//            }
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getPreferences(MODE_PRIVATE);
         setContentView(R.layout.activity_local_song_chooser);
 
         initActionBar();
@@ -57,58 +78,169 @@ public class LocalSongChooserActivity extends BasicActivity implements
                     .commit();
         }
 
-        nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-
-        assert nowPlaying != null : "nowPlaying == null";
-        fragmentManager.beginTransaction()
-                .hide(nowPlaying)
-                .commit();
+//        nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
+//
+//        assert nowPlaying != null : "nowPlaying == null";
+//        fragmentManager.beginTransaction()
+//                .hide(nowPlaying)
+//                .commit();
     }
 
-    private void onServiceBound(){
-        musicService = App.getMusicService();
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
 
-        assert musicService != null : "musicService == null";
-        LocalPlayer player = musicService.getLocalPlayer();
+    protected void initActionBar(){
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+    }
 
-        if(player != null){
-            player.registerListener(this);
-            if(actionBar.getSelectedNavigationIndex() == 0){
-                showNowPlayingBar();
-            }
+    protected Fragment getFragmentFromDrawer(int i){
+        switch(DrawerItems.values()[i]){
+            case SONGS:
+                return new SongsListFragment();
+            case ARTISTS:
+                return new ArtistsListFragment();
+            case ALBUMS:
+                return new AlbumsListFragment();
+            case PLAYLISTS:
+                return new QueueFragment();
         }
+        return null;
     }
+
+    protected void updateActionBarTitle(){
+        Resources resources = getResources();
+        String title;
+        Drawable icon;
+        switch(DrawerItems.values()[activeFragment]){
+            case SONGS:
+                title = resources.getString(R.string.actionbar_title_songs);
+                icon = resources.getDrawable(R.drawable.ic_drawer_songs_active);
+                break;
+            case ALBUMS:
+                title = resources.getString(R.string.actionbar_title_albums);
+                icon = resources.getDrawable(R.drawable.ic_drawer_albums_active);
+                break;
+            case ARTISTS:
+                title = resources.getString(R.string.actionbar_title_artists);
+                icon = resources.getDrawable(R.drawable.ic_drawer_artists_active);
+                break;
+            case PLAYLISTS:
+                title = resources.getString(R.string.actionbar_title_playlists);
+                icon = resources.getDrawable(R.drawable.ic_drawer_playlists_active);
+                break;
+            default:
+                title = "Listen With Me!";
+                icon = resources.getDrawable(R.drawable.ic_launcher);
+                break;
+        }
+        actionBar.setTitle(title);
+        actionBar.setIcon(icon);
+    }
+
+    protected void initNavigationDrawer(){
+        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        drawerList.setAdapter(new NavigationDrawerListAdapter(this,
+                getResources().getStringArray(R.array.drawer_items),
+                getResources().obtainTypedArray(R.array.drawer_icons)));
+
+        // Set the list's click listener
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showSelectedFragment(i);
+                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).commit();
+            }
+        });
+
+        activeFragment = sharedPreferences.getInt(DRAWER_SELECTION, 0);
+        drawerList.setItemChecked(activeFragment, true);
+        showSelectedFragment(activeFragment);
+
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close
+        );
+        drawerLayout.setDrawerListener(drawerToggle);
+    }
+
+    protected void showSelectedFragment(int i){
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, getFragmentFromDrawer(i))
+                .commit();
+        activeFragment = i;
+        updateActionBarTitle();
+    }
+
+//    private void onServiceBound(){
+//        musicService = App.getMusicService();
+//
+//        assert musicService != null : "musicService == null";
+//        LocalPlayer player = musicService.getLocalPlayer();
+//
+//        if(player != null){
+//            player.registerListener(this);
+//            if(actionBar.getSelectedNavigationIndex() == 0){
+//                showNowPlayingBar();
+//            }
+//        }
+//    }
 
     @Override
     protected void onResume() {
         Log.d(App.TAG, "LocalSongChooserActivity: onResume");
         super.onResume();
-        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
+//        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
+//
+//        nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
+//
+//        if(App.isMusicServiceBound()){
+////            musicService = App.getMusicService();
+//            LocalPlayer player = App.getMusicService().getLocalPlayer();
+//            if(player != null){
+//                player.registerListener(this);
+//
+//                if(LocalPlayer.hasCurrentSong()){
+//                    showNowPlayingBar();
+//                }
+//
+//            }
+//        }
 
-        nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-
-        if(App.isMusicServiceBound()){
-            musicService = App.getMusicService();
-            LocalPlayer player = musicService.getLocalPlayer();
-            if(player != null){
-                player.registerListener(this);
-
-                if(player.isActive()){
-                    showNowPlayingBar();
-                }
-
-            }
-        }
+//        if(App.isMusicServiceBound()){
+//            musicService = App.getMusicService();
+//            LocalPlayer player = musicService.getLocalPlayer();
+//            if(player != null){
+//                player.registerListener(this);
+//
+//                if(player.hasCurrentSong()){
+//                    showNowPlayingBar();
+//                }
+//
+//            }
+//        }
 
         updateActionBarTitle();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(onBroadcast);
-        App.getMusicService().getLocalPlayer().unregisterListener();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+////        unregisterReceiver(onBroadcast);
+////        App.getMusicService().getLocalPlayer().unregisterListener();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,6 +248,8 @@ public class LocalSongChooserActivity extends BasicActivity implements
         getMenuInflater().inflate(R.menu.broadcast, menu);
 
         broadcastButton = menu.findItem(R.id.action_broadcast);
+
+        setBroadcastButtonState(0);
 
         return true;
     }
@@ -150,69 +284,72 @@ public class LocalSongChooserActivity extends BasicActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    public void onNowPlayingBarClicked(View v){
-        switch(v.getId()){
-            case R.id.fragment_now_playing:
-                Intent intent = new Intent(this, LocalPlaybackActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.now_playing_bar_play_pause_button:
-                LocalPlayer player = musicService.getLocalPlayer();
-                player.togglePause();
-                nowPlaying.setPlayButton(player.isPlaying());
-                break;
-        }
-    }
+//    public void onNowPlayingBarClicked(View v){
+//        switch(v.getId()){
+//            case R.id.fragment_now_playing:
+//                Intent intent = new Intent(this, LocalPlaybackActivity.class);
+//                startActivity(intent);
+//                break;
+//            case R.id.now_playing_bar_play_pause_button:
+//                LocalPlayer player = App.getMusicService().getLocalPlayer();
+//                player.togglePause();
+//                nowPlaying.setPlayButton(player.isPlaying());
+//                break;
+//        }
+//    }
 
-    private void showNowPlayingBar(){
-
-        Log.d(App.TAG, "showNowPlayingBar()");
-
-        assert musicService != null : "showNowPlayingBar(): musicService == null";
-        assert musicService.getLocalPlayer() != null : "showNowPlayingBar(): musicService.getLocalPlayer() == null";
-        musicService.getLocalPlayer().registerListener(this);
-
-        Song song = App.getMusicService().getLocalPlayer().getCurrentSong();
-
-        if(song != null){
-            NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-            fragmentManager.beginTransaction()
-                    .show(nowPlaying)
-                    .commit();
-
-            nowPlaying.setArtist(song.getArtist());
-            nowPlaying.setTitle(song.getTitle());
-            nowPlaying.setAlbumArtFromUri(song.getAlbumArtUri());
-
-            LocalPlayer player = musicService.getLocalPlayer();
-            nowPlaying.setPlayButton(player.isPlaying());
-        }
-    }
+//    private void showNowPlayingBar(){
+//
+//        Log.d(App.TAG, "showNowPlayingBar()");
+//
+//        if(LocalPlayer.hasCurrentSong()){
+//            NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
+//            fragmentManager.beginTransaction()
+//                    .show(nowPlaying)
+//                    .commit();
+//
+//            nowPlaying.setCurrentSongInfo();
+//
+//            LocalPlayer player = musicService.getLocalPlayer();
+//            nowPlaying.setPlayButton(player.isPlaying());
+//        }
+//    }
 
     @Override
-    public void onSongSelected(int position) {
-        showNowPlayingBar();
-    }
-
-    @Override
-    public void onEnableAP() {
+    public void onChangeAPState() {
         setMenuProgressIndicator(true);
     }
 
     @Override
-    public void onAPEnabled() {
+    public void onAPStateChanged() {
         setMenuProgressIndicator(false);
+        setBroadcastButtonState(4000);
     }
+
+//    @Override
+//    public void onSongChanged(Song song) {
+//        Log.d(App.TAG, "LocalSongChooserActivity: onSongChanged");
+//
+//        showNowPlayingBar();
+//    }
 
     @Override
-    public void onSongChanged(Song song) {
-        Log.d(App.TAG, "LocalSongChooserActivity: onSongChanged");
-
-        FragmentManager fm = getSupportFragmentManager();
-        ListFragment listFragment = (ListFragment) fm.findFragmentById(R.id.container);
-        int pos = App.getMusicService().getLocalPlayer().getCurrentListPosition();
-        listFragment.setSelection(pos);
-        showNowPlayingBar();
+    public void onSongSelected(int position) {
+        showNowPlayingBar(true);
     }
 
+    private void setBroadcastButtonState(int wait){
+        final WifiApManager manager = new WifiApManager(this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(manager.isWifiApEnabled()){
+                    broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
+                }else{
+                    broadcastButton.setIcon(R.drawable.ic_action_broadcast);
+                }
+            }
+        }, wait);
+
+    }
 }

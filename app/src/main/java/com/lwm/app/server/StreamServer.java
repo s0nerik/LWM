@@ -33,7 +33,7 @@ public class StreamServer extends NanoHTTPD {
     public static final String SONG_CHANGED = "/song_changed";
     public static final String SEEK_TO = "/seekTo/";
     public static final String CLIENT_READY = "/ready/";
-    public static final String TEST = "/test";
+//    public static final String TEST = "/test";
 
     private static HashSet<String> clients = new HashSet<>();
     private static HashSet<String> ready = new HashSet<>();
@@ -96,6 +96,16 @@ public class StreamServer extends NanoHTTPD {
                             if(clientsCanManage){
                                 streamPlayer.start();
                                 return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
+                            }else {
+                                return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
+                                        "Problem with playback occurred.");
+                            }
+
+                        case PAUSE:
+                            Log.d(App.TAG, "StreamServer: PAUSE");
+                            if(clientsCanManage){
+                                streamPlayer.pause();
+                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
                             }else {
                                 return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
                                         "Problem with playback occurred.");
@@ -164,6 +174,8 @@ public class StreamServer extends NanoHTTPD {
     public static Set<String> getReadyClients(){
         return ready;
     }
+
+    public static int getNumberOfClients(){return clients.size();}
 
     private String getSongInfoJSON(Song song){
         return new Gson().toJson(song);

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:minHeight="60dp"
     android:layout_height="wrap_content"
+    android:background="#ffffff"
     android:orientation="horizontal" >
 
     <com.lwm.app.ui.custom_view.CheckedLinearLayout

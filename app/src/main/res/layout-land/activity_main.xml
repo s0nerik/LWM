@@ -10,14 +10,13 @@
     android:background="@drawable/background_main_activity">
 
     <LinearLayout
-
         android:id="@+id/start_screen_local_music_button"
         android:onClick="onPlayerTypeChosen"
 
         android:layout_gravity="center"
 
         android:orientation="vertical"
-        android:layout_margin="10dp"
+        android:layout_margin="50dp"
 
         android:layout_weight="1"
 
@@ -45,14 +44,13 @@
     </LinearLayout>
 
     <LinearLayout
-
         android:id="@+id/start_screen_remote_music_button"
         android:onClick="onPlayerTypeChosen"
 
         android:layout_gravity="center"
 
         android:orientation="vertical"
-        android:layout_margin="10dp"
+        android:layout_margin="50dp"
 
         android:layout_weight="1"
 

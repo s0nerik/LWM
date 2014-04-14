@@ -12,6 +12,6 @@
         android:icon="@drawable/ic_action_broadcast"
         android:id="@+id/action_broadcast"
         android:title="@string/action_broadcast"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

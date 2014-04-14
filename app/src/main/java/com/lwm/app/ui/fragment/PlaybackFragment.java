@@ -184,10 +184,12 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
                 assert bitmap != null : "bitmap == null";
-//                bitmap = new StackBlurManager(bitmap).process(BLUR_RADIUS);
-                bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
+                if(bitmap != null) {
+                    bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
+                }else{
+                    bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
+                }
             } catch (IOException e) {
-//                bitmap = new StackBlurManager(noCover).process(BLUR_RADIUS);
                 bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
             }
             try{

@@ -8,27 +8,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <!--<FrameLayout-->
-        <!--android:layout_width="60dp"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginLeft="2dp" >-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/songs_list_item_album_cover"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-
-            <!--/>-->
-
-        <!--&lt;!&ndash;<ProgressBar&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/songs_list_item_album_cover_progress"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_gravity="center" />&ndash;&gt;-->
-
-    <!--</FrameLayout>-->
-
     <com.lwm.app.ui.custom_view.CheckedLinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -60,7 +39,9 @@
             <com.lwm.app.ui.custom_view.CheckedTextView
                 android:id="@+id/songs_list_item_duration"
                 android:checkMark="@null"
-                android:padding="6dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:paddingLeft="6dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="16sp"
@@ -70,6 +51,15 @@
                 android:textColor="@color/selector_songs_list_item_artist"
 
                 fontify:font="@string/FONT_ROBOTO_THIN" />
+
+            <ImageView
+                android:id="@+id/button_context_menu"
+                android:paddingTop="10dp"
+                android:paddingRight="2dp"
+                android:paddingLeft="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_core_overflow" />
 
         </com.lwm.app.ui.custom_view.CheckedLinearLayout>
 
@@ -90,12 +80,5 @@
             fontify:font="@string/FONT_ROBOTO_THIN" />
 
     </com.lwm.app.ui.custom_view.CheckedLinearLayout>
-
-    <!--<ImageView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/now_playing_indicator"-->
-        <!--android:src="@drawable/ic_action_play"-->
-        <!--android:visibility="gone" />-->
 
 </com.lwm.app.ui.custom_view.CheckedLinearLayout>

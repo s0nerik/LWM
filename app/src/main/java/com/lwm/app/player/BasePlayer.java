@@ -6,7 +6,6 @@ import android.util.Log;
 import com.lwm.app.App;
 
 import java.util.LinkedList;
-import java.util.Random;
 
 public abstract class BasePlayer extends MediaPlayer {
 
@@ -20,24 +19,14 @@ public abstract class BasePlayer extends MediaPlayer {
 
     protected static LinkedList<Integer> played = new LinkedList<>();
 
-    protected boolean active = false;
     protected static boolean shuffle;
     protected static boolean repeat;
-    protected Random generator = new Random();
 
     protected PlayerListener playbackListener;
 
     public abstract void nextSong();
     public abstract void prevSong();
     public abstract void togglePause();
-
-    protected void setActive(){
-        active = true;
-    }
-
-    public boolean isActive(){
-        return active;
-    }
 
     public static boolean isShuffle() {
         return shuffle;

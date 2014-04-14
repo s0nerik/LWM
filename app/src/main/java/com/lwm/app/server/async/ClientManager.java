@@ -15,29 +15,34 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.util.Set;
 
-public class SwitchClientsSong extends AsyncTask<Integer, Void, Void> {
+public class ClientManager extends AsyncTask<ClientManager.Command, Void, Void> {
 
-    public static final int NEXT = 0;
-    public static final int PREV = 1;
+    public static enum Command {PREPARE, PLAY, PAUSE, SEEK_TO}
+
+//    public static final int NEXT = 0;
+//    public static final int PREV = 1;
 
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost request;
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
     @Override
-    protected Void doInBackground(Integer... type) {
-        sendRequests(type[0]);
+    protected Void doInBackground(Command... commands) {
+        sendRequests(commands[0]);
         return null;
     }
 
-    private void sendRequests(int type){
+    private void sendRequests(Command command){
         String method;
-        switch(type){
-            case NEXT:
-                method = StreamServer.NEXT_SONG;
+        switch(command){
+            case PLAY:
+                method = StreamServer.PLAY;
                 break;
-            case PREV:
-                method = StreamServer.PREV_SONG;
+            case PAUSE:
+                method = StreamServer.PAUSE;
+                break;
+            case SEEK_TO:
+                method = StreamServer.SEEK_TO;
                 break;
             default:
                 return;

@@ -24,6 +24,7 @@ import java.io.IOException;
 public class StreamPlayer extends BasePlayer {
 
     private Context context;
+    private static boolean active = false;
 
     private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+ StreamServer.STREAM);
 
@@ -57,7 +58,7 @@ public class StreamPlayer extends BasePlayer {
             e.printStackTrace();
         }
 
-        setActive();
+        active = true;
 
         Log.d(App.TAG, "StreamPlayer: playFromCurrentPosition()");
     }
@@ -99,6 +100,10 @@ public class StreamPlayer extends BasePlayer {
         }
     }
 
+    public static boolean isActive(){
+        return active;
+    }
+
     private class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_POSITION);
@@ -126,9 +131,6 @@ public class StreamPlayer extends BasePlayer {
             seekTo(pos+(int)correction);
             start();
             new SongInfoGetter().execute();
-//            if(isListenerAttached()){
-//                playbackListener.onSongChanged(getCurrentSong());
-//            }
         }
     }
 
@@ -143,8 +145,6 @@ public class StreamPlayer extends BasePlayer {
 
             try {
                 String response = httpclient.execute(httpGetPosition, responseHandler);
-//                InputStream in = response.getEntity().getContent();
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
                 //Debug
                 Log.d(App.TAG, "response: "+response);
@@ -160,9 +160,6 @@ public class StreamPlayer extends BasePlayer {
         @Override
         protected void onPostExecute(Void aVoid) {
             playbackListener.onSongChanged(song);
-//            if(isListenerAttached()){
-//                playbackListener.onSongChanged(getCurrentSong());
-//            }
         }
     }
 

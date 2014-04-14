@@ -14,13 +14,16 @@ import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.adapter.PlaylistAdapter;
-import com.lwm.app.model.Playlist;
+import com.lwm.app.adapter.SongsListAdapter;
+import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 
-public class PlaylistFragment extends ListFragment implements QueueManager {
+import java.util.ArrayList;
+import java.util.List;
 
-    protected Playlist playlist;
+public class QueueFragment extends ListFragment implements QueueManager {
+
+    protected List<Song> playlist;
     private LocalPlayer player;
 
     private MenuItem addToQueueButton;
@@ -34,11 +37,14 @@ public class PlaylistFragment extends ListFragment implements QueueManager {
 
     private final static int SMOOTH_SCROLL_MAX = 50;
 
-    public PlaylistFragment() {
-        playlist = LocalPlayer.getPlaylist();
+    public QueueFragment() {
+        playlist = LocalPlayer.getQueue();
+        if(playlist == null){
+            playlist = new ArrayList<>();
+        }
     }
 
-    public PlaylistFragment(Playlist playlist){
+    public QueueFragment(List<Song> playlist){
         this.playlist = playlist;
     }
 
@@ -64,14 +70,14 @@ public class PlaylistFragment extends ListFragment implements QueueManager {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setListAdapter(new PlaylistAdapter(getActivity(), playlist));
-        return inflater.inflate(R.layout.fragment_playlist, container, false);
+        return inflater.inflate(R.layout.fragment_list_queue, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
+        setListAdapter(new SongsListAdapter(getActivity(), playlist));
     }
 
     @Override
@@ -79,7 +85,7 @@ public class PlaylistFragment extends ListFragment implements QueueManager {
         super.onResume();
 
         if(App.isMusicServiceBound()){
-            int pos = App.getMusicService().getLocalPlayer().getCurrentListPosition();
+            int pos = LocalPlayer.getCurrentQueuePosition();
             listView.setItemChecked(pos, true);
             listView.setSelection(pos);
             currentPosition = pos;
@@ -137,6 +143,6 @@ public class PlaylistFragment extends ListFragment implements QueueManager {
 
     @Override
     public void addToPlaybackQueue() {
-        LocalPlayer.getPlaylist().append(playlist);
+        LocalPlayer.getQueue().addAll(playlist);
     }
 }

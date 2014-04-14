@@ -170,7 +170,7 @@ public class WifiAP {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            ((WifiAPListener) context).onEnableAP();
+            ((WifiAPListener) context).onChangeAPState();
 
         }
 
@@ -178,7 +178,7 @@ public class WifiAP {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            ((WifiAPListener) context).onAPEnabled();
+            ((WifiAPListener) context).onAPStateChanged();
 
         }
 

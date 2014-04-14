@@ -47,7 +47,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
         this.caller = caller;
     }
 
-    public Cursor getSongs(){
+    public Cursor getSongsCursor(){
 
         return caller.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -62,7 +62,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
 
     }
 
-    public Cursor getSongs(long albumId){
+    public Cursor getSongsCursor(long albumId){
         Log.d(App.TAG, "album: "+albumId);
         String selection = this.selection+" AND "+ MediaStore.Audio.AudioColumns.ALBUM_ID+" = ?";
         String[] selectionArgs = {String.valueOf(albumId)};

@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.lwm.app.R;
-import com.lwm.app.ui.fragment.PlaybackFragment;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.task.SeekBarUpdateTask;
+import com.lwm.app.ui.fragment.PlaybackFragment;
 
 import java.util.Timer;
 
@@ -80,15 +79,6 @@ public abstract class PlaybackActivity extends ActionBarActivity {
 //        super.onPause();
 //        unregisterReceiver(onBroadcast);
 //    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.broadcast, menu);
-
-        broadcastButton = menu.findItem(R.id.action_broadcast);
-        return true;
-    }
 
     @Override
     protected void onStop() {

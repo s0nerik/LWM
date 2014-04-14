@@ -1,5 +1,6 @@
 package com.lwm.app.ui.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,10 +12,11 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicService;
+import com.lwm.app.ui.activity.LocalPlaybackActivity;
+import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 
 public class NowPlayingFragment extends Fragment {
 
@@ -22,6 +24,23 @@ public class NowPlayingFragment extends Fragment {
     private ImageView playPauseButton;
     private TextView artist;
     private TextView title;
+
+    View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            LocalPlayer player = App.getMusicService().getLocalPlayer();
+            player.togglePause();
+            setPlayButton(player.isPlaying());
+        }
+    };
+
+    View.OnClickListener onNowPlayingBarClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +54,8 @@ public class NowPlayingFragment extends Fragment {
         artist = (TextView) view.findViewById(R.id.now_playing_bar_artist);
         title = (TextView) view.findViewById(R.id.now_playing_bar_title);
         playPauseButton = (ImageView) view.findViewById(R.id.now_playing_bar_play_pause_button);
+        playPauseButton.setOnClickListener(onPlayPauseClicked);
+        view.findViewById(R.id.now_playing_bar_layout).setOnClickListener(onNowPlayingBarClicked);
         title.setSelected(true);
     }
 
@@ -42,42 +63,23 @@ public class NowPlayingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(App.isMusicServiceBound()){
-            setCurrentAlbumArt();
+            setCurrentSongInfo();
         }
     }
 
-//    @Override
-//    public void onServiceConnected(ComponentName className, IBinder service) {
-//        super.onServiceConnected(className, service);
-////        if(musicServiceBound){
-//            LocalPlayer player = musicService.getLocalPlayer();
-//            if(player != null){
-//                Song song = player.getCurrentSong();
-//                setAlbumArtFromUri(song.getAlbumArtUri());
-//            }
-////        }
-//    }
-
-    public void setCurrentAlbumArt(){
+    public void setCurrentSongInfo(){
         if(App.getMusicService().getCurrentPlayerType() == MusicService.PLAYER_LOCAL) {
-            LocalPlayer player = App.getMusicService().getLocalPlayer();
-            if (player != null && player.isActive()) {
-                Song song = player.getCurrentSong();
+            if (LocalPlayer.hasCurrentSong()) {
+                Song song = LocalPlayer.getCurrentSong();
                 setAlbumArtFromUri(song.getAlbumArtUri());
+                artist.setText(song.getArtist());
+                title.setText(song.getTitle());
             }
         }
     }
 
     public void setAlbumArtFromUri(Uri uri){
         new AlbumArtAsyncGetter(getActivity(), albumArt).execute(uri);
-    }
-
-    public void setArtist(String artist) {
-        this.artist.setText(artist);
-    }
-
-    public void setTitle(String title) {
-        this.title.setText(title);
     }
 
     public void setPlayButton(boolean playing){
