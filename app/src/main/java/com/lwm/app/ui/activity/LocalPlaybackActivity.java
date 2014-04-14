@@ -176,6 +176,16 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         setSongInfo(song);
     }
 
+    @Override
+    public void onPlaybackPaused() {
+
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+
+    }
+
     private void setBroadcastButtonState(int wait){
         final WifiApManager manager = new WifiApManager(this);
         new Handler().postDelayed(new Runnable() {

@@ -10,6 +10,7 @@ import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.PlayerListener;
 import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.ui.fragment.PlaybackFragment;
 
 public class RemotePlaybackActivity extends PlaybackActivity implements PlayerListener {
 
@@ -20,11 +21,13 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     private String title;
     private String artist;
     private String album;
+    private PlaybackFragment playbackFragment;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
         if(App.isMusicServiceBound()){
             player = App.getMusicService().getStreamPlayer();
 //            setSongInfo();
@@ -95,5 +98,15 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     @Override
     public void onSongChanged(Song song) {
         setSongInfo(song);
+    }
+
+    @Override
+    public void onPlaybackPaused() {
+        playbackFragment.setPlayButton(false);
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+        playbackFragment.setPlayButton(true);
     }
 }

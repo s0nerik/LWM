@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
-import com.lwm.app.server.async.ClientManager;
+import com.lwm.app.server.async.ClientsManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,12 +89,6 @@ public class LocalPlayer extends BasePlayer {
         Log.d(App.TAG, "getCurrentSong");
 
         return currentSong;
-//        assert queue != null : "queue == null";
-//        if(!queue.isEmpty()){
-//            return queue.get(currentQueuePosition);
-//        }else{
-//            return null;
-//        }
     }
 
     public void play(int position){
@@ -117,7 +111,9 @@ public class LocalPlayer extends BasePlayer {
 
         if(StreamServer.hasClients()) {
             pause();
-            new ClientManager().execute(ClientManager.Command.PLAY);
+            new ClientsManager().changeSong();
+            start();
+//            new ClientsManager().execute(ClientsManager.Command.PLAY);
         }
 
         Log.d(App.TAG, "LocalPlayer: play("+position+")");
@@ -146,10 +142,6 @@ public class LocalPlayer extends BasePlayer {
             t.show();
         }
 
-//        if(StreamServer.hasClients()) {
-//            pause();
-//            new ClientManager().execute(ClientManager.NEXT);
-//        }
     }
 
     @Override
@@ -175,10 +167,22 @@ public class LocalPlayer extends BasePlayer {
             }
         }
 
-//        if(StreamServer.hasClients()) {
-//            pause();
-//            new ClientManager().execute(ClientManager.PREV);
-//        }
+    }
+
+    @Override
+    public void pause() throws IllegalStateException {
+        super.pause();
+        if(StreamServer.hasClients()){
+            new ClientsManager().pause();
+        }
+    }
+
+    @Override
+    public void start() throws IllegalStateException {
+        super.start();
+        if(StreamServer.hasClients()){
+            new ClientsManager().start();
+        }
     }
 
     @Override

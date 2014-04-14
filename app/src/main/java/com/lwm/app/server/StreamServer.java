@@ -28,6 +28,7 @@ public class StreamServer extends NanoHTTPD {
     public static final String STREAM = "/stream";
     public static final String PAUSE = "/pause";
     public static final String PLAY = "/play";
+    public static final String PREPARE = "/prepare";
     public static final String NEXT_SONG = "/next_song";
     public static final String PREV_SONG = "/prev_song";
     public static final String SONG_CHANGED = "/song_changed";
@@ -37,7 +38,7 @@ public class StreamServer extends NanoHTTPD {
 
     private static HashSet<String> clients = new HashSet<>();
     private static HashSet<String> ready = new HashSet<>();
-    private boolean clientsCanManage;
+    private boolean clientsCanManage = true;
     private BasePlayer player;
     private Context context;
 
@@ -46,7 +47,7 @@ public class StreamServer extends NanoHTTPD {
         this.context = context;
         SharedPreferences sharedPreferences = context.getSharedPreferences("server_prefs", Context.MODE_PRIVATE);
 //        clientsCanManage = sharedPreferences.getBoolean("clients_can_manage", false);
-        clientsCanManage = true;
+//        clientsCanManage = true;
     }
 
     @Override
@@ -71,24 +72,19 @@ public class StreamServer extends NanoHTTPD {
                 }else{
                     StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
                     switch(uri){
-                        case NEXT_SONG:
-                            Log.d(App.TAG, "StreamServer: NEXT_SONG");
+                        case PREPARE:
+                            Log.d(App.TAG, "StreamServer: PREPARE");
                             if(clientsCanManage){
-                                streamPlayer.nextSong();
-                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Song changed.");
-                            }else{
+//                                new Thread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+                                        streamPlayer.prepareNewSong();
+//                                    }
+//                                }).start();
+                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
+                            }else {
                                 return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Clients aren't allowed to change songs.");
-                            }
-
-                        case PREV_SONG:
-                            Log.d(App.TAG, "StreamServer: PREV_SONG");
-                            if(clientsCanManage){
-                                streamPlayer.prevSong();
-                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Song changed.");
-                            }else{
-                                return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Clients aren't allowed to change songs.");
+                                        "Not allowed.");
                             }
 
                         case PLAY:
@@ -98,7 +94,7 @@ public class StreamServer extends NanoHTTPD {
                                 return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
                             }else {
                                 return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Problem with playback occurred.");
+                                        "Not allowed.");
                             }
 
                         case PAUSE:
@@ -108,7 +104,7 @@ public class StreamServer extends NanoHTTPD {
                                 return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
                             }else {
                                 return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Problem with playback occurred.");
+                                        "Now allowed.");
                             }
 
                     }
@@ -117,8 +113,8 @@ public class StreamServer extends NanoHTTPD {
                 return new Response(Response.Status.OK, MIME_PLAINTEXT, "OK");
 
             case GET: // Outcoming info
-                LocalPlayer localPlayer =  App.getMusicService().getLocalPlayer();
-                Song song = localPlayer.getCurrentSong();
+                LocalPlayer localPlayer = App.getMusicService().getLocalPlayer();
+                Song song = LocalPlayer.getCurrentSong();
                 switch(uri){
 
                     case STREAM:

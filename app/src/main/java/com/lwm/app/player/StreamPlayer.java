@@ -28,28 +28,23 @@ public class StreamPlayer extends BasePlayer {
 
     private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+ StreamServer.STREAM);
 
-    public static final String SONG_CHANGED = "song_changed";
-    public static final String PLAYLIST_POSITION = "playlist_position";
-    public static final String CURRENT_POSITION = "current_position";
-
     public StreamPlayer(Context context){
         this.context = context;
-        initOnPreparedListener();
-    }
-
-    private void initOnPreparedListener(){
+        attachToStation();
         setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 Log.d("LWM", "StreamPlayer: onPrepared");
-                new GetPositionAndStart().execute();
+                new ReadinessReporter().execute();
             }
         });
     }
 
-    public void playFromCurrentPosition(){
+    private void attachToStation(){
         new AddressSender().execute();
+    }
 
+    public void prepareNewSong(){
         reset();
         try {
             setDataSource(context, STREAM_URI);
@@ -57,6 +52,11 @@ public class StreamPlayer extends BasePlayer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void playFromCurrentPosition(){
+
+        prepareNewSong();
 
         active = true;
 
@@ -66,29 +66,13 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void nextSong() {
         Log.d(App.TAG, "StreamPlayer: nextSong");
-
-        reset();
-        try {
-            setDataSource(context, STREAM_URI);
-            prepare();
-            new ReadinessReporter().execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        prepareNewSong();
     }
 
     @Override
     public void prevSong() {
         Log.d(App.TAG, "StreamPlayer: prevSong");
-
-        reset();
-        try {
-            setDataSource(context, STREAM_URI);
-            prepare();
-            new ReadinessReporter().execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        prepareNewSong();
     }
 
     @Override
@@ -97,6 +81,22 @@ public class StreamPlayer extends BasePlayer {
             pause();
         }else{
             start();
+        }
+    }
+
+    @Override
+    public void pause() throws IllegalStateException {
+        super.pause();
+        if(playbackListener != null) {
+            playbackListener.onPlaybackPaused();
+        }
+    }
+
+    @Override
+    public void start() throws IllegalStateException {
+        super.start();
+        if(playbackListener != null) {
+            playbackListener.onPlaybackStarted();
         }
     }
 
@@ -159,7 +159,9 @@ public class StreamPlayer extends BasePlayer {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            playbackListener.onSongChanged(song);
+            if(playbackListener != null) {
+                playbackListener.onSongChanged(song);
+            }
         }
     }
 
@@ -199,6 +201,10 @@ public class StreamPlayer extends BasePlayer {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            new SongInfoGetter().execute();
+        }
     }
 
 }

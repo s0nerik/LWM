@@ -93,6 +93,16 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
         showNowPlayingBar(true);
     }
 
+    @Override
+    public void onPlaybackPaused() {
+
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+
+    }
+
     public void showNowPlayingBar(boolean show){
 
         Log.d(App.TAG, "showNowPlayingBar()");
