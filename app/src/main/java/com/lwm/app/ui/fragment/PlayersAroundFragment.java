@@ -50,7 +50,7 @@ public class PlayersAroundFragment extends ListFragment {
                 if (wifiManager != null) {
                     if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
                         WifiInfo info = wifiManager.getConnectionInfo();
-                        if (info == null || !ap.equals(info.getSSID())) {
+                        if (info != null || !ap.equals(info.getSSID())) {
                             // Device is connected to different AP or not connected at all
                             Connectivity.connectToOpenAP(getActivity(), ap);
                         }
@@ -96,10 +96,6 @@ public class PlayersAroundFragment extends ListFragment {
 
     protected void startStreamPlayback(){
         App.getMusicService().getStreamPlayer().playFromCurrentPosition();
-//        Intent intent = new Intent(getActivity(), MusicService.class);
-//        intent.setAction(MusicService.ACTION_PLAY_STREAM);
-//        getActivity().startService(intent);
-//        new RemotePlaybackActivityStarter(getActivity()).execute();
         Intent intent = new Intent(getActivity(), RemotePlaybackActivity.class);
         getActivity().startActivity(intent);
     }

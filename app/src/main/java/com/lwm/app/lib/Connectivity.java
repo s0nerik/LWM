@@ -8,6 +8,8 @@ import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 
+import java.util.List;
+
 /**
  * Check device's network connectivity and speed
  * @author emil http://stackoverflow.com/users/220710/emil
@@ -116,12 +118,32 @@ public class Connectivity {
 
     public static void connectToOpenAP(Context context, String apName){
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        List<WifiConfiguration> configurations = wifiManager.getConfiguredNetworks();
+        for(WifiConfiguration wc:configurations){
+            if(apName.equals(wc.SSID)){
+                wifiManager.enableNetwork(wc.networkId, true);
+                return;
+            }
+        }
         WifiConfiguration wc = new WifiConfiguration();
         wc.SSID = "\""+apName+"\"";
-        wc.status = WifiConfiguration.Status.ENABLED;
+        wc.status = WifiConfiguration.Status.DISABLED;
+        wc.priority = 40;
+
+        // Security (open)
+        wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        wc.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        wc.allowedAuthAlgorithms.clear();
+        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+
         int netId = wifiManager.addNetwork(wc);
         wifiManager.enableNetwork(netId, true);
-        wifiManager.setWifiEnabled(true);
     }
 
     public static String getIP(Context context){

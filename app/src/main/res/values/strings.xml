@@ -63,7 +63,7 @@
         <item>All songs</item>
         <item>Artists</item>
         <item>Albums</item>
-        <item>Playlists</item>
+        <item>Queue</item>
     </string-array>
 
     // Navigation Drawer icons

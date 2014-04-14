@@ -40,10 +40,12 @@ public class ClientsManager {
     }
 
     public void pause(){
+        Log.d(App.TAG, "ClientsManager: pause");
         new CommandRunner().execute(Command.PAUSE);
     }
 
     public void start(){
+        Log.d(App.TAG, "ClientsManager: start");
         new CommandRunner().execute(Command.PLAY);
     }
 
