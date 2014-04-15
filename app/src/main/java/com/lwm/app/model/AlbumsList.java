@@ -14,13 +14,6 @@ public class AlbumsList {
     public AlbumsList(Cursor cursor) {
         cursor.moveToFirst();
 
-//        int id = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
-//        int album = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
-//        int artist = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
-//        int year = cursor.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR);
-//        int albumArt = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
-//        int songsCount = cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS);
-
         int id = AlbumsCursorGetter._ID;
         int album = AlbumsCursorGetter.ALBUM;
         int artist = AlbumsCursorGetter.ARTIST;
