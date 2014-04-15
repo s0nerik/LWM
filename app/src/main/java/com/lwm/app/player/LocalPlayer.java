@@ -24,7 +24,7 @@ public class LocalPlayer extends BasePlayer {
     private static boolean active;
     private static int currentQueuePosition;
     private static Song currentSong;
-    private static List<Song> queue;
+    private static List<Song> queue = new ArrayList<>();
 
     private List<Integer> indexes = new ArrayList<>();
 
@@ -59,7 +59,7 @@ public class LocalPlayer extends BasePlayer {
         this.context = context;
         active = false;
         currentQueuePosition = -1;
-        queue = new ArrayList<>();
+//        queue = new ArrayList<>();
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
 //        setOnPreparedListener(onPreparedListener);

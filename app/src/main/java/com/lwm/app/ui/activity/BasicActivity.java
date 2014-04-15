@@ -18,7 +18,7 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
 
 //    public static final String DRAWER_SELECTION = "drawer_selection";
 //
-//    protected enum DrawerItems { SONGS, ARTISTS, ALBUMS, PLAYLISTS }
+//    protected enum DrawerItems { SONGS, ARTISTS, ALBUMS, QUEUE }
 
 //    protected FragmentManager fragmentManager = getSupportFragmentManager();
 //    protected DrawerLayout drawerLayout;

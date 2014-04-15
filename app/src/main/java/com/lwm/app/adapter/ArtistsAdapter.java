@@ -6,16 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lwm.app.R;
-import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
 import com.lwm.app.model.ArtistsList;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.List;
 
@@ -58,7 +53,7 @@ public class ArtistsAdapter extends ArrayAdapter<Artist> {
 
         Artist artist = artistsList.get(position);
         holder.artist.setText(artist.getName());
-        holder.albums.setText(artist.getNumberOfAlbums());
+        holder.albums.setText("Albums: "+artist.getNumberOfAlbums());
 
         return rowView;
     }

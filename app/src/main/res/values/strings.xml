@@ -22,7 +22,8 @@
     <string name="actionbar_title_songs">Songs</string>
     <string name="actionbar_title_albums">Albums</string>
     <string name="actionbar_title_artists">Artists</string>
-    <string name="actionbar_title_playlists">Playlists</string>
+
+    <string name="actionbar_title_queue">Queue</string>
 
 
     // ** Preferences **

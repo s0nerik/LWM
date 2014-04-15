@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
-import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
 
 public class ArtistsCursorGetter {
@@ -27,7 +26,7 @@ public class ArtistsCursorGetter {
         this.caller = caller;
     }
 
-    public Cursor getArtists(){
+    public Cursor getArtistsCursor(){
 
 //        String[] projection = {
 //                MediaStore.Audio.Artists._ID,
@@ -55,11 +54,15 @@ public class ArtistsCursorGetter {
                 selectionArgs,
                 MediaStore.Audio.Artists.DEFAULT_SORT_ORDER);
 
-        cursor.moveToFirst();
-        return new Artist(cursor.getInt(_ID),
-                cursor.getString(ARTIST),
-                cursor.getInt(NUMBER_OF_ALBUMS),
-                cursor.getInt(NUMBER_OF_TRACKS));
+        Artist artist = null;
+        if(cursor.moveToFirst()){
+            artist = new Artist(cursor.getInt(_ID),
+                    cursor.getString(ARTIST),
+                    cursor.getInt(NUMBER_OF_ALBUMS),
+                    cursor.getInt(NUMBER_OF_TRACKS));
+        }
+
+        return artist;
     }
 
 }

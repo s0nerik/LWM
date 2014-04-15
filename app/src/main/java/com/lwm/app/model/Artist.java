@@ -1,23 +1,23 @@
 package com.lwm.app.model;
 
 public class Artist {
-    private int id;
+    private long id;
     private String name;
     private int numberOfAlbums;
     private int numberOfSongs;
 
-    public Artist(int id, String name, int numberOfAlbums, int numberOfSongs) {
+    public Artist(long id, String name, int numberOfAlbums, int numberOfSongs) {
         this.id = id;
         this.name = name;
         this.numberOfAlbums = numberOfAlbums;
         this.numberOfSongs = numberOfSongs;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

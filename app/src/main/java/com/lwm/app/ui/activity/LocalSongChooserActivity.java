@@ -39,9 +39,8 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
-    private enum DrawerItems { SONGS, ARTISTS, ALBUMS, PLAYLISTS }
+    private enum DrawerItems { SONGS, ARTISTS, ALBUMS, QUEUE}
 
-//    private MusicService musicService;
     private NowPlayingFragment nowPlaying;
     private MenuItem broadcastButton;
 
@@ -51,17 +50,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
     private int activeFragment;
 
     private SharedPreferences sharedPreferences;
-
-//    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent i) {
-//            switch(i.getAction()){
-//                case App.SERVICE_BOUND:
-//                    onServiceBound();
-//                    break;
-//            }
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,13 +65,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
                     .replace(R.id.container, getFragmentFromDrawer(sharedPreferences.getInt(DRAWER_SELECTION, 0)))
                     .commit();
         }
-
-//        nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-//
-//        assert nowPlaying != null : "nowPlaying == null";
-//        fragmentManager.beginTransaction()
-//                .hide(nowPlaying)
-//                .commit();
     }
 
     @Override
@@ -108,7 +89,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
                 return new ArtistsListFragment();
             case ALBUMS:
                 return new AlbumsListFragment();
-            case PLAYLISTS:
+            case QUEUE:
                 return new QueueFragment();
         }
         return null;
@@ -131,9 +112,9 @@ public class LocalSongChooserActivity extends BasicActivity implements
                 title = resources.getString(R.string.actionbar_title_artists);
                 icon = resources.getDrawable(R.drawable.ic_drawer_artists_active);
                 break;
-            case PLAYLISTS:
-                title = resources.getString(R.string.actionbar_title_playlists);
-                icon = resources.getDrawable(R.drawable.ic_drawer_playlists_active);
+            case QUEUE:
+                title = resources.getString(R.string.actionbar_title_queue);
+                icon = resources.getDrawable(R.drawable.ic_drawer_queue_active);
                 break;
             default:
                 title = "Listen With Me!";
@@ -283,37 +264,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    public void onNowPlayingBarClicked(View v){
-//        switch(v.getId()){
-//            case R.id.fragment_now_playing:
-//                Intent intent = new Intent(this, LocalPlaybackActivity.class);
-//                startActivity(intent);
-//                break;
-//            case R.id.now_playing_bar_play_pause_button:
-//                LocalPlayer player = App.getMusicService().getLocalPlayer();
-//                player.togglePause();
-//                nowPlaying.setPlayButton(player.isPlaying());
-//                break;
-//        }
-//    }
-
-//    private void showNowPlayingBar(){
-//
-//        Log.d(App.TAG, "showNowPlayingBar()");
-//
-//        if(LocalPlayer.hasCurrentSong()){
-//            NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-//            fragmentManager.beginTransaction()
-//                    .show(nowPlaying)
-//                    .commit();
-//
-//            nowPlaying.setCurrentSongInfo();
-//
-//            LocalPlayer player = musicService.getLocalPlayer();
-//            nowPlaying.setPlayButton(player.isPlaying());
-//        }
-//    }
 
     @Override
     public void onChangeAPState() {

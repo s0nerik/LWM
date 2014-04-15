@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.lwm.app.App;
@@ -18,15 +19,15 @@ import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class QueueFragment extends ListFragment implements QueueManager {
+public class QueueFragment extends ListFragment {
 
     protected List<Song> playlist;
     private LocalPlayer player;
 
-    private MenuItem addToQueueButton;
+    private MenuItem shuffleButton;
 
     OnSongSelectedListener mCallback;
 
@@ -39,14 +40,14 @@ public class QueueFragment extends ListFragment implements QueueManager {
 
     public QueueFragment() {
         playlist = LocalPlayer.getQueue();
-        if(playlist == null){
-            playlist = new ArrayList<>();
-        }
+//        if(playlist == null){
+//            playlist = new ArrayList<>();
+//        }
     }
 
-    public QueueFragment(List<Song> playlist){
-        this.playlist = playlist;
-    }
+//    public QueueFragment(List<Song> playlist){
+//        this.playlist = playlist;
+//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -97,8 +98,6 @@ public class QueueFragment extends ListFragment implements QueueManager {
         super.setSelection(position);
         listView.setItemChecked(position, true);
 
-        Log.d(App.TAG, "setSelection: " + Math.abs(position - currentPosition));
-
         if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
             listView.smoothScrollToPosition(position);
         }else{
@@ -125,24 +124,25 @@ public class QueueFragment extends ListFragment implements QueueManager {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.playlist, menu);
-        addToQueueButton = menu.findItem(R.id.action_add_to_queue);
+        inflater.inflate(R.menu.queue, menu);
+        shuffleButton = menu.findItem(R.id.action_shuffle);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_add_to_queue:
-                addToPlaybackQueue();
+            case R.id.action_shuffle:
+                Collections.shuffle(playlist);
+                ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    public void addToPlaybackQueue() {
-        LocalPlayer.getQueue().addAll(playlist);
-    }
+//    @Override
+//    public void addToPlaybackQueue() {
+//        LocalPlayer.getQueue().addAll(playlist);
+//    }
 }

@@ -76,6 +76,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="LocalSongChooserActivity" />
         </activity>
+        <activity
+            android:name="com.lwm.app.ui.activity.ArtistInfoActivity"
+            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="LocalSongChooserActivity" />
+        </activity>
     </application>
 
 </manifest>

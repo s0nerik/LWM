@@ -73,10 +73,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public void onStart() {
         super.onStart();
-        long start = System.currentTimeMillis();
         initAdapter();
-        long res = System.currentTimeMillis()-start;
-        Log.d(App.TAG, "onStart: "+res+" ms.");
     }
 
     @Override

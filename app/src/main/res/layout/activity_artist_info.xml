@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/container" />
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_now_playing"
+        android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
+        tools:layout="@layout/fragment_now_playing" />
+
+</LinearLayout>

@@ -16,7 +16,7 @@ public class ArtistsCursorAdapter extends CursorAdapter {
     Context context;
 
     public ArtistsCursorAdapter(Context context, ArtistsCursorGetter c) {
-        super(context, c.getArtists());
+        super(context, c.getArtistsCursor());
         this.context = context;
     }
 

@@ -14,19 +14,32 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.helper.AlbumsCursorGetter;
 import com.lwm.app.model.AlbumsList;
+import com.lwm.app.model.Artist;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 
 public class AlbumsListFragment extends ListFragment {
 
     private AlbumsList albumsList;
+    private Artist artist;
 
     public AlbumsListFragment() {}
+
+    public AlbumsListFragment(Artist artist) {
+        this.artist = artist;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter(getActivity());
-        Cursor albums = cursorGetter.getAlbums();
+        Cursor albums;
+
+        if(artist == null){
+            albums = cursorGetter.getAlbumsCursor();
+        }else{
+            albums = cursorGetter.getAlbumsCursorByArtist(artist);
+        }
+
         albumsList = new AlbumsList(albums);
         albums.close();
         ListAdapter adapter = new AlbumsAdapter(getActivity(), albumsList);
