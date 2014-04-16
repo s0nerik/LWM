@@ -45,69 +45,9 @@ public class PlayersAroundFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        final String ap = ssids.get(position) + WifiAP.AP_NAME_POSTFIX;
+        String ap = ssids.get(position) + WifiAP.AP_NAME_POSTFIX;
 
-        new AsyncTask<Void, Void, Void>(){
-
-            ProgressDialog progressDialog;
-
-            @Override
-            protected void onPreExecute() {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setMessage(getResources().getString(R.string.connecting_to_the_station));
-                progressDialog.show();
-            }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-                if (wifiManager != null) {
-                    if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
-                        WifiInfo info = wifiManager.getConnectionInfo();
-                        if (info != null || !ap.equals(info.getSSID())) {
-                            // Device is connected to different AP or not connected at all
-                            Connectivity.connectToOpenAP(getActivity(), ap);
-                        }
-                    }else{
-                        // Wifi is disabled, so let's turn it on and connect
-                        wifiManager.setWifiEnabled(true);
-
-                        // Wait until it Wifi is enabled
-                        try {
-                            while(!wifiManager.isWifiEnabled()){
-                                Thread.sleep(500);
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Connectivity.connectToOpenAP(getActivity(), ap);
-
-                        // Wait until Wifi is really connected
-                        try {
-                            while(!Connectivity.isConnectedWifi(getActivity())){
-                                Thread.sleep(500);
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                while(!isWifiNetworkAvailable()){
-                    try {
-                        Thread.sleep(500);
-                    }catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                progressDialog.dismiss();
-                startStreamPlayback();
-            }
-        }.execute();
+        new StationConnectionTask().execute(ap);
 
     }
 
@@ -128,6 +68,67 @@ public class PlayersAroundFragment extends ListFragment {
         App.getMusicService().getStreamPlayer().playFromCurrentPosition();
         Intent intent = new Intent(getActivity(), RemotePlaybackActivity.class);
         getActivity().startActivity(intent);
+    }
+
+    private class StationConnectionTask extends AsyncTask<String, Void, Void>{
+        ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage(getResources().getString(R.string.connecting_to_the_station));
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... aps) {
+            String ap = aps[0];
+            WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager != null) {
+                if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
+                    WifiInfo info = wifiManager.getConnectionInfo();
+                    if (info != null || !ap.equals(info.getSSID())) {
+                        // Device is connected to different AP or not connected at all
+                        Connectivity.connectToOpenAP(getActivity(), ap);
+                    }
+                }else{
+                    // Wifi is disabled, so let's turn it on and connect
+                    wifiManager.setWifiEnabled(true);
+
+                    // Wait until it Wifi is enabled
+                    try {
+                        while(!wifiManager.isWifiEnabled()){
+                            Thread.sleep(500);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Connectivity.connectToOpenAP(getActivity(), ap);
+
+                    // Wait until Wifi is really connected
+                    try {
+                        while(!Connectivity.isConnectedWifi(getActivity())){
+                            Thread.sleep(500);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            while(!isWifiNetworkAvailable()){
+                try {
+                    Thread.sleep(500);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+            startStreamPlayback();
+        }
     }
 
 }
