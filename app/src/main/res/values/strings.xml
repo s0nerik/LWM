@@ -77,6 +77,8 @@
 
     // Station chooser activity
     <string name="title_activity_station_chooser">Choose a station</string>
+    <string name="connecting_to_the_station">Connecting to the station...</string>
+    <string name="wifi_disabled">Wi-Fi is disabled.</string>
 
     <!--<string name="title_activity_album_info">AlbumInfoActivity</string>-->
 

@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -43,6 +46,9 @@ public class StationChooserActivity extends ActionBarActivity {
                         fragment.setSSIDs(ssids);
                     }
                     break;
+                case WifiManager.WIFI_STATE_CHANGED_ACTION:
+                    toggleNoWifiFrame();
+                    break;
             }
         }
     };
@@ -52,6 +58,26 @@ public class StationChooserActivity extends ActionBarActivity {
         super.onResume();
         fragmentManager = getSupportFragmentManager();
         registerReceiver(onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        registerReceiver(onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+
+        toggleNoWifiFrame();
+    }
+
+    private void toggleNoWifiFrame(){
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment playersAround = fragmentManager.findFragmentById(R.id.fragment_players_around);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        if(!wm.isWifiEnabled()) {
+            findViewById(R.id.no_wifi_frame).setVisibility(View.VISIBLE);
+            fragmentTransaction
+                    .hide(playersAround)
+                    .commit();
+        }else{
+            findViewById(R.id.no_wifi_frame).setVisibility(View.GONE);
+            fragmentTransaction
+                    .show(playersAround)
+                    .commit();
+        }
     }
 
     @Override

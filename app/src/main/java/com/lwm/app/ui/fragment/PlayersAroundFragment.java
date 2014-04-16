@@ -1,9 +1,13 @@
 package com.lwm.app.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -43,9 +47,19 @@ public class PlayersAroundFragment extends ListFragment {
 
         final String ap = ssids.get(position) + WifiAP.AP_NAME_POSTFIX;
 
-        new Thread(new Runnable(){
+        new AsyncTask<Void, Void, Void>(){
+
+            ProgressDialog progressDialog;
+
             @Override
-            public void run() {
+            protected void onPreExecute() {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setMessage(getResources().getString(R.string.connecting_to_the_station));
+                progressDialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
                 WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
                 if (wifiManager != null) {
                     if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
@@ -78,14 +92,30 @@ public class PlayersAroundFragment extends ListFragment {
                         }
                     }
                 }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        startStreamPlayback();
+                while(!isWifiNetworkAvailable()){
+                    try {
+                        Thread.sleep(500);
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
                     }
-                });
+                }
+                return null;
             }
-        }).start();
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                progressDialog.dismiss();
+                startStreamPlayback();
+            }
+        }.execute();
+
+    }
+
+    private boolean isWifiNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void setSSIDs(List<String> ssids){
