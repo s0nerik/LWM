@@ -40,6 +40,9 @@
     <string name="local_music">Local music</string>
     <string name="remote_music">Remote music</string>
 
+    // SongsListFragment
+    <string name="no_songs_found">No songs found</string>
+
     // AlbumInfoActivity
     <string name="songs_count_title">SONGS:</string>
     <string name="year_title">YEAR:</string>
