@@ -148,9 +148,11 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         if(shuffle){
             Collections.shuffle(indexes);
             currentIndex = 0;
-        }else{
+        }else if(!indexes.isEmpty()){
             currentIndex = indexes.get(currentIndex);
             Collections.sort(indexes);
+        }else{
+            currentIndex = 0;
         }
 
     }
