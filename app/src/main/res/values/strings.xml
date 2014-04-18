@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    // ActionBar
+    <string name="app_name">Listen With Me!</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_connect">Connect</string>
+
+    <string name="action_connect">Connect to the stream</string>
+    <string name="action_broadcast">Broadcast</string>
+    <string name="action_add_to_queue">Add to playback queue</string>
+    <string name="action_shuffle">Shuffle all</string>
+
+    <string name="btn_broadcast">Broadcast</string>
+    <string name="btn_listen">Listen</string>
+    <string name="artists_list_item_caption_albums">Albums:</string>
+    <string name="now_playing">Now playing</string>
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
+    <string name="now_playing_bar_header">Now playing:</string>
+
+    <string name="actionbar_title_songs">Songs</string>
+    <string name="actionbar_title_albums">Albums</string>
+    <string name="actionbar_title_artists">Artists</string>
+
+    <string name="actionbar_title_queue">Queue</string>
+
+
+    // ** Preferences **
+    <string name="pref_header_ap">Station settings</string>
+
+    <string name="title_ap_name_preference">Station name</string>
+    <string name="summary_ap_name_preference">Give name to your local station</string>
+
+    <string name="title_ap_clients_can_manage_preference">Clients can manage station playback</string>
+    <string name="summary_ap_clients_can_manage_preference">Use it with caution(and only with your friends)</string>
+
+
+    // Start activity
+    <string name="local_music">Local music</string>
+    <string name="remote_music">Remote music</string>
+
+    // SongsListFragment
+    <string name="no_songs_found">No songs found</string>
+
+    // PlaybackFragment
+    <string name="waiting_for_server">Waiting for station...</string>
+
+    // AlbumInfoActivity
+    <string name="songs_count_title">SONGS:</string>
+    <string name="year_title">YEAR:</string>
+    <string name="year_unknown">UNKNOWN</string>
+
+    // Font names
+    <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>
+    <string name="FONT_ROBOTO_BOLD">fonts/Roboto-Bold.ttf</string>
+    <string name="FONT_ROBOTO_LIGHT">fonts/Roboto-Light.ttf</string>
+    <string name="FONT_ROBOTO_THIN">fonts/Roboto-Thin.ttf</string>
+    <string name="FONT_ROBOTO_LIGHT_ITALIC">fonts/Roboto-LightItalic.ttf</string>
+    <string name="FONT_ROBOTO_THIN_ITALIC">fonts/Roboto-ThinItalic.ttf</string>
+    <string name="FONT_LECKERLI_ONE_REGULAR">fonts/LeckerliOne-Regular.ttf</string>
+
+    <!--<string-array name="spinner_names">-->
+        <!--<item>Player</item>-->
+        <!--<item>Receiver</item>-->
+    <!--</string-array>-->
+
+    // Navigation Drawer titles
+    <string-array name="drawer_items">
+        <item>All songs</item>
+        <item>Artists</item>
+        <item>Albums</item>
+        <item>Queue</item>
+    </string-array>
+
+    // Navigation Drawer icons
+    <string-array name="drawer_icons">
+        <item>@drawable/selector_ic_drawer_songs</item>
+        <item>@drawable/selector_ic_drawer_artists</item>
+        <item>@drawable/selector_ic_drawer_albums</item>
+        <item>@drawable/selector_ic_drawer_playlists</item>
+    </string-array>
+
+    // Station chooser activity
+    <string name="title_activity_station_chooser">Choose a station</string>
+    <string name="connecting_to_the_station">Connecting to the station...</string>
+    <string name="wifi_disabled">Please turn on Wi-Fi</string>
+    <!--<string name="title_activity_album_info">AlbumInfoActivity</string>-->
+
+</resources>

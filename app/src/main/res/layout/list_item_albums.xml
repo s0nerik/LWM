@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.lwm.app.ui.custom_view.CheckedLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fontify="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    style="@style/CardWithImage"
+    android:orientation="horizontal">
+
+    <ProgressBar
+        android:layout_width="71dp"
+        android:layout_height="71dp"
+        android:id="@+id/loading"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/albums_list_item_cover"
+        android:src="@drawable/no_cover"
+        android:scaleType="centerCrop"
+        android:layout_gravity="left"
+        android:layout_width="71dp"
+        android:layout_height="71dp"
+        android:layout_marginLeft="0dp" />
+
+    <com.lwm.app.ui.custom_view.CheckedLinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <CheckedTextView
+            android:id="@+id/albums_list_item_album"
+            android:checkMark="@null"
+            android:padding="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/selector_songs_list_item_title"
+
+            android:singleLine="true"
+            android:ellipsize="end"
+
+            fontify:font="@string/FONT_ROBOTO_REGULAR"
+
+            android:gravity="center_vertical" />
+
+        <CheckedTextView
+            android:id="@+id/albums_list_item_artist"
+            android:checkMark="@null"
+            android:paddingLeft="6dp"
+            android:paddingBottom="6dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textColor="@color/selector_songs_list_item_artist"
+
+            fontify:font="@string/FONT_ROBOTO_THIN"
+
+            android:gravity="left"
+            android:layout_height="0dp" />
+
+    </com.lwm.app.ui.custom_view.CheckedLinearLayout>
+
+    <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/now_playing_indicator"-->
+        <!--android:src="@drawable/ic_action_play"-->
+        <!--android:visibility="gone" />-->
+
+</com.lwm.app.ui.custom_view.CheckedLinearLayout>

@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:divider="#eeeeee"
+        android:dividerHeight="1dp" />
+
+    <fragment
+        android:id="@+id/fragment_now_playing"
+        android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
+        tools:layout="@layout/fragment_now_playing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

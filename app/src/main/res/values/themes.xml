@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.TranslucentActionBar">
+        <item name="actionBarStyle">@style/Widget.ActionBar.Transparent</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/Widget.ActionBar.Transparent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="AppTheme.GradientActionBar">
+        <item name="actionBarStyle">@style/Widget.ActionBar.Gradient</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/Widget.ActionBar.Gradient</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+</resources>

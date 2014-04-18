@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lwm.app" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
+    <application
+        android:name="com.lwm.app.App"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <service
+            android:name="com.lwm.app.service.MusicService"
+            android:enabled="true" />
+        <service android:name="com.lwm.app.service.MusicServerService" />
+
+        <activity
+            android:name="com.lwm.app.ui.activity.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lwm.app.ui.activity.LocalSongChooserActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.lwm.player.action.PLAY_SONG" />
+                <action android:name="com.lwm.player.action.PAUSE_SONG" />
+                <action android:name="com.lwm.player.action.UNPAUSE_SONG" />
+                <action android:name="com.lwm.player.action.NEXT_SONG" />
+                <action android:name="com.lwm.player.action.PREV_SONG" />
+                <action android:name="com.lwm.player.action.SONG_SEEK_TO" />
+                <action android:name="com.lwm.player.action.PLAY_STREAM" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lwm.app.ui.activity.LocalPlaybackActivity"
+            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity"
+            android:theme="@style/PlaybackActivityStyle" >
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.BroadcastActivity" />
+        </activity>
+        <activity
+            android:name="com.lwm.app.ui.activity.RemotePlaybackActivity"
+            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.BroadcastActivity" />
+        </activity>
+        <activity android:name="com.lwm.app.ui.activity.PreferenceActivity" />
+        <activity
+            android:name="com.lwm.app.ui.activity.StationChooserActivity"
+            android:label="@string/title_activity_station_chooser" >
+        </activity>
+        <activity
+            android:name="com.lwm.app.ui.activity.AlbumInfoActivity"
+            android:theme="@style/AppTheme.TranslucentActionBar"
+            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="LocalSongChooserActivity" />
+        </activity>
+        <activity
+            android:name="com.lwm.app.ui.activity.ArtistInfoActivity"
+            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="LocalSongChooserActivity" />
+        </activity>
+    </application>
+
+</manifest>

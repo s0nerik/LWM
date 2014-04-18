@@ -1,0 +1,19 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<PreferenceCategory-->
+        <!--android:title="@string/inline_preferences">-->
+
+        <EditTextPreference
+            android:key="ap_name"
+            android:title="@string/title_ap_name_preference"
+            android:summary="@string/summary_ap_name_preference" />
+
+        <!--<CheckBoxPreference-->
+            <!--android:key="ap_clients_can_manage"-->
+            <!--android:title="@string/title_ap_clients_can_manage_preference"-->
+            <!--android:summary="@string/summary_ap_clients_can_manage_preference" />-->
+
+    <!--</PreferenceCategory>-->
+
+</PreferenceScreen>

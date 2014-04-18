@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.lwm.app.ui.custom_view.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="48dp"
+    android:background="@drawable/selector_drawer_item_background"
+    android:checkMark="@null"
+    android:layout_width="match_parent">
+
+    <com.lwm.app.ui.custom_view.CheckedImageView
+        android:id="@+id/drawer_item_icon"
+        android:layout_gravity="center_vertical"
+        android:checkMark="@null"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="5dp" />
+
+    <CheckedTextView
+        android:id="@+id/drawer_item_text"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:textColor="@color/selector_drawer_item_textcolor"
+        android:paddingLeft="12dp"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:ellipsize="marquee" />
+
+</com.lwm.app.ui.custom_view.CheckedLinearLayout>

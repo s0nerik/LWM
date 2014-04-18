@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_gravity="center"
+    android:background="@drawable/background_main_activity">
+
+    <LinearLayout
+        android:id="@+id/start_screen_local_music_button"
+        android:onClick="onPlayerTypeChosen"
+
+        android:layout_gravity="center"
+
+        android:orientation="vertical"
+        android:layout_margin="50dp"
+
+        android:layout_weight="1"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.lwm.app.ui.custom_view.SquareSVGImageViewLandscape
+            android:id="@+id/start_screen_local_music_button_icon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:svg="icons/local_music_.svg"
+            />
+
+        <com.danh32.fontify.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/local_music"
+            android:textAlignment="center"
+            android:textColor="@color/subtitle_text_color"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center"
+            app:font="@string/FONT_ROBOTO_BOLD" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/start_screen_remote_music_button"
+        android:onClick="onPlayerTypeChosen"
+
+        android:layout_gravity="center"
+
+        android:orientation="vertical"
+        android:layout_margin="50dp"
+
+        android:layout_weight="1"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.lwm.app.ui.custom_view.SquareSVGImageViewLandscape
+            android:id="@+id/start_screen_remote_music_button_icon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:svg="icons/radio_.svg"
+            />
+
+        <com.danh32.fontify.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remote_music"
+            android:textAlignment="center"
+            android:textColor="@color/subtitle_text_color"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center"
+            app:font="@string/FONT_ROBOTO_BOLD" />
+    </LinearLayout>
+
+</LinearLayout>

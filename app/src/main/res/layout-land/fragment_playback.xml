@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fontify="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_playback_layout"
+    android:background="@android:color/black" >
+
+    <ImageView
+        android:id="@+id/fragment_playback_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:x="0dp"
+        android:y="0dp"
+        android:src="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_playback_under_actionbar"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/actionbar_size">
+
+        <com.lwm.app.ui.custom_view.SquareImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:id="@+id/fragment_playback_cover"
+            android:src="@drawable/no_cover"
+            android:layout_gravity="bottom"
+            android:layout_weight="0"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0">
+
+            <com.danh32.fontify.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_playback_now_position"
+                android:text="0:00"
+                android:gravity="center"
+                android:padding="3dp"
+
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"
+
+                android:textColor="@android:color/white"
+
+                fontify:font="@string/FONT_ROBOTO_REGULAR"
+                android:layout_above="@+id/fragment_playback_seekBar"
+                android:layout_marginLeft="10dp" />
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_seekbar"
+                android:id="@+id/fragment_playback_seekBar"
+                style="@style/SeekBar"
+                android:layout_above="@id/fragment_playback_controls"
+                android:progress="50" />
+
+            <com.danh32.fontify.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_playback_last_position"
+                android:text="3:00"
+                android:gravity="center"
+                android:padding="3dp"
+
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="2"
+
+                android:textColor="@android:color/white"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_above="@+id/fragment_playback_seekBar"
+                android:layout_alignParentRight="true"
+
+                fontify:font="@string/FONT_ROBOTO_REGULAR" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_playback_controls"
+                android:background="#55000000"
+                android:layout_alignParentBottom="true" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_shuffle_active"
+                    android:layout_weight="1"
+                    android:id="@+id/fragment_playback_shuffle_button"
+                    android:onClick="onControlButtonClicked"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_prev"
+                    android:layout_weight="1"
+                    android:id="@+id/fragment_playback_prev"
+                    android:onClick="onControlButtonClicked"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_pause"
+                    android:layout_weight="1"
+                    android:id="@+id/fragment_playback_play_pause"
+                    android:onClick="onControlButtonClicked"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_next"
+                    android:layout_weight="1"
+                    android:id="@+id/fragment_playback_next"
+                    android:onClick="onControlButtonClicked"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_repeat"
+                    android:layout_weight="1"
+                    android:id="@+id/fragment_playback_repeat_button"
+                    android:onClick="onControlButtonClicked"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
