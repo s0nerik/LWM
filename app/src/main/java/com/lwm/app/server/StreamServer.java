@@ -33,6 +33,7 @@ public class StreamServer extends NanoHTTPD {
     public static final String PING = "/ping";
     public static final String SEEK_TO = "/seekTo/";
     public static final String CLIENT_READY = "/ready/";
+    public static final String CLIENT_REMOVE = "/remove/";
 
     private static Set<Client> clients = new HashSet<>();
     private static Set<Client> ready = new HashSet<>();
@@ -77,6 +78,17 @@ public class StreamServer extends NanoHTTPD {
                         }
                     }
                     return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+ip+" is ready.");
+
+                }else if(uri.startsWith(CLIENT_REMOVE)){
+                    String ip = uri.substring(CLIENT_REMOVE.length());
+                    for(Client client:clients){
+                        if(ip.equals(client.getIP())){
+                            clients.remove(client);
+                            break;
+                        }
+                    }
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+ip+" removed.");
+
                 }else{
                     StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
                     switch(uri){

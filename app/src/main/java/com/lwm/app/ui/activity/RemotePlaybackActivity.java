@@ -125,6 +125,7 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
         if(player.isPlaying()) {
             player.stop();
         }
+        player.detachFromStation();
     }
 
 }

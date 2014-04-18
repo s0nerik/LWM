@@ -101,6 +101,10 @@ public class StreamPlayer extends BasePlayer {
         }
     }
 
+    public void detachFromStation(){
+        new ClientRemover().execute();
+    }
+
     public static boolean isActive(){
         return active;
     }
@@ -186,6 +190,25 @@ public class StreamPlayer extends BasePlayer {
                 httpclient.execute(httpPostIP);
             } catch (IOException e) {
                 Log.e(App.TAG, "Error: AddressSender");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+    }
+
+    private class ClientRemover extends AsyncTask<Void, Void, Void> {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPostRemoveIP = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_REMOVE+Connectivity.getIP(context));
+
+        @Override
+        protected Void doInBackground(Void... aVoid){
+
+            try {
+                httpclient.execute(httpPostRemoveIP);
+            } catch (IOException e) {
+                Log.e(App.TAG, "Error: ClientRemover");
                 e.printStackTrace();
             }
 

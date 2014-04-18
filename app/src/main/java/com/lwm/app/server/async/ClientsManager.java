@@ -34,7 +34,10 @@ public class ClientsManager {
                 int i = 0;
                 try {
                     listener.onWaitClients();
-                    while(!clients.equals(ready) && i++<10) Thread.sleep(1000);
+                    while(!clients.equals(ready) && i++<5) Thread.sleep(1000);
+                    if(i == 5){
+                        clients.retainAll(ready);
+                    }
                     listener.onClientsReady();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
