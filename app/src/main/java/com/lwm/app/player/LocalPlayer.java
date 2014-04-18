@@ -29,8 +29,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     private int currentQueuePosition = -1;
     private int currentIndex = 0;
     private Song currentSong;
-    private List<Song> queue = new ArrayList<>();
 
+    private List<Song> queue = new ArrayList<>();
     private List<Integer> indexes = new ArrayList<>();
 
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
@@ -66,6 +66,12 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public List<Song> getQueue(){
         return queue;
+    }
+
+    public void shuffleQueue(){
+        Collections.shuffle(queue);
+        indexes = new ArrayList<>();
+        addIndexes(queue.size());
     }
 
     public void addToQueue(List<Song> songs){

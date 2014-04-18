@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SongsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<Song>> {
+public class SongsListFragment extends ListFragment implements
+        LoaderManager.LoaderCallbacks<List<Song>>, PlayerListener {
 
     OnSongSelectedListener mCallback;
 
@@ -76,6 +77,13 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     public void onResume() {
         super.onResume();
         highlightCurrentSong();
+        player.registerListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        player.unregisterListener();
     }
 
     @Override
@@ -91,6 +99,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     }
 
     public void highlightCurrentSong(){
+        player = App.getMusicService().getLocalPlayer();
         if(player.hasCurrentSong()) {
             Song song = player.getCurrentSong();
             int pos = songs.indexOf(song);
@@ -124,13 +133,10 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
 
         if (App.isMusicServiceBound()) {
 
-            LocalPlayer player;
             if (isFirstClick) {
                 player = new LocalPlayer(getActivity(), songs);
                 App.getMusicService().setLocalPlayer(player);
                 isFirstClick = false;
-            } else {
-                player = App.getMusicService().getLocalPlayer();
             }
 
             player.play(position);
@@ -170,7 +176,6 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<List<Song>> loader) {
-        songs.clear();
         ((SongsListAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
@@ -188,9 +193,23 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
         Collections.shuffle(queue);
         player = new LocalPlayer(getActivity(), queue);
         App.getMusicService().setLocalPlayer(player);
-        player.registerListener((PlayerListener) getActivity());
+        player.registerListener(this);
         player.play(0);
         highlightCurrentSong();
     }
 
+    @Override
+    public void onSongChanged(Song song) {
+        highlightCurrentSong();
+    }
+
+    @Override
+    public void onPlaybackPaused() {
+
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+
+    }
 }

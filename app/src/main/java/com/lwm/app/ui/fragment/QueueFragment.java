@@ -16,23 +16,16 @@ import android.widget.ListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
-import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-
-import java.util.Collections;
-import java.util.List;
 
 public class QueueFragment extends ListFragment {
 
-    protected List<Song> playlist;
     private LocalPlayer player;
 
     OnSongSelectedListener mCallback;
 
     private ListView listView;
     private int currentPosition = -1;
-
-    private boolean isFirstClick = true;
 
     private final static int SMOOTH_SCROLL_MAX = 50;
 
@@ -78,9 +71,7 @@ public class QueueFragment extends ListFragment {
 
         if(App.isMusicServiceBound()){
             int pos = player.getCurrentQueuePosition();
-            listView.setItemChecked(pos, true);
-            listView.setSelection(pos);
-            currentPosition = pos;
+            setSelection(pos);
         }
     }
 
@@ -101,13 +92,6 @@ public class QueueFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
         if(App.isMusicServiceBound()){
-
-            if(isFirstClick){
-                App.getMusicService().setLocalPlayer(new LocalPlayer(getActivity(), playlist));
-                isFirstClick = false;
-            }
-
-            LocalPlayer player = App.getMusicService().getLocalPlayer();
             player.play(position);
         }
         mCallback.onSongSelected(position);
@@ -123,8 +107,10 @@ public class QueueFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_shuffle:
-                Collections.shuffle(playlist);
+                player.shuffleQueue();
+                player.play(0);
                 ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
+                setSelection(0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
