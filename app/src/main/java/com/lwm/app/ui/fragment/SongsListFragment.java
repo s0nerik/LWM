@@ -75,6 +75,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public void onResume() {
         super.onResume();
+        player = App.getMusicService().getLocalPlayer();
     }
 
     @Override
@@ -90,8 +91,8 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     }
 
     public void highlightCurrentSong(){
-        if(LocalPlayer.hasCurrentSong()) {
-            Song song = LocalPlayer.getCurrentSong();
+        if(player.hasCurrentSong()) {
+            Song song = player.getCurrentSong();
             int pos = songs.indexOf(song);
             if(pos != -1) {
                 setSelection(pos);

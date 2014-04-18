@@ -115,7 +115,7 @@ public class AlbumInfoActivity extends BasicActivity implements
             case R.id.action_settings:
                 return true;
             case R.id.action_add_to_queue:
-                LocalPlayer.getQueue().addAll(playlist);
+                App.getMusicService().getLocalPlayer().addToQueue(playlist);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -133,32 +133,6 @@ public class AlbumInfoActivity extends BasicActivity implements
         App.getMusicService().setLocalPlayer(player);
         player.registerListener(this);
         player.play(position-1);
-//        showNowPlayingBar();
     }
-
-//    private void showNowPlayingBar(){
-//
-//        Log.d(App.TAG, "showNowPlayingBar()");
-//
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//
-//        if(LocalPlayer.hasCurrentSong()){
-//            NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-//            fragmentManager.beginTransaction()
-//                    .show(nowPlaying)
-//                    .commit();
-//
-//            nowPlaying.setCurrentSongInfo();
-//
-//            LocalPlayer player = App.getMusicService().getLocalPlayer();
-//            nowPlaying.setPlayButton(player.isPlaying());
-//        }
-//    }
-
-//    @Override
-//    public void onSongChanged(Song song) {
-//        Log.d(App.TAG, "AlbumInfoActivity: onSongChanged");
-//        showNowPlayingBar();
-//    }
 
 }

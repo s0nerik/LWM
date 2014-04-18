@@ -83,26 +83,13 @@ public class AlbumsCursorGetter {
     public Cursor getAlbumsCursorByArtist(Artist artist){
         String selection = MediaStore.Audio.Albums.ARTIST + " = ?";
         String[] selectionArgs = {artist.getName()};
-        Cursor cursor = caller.getContentResolver().query(
+
+        return caller.getContentResolver().query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
                 selectionArgs,
                 MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
-
-//        List<Album> list = new ArrayList<>();
-//        assert cursor != null;
-//        if(cursor.moveToFirst()){
-//            do{
-//                list.add(new Album(cursor.getInt(_ID),
-//                                    cursor.getString(ALBUM),
-//                                    cursor.getString(ARTIST),
-//                                    cursor.getInt(FIRST_YEAR),
-//                                    cursor.getString(ALBUM_ART),
-//                                    cursor.getInt(NUMBER_OF_SONGS)));
-//            }while(cursor.moveToNext());
-//        }
-        return cursor;
     }
 
 }

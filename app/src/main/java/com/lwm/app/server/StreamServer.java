@@ -31,15 +31,11 @@ public class StreamServer extends NanoHTTPD {
     public static final String PLAY = "/play";
     public static final String PREPARE = "/prepare";
     public static final String PING = "/ping";
-//    public static final String NEXT_SONG = "/next_song";
-//    public static final String PREV_SONG = "/prev_song";
-//    public static final String SONG_CHANGED = "/song_changed";
     public static final String SEEK_TO = "/seekTo/";
     public static final String CLIENT_READY = "/ready/";
-//    public static final String TEST = "/test";
 
-    private static HashSet<Client> clients = new HashSet<>();
-    private static HashSet<Client> ready = new HashSet<>();
+    private static Set<Client> clients = new HashSet<>();
+    private static Set<Client> ready = new HashSet<>();
 //    private boolean clientsCanManage = true;
     private BasePlayer player;
     private Context context;
@@ -49,7 +45,6 @@ public class StreamServer extends NanoHTTPD {
         this.context = context;
         SharedPreferences sharedPreferences = context.getSharedPreferences("server_prefs", Context.MODE_PRIVATE);
 //        clientsCanManage = sharedPreferences.getBoolean("clients_can_manage", false);
-//        clientsCanManage = true;
     }
 
     @Override
@@ -106,7 +101,7 @@ public class StreamServer extends NanoHTTPD {
 
             case GET: // Outcoming info
                 LocalPlayer localPlayer = App.getMusicService().getLocalPlayer();
-                Song song = LocalPlayer.getCurrentSong();
+                Song song = localPlayer.getCurrentSong();
                 switch(uri){
 
                     case STREAM:
@@ -136,7 +131,7 @@ public class StreamServer extends NanoHTTPD {
                         InputStream is = null;
                         try {
                             is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
-                        } catch (FileNotFoundException e) {}
+                        } catch (FileNotFoundException ignored) {}
                         return new Response(Response.Status.OK, "image", is);
                 }
 

@@ -15,6 +15,7 @@ import com.lwm.app.server.async.ClientsManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -22,10 +23,14 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Context context;
 
-    private static boolean active;
-    private static int currentQueuePosition;
-    private static Song currentSong;
-    private static List<Song> queue = new ArrayList<>();
+    private boolean shuffle;
+    private boolean repeat;
+
+    private boolean active;
+    private int currentQueuePosition;
+    private int currentIndex = 0;
+    private Song currentSong;
+    private List<Song> queue = new ArrayList<>();
 
     private List<Integer> indexes = new ArrayList<>();
 
@@ -59,21 +64,28 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         active = false;
         currentQueuePosition = -1;
         queue = playlist;
+        addIndexes(playlist.size());
         setOnCompletionListener(onCompletionListener);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         setShuffle(sharedPreferences.getBoolean("shuffle", false));
         setRepeat(sharedPreferences.getBoolean("repeat", false));
     }
 
-    public static void setQueue(List<Song> newQueue){
-        queue = newQueue;
-    }
-
-    public static List<Song> getQueue(){
+    public List<Song> getQueue(){
         return queue;
     }
 
-    public static Song getCurrentSong(){
+    public void addToQueue(List<Song> songs){
+        queue.addAll(songs);
+        addIndexes(songs.size());
+    }
+
+    public void addToQueue(Song song){
+        queue.add(song);
+        addIndexes(1);
+    }
+
+    public Song getCurrentSong(){
         Log.d(App.TAG, "getCurrentSong");
 
         return currentSong;
@@ -108,7 +120,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         Log.d(App.TAG, "LocalPlayer: play("+position+")");
     }
 
-    public static boolean hasCurrentSong() {
+    public boolean hasCurrentSong() {
         return active;
     }
 
@@ -116,45 +128,53 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public void nextSong() {
         Log.d(App.TAG, "LocalPlayer: nextSong");
 
-        played.add(currentQueuePosition);
-
-        int listSize = queue.size();
-
-        if(shuffle){
-            currentQueuePosition = generator.nextInt(listSize-1);
-        }
-        if(++currentQueuePosition < listSize){
-            play(currentQueuePosition);
+        if(currentIndex+1 < indexes.size()) {
+            currentQueuePosition = indexes.get(++currentIndex);
         }else{
-            --currentQueuePosition;
             Toast t = Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT);
             t.show();
         }
 
+        play(currentQueuePosition);
+
+    }
+
+    public boolean isShuffle() {
+        return shuffle;
+    }
+
+    public void setShuffle(boolean flag) {
+        shuffle = flag;
+        if(shuffle){
+            Collections.shuffle(indexes);
+            currentIndex = 0;
+        }else{
+            currentIndex = indexes.get(currentIndex);
+            Collections.sort(indexes);
+        }
+
+    }
+
+    public boolean isRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(boolean flag) {
+        repeat = flag;
     }
 
     @Override
     public void prevSong(){
         Log.d(App.TAG, "LocalPlayer: prevSong");
 
-        if(isShuffle()){
-            if(!played.isEmpty()){
-                currentQueuePosition = played.pollLast();
-                play(currentQueuePosition);
-            }else{
-                Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
-                t.show();
-            }
+        if(currentIndex-1 > 0) {
+            currentQueuePosition = indexes.get(--currentIndex);
         }else{
-            if(--currentQueuePosition >= 0){
-                play(currentQueuePosition);
-                Log.d(App.TAG, "LocalPlayer: nextSong");
-            }else{
-                ++currentQueuePosition;
-                Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
-                t.show();
-            }
+            Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
+            t.show();
         }
+
+        play(currentQueuePosition);
 
     }
 
@@ -195,12 +215,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         }
     }
 
-    private void fillIndexes(int n){
-        for(int i=0;i<n;i++){
-            indexes.add(i);
-        }
-    }
-
     private void addIndexes(int n){
         int x = indexes.size();
         for(int i=x;i<x+n;i++){
@@ -208,7 +222,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         }
     }
 
-    public static int getCurrentQueuePosition() {
+    public int getCurrentQueuePosition() {
         return currentQueuePosition;
     }
 

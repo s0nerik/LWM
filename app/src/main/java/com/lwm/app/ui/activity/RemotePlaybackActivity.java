@@ -101,7 +101,12 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
 
     @Override
     public void onPlaybackPaused() {
-        playbackFragment.setPlayButton(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playbackFragment.setPlayButton(false);
+            }
+        });
     }
 
     @Override

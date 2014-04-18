@@ -37,8 +37,8 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         super.onPostCreate(savedInstanceState);
         player = App.getMusicService().getLocalPlayer();
         playbackFragment.setPlayButton(player.isPlaying());
-        playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
-        playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
+        playbackFragment.setShuffleButton(player.isShuffle());
+        playbackFragment.setRepeatButton(player.isRepeat());
     }
 
     @Override
@@ -59,19 +59,19 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
                 break;
 
             case R.id.fragment_playback_shuffle_button:
-                LocalPlayer.setShuffle(!LocalPlayer.isShuffle());
-                playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
+                player.setShuffle(!player.isShuffle());
+                playbackFragment.setShuffleButton(player.isShuffle());
 
-                editor.putBoolean("shuffle", LocalPlayer.isShuffle());
+                editor.putBoolean("shuffle", player.isShuffle());
                 editor.commit();
 
                 break;
 
             case R.id.fragment_playback_repeat_button:
-                LocalPlayer.setRepeat(!LocalPlayer.isRepeat());
-                playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
+                player.setRepeat(!player.isRepeat());
+                playbackFragment.setRepeatButton(player.isRepeat());
 
-                editor.putBoolean("repeat", LocalPlayer.isRepeat());
+                editor.putBoolean("repeat", player.isRepeat());
                 editor.commit();
                 break;
         }
@@ -80,7 +80,7 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        setSongInfo(LocalPlayer.getCurrentSong());
+        setSongInfo(player.getCurrentSong());
         player.registerListener(this);
     }
 

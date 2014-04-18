@@ -27,8 +27,6 @@ public class QueueFragment extends ListFragment {
     protected List<Song> playlist;
     private LocalPlayer player;
 
-    private MenuItem shuffleButton;
-
     OnSongSelectedListener mCallback;
 
     private ListView listView;
@@ -39,15 +37,8 @@ public class QueueFragment extends ListFragment {
     private final static int SMOOTH_SCROLL_MAX = 50;
 
     public QueueFragment() {
-        playlist = LocalPlayer.getQueue();
-//        if(playlist == null){
-//            playlist = new ArrayList<>();
-//        }
+        player = App.getMusicService().getLocalPlayer();
     }
-
-//    public QueueFragment(List<Song> playlist){
-//        this.playlist = playlist;
-//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -78,7 +69,7 @@ public class QueueFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-        setListAdapter(new SongsListAdapter(getActivity(), playlist));
+        setListAdapter(new SongsListAdapter(getActivity(), player.getQueue()));
     }
 
     @Override
@@ -86,7 +77,7 @@ public class QueueFragment extends ListFragment {
         super.onResume();
 
         if(App.isMusicServiceBound()){
-            int pos = LocalPlayer.getCurrentQueuePosition();
+            int pos = player.getCurrentQueuePosition();
             listView.setItemChecked(pos, true);
             listView.setSelection(pos);
             currentPosition = pos;
@@ -125,7 +116,6 @@ public class QueueFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.queue, menu);
-        shuffleButton = menu.findItem(R.id.action_shuffle);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -141,8 +131,4 @@ public class QueueFragment extends ListFragment {
         }
     }
 
-//    @Override
-//    public void addToPlaybackQueue() {
-//        LocalPlayer.getQueue().addAll(playlist);
-//    }
 }

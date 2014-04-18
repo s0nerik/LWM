@@ -42,8 +42,6 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
 
     // Playback control buttons
     private ImageView playPauseButton;
-    private ImageView nextButton;
-    private ImageView prevButton;
     private ImageView shuffleButton;
     private ImageView repeatButton;
 
@@ -64,8 +62,8 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
 
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
-        nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
-        prevButton = (ImageView) view.findViewById(R.id.fragment_playback_prev);
+        ImageView nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
+        ImageView prevButton = (ImageView) view.findViewById(R.id.fragment_playback_prev);
         shuffleButton = (ImageView) view.findViewById(R.id.fragment_playback_shuffle_button);
         repeatButton = (ImageView) view.findViewById(R.id.fragment_playback_repeat_button);
 
@@ -107,10 +105,6 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     public void setRemoteAlbumArt(){
         new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background).execute();
     }
-
-//    public void setCurrentAlbumArt(){
-//        setAlbumArtFromUri(MusicService.getLocalPlayer().getCurrentAlbumArtUri());
-//    }
 
     public void setDefaultAlbumArt() {
         albumArt.setImageResource(R.drawable.no_cover);
@@ -176,7 +170,7 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
             }
             try{
                 newDrawable = new BitmapDrawable(getResources(), bitmap);
-            }catch (IllegalStateException e){}
+            }catch (IllegalStateException ignored){}
             return null;
         }
 

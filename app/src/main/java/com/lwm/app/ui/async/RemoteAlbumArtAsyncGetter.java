@@ -27,10 +27,9 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
     private ImageView albumArt;
     private ImageView bg;
     private Bitmap cover;
-    private Bitmap background;
     private Drawable newDrawable;
     private Drawable[] drawables;
-    private TransitionDrawable transitionDrawable;
+    private Bitmap background;
 
     HttpClient httpclient = new DefaultHttpClient();
     HttpGet httpGetAlbumArt = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_ALBUMART);
@@ -60,7 +59,7 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
 
         try{
             newDrawable = new BitmapDrawable(context.getResources(), background);
-        }catch (IllegalStateException e){}
+        }catch (IllegalStateException ignored){}
         return null;
     }
 
@@ -77,7 +76,7 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
 
             drawables[0] = oldDrawable;
             drawables[1] = newDrawable;
-            transitionDrawable = new TransitionDrawable(drawables);
+            TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
 
             bg.setImageDrawable(transitionDrawable);
             transitionDrawable.startTransition(1000);
