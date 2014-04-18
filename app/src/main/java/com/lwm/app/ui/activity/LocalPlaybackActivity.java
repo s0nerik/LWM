@@ -170,12 +170,22 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
 
     @Override
     public void onPlaybackPaused() {
-        playbackFragment.setPlayButton(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playbackFragment.setPlayButton(false);
+            }
+        });
     }
 
     @Override
     public void onPlaybackStarted() {
-        playbackFragment.setPlayButton(true);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playbackFragment.setPlayButton(true);
+            }
+        });
     }
 
     private void setBroadcastButtonState(int wait){
