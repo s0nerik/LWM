@@ -35,12 +35,10 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-//        if(App.isMusicServiceBound()){
-            player = App.getMusicService().getLocalPlayer();
-            playbackFragment.setPlayButton(player.isPlaying());
-            playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
-            playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
-//        }
+        player = App.getMusicService().getLocalPlayer();
+        playbackFragment.setPlayButton(player.isPlaying());
+        playbackFragment.setShuffleButton(LocalPlayer.isShuffle());
+        playbackFragment.setRepeatButton(LocalPlayer.isRepeat());
     }
 
     @Override
@@ -85,12 +83,6 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         setSongInfo(LocalPlayer.getCurrentSong());
         player.registerListener(this);
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        player.unregisterListener();
-//    }
 
     @Override
     protected void onPause() {
@@ -178,12 +170,12 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
 
     @Override
     public void onPlaybackPaused() {
-
+        playbackFragment.setPlayButton(false);
     }
 
     @Override
     public void onPlaybackStarted() {
-
+        playbackFragment.setPlayButton(true);
     }
 
     private void setBroadcastButtonState(int wait){

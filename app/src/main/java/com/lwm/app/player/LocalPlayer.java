@@ -31,16 +31,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Random generator = new Random();
 
-    private OnPreparedListener onPreparedListener = new OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mediaPlayer) {
-            mediaPlayer.start();
-            if(isListenerAttached()){
-                playbackListener.onSongChanged(getCurrentSong());
-            }
-        }
-    };
-
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
@@ -62,7 +52,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         currentQueuePosition = -1;
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
-//        setOnPreparedListener(onPreparedListener);
     }
 
     public LocalPlayer(Context context, List<Song> playlist){
@@ -74,7 +63,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         setShuffle(sharedPreferences.getBoolean("shuffle", false));
         setRepeat(sharedPreferences.getBoolean("repeat", false));
-//        setOnPreparedListener(onPreparedListener);
     }
 
     public static void setQueue(List<Song> newQueue){
@@ -113,10 +101,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
                 start();
             }
 
-//            long start = System.currentTimeMillis();
-//            start();
-//            long end = System.currentTimeMillis();
-//            Log.d(App.TAG, "start() takes "+(end-start)+" ms");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -180,6 +164,9 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         if(StreamServer.hasClients()){
             new ClientsManager(this).pause();
         }
+        if(isListenerAttached()) {
+            playbackListener.onPlaybackPaused();
+        }
     }
 
     @Override
@@ -194,6 +181,9 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             }
         }
         super.start();
+        if(isListenerAttached()) {
+            playbackListener.onPlaybackStarted();
+        }
     }
 
     @Override
