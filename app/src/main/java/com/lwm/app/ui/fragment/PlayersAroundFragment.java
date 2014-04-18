@@ -65,7 +65,7 @@ public class PlayersAroundFragment extends ListFragment {
     }
 
     protected void startStreamPlayback(){
-        App.getMusicService().getStreamPlayer().playFromCurrentPosition();
+        App.getMusicService().getStreamPlayer().attachToStation();
         Intent intent = new Intent(getActivity(), RemotePlaybackActivity.class);
         getActivity().startActivity(intent);
     }

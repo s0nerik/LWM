@@ -40,7 +40,7 @@ public class StreamPlayer extends BasePlayer {
         });
     }
 
-    private void attachToStation(){
+    public void attachToStation(){
         new AddressSender().execute();
     }
 

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.lib.NanoHTTPD;
+import com.lwm.app.model.Client;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.LocalPlayer;
@@ -29,6 +30,7 @@ public class StreamServer extends NanoHTTPD {
     public static final String PAUSE = "/pause";
     public static final String PLAY = "/play";
     public static final String PREPARE = "/prepare";
+    public static final String PING = "/ping";
     public static final String NEXT_SONG = "/next_song";
     public static final String PREV_SONG = "/prev_song";
     public static final String SONG_CHANGED = "/song_changed";
@@ -36,9 +38,9 @@ public class StreamServer extends NanoHTTPD {
     public static final String CLIENT_READY = "/ready/";
 //    public static final String TEST = "/test";
 
-    private static HashSet<String> clients = new HashSet<>();
-    private static HashSet<String> ready = new HashSet<>();
-    private boolean clientsCanManage = true;
+    private static HashSet<Client> clients = new HashSet<>();
+    private static HashSet<Client> ready = new HashSet<>();
+//    private boolean clientsCanManage = true;
     private BasePlayer player;
     private Context context;
 
@@ -59,58 +61,48 @@ public class StreamServer extends NanoHTTPD {
 
         switch(method){
             case POST: // Incoming info
-                if(uri.startsWith(IP)) {
-                    String ip = uri.substring(IP.length());
-                    clients.add(ip);
+                if(PING.equals(uri)) return new Response("");
 
-                    for (String client : clients) {
-                        Log.d(App.TAG, "client: " + client);
+                else if(uri.startsWith(IP)) {
+                    String ip = uri.substring(IP.length());
+                    clients.add(new Client(ip));
+
+                    Log.d(App.TAG, "--- CLIENTS ---");
+                    for (Client client : clients) {
+                        Log.d(App.TAG, "client: " + client.getIP());
                     }
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client added.");
+
                 }else if(uri.startsWith(CLIENT_READY)){
                     String ip = uri.substring(CLIENT_READY.length());
-                    ready.add(ip);
+                    for(Client client:clients){
+                        if(ip.equals(client.getIP())){
+                            ready.add(client);
+                            break;
+                        }
+                    }
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+ip+" is ready.");
                 }else{
                     StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
                     switch(uri){
                         case PREPARE:
                             Log.d(App.TAG, "StreamServer: PREPARE");
-                            if(clientsCanManage){
-//                                new Thread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-                                        streamPlayer.prepareNewSong();
-//                                    }
-//                                }).start();
-                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
-                            }else {
-                                return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Not allowed.");
-                            }
+                            streamPlayer.prepareNewSong();
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
 
                         case PLAY:
                             Log.d(App.TAG, "StreamServer: PLAY");
-                            if(clientsCanManage){
-                                streamPlayer.start();
-                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
-                            }else {
-                                return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Not allowed.");
-                            }
+                            streamPlayer.start();
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
 
                         case PAUSE:
                             Log.d(App.TAG, "StreamServer: PAUSE");
-                            if(clientsCanManage){
-                                streamPlayer.pause();
-                                return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
-                            }else {
-                                return new Response(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
-                                        "Now allowed.");
-                            }
-
+                            streamPlayer.pause();
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
                     }
                 }
 
-                return new Response(Response.Status.OK, MIME_PLAINTEXT, "OK");
+                return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "");
 
             case GET: // Outcoming info
                 LocalPlayer localPlayer = App.getMusicService().getLocalPlayer();
@@ -127,11 +119,7 @@ public class StreamServer extends NanoHTTPD {
                         } catch (FileNotFoundException e) {e.printStackTrace();}
 
                         Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
-//                        Random rnd = new Random();
-//                        String etag = Integer.toHexString( rnd.nextInt() );
-
                         res.addHeader("Connection", "Keep-alive");
-//                        res.addHeader("ETag", etag);
                         res.setChunkedTransfer(true);
                         return res;
 
@@ -163,11 +151,11 @@ public class StreamServer extends NanoHTTPD {
         return !clients.isEmpty();
     }
 
-    public static Set<String> getClients(){
+    public static Set<Client> getClients(){
         return clients;
     }
 
-    public static Set<String> getReadyClients(){
+    public static Set<Client> getReadyClients(){
         return ready;
     }
 

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.model.Song;
+import com.lwm.app.server.ClientsStateListener;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.server.async.ClientsManager;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LocalPlayer extends BasePlayer {
+public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Context context;
 
@@ -59,7 +60,6 @@ public class LocalPlayer extends BasePlayer {
         this.context = context;
         active = false;
         currentQueuePosition = -1;
-//        queue = new ArrayList<>();
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
 //        setOnPreparedListener(onPreparedListener);
@@ -100,20 +100,25 @@ public class LocalPlayer extends BasePlayer {
             assert queue != null : "queue == null";
             setDataSource(currentSong.getSource());
             prepare();
-            start();
+
             active = true;
+
             if(isListenerAttached()){
                 playbackListener.onSongChanged(currentSong);
             }
+
+            if(StreamServer.hasClients()) {
+                new ClientsManager(this).changeSong();
+            }else{
+                start();
+            }
+
+//            long start = System.currentTimeMillis();
+//            start();
+//            long end = System.currentTimeMillis();
+//            Log.d(App.TAG, "start() takes "+(end-start)+" ms");
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        if(StreamServer.hasClients()) {
-            pause();
-            new ClientsManager().changeSong();
-            start();
-//            new ClientsManager().execute(ClientsManager.Command.PLAY);
         }
 
         Log.d(App.TAG, "LocalPlayer: play("+position+")");
@@ -173,16 +178,22 @@ public class LocalPlayer extends BasePlayer {
     public void pause() throws IllegalStateException {
         super.pause();
         if(StreamServer.hasClients()){
-            new ClientsManager().pause();
+            new ClientsManager(this).pause();
         }
     }
 
     @Override
     public void start() throws IllegalStateException {
-        super.start();
         if(StreamServer.hasClients()){
-            new ClientsManager().start();
+            ClientsManager manager = new ClientsManager(this);
+            manager.start();
+            try {
+                Thread.sleep(manager.getClientsMaxPing());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        super.start();
     }
 
     @Override
@@ -209,5 +220,15 @@ public class LocalPlayer extends BasePlayer {
 
     public static int getCurrentQueuePosition() {
         return currentQueuePosition;
+    }
+
+    @Override
+    public void onClientsReady() {
+        start();
+    }
+
+    @Override
+    public void onWaitClients() {
+
     }
 }
