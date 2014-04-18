@@ -36,6 +36,11 @@
     <string name="summary_ap_clients_can_manage_preference">Use it with caution(and only with your friends)</string>
 
 
+    <string name="pref_header_app">Application settings</string>
+    <string name="title_app_always_local">Always start a local player</string>
+    <string name="summary_app_always_local">Select this if you don\'t want to see a start screen</string>
+
+
     // Start activity
     <string name="local_music">Local music</string>
     <string name="remote_music">Remote music</string>
@@ -62,11 +67,6 @@
     <string name="FONT_ROBOTO_THIN_ITALIC">fonts/Roboto-ThinItalic.ttf</string>
     <string name="FONT_LECKERLI_ONE_REGULAR">fonts/LeckerliOne-Regular.ttf</string>
 
-    <!--<string-array name="spinner_names">-->
-        <!--<item>Player</item>-->
-        <!--<item>Receiver</item>-->
-    <!--</string-array>-->
-
     // Navigation Drawer titles
     <string-array name="drawer_items">
         <item>All songs</item>
@@ -87,6 +87,5 @@
     <string name="title_activity_station_chooser">Choose a station</string>
     <string name="connecting_to_the_station">Connecting to the station...</string>
     <string name="wifi_disabled">Please turn on Wi-Fi</string>
-    <!--<string name="title_activity_album_info">AlbumInfoActivity</string>-->
 
 </resources>

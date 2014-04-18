@@ -6,4 +6,9 @@
         unified:up_title="@string/pref_header_ap"
         unified:up_preferenceRes="@xml/pref_ap" />
 
+    <header
+        unified:up_fragment="com.lwm.app.ui.activity.PreferenceActivity$AppSettingsFragment"
+        unified:up_title="@string/pref_header_app"
+        unified:up_preferenceRes="@xml/pref_app" />
+
 </preference-headers>

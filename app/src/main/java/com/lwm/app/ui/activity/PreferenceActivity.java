@@ -16,4 +16,5 @@ public class PreferenceActivity extends UnifiedPreferenceActivity{
     }
 
     public static class AccessPointSettingsFragment extends UnifiedPreferenceFragment {}
+    public static class AppSettingsFragment extends UnifiedPreferenceFragment {}
 }
