@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -116,6 +117,8 @@ public class AlbumInfoActivity extends BasicActivity implements
                 return true;
             case R.id.action_add_to_queue:
                 App.getMusicService().getLocalPlayer().addToQueue(playlist);
+                Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT);
+                toast.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -50,6 +51,8 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
             switch (menuItem.getItemId()){
                 case R.id.action_add_to_queue:
                     App.getMusicService().getLocalPlayer().addToQueue(list.get(position));
+                    Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
+                    toast.show();
                     return true;
                 default:
                     return false;

@@ -50,6 +50,8 @@
     <string name="songs_count_title">SONGS:</string>
     <string name="year_title">YEAR:</string>
     <string name="year_unknown">UNKNOWN</string>
+    <string name="album_added_to_queue">Album added to the queue</string>
+    <string name="song_added_to_queue">Song added to the queue</string>
 
     // Font names
     <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>
