@@ -28,28 +28,6 @@ public abstract class PlaybackActivity extends ActionBarActivity {
 
     protected Timer seekBarUpdateTimer = new Timer();
 
-//    protected BroadcastReceiver onBroadcast = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent i) {
-//            String action = i.getAction();
-//            switch(action){
-//                case BasePlayer.SONG_CHANGED:
-//                    onSongChanged(i);
-//                    break;
-//
-////                case BasePlayer.PLAYBACK_PAUSED:
-////                    playbackFragment.setPlayButton(false);
-////                    break;
-////
-////                case BasePlayer.PLAYBACK_STARTED:
-////                    playbackFragment.setPlayButton(true);
-////                    break;
-//            }
-//
-//        }
-//    };
-
-//    protected abstract void onSongChanged(Intent i);
     public abstract void onControlButtonClicked(View v);
     protected abstract void setSongInfo(Song song);
 
@@ -65,20 +43,6 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         super.onPostCreate(savedInstanceState);
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.SONG_CHANGED));
-////        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_PAUSED));
-////        registerReceiver(onBroadcast, new IntentFilter(BasePlayer.PLAYBACK_STARTED));
-//    }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        unregisterReceiver(onBroadcast);
-//    }
 
     @Override
     protected void onStop() {
@@ -98,8 +62,6 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     }
 
     protected void initActionBar(){
-//        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#99000000")));
-//        actionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         actionBar.setIcon(R.drawable.ic_playback_activity);
         actionBar.setDisplayHomeAsUpEnabled(true);
 

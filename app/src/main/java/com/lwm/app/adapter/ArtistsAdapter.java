@@ -1,6 +1,5 @@
 package com.lwm.app.adapter;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +17,11 @@ public class ArtistsAdapter extends ArrayAdapter<Artist> {
 
     private final Context context;
     private List<Artist> artistsList;
-    private static ContentResolver contentResolver;
 
     public ArtistsAdapter(final Context context, ArtistsList artists) {
         super(context, R.layout.list_item_songs, artists.getArtists());
         this.context = context;
         artistsList = artists.getArtists();
-        contentResolver = context.getContentResolver();
     }
 
     static class ViewHolder {

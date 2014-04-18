@@ -1,6 +1,5 @@
 package com.lwm.app.adapter;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +26,12 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private final Context context;
     private List<Album> albumsList;
-    private static ContentResolver contentResolver;
     private ImageLoader imageLoader;
 
     public AlbumsAdapter(final Context context, AlbumsList albums) {
         super(context, R.layout.list_item_songs, albums.getAlbums());
         this.context = context;
         albumsList = albums.getAlbums();
-        contentResolver = context.getContentResolver();
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(new ImageLoaderConfiguration.Builder(context)
                 .defaultDisplayImageOptions(

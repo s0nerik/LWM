@@ -25,6 +25,8 @@ public class NowPlayingFragment extends Fragment {
     private TextView artist;
     private TextView title;
 
+    private LocalPlayer player;
+
     View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -68,9 +70,10 @@ public class NowPlayingFragment extends Fragment {
     }
 
     public void setCurrentSongInfo(){
+        player = App.getMusicService().getLocalPlayer();
         if(App.getMusicService().getCurrentPlayerType() == MusicService.PLAYER_LOCAL) {
-            if (LocalPlayer.hasCurrentSong()) {
-                Song song = LocalPlayer.getCurrentSong();
+            if (player.hasCurrentSong()) {
+                Song song = player.getCurrentSong();
                 setAlbumArtFromUri(song.getAlbumArtUri());
                 artist.setText(song.getArtist());
                 title.setText(song.getTitle());

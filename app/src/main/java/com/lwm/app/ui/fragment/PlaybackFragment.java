@@ -21,15 +21,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.enrique.stackblur.StackBlurManager;
-import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 
 import java.io.IOException;
 
-public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
 
     public static final int SEEK_BAR_MAX = 100;
     public static final int SEEK_BAR_UPDATE_INTERVAL = 1000;
@@ -42,12 +40,8 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     private ImageView albumArt;
     private ImageView background;
 
-    private LocalPlayer player;
-
     // Playback control buttons
     private ImageView playPauseButton;
-    private ImageView nextButton;
-    private ImageView prevButton;
     private ImageView shuffleButton;
     private ImageView repeatButton;
 
@@ -56,7 +50,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        player = App.getMusicService().getLocalPlayer();
         return inflater.inflate(R.layout.fragment_playback, container, false);
     }
 
@@ -69,8 +62,8 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
 
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
-        nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
-        prevButton = (ImageView) view.findViewById(R.id.fragment_playback_prev);
+        ImageView nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
+        ImageView prevButton = (ImageView) view.findViewById(R.id.fragment_playback_prev);
         shuffleButton = (ImageView) view.findViewById(R.id.fragment_playback_shuffle_button);
         repeatButton = (ImageView) view.findViewById(R.id.fragment_playback_repeat_button);
 
@@ -113,10 +106,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
         new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background).execute();
     }
 
-//    public void setCurrentAlbumArt(){
-//        setAlbumArtFromUri(MusicService.getLocalPlayer().getCurrentAlbumArtUri());
-//    }
-
     public void setDefaultAlbumArt() {
         albumArt.setImageResource(R.drawable.no_cover);
     }
@@ -146,19 +135,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
             repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_active));
         }else{
             repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat));
-        }
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if(fromUser){
-            if(App.isMusicServiceBound()){
-//                LocalPlayer player = App.getMusicService().getLocalPlayer();
-                player.seekTo((int)((progress/100.)*player.getDuration()));
-            }
-//            getActivity().startService(new Intent(getActivity(), MusicService.class)
-//                    .setAction(MusicService.ACTION_SONG_SEEK_TO)
-//                    .putExtra(BasePlayer.SEEK_POSITION, (int)((progress/100.0)*MusicService.getLocalPlayer().getDuration())));
         }
     }
 
@@ -194,7 +170,7 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
             }
             try{
                 newDrawable = new BitmapDrawable(getResources(), bitmap);
-            }catch (IllegalStateException e){}
+            }catch (IllegalStateException ignored){}
             return null;
         }
 

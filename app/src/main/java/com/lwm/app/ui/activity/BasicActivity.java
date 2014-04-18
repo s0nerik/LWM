@@ -16,33 +16,7 @@ import com.lwm.app.ui.fragment.NowPlayingFragment;
 
 public class BasicActivity extends ActionBarActivity implements PlayerListener {
 
-//    public static final String DRAWER_SELECTION = "drawer_selection";
-//
-//    protected enum DrawerItems { SONGS, ARTISTS, ALBUMS, QUEUE }
-
-//    protected FragmentManager fragmentManager = getSupportFragmentManager();
-//    protected DrawerLayout drawerLayout;
-//    protected ActionBarDrawerToggle drawerToggle;
-//    protected SharedPreferences sharedPreferences;
-//    protected ActionBar actionBar;
-//    protected ListView drawerList;
-//    protected int activeFragment;
-
-
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-////        sharedPreferences = getPreferences(MODE_PRIVATE);
-//    }
-
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        // Sync the toggle state after onRestoreInstanceState has occurred.
-//        drawerToggle.syncState();
-//    }
-
+    private LocalPlayer player;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -64,8 +38,9 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if(LocalPlayer.hasCurrentSong()) {
-            App.getMusicService().getLocalPlayer().registerListener(this);
+        player = App.getMusicService().getLocalPlayer();
+        if(player.hasCurrentSong()) {
+            player.registerListener(this);
             showNowPlayingBar(true);
         }else{
             showNowPlayingBar(false);
@@ -75,18 +50,10 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
     @Override
     protected void onPause() {
         super.onStop();
-        if(LocalPlayer.hasCurrentSong()) {
+        if(player.hasCurrentSong()) {
             App.getMusicService().getLocalPlayer().unregisterListener();
         }
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        if(LocalPlayer.hasCurrentSong()) {
-//            App.getMusicService().getLocalPlayer().unregisterListener();
-//        }
-//    }
 
     @Override
     public void onSongChanged(Song song) {
@@ -111,16 +78,14 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
         NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
 
         if(show) {
-//            if (LocalPlayer.hasCurrentSong()) {
-                fragmentManager.beginTransaction()
-                        .show(nowPlaying)
-                        .commitAllowingStateLoss();
+            fragmentManager.beginTransaction()
+                    .show(nowPlaying)
+                    .commitAllowingStateLoss();
 
-                nowPlaying.setCurrentSongInfo();
+            nowPlaying.setCurrentSongInfo();
 
-                LocalPlayer player = App.getMusicService().getLocalPlayer();
-                nowPlaying.setPlayButton(player.isPlaying());
-//            }
+            LocalPlayer player = App.getMusicService().getLocalPlayer();
+            nowPlaying.setPlayButton(player.isPlaying());
         } else {
             fragmentManager.beginTransaction()
                     .hide(nowPlaying)

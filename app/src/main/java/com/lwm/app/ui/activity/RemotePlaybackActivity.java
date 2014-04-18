@@ -10,7 +10,7 @@ import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.PlayerListener;
 import com.lwm.app.player.StreamPlayer;
-import com.lwm.app.ui.fragment.PlaybackFragment;
+import com.lwm.app.ui.fragment.RemotePlaybackFragment;
 
 public class RemotePlaybackActivity extends PlaybackActivity implements PlayerListener {
 
@@ -21,31 +21,20 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     private String title;
     private String artist;
     private String album;
-    private PlaybackFragment playbackFragment;
+    private RemotePlaybackFragment playbackFragment;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
-        if(App.isMusicServiceBound()){
-            player = App.getMusicService().getStreamPlayer();
-//            setSongInfo();
+        playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+
+        player = App.getMusicService().getStreamPlayer();
+        if(savedInstanceState == null) {
+            player.registerListener(this);
+            player.playFromCurrentPosition();
         }
     }
-
-//    @Override
-//    protected void onSongChanged(Intent i) {
-//        Bundle extras = i.getExtras();
-//        if(extras != null){
-//            title = extras.getString("title");
-//            album = extras.getString("album");
-//            artist = extras.getString("artist");
-//            duration = extras.getInt("duration");
-//            durationString = extras.getString("duration_string");
-//        }
-//
-//    }
 
     @Override
     public void onControlButtonClicked(View v) {
@@ -54,15 +43,21 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
 
     @Override
     protected void setSongInfo(Song song) {
-        durationString = song.getDurationString();
-        playbackFragment.setDuration(durationString);
-        duration = song.getDuration();
-        initSeekBarUpdater(player, duration);
-        title = song.getTitle();
-        actionBar.setTitle(title);
-        artist = song.getArtist();
-        actionBar.setSubtitle(artist);
-        playbackFragment.setRemoteAlbumArt();
+        if(song != null) {
+            playbackFragment.showWaitingFrame(false);
+
+            durationString = song.getDurationString();
+            playbackFragment.setDuration(durationString);
+            duration = song.getDuration();
+            initSeekBarUpdater(player, duration);
+            title = song.getTitle();
+            actionBar.setTitle(title);
+            artist = song.getArtist();
+            actionBar.setSubtitle(artist);
+            playbackFragment.setRemoteAlbumArt();
+        }else{
+            playbackFragment.showWaitingFrame(true);
+        }
     }
 
     @Override
@@ -76,6 +71,10 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     protected void onResume() {
         super.onResume();
         player.registerListener(this);
+        Song song = StreamPlayer.getCurrentSong();
+        if (song != null) {
+            setSongInfo(StreamPlayer.getCurrentSong());
+        }
     }
 
     @Override
@@ -102,11 +101,30 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
 
     @Override
     public void onPlaybackPaused() {
-        playbackFragment.setPlayButton(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playbackFragment.setPlayButton(false);
+            }
+        });
     }
 
     @Override
     public void onPlaybackStarted() {
-        playbackFragment.setPlayButton(true);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playbackFragment.setPlayButton(true);
+            }
+        });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(player.isPlaying()) {
+            player.stop();
+        }
+    }
+
 }

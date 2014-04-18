@@ -66,33 +66,16 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.d(App.TAG, "onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         initAdapter();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        highlightCurrentSong();
-
-//        if(App.isMusicServiceBound()){
-//            if(LocalPlayer.hasCurrentSong()) {
-//                Song song = LocalPlayer.getCurrentSong();
-//                int pos = songs.indexOf(song);
-////                int pos = LocalPlayer.getCurrentQueuePosition();
-//                if(pos != -1) {
-//                    listView.setItemChecked(pos, true);
-//                    listView.setSelection(pos);
-//                    currentPosition = pos;
-//                }
-//            }
-//        }
+        player = App.getMusicService().getLocalPlayer();
     }
 
     @Override
@@ -108,13 +91,14 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     }
 
     public void highlightCurrentSong(){
-        if(LocalPlayer.hasCurrentSong()) {
-            Song song = LocalPlayer.getCurrentSong();
+        if(player.hasCurrentSong()) {
+            Song song = player.getCurrentSong();
             int pos = songs.indexOf(song);
             if(pos != -1) {
-                listView.setItemChecked(pos, true);
-                listView.setSelection(pos);
-                currentPosition = pos;
+                setSelection(pos);
+
+                // TODO: replace this workaround
+                listView.setSelection(pos-1);
             }
         }
     }
@@ -124,7 +108,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
         super.setSelection(position);
         listView.setItemChecked(position, true);
 
-        Log.d(App.TAG, "setSelection: "+Math.abs(position - currentPosition));
+        Log.d(App.TAG, "setSelection: "+currentPosition);
 
         if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
             listView.smoothScrollToPosition(position);
@@ -155,6 +139,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     }
 
     private void initAdapter(){
+        Log.d(App.TAG, "initAdapter()");
         songs = new ArrayList<>();
         SongsListAdapter adapter = new SongsListAdapter(getActivity(), songs);
         setListAdapter(adapter);
@@ -166,14 +151,21 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public Loader<List<Song>> onCreateLoader(int id, Bundle args) {
         Log.d(App.TAG, "onCreateLoader");
+        getActivity().findViewById(android.R.id.progress).setVisibility(View.VISIBLE);
         return songsLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<Song>> loader, List<Song> data) {
-        songs.addAll(data);
-        ((SongsListAdapter) getListAdapter()).notifyDataSetChanged();
-        highlightCurrentSong();
+        Log.d(App.TAG, "onLoadFinished()");
+        getActivity().findViewById(android.R.id.progress).setVisibility(View.GONE);
+        if(!data.isEmpty()) {
+            songs.addAll(data);
+            ((SongsListAdapter) getListAdapter()).notifyDataSetChanged();
+            highlightCurrentSong();
+        }else{
+            getActivity().findViewById(R.id.no_songs_layout).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

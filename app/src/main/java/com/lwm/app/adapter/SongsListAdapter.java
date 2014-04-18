@@ -10,9 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
                 case R.id.action_add_to_queue:
-                    LocalPlayer.getQueue().add(list.get(position));
+                    App.getMusicService().getLocalPlayer().addToQueue(list.get(position));
                     return true;
                 default:
                     return false;

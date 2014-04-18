@@ -29,7 +29,6 @@ import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
-import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.OnSongSelectedListener;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
@@ -39,9 +38,8 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
-    private enum DrawerItems { SONGS, ARTISTS, ALBUMS, QUEUE}
+    private enum DrawerItems { SONGS, ARTISTS, ALBUMS, QUEUE }
 
-    private NowPlayingFragment nowPlaying;
     private MenuItem broadcastButton;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
@@ -61,9 +59,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         initNavigationDrawer();
 
         if(savedInstanceState == null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, getFragmentFromDrawer(sharedPreferences.getInt(DRAWER_SELECTION, 0)))
-                    .commit();
+            showSelectedFragment(sharedPreferences.getInt(DRAWER_SELECTION, 0));
         }
     }
 
@@ -144,7 +140,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
         activeFragment = sharedPreferences.getInt(DRAWER_SELECTION, 0);
         drawerList.setItemChecked(activeFragment, true);
-        showSelectedFragment(activeFragment);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
@@ -165,63 +160,12 @@ public class LocalSongChooserActivity extends BasicActivity implements
         updateActionBarTitle();
     }
 
-//    private void onServiceBound(){
-//        musicService = App.getMusicService();
-//
-//        assert musicService != null : "musicService == null";
-//        LocalPlayer player = musicService.getLocalPlayer();
-//
-//        if(player != null){
-//            player.registerListener(this);
-//            if(actionBar.getSelectedNavigationIndex() == 0){
-//                showNowPlayingBar();
-//            }
-//        }
-//    }
-
     @Override
     protected void onResume() {
         Log.d(App.TAG, "LocalSongChooserActivity: onResume");
         super.onResume();
-//        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
-//
-//        nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
-//
-//        if(App.isMusicServiceBound()){
-////            musicService = App.getMusicService();
-//            LocalPlayer player = App.getMusicService().getLocalPlayer();
-//            if(player != null){
-//                player.registerListener(this);
-//
-//                if(LocalPlayer.hasCurrentSong()){
-//                    showNowPlayingBar();
-//                }
-//
-//            }
-//        }
-
-//        if(App.isMusicServiceBound()){
-//            musicService = App.getMusicService();
-//            LocalPlayer player = musicService.getLocalPlayer();
-//            if(player != null){
-//                player.registerListener(this);
-//
-//                if(player.hasCurrentSong()){
-//                    showNowPlayingBar();
-//                }
-//
-//            }
-//        }
-
         updateActionBarTitle();
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-////        unregisterReceiver(onBroadcast);
-////        App.getMusicService().getLocalPlayer().unregisterListener();
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -275,13 +219,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
         setMenuProgressIndicator(false);
         setBroadcastButtonState(4000);
     }
-
-//    @Override
-//    public void onSongChanged(Song song) {
-//        Log.d(App.TAG, "LocalSongChooserActivity: onSongChanged");
-//
-//        showNowPlayingBar();
-//    }
 
     @Override
     public void onSongSelected(int position) {
