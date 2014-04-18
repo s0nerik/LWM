@@ -32,7 +32,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     OnSongSelectedListener mCallback;
 
     private List<Song> songs;
-    private LocalPlayer player;
+    private LocalPlayer player = App.getMusicService().getLocalPlayer();
     private ListView listView;
     private int currentPosition = -1;
 
@@ -75,7 +75,7 @@ public class SongsListFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public void onResume() {
         super.onResume();
-        player = App.getMusicService().getLocalPlayer();
+        highlightCurrentSong();
     }
 
     @Override

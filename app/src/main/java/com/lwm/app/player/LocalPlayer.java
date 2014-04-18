@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
@@ -26,15 +25,13 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     private boolean shuffle;
     private boolean repeat;
 
-    private boolean active;
-    private int currentQueuePosition;
+    private boolean active = false;
+    private int currentQueuePosition = -1;
     private int currentIndex = 0;
     private Song currentSong;
     private List<Song> queue = new ArrayList<>();
 
     private List<Integer> indexes = new ArrayList<>();
-
-    private Random generator = new Random();
 
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
@@ -53,16 +50,12 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public LocalPlayer(Context context){
         this.context = context;
-        active = false;
-        currentQueuePosition = -1;
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
     }
 
     public LocalPlayer(Context context, List<Song> playlist){
         this.context = context;
-        active = false;
-        currentQueuePosition = -1;
         queue = playlist;
         addIndexes(playlist.size());
         setOnCompletionListener(onCompletionListener);
