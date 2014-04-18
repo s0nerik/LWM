@@ -55,15 +55,19 @@ public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> 
         } else {
             switch (command) {
                 case PREPARE:
+                    Log.d(App.TAG, "CommandRunner: PREPARE");
                     method = StreamServer.PREPARE;
                     break;
                 case PLAY:
+                    Log.d(App.TAG, "CommandRunner: PLAY");
                     method = StreamServer.PLAY;
                     break;
                 case PAUSE:
+                    Log.d(App.TAG, "CommandRunner: PAUSE");
                     method = StreamServer.PAUSE;
                     break;
                 case SEEK_TO:
+                    Log.d(App.TAG, "CommandRunner: SEEK_TO");
                     method = StreamServer.SEEK_TO;
                     break;
                 default:

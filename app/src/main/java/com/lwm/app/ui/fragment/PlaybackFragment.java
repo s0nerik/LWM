@@ -21,15 +21,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.enrique.stackblur.StackBlurManager;
-import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 
 import java.io.IOException;
 
-public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
 
     public static final int SEEK_BAR_MAX = 100;
     public static final int SEEK_BAR_UPDATE_INTERVAL = 1000;
@@ -41,8 +39,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
     private SeekBar seekBar;
     private ImageView albumArt;
     private ImageView background;
-
-    private LocalPlayer player;
 
     // Playback control buttons
     private ImageView playPauseButton;
@@ -56,7 +52,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        player = App.getMusicService().getLocalPlayer();
         return inflater.inflate(R.layout.fragment_playback, container, false);
     }
 
@@ -146,19 +141,6 @@ public class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChang
             repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_active));
         }else{
             repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat));
-        }
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if(fromUser){
-            if(App.isMusicServiceBound()){
-//                LocalPlayer player = App.getMusicService().getLocalPlayer();
-                player.seekTo((int)((progress/100.)*player.getDuration()));
-            }
-//            getActivity().startService(new Intent(getActivity(), MusicService.class)
-//                    .setAction(MusicService.ACTION_SONG_SEEK_TO)
-//                    .putExtra(BasePlayer.SEEK_POSITION, (int)((progress/100.0)*MusicService.getLocalPlayer().getDuration())));
         }
     }
 

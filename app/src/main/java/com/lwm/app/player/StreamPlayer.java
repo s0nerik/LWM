@@ -25,6 +25,7 @@ public class StreamPlayer extends BasePlayer {
 
     private Context context;
     private static boolean active = false;
+    private static Song currentSong;
 
     private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+ StreamServer.STREAM);
 
@@ -56,7 +57,7 @@ public class StreamPlayer extends BasePlayer {
 
     public void playFromCurrentPosition(){
 
-        prepareNewSong();
+        new GetPositionAndStart().execute();
 
         active = true;
 
@@ -104,6 +105,10 @@ public class StreamPlayer extends BasePlayer {
         return active;
     }
 
+    public static Song getCurrentSong() {
+        return currentSong;
+    }
+
     private class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_POSITION);
@@ -115,6 +120,10 @@ public class StreamPlayer extends BasePlayer {
         protected Void doInBackground(Void... aVoid){
 
             try {
+                reset();
+                setDataSource(context, STREAM_URI);
+                prepare();
+
                 correctionStart = System.currentTimeMillis();
                 pos = Integer.parseInt(httpclient.execute(httpGetPosition, responseHandler));
                 correctionEnd = System.currentTimeMillis();
@@ -147,7 +156,7 @@ public class StreamPlayer extends BasePlayer {
                 String response = httpclient.execute(httpGetPosition, responseHandler);
 
                 //Debug
-                Log.d(App.TAG, "response: "+response);
+                Log.d(App.TAG, "response: " + response);
 
                 song = new Gson().fromJson(response, Song.class);
             } catch (IOException e) {
@@ -159,6 +168,7 @@ public class StreamPlayer extends BasePlayer {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            currentSong = song;
             if(playbackListener != null) {
                 playbackListener.onSongChanged(song);
             }

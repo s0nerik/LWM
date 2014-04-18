@@ -43,6 +43,9 @@
     // SongsListFragment
     <string name="no_songs_found">No songs found</string>
 
+    // PlaybackFragment
+    <string name="waiting_for_server">Waiting for station...</string>
+
     // AlbumInfoActivity
     <string name="songs_count_title">SONGS:</string>
     <string name="year_title">YEAR:</string>

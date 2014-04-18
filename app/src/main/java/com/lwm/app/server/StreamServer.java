@@ -31,9 +31,9 @@ public class StreamServer extends NanoHTTPD {
     public static final String PLAY = "/play";
     public static final String PREPARE = "/prepare";
     public static final String PING = "/ping";
-    public static final String NEXT_SONG = "/next_song";
-    public static final String PREV_SONG = "/prev_song";
-    public static final String SONG_CHANGED = "/song_changed";
+//    public static final String NEXT_SONG = "/next_song";
+//    public static final String PREV_SONG = "/prev_song";
+//    public static final String SONG_CHANGED = "/song_changed";
     public static final String SEEK_TO = "/seekTo/";
     public static final String CLIENT_READY = "/ready/";
 //    public static final String TEST = "/test";
@@ -61,7 +61,7 @@ public class StreamServer extends NanoHTTPD {
 
         switch(method){
             case POST: // Incoming info
-                if(PING.equals(uri)) return new Response("");
+                if(PING.equals(uri)) return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
 
                 else if(uri.startsWith(IP)) {
                     String ip = uri.substring(IP.length());
@@ -136,9 +136,7 @@ public class StreamServer extends NanoHTTPD {
                         InputStream is = null;
                         try {
                             is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                        } catch (FileNotFoundException e) {}
                         return new Response(Response.Status.OK, "image", is);
                 }
 
