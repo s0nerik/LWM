@@ -33,7 +33,7 @@ public class SongsListFragment extends ListFragment implements
     OnSongSelectedListener mCallback;
 
     private List<Song> songs;
-    private LocalPlayer player = App.getMusicService().getLocalPlayer();
+    private LocalPlayer player;
     private ListView listView;
     private int currentPosition = -1;
 
@@ -70,20 +70,25 @@ public class SongsListFragment extends ListFragment implements
         Log.d(App.TAG, "onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-        initAdapter();
+        if(App.isMusicServiceBound()) {
+            player = App.getMusicService().getLocalPlayer();
+            initAdapter();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        highlightCurrentSong();
-        player.registerListener(this);
+        if(player != null) {
+            highlightCurrentSong();
+            player.registerListener(this);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        player.unregisterListener();
+        player.unregisterListener(this);
     }
 
     @Override
@@ -96,6 +101,12 @@ public class SongsListFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    public void onServiceBound(){
+        player = App.getMusicService().getLocalPlayer();
+        player.registerListener(this);
+        initAdapter();
     }
 
     public void highlightCurrentSong(){

@@ -88,16 +88,20 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
-        if(playbackListener != null) {
-            playbackListener.onPlaybackPaused();
+        if(hasListeners()) {
+            for(PlayerListener listener:playbackListeners) {
+                listener.onPlaybackPaused();
+            }
         }
     }
 
     @Override
     public void start() throws IllegalStateException {
         super.start();
-        if(playbackListener != null) {
-            playbackListener.onPlaybackStarted();
+        if(hasListeners()) {
+            for(PlayerListener listener:playbackListeners) {
+                listener.onPlaybackStarted();
+            }
         }
     }
 
@@ -173,8 +177,10 @@ public class StreamPlayer extends BasePlayer {
         @Override
         protected void onPostExecute(Void aVoid) {
             currentSong = song;
-            if(playbackListener != null) {
-                playbackListener.onSongChanged(song);
+            if(hasListeners()) {
+                for (PlayerListener listener : playbackListeners) {
+                    listener.onSongChanged(song);
+                }
             }
         }
     }

@@ -80,7 +80,7 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     @Override
     protected void onPause() {
         super.onPause();
-        player.unregisterListener();
+        player.unregisterListener(this);
     }
 
     @Override

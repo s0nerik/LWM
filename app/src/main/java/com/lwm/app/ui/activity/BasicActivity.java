@@ -1,6 +1,9 @@
 package com.lwm.app.ui.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -16,7 +19,7 @@ import com.lwm.app.ui.fragment.NowPlayingFragment;
 
 public class BasicActivity extends ActionBarActivity implements PlayerListener {
 
-    private LocalPlayer player;
+    protected LocalPlayer player;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -35,23 +38,42 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
         }
     }
 
+    protected void onServiceBound(){
+        player = App.getMusicService().getLocalPlayer();
+        player.registerListener(this);
+        if (player.hasCurrentSong()) {
+            showNowPlayingBar(true);
+        } else {
+            showNowPlayingBar(false);
+        }
+    }
+
+    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent i) {
+            switch (i.getAction()) {
+                case App.SERVICE_BOUND:
+                    onServiceBound();
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onResume() {
         super.onResume();
-        player = App.getMusicService().getLocalPlayer();
-        if(player.hasCurrentSong()) {
-            player.registerListener(this);
-            showNowPlayingBar(true);
-        }else{
-            showNowPlayingBar(false);
+        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
+        if(App.isMusicServiceBound()) {
+            onServiceBound();
         }
     }
 
     @Override
     protected void onPause() {
-        super.onStop();
-        if(player.hasCurrentSong()) {
-            App.getMusicService().getLocalPlayer().unregisterListener();
+        super.onPause();
+        unregisterReceiver(onBroadcast);
+        if(App.isMusicServiceBound()) {
+            player.unregisterListener(this);
         }
     }
 

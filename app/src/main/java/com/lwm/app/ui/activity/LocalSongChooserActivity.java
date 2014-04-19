@@ -38,7 +38,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
-    private enum DrawerItems { SONGS, ARTISTS, ALBUMS, QUEUE }
+    private enum DrawerItems {SONGS, ARTISTS, ALBUMS, QUEUE}
 
     private MenuItem broadcastButton;
 
@@ -49,6 +49,28 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
     private SharedPreferences sharedPreferences;
 
+//    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent i) {
+//            switch (i.getAction()) {
+//                case App.SERVICE_BOUND:
+//                    if(activeFragment == 0){
+//                        ((SongsListFragment) fragmentManager.findFragmentById(R.id.container)).onServiceBound();
+//                    }
+//                    break;
+//            }
+//        }
+//    };
+
+
+    @Override
+    protected void onServiceBound() {
+        super.onServiceBound();
+        if(activeFragment == 0){
+            ((SongsListFragment) fragmentManager.findFragmentById(R.id.container)).onServiceBound();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +80,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         initActionBar();
         initNavigationDrawer();
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             showSelectedFragment(sharedPreferences.getInt(DRAWER_SELECTION, 0));
         }
     }
@@ -69,7 +91,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         drawerToggle.syncState();
     }
 
-    protected void initActionBar(){
+    protected void initActionBar() {
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -77,8 +99,8 @@ public class LocalSongChooserActivity extends BasicActivity implements
         actionBar.setHomeButtonEnabled(true);
     }
 
-    protected Fragment getFragmentFromDrawer(int i){
-        switch(DrawerItems.values()[i]){
+    protected Fragment getFragmentFromDrawer(int i) {
+        switch (DrawerItems.values()[i]) {
             case SONGS:
                 return new SongsListFragment();
             case ARTISTS:
@@ -91,11 +113,11 @@ public class LocalSongChooserActivity extends BasicActivity implements
         return null;
     }
 
-    protected void updateActionBarTitle(){
+    protected void updateActionBarTitle() {
         Resources resources = getResources();
         String title;
         Drawable icon;
-        switch(DrawerItems.values()[activeFragment]){
+        switch (DrawerItems.values()[activeFragment]) {
             case SONGS:
                 title = resources.getString(R.string.actionbar_title_songs);
                 icon = resources.getDrawable(R.drawable.ic_drawer_songs_active);
@@ -121,7 +143,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         actionBar.setIcon(icon);
     }
 
-    protected void initNavigationDrawer(){
+    protected void initNavigationDrawer() {
         ListView drawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
@@ -130,7 +152,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
                 getResources().obtainTypedArray(R.array.drawer_icons)));
 
         // Set the list's click listener
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showSelectedFragment(i);
@@ -152,7 +174,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         drawerLayout.setDrawerListener(drawerToggle);
     }
 
-    protected void showSelectedFragment(int i){
+    protected void showSelectedFragment(int i) {
         fragmentManager.beginTransaction()
                 .replace(R.id.container, getFragmentFromDrawer(i))
                 .commit();
@@ -164,7 +186,14 @@ public class LocalSongChooserActivity extends BasicActivity implements
     protected void onResume() {
         Log.d(App.TAG, "LocalSongChooserActivity: onResume");
         super.onResume();
+//        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
         updateActionBarTitle();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        unregisterReceiver(onBroadcast);
     }
 
     @Override
@@ -179,11 +208,11 @@ public class LocalSongChooserActivity extends BasicActivity implements
         return true;
     }
 
-    public void setMenuProgressIndicator(boolean show){
+    public void setMenuProgressIndicator(boolean show) {
 
-        if(broadcastButton == null) return;
+        if (broadcastButton == null) return;
 
-        if(show)
+        if (show)
             MenuItemCompat.setActionView(broadcastButton, R.layout.progress_actionbar_broadcast);
         else
             MenuItemCompat.setActionView(broadcastButton, null);
@@ -196,7 +225,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch(id){
+        switch (id) {
             case R.id.action_settings:
                 startActivity(new Intent(this, PreferenceActivity.class));
                 return true;
@@ -225,14 +254,14 @@ public class LocalSongChooserActivity extends BasicActivity implements
         showNowPlayingBar(true);
     }
 
-    private void setBroadcastButtonState(int wait){
+    private void setBroadcastButtonState(int wait) {
         final WifiApManager manager = new WifiApManager(this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(manager.isWifiApEnabled()){
+                if (manager.isWifiApEnabled()) {
                     broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
-                }else{
+                } else {
                     broadcastButton.setIcon(R.drawable.ic_action_broadcast);
                 }
             }

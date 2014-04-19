@@ -116,7 +116,8 @@ public class AlbumInfoActivity extends BasicActivity implements
             case R.id.action_settings:
                 return true;
             case R.id.action_add_to_queue:
-                App.getMusicService().getLocalPlayer().addToQueue(playlist);
+                player.addToQueue(playlist);
+//                App.getMusicService().getLocalPlayer().addToQueue(playlist);
                 Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT);
                 toast.show();
                 return true;

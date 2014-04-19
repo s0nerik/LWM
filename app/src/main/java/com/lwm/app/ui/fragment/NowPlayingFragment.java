@@ -77,6 +77,7 @@ public class NowPlayingFragment extends Fragment {
                 setAlbumArtFromUri(song.getAlbumArtUri());
                 artist.setText(song.getArtist());
                 title.setText(song.getTitle());
+                setPlayButton(player.isPlaying());
             }
         }
     }

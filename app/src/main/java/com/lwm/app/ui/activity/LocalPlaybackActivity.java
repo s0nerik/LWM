@@ -87,7 +87,7 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        player.unregisterListener();
+        player.unregisterListener(this);
     }
 
     @Override

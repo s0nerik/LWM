@@ -5,9 +5,11 @@ import android.util.Log;
 
 import com.lwm.app.App;
 
+import java.util.HashSet;
+
 public abstract class BasePlayer extends MediaPlayer {
 
-    protected PlayerListener playbackListener;
+    protected HashSet<PlayerListener> playbackListeners = new HashSet<>();
 
     public abstract void nextSong();
     public abstract void prevSong();
@@ -17,18 +19,18 @@ public abstract class BasePlayer extends MediaPlayer {
 
         Log.d(App.TAG, "BasePlayer: registerListener");
 
-        playbackListener = listener;
+        playbackListeners.add(listener);
     }
 
-    public void unregisterListener(){
+    public void unregisterListener(PlayerListener listener){
 
         Log.d(App.TAG, "BasePlayer: unregisterListener");
 
-        playbackListener = null;
+        playbackListeners.remove(listener);
     }
 
-    public boolean isListenerAttached(){
-        return playbackListener != null;
+    public boolean hasListeners(){
+        return !playbackListeners.isEmpty();
     }
 
     public String getCurrentDurationInMinutes(){

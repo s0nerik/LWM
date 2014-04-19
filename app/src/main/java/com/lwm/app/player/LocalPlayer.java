@@ -102,8 +102,10 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
             active = true;
 
-            if(isListenerAttached()){
-                playbackListener.onSongChanged(currentSong);
+            if(hasListeners()){
+                for(PlayerListener listener:playbackListeners) {
+                    listener.onSongChanged(currentSong);
+                }
             }
 
             if(StreamServer.hasClients()) {
@@ -185,8 +187,10 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         if(StreamServer.hasClients()){
             new ClientsManager(this).pause();
         }
-        if(isListenerAttached()) {
-            playbackListener.onPlaybackPaused();
+        if(hasListeners()) {
+            for(PlayerListener listener:playbackListeners) {
+                listener.onPlaybackPaused();
+            }
         }
     }
 
@@ -202,8 +206,10 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             }
         }
         super.start();
-        if(isListenerAttached()) {
-            playbackListener.onPlaybackStarted();
+        if(hasListeners()) {
+            for(PlayerListener listener:playbackListeners) {
+                listener.onPlaybackStarted();
+            }
         }
     }
 
