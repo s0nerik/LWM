@@ -83,7 +83,8 @@ public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> 
                 Log.d(App.TAG, "response: " + response);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                StreamServer.removeClient(client);
+//                e.printStackTrace();
             }
         }
     }

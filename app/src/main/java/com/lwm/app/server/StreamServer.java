@@ -156,6 +156,14 @@ public class StreamServer extends NanoHTTPD {
         return clients;
     }
 
+    public static void addClient(Client client){
+        clients.add(client);
+    }
+
+    public static void removeClient(Client client){
+        clients.remove(client);
+    }
+
     public static Set<Client> getReadyClients(){
         return ready;
     }
