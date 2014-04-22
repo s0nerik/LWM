@@ -22,7 +22,6 @@ import java.util.Set;
 public class StreamServer extends NanoHTTPD {
 
     public static final String SERVER_ADDRESS = "http://192.168.43.1:8888";
-    public static final String IP = "/ip/";
     public static final String CURRENT_POSITION = "/position";
     public static final String CURRENT_INFO = "/info";
     public static final String CURRENT_ALBUMART = "/albumart";
@@ -32,8 +31,9 @@ public class StreamServer extends NanoHTTPD {
     public static final String PREPARE = "/prepare";
     public static final String PING = "/ping";
     public static final String SEEK_TO = "/seekTo/";
-    public static final String CLIENT_READY = "/ready/";
-    public static final String CLIENT_REMOVE = "/remove/";
+    public static final String CLIENT_READY = "/ready";
+    public static final String CLIENT_REGISTER = "/register";
+    public static final String CLIENT_UNREGISTER = "/unregister";
 
     private static Set<Client> clients = new HashSet<>();
     private static Set<Client> ready = new HashSet<>();
@@ -52,60 +52,56 @@ public class StreamServer extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
         Method method = session.getMethod();
         String uri = session.getUri();
+        String clientIP = session.getHeaders().get("remote-addr");
 
-        Log.d("LWM", "serve:\nmethod: "+method+"\nuri: "+uri);
+        Log.d("LWM", "serve:\nmethod: " + method + "\nuri: " + uri);
 
         switch(method){
             case POST: // Incoming info
-                if(PING.equals(uri)) return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
-
-                else if(uri.startsWith(IP)) {
-                    String ip = uri.substring(IP.length());
-                    clients.add(new Client(ip));
-
-                    Log.d(App.TAG, "--- CLIENTS ---");
-                    for (Client client : clients) {
-                        Log.d(App.TAG, "client: " + client.getIP());
-                    }
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client added.");
-
-                }else if(uri.startsWith(CLIENT_READY)){
-                    String ip = uri.substring(CLIENT_READY.length());
-                    for(Client client:clients){
-                        if(ip.equals(client.getIP())){
-                            ready.add(client);
-                            break;
-                        }
-                    }
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+ip+" is ready.");
-
-                }else if(uri.startsWith(CLIENT_REMOVE)){
-                    String ip = uri.substring(CLIENT_REMOVE.length());
-                    for(Client client:clients){
-                        if(ip.equals(client.getIP())){
-                            clients.remove(client);
-                            break;
-                        }
-                    }
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+ip+" removed.");
-
-                }else{
+                if(PING.equals(uri)){
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
+                } else if (PREPARE.equals(uri)) {
                     StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+                    Log.d(App.TAG, "StreamServer: PREPARE");
+                    streamPlayer.prepareNewSong();
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
+                } else if (PLAY.equals(uri)) {
+                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+                    Log.d(App.TAG, "StreamServer: PLAY");
+                    streamPlayer.start();
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
+                } else if (PAUSE.equals(uri)) {
+                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+                    Log.d(App.TAG, "StreamServer: PAUSE");
+                    streamPlayer.pause();
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
+                } else {
                     switch(uri){
-                        case PREPARE:
-                            Log.d(App.TAG, "StreamServer: PREPARE");
-                            streamPlayer.prepareNewSong();
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
+                        case CLIENT_REGISTER:
+                            clients.add(new Client(clientIP));
+                            Log.d(App.TAG, "--- CLIENTS ---");
+                            for (Client client : clients) {
+                                Log.d(App.TAG, "client: " + client.getIP());
+                            }
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client added.");
 
-                        case PLAY:
-                            Log.d(App.TAG, "StreamServer: PLAY");
-                            streamPlayer.start();
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
+                        case CLIENT_UNREGISTER:
+                            for(Client client:clients){
+                                if(clientIP.equals(client.getIP())){
+                                    clients.remove(client);
+                                    break;
+                                }
+                            }
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+clientIP+" removed.");
 
-                        case PAUSE:
-                            Log.d(App.TAG, "StreamServer: PAUSE");
-                            streamPlayer.pause();
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
+                        case CLIENT_READY:
+                            for(Client client:clients){
+                                if(clientIP.equals(client.getIP())){
+                                    ready.add(client);
+                                    break;
+                                }
+                            }
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+clientIP+" is ready.");
                     }
                 }
 

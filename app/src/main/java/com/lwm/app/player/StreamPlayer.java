@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
-import com.lwm.app.lib.Connectivity;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
 
@@ -27,7 +26,7 @@ public class StreamPlayer extends BasePlayer {
     private static boolean active = false;
     private static Song currentSong;
 
-    private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+ StreamServer.STREAM);
+    private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+StreamServer.STREAM);
 
     public StreamPlayer(Context context){
         this.context = context;
@@ -42,7 +41,7 @@ public class StreamPlayer extends BasePlayer {
     }
 
     public void attachToStation(){
-        new AddressSender().execute();
+        new ClientRegister().execute();
     }
 
     public void prepareNewSong(){
@@ -106,7 +105,7 @@ public class StreamPlayer extends BasePlayer {
     }
 
     public void detachFromStation(){
-        new ClientRemover().execute();
+        new ClientUnregister().execute();
     }
 
     public static boolean isActive(){
@@ -119,7 +118,7 @@ public class StreamPlayer extends BasePlayer {
 
     private class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_POSITION);
+        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+StreamServer.CURRENT_POSITION);
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         int pos;
         long correctionStart, correctionEnd, correction;
@@ -153,7 +152,7 @@ public class StreamPlayer extends BasePlayer {
 
     private class SongInfoGetter extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_INFO);
+        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+StreamServer.CURRENT_INFO);
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         Song song;
 
@@ -185,17 +184,17 @@ public class StreamPlayer extends BasePlayer {
         }
     }
 
-    private class AddressSender extends AsyncTask<Void, Void, Void> {
+    private class ClientRegister extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostIP = new HttpPost(StreamServer.SERVER_ADDRESS+"/ip/"+ Connectivity.getIP(context));
+        HttpPost httpPostRegister = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_REGISTER);
 
         @Override
         protected Void doInBackground(Void... aVoid){
 
             try {
-                httpclient.execute(httpPostIP);
+                httpclient.execute(httpPostRegister);
             } catch (IOException e) {
-                Log.e(App.TAG, "Error: AddressSender");
+                Log.e(App.TAG, "Error: ClientRegister");
                 e.printStackTrace();
             }
 
@@ -204,17 +203,17 @@ public class StreamPlayer extends BasePlayer {
 
     }
 
-    private class ClientRemover extends AsyncTask<Void, Void, Void> {
+    private class ClientUnregister extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostRemoveIP = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_REMOVE+Connectivity.getIP(context));
+        HttpPost httpPostUnregister = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_UNREGISTER);
 
         @Override
         protected Void doInBackground(Void... aVoid){
 
             try {
-                httpclient.execute(httpPostRemoveIP);
+                httpclient.execute(httpPostUnregister);
             } catch (IOException e) {
-                Log.e(App.TAG, "Error: ClientRemover");
+                Log.e(App.TAG, "Error: ClientUnregister");
                 e.printStackTrace();
             }
 
@@ -225,7 +224,7 @@ public class StreamPlayer extends BasePlayer {
 
     private class ReadinessReporter extends AsyncTask<Void, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostReady = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_READY+Connectivity.getIP(context));
+        HttpPost httpPostReady = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_READY);
 
         @Override
         protected Void doInBackground(Void... aVoid){

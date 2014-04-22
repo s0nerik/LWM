@@ -21,8 +21,14 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.lib.WifiAP;
+import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
 import java.util.List;
 
 public class PlayersAroundFragment extends ListFragment {
@@ -70,8 +76,13 @@ public class PlayersAroundFragment extends ListFragment {
         getActivity().startActivity(intent);
     }
 
-    private class StationConnectionTask extends AsyncTask<String, Void, Void>{
+    private class StationConnectionTask extends AsyncTask<String, Void, Void> {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPostPing = new HttpPost(StreamServer.SERVER_ADDRESS);
+
         ProgressDialog progressDialog;
+
+
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getActivity());
@@ -83,42 +94,31 @@ public class PlayersAroundFragment extends ListFragment {
         protected Void doInBackground(String... aps) {
             String ap = aps[0];
             WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager != null) {
-                if(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
-                    WifiInfo info = wifiManager.getConnectionInfo();
-                    if (info != null || !ap.equals(info.getSSID())) {
-                        // Device is connected to different AP or not connected at all
-                        Connectivity.connectToOpenAP(getActivity(), ap);
-                    }
-                }else{
-                    // Wifi is disabled, so let's turn it on and connect
-                    wifiManager.setWifiEnabled(true);
-
-                    // Wait until it Wifi is enabled
-                    try {
-                        while(!wifiManager.isWifiEnabled()){
-                            Thread.sleep(500);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            if (wifiManager != null && wifiManager.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
+                WifiInfo info = wifiManager.getConnectionInfo();
+                if (info == null || !ap.equals(info.getSSID())) {
+                    // Device is connected to different AP or not connected at all
                     Connectivity.connectToOpenAP(getActivity(), ap);
-
-                    // Wait until Wifi is really connected
-                    try {
-                        while(!Connectivity.isConnectedWifi(getActivity())){
-                            Thread.sleep(500);
+                    while(!isWifiNetworkAvailable()){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
-                }
-            }
-            while(!isWifiNetworkAvailable()){
-                try {
-                    Thread.sleep(500);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
+
+                    while(true) {
+                        try {
+                            httpclient.execute(httpPostPing);
+                            break;
+                        } catch (IOException ignored) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                 }
             }
             return null;

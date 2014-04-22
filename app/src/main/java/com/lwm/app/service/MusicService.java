@@ -26,7 +26,7 @@ public class MusicService extends Service {
     }
 
     public void setLocalPlayer(LocalPlayer player){
-        if(this.player != null){
+        if(this.player != null && this.player.isPlaying()){
             this.player.stop();
             this.player.release();
             this.player = null;
@@ -55,10 +55,8 @@ public class MusicService extends Service {
             streamPlayer = new StreamPlayer(this);
         }
 
-        if(player != null){
-            if(player.isPlaying()) {
-                player.stop();
-            }
+        if(player != null && player.isPlaying()){
+            player.stop();
             player.release();
             player = null;
         }
