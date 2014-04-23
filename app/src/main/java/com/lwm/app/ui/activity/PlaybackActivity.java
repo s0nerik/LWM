@@ -1,5 +1,8 @@
 package com.lwm.app.ui.activity;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.lwm.app.MediaButtonIntentReceiver;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
@@ -28,6 +32,9 @@ public abstract class PlaybackActivity extends ActionBarActivity {
 
     protected Timer seekBarUpdateTimer = new Timer();
 
+    private AudioManager audioManager;
+    private ComponentName mediaButtonIntentReceiver;
+
     public abstract void onControlButtonClicked(View v);
     protected abstract void setSongInfo(Song song);
 
@@ -36,6 +43,17 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         actionBar = getSupportActionBar();
         initActionBar();
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mediaButtonIntentReceiver = new ComponentName(getPackageName(),
+                MediaButtonIntentReceiver.class.getName());
+
+        audioManager.registerMediaButtonEventReceiver(mediaButtonIntentReceiver);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        audioManager.unregisterMediaButtonEventReceiver(mediaButtonIntentReceiver);
     }
 
     @Override

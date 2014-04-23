@@ -60,11 +60,6 @@ public class StreamServer extends NanoHTTPD {
             case POST: // Incoming info
                 if(PING.equals(uri)){
                     return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
-                } else if (PREPARE.equals(uri)) {
-                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
-                    Log.d(App.TAG, "StreamServer: PREPARE");
-                    streamPlayer.prepareNewSong();
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
                 } else if (PLAY.equals(uri)) {
                     StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
                     Log.d(App.TAG, "StreamServer: PLAY");
@@ -75,6 +70,11 @@ public class StreamServer extends NanoHTTPD {
                     Log.d(App.TAG, "StreamServer: PAUSE");
                     streamPlayer.pause();
                     return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
+                } else if (PREPARE.equals(uri)) {
+                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+                    Log.d(App.TAG, "StreamServer: PREPARE");
+                    streamPlayer.prepareNewSong();
+                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
                 } else {
                     switch(uri){
                         case CLIENT_REGISTER:
