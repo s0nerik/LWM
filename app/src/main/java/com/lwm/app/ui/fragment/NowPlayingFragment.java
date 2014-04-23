@@ -14,11 +14,12 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.PlayerListener;
 import com.lwm.app.service.MusicService;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 
-public class NowPlayingFragment extends Fragment {
+public class NowPlayingFragment extends Fragment implements PlayerListener {
 
     private ImageView albumArt;
     private ImageView playPauseButton;
@@ -65,7 +66,17 @@ public class NowPlayingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(App.isMusicServiceBound()){
+            player = App.getMusicService().getLocalPlayer();
+            player.registerListener(this);
             setCurrentSongInfo();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(App.isMusicServiceBound()){
+            player.unregisterListener(this);
         }
     }
 
@@ -88,5 +99,20 @@ public class NowPlayingFragment extends Fragment {
 
     public void setPlayButton(boolean playing){
         playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
+    }
+
+    @Override
+    public void onSongChanged(Song song) {
+        setCurrentSongInfo();
+    }
+
+    @Override
+    public void onPlaybackPaused() {
+        setPlayButton(false);
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+        setPlayButton(true);
     }
 }

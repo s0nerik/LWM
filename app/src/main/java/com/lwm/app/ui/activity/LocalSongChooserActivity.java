@@ -144,7 +144,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
     }
 
     protected void initNavigationDrawer() {
-        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+        final ListView drawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
         drawerList.setAdapter(new NavigationDrawerListAdapter(this,
@@ -225,6 +225,9 @@ public class LocalSongChooserActivity extends BasicActivity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(drawerToggle.onOptionsItemSelected(item)){
+            return true;
+        }
         switch (id) {
             case R.id.action_settings:
                 startActivity(new Intent(this, PreferenceActivity.class));

@@ -29,9 +29,7 @@ public class QueueFragment extends ListFragment {
 
     private final static int SMOOTH_SCROLL_MAX = 50;
 
-    public QueueFragment() {
-        player = App.getMusicService().getLocalPlayer();
-    }
+    public QueueFragment() {}
 
     @Override
     public void onAttach(Activity activity) {
@@ -62,7 +60,10 @@ public class QueueFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-        setListAdapter(new SongsListAdapter(getActivity(), player.getQueue()));
+        if(App.isMusicServiceBound()) {
+            player = App.getMusicService().getLocalPlayer();
+            setListAdapter(new SongsListAdapter(getActivity(), player.getQueue()));
+        }
     }
 
     @Override
@@ -92,6 +93,7 @@ public class QueueFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
         if(App.isMusicServiceBound()){
+            player = App.getMusicService().getLocalPlayer();
             player.play(position);
         }
         mCallback.onSongSelected(position);
@@ -107,6 +109,7 @@ public class QueueFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_shuffle:
+                player = App.getMusicService().getLocalPlayer();
                 player.shuffleQueue();
                 player.play(0);
                 ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
