@@ -49,20 +49,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
     private SharedPreferences sharedPreferences;
 
-//    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent i) {
-//            switch (i.getAction()) {
-//                case App.SERVICE_BOUND:
-//                    if(activeFragment == 0){
-//                        ((SongsListFragment) fragmentManager.findFragmentById(R.id.container)).onServiceBound();
-//                    }
-//                    break;
-//            }
-//        }
-//    };
-
-
     @Override
     protected void onServiceBound() {
         super.onServiceBound();
@@ -151,19 +137,21 @@ public class LocalSongChooserActivity extends BasicActivity implements
                 getResources().getStringArray(R.array.drawer_items),
                 getResources().obtainTypedArray(R.array.drawer_icons)));
 
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         // Set the list's click listener
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showSelectedFragment(i);
                 sharedPreferences.edit().putInt(DRAWER_SELECTION, i).commit();
+                drawerLayout.closeDrawer(drawerList);
             }
         });
 
         activeFragment = sharedPreferences.getInt(DRAWER_SELECTION, 0);
         drawerList.setItemChecked(activeFragment, true);
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
@@ -186,14 +174,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
     protected void onResume() {
         Log.d(App.TAG, "LocalSongChooserActivity: onResume");
         super.onResume();
-//        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
         updateActionBarTitle();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        unregisterReceiver(onBroadcast);
     }
 
     @Override

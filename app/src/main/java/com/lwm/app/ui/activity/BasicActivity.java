@@ -105,9 +105,9 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
                     .commitAllowingStateLoss();
 
             nowPlaying.setCurrentSongInfo();
-
-            LocalPlayer player = App.getMusicService().getLocalPlayer();
-            nowPlaying.setPlayButton(player.isPlaying());
+//
+//            LocalPlayer player = App.getMusicService().getLocalPlayer();
+//            nowPlaying.setPlayButton(player.isPlaying());
         } else {
             fragmentManager.beginTransaction()
                     .hide(nowPlaying)

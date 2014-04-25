@@ -17,7 +17,10 @@
     <color name="songs_list_item_title_active">#ffffff</color>
     <color name="songs_list_item_artist_inactive">#666666</color>
     <color name="songs_list_item_artist_active">#eeeeee</color>
-    
+
+    <color name="simple_songs_list_item_bg">#ffffff</color>
+    <color name="simple_songs_list_item_bg_active">#dddddd</color>
+
     <color name="actionbar_semi_transparent">#66000000</color>
     <color name="actionbar_background">#272727</color>
 

@@ -13,7 +13,7 @@ public class MusicService extends Service {
     public static int PLAYER_LOCAL = 0;
     public static int PLAYER_STREAM = 1;
 
-    private int currentPlayerType;
+    private int currentPlayerType = -1;
 
     private LocalPlayer player;
     private StreamPlayer streamPlayer;

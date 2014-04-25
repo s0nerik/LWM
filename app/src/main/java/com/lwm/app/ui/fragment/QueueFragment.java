@@ -82,9 +82,9 @@ public class QueueFragment extends ListFragment {
         listView.setItemChecked(position, true);
 
         if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
-            listView.smoothScrollToPosition(position);
+            listView.smoothScrollToPosition(position-1);
         }else{
-            listView.setSelection(position);
+            listView.setSelection(position-1);
         }
         currentPosition = position;
     }
