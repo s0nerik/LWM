@@ -12,7 +12,6 @@
     <LinearLayout
 
         android:id="@+id/start_screen_local_music_button"
-        android:onClick="onPlayerTypeChosen"
 
         android:layout_gravity="center"
 
