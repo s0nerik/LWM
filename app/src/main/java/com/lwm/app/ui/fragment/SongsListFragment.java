@@ -207,6 +207,7 @@ public class SongsListFragment extends ListFragment implements
         player.registerListener(this);
         player.play(0);
         highlightCurrentSong();
+        ((OnSongSelectedListener) getActivity()).onSongSelected(0);
     }
 
     @Override
