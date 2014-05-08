@@ -14,23 +14,21 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 
-public class NowPlayingFragment extends Fragment {
+public class NowPlayingFragment extends Fragment implements PlayerListener {
 
     private ImageView albumArt;
     private ImageView playPauseButton;
     private TextView artist;
     private TextView title;
 
-    private LocalPlayer player;
-
     View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            LocalPlayer player = App.getMusicService().getLocalPlayer();
+            LocalPlayer player = App.getLocalPlayer();
             player.togglePause();
             setPlayButton(player.isPlaying());
         }
@@ -64,17 +62,27 @@ public class NowPlayingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(App.isMusicServiceBound()){
-            player = App.getMusicService().getLocalPlayer();
-//            player.registerListener(this);
-            setCurrentSongInfo();
-            setPlayButton(player.isPlaying());
+        if(App.localPlayerActive()){
+            LocalPlayer player = App.getLocalPlayer();
+            player.registerListener(this);
+            if(player.hasCurrentSong()){
+                setCurrentSongInfo();
+                setPlayButton(App.getLocalPlayer().isPlaying());
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(App.localPlayerActive()){
+            App.getLocalPlayer().unregisterListener(this);
         }
     }
 
     public void setCurrentSongInfo(){
-        player = App.getMusicService().getLocalPlayer();
-        if(App.getMusicService().getCurrentPlayerType() == MusicService.PLAYER_LOCAL) {
+        if(App.localPlayerActive()) {
+            LocalPlayer player = App.getLocalPlayer();
             if (player.hasCurrentSong()) {
                 Song song = player.getCurrentSong();
                 setAlbumArtFromUri(song.getAlbumArtUri());
@@ -93,4 +101,18 @@ public class NowPlayingFragment extends Fragment {
         playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
     }
 
+    @Override
+    public void onSongChanged(Song song) {
+        setCurrentSongInfo();
+    }
+
+    @Override
+    public void onPlaybackPaused() {
+        setPlayButton(false);
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+        setPlayButton(true);
+    }
 }

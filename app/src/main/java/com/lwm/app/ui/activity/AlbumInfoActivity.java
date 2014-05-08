@@ -21,14 +21,13 @@ import com.lwm.app.model.Album;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.fragment.OnSongSelectedListener;
 import com.manuelpeinado.fadingactionbar.extras.actionbarcompat.FadingActionBarHelper;
 
 import java.util.List;
 
 public class AlbumInfoActivity extends BasicActivity implements
-        OnSongSelectedListener, AdapterView.OnItemClickListener, PlayerListener {
+        OnSongSelectedListener, AdapterView.OnItemClickListener {
 
     private List<Song> playlist;
     private ListView listView;

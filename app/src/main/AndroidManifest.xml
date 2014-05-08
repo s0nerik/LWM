@@ -23,10 +23,20 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".ui.notification.PendingIntentReceiver" >
+            <intent-filter>
+                <action android:name="com.lwm.app.player.close" />
+                <action android:name="com.lwm.app.player.play_pause" />
+                <action android:name="com.lwm.app.player.next" />
+                <action android:name="com.lwm.app.player.prev" />
+            </intent-filter>
+        </receiver>
+
         <service
-            android:name="com.lwm.app.service.MusicService"
-            android:enabled="true" />
-        <service android:name="com.lwm.app.service.MusicServerService" />
+            android:name="com.lwm.app.service.MusicService" />
+
+        <service
+            android:name="com.lwm.app.service.MusicServerService" />
 
         <activity
             android:name="com.lwm.app.ui.activity.MainActivity"
@@ -52,28 +62,38 @@
         </activity>
         <activity
             android:name="com.lwm.app.ui.activity.LocalPlaybackActivity"
-            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity"
+            android:parentActivityName=".ui.activity.LocalSongChooserActivity"
             android:theme="@style/PlaybackActivityStyle" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.BroadcastActivity" />
+                android:value="com.lwm.app.ui.activity.LocalSongChooserActivity" />
         </activity>
         <activity
             android:name="com.lwm.app.ui.activity.RemotePlaybackActivity"
-            android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
+            android:parentActivityName="com.lwm.app.ui.activity.StationChooserActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.BroadcastActivity" />
+                android:value="com.lwm.app.ui.activity.StationChooserActivity" />
         </activity>
+
         <activity android:name="com.lwm.app.ui.activity.PreferenceActivity" />
+
         <activity
             android:name="com.lwm.app.ui.activity.StationChooserActivity"
+            android:parentActivityName="com.lwm.app.ui.activity.MainActivity"
             android:label="@string/title_activity_station_chooser" >
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lwm.app.ui.activity.MainActivity" />
+
         </activity>
+
         <activity
             android:name="com.lwm.app.ui.activity.AlbumInfoActivity"
             android:theme="@style/AppTheme.TranslucentActionBar"
@@ -81,16 +101,18 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="LocalSongChooserActivity" />
+                android:value="com.lwm.app.ui.activity.LocalSongChooserActivity" />
         </activity>
+
         <activity
             android:name="com.lwm.app.ui.activity.ArtistInfoActivity"
             android:parentActivityName="com.lwm.app.ui.activity.LocalSongChooserActivity" >
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="LocalSongChooserActivity" />
+                android:value="com.lwm.app.ui.activity.LocalSongChooserActivity" />
         </activity>
+
     </application>
 
 </manifest>

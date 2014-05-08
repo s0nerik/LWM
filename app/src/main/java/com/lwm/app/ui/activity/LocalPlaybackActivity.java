@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -119,7 +120,7 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                finish();
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.action_broadcast:
                 WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -201,5 +202,11 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
             }
         }, wait);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        NavUtils.navigateUpFromSameTask(this);
     }
 }

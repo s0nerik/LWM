@@ -71,7 +71,7 @@ public class SongsListFragment extends ListFragment implements
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
         if(App.isMusicServiceBound()) {
-            player = App.getMusicService().getLocalPlayer();
+            player = App.getLocalPlayer();
             initAdapter();
         }
     }
@@ -79,7 +79,8 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if(player != null) {
+        if(App.localPlayerActive()) {
+            player = App.getLocalPlayer();
             highlightCurrentSong();
             player.registerListener(this);
         }
@@ -88,7 +89,9 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        player.unregisterListener(this);
+        if(App.localPlayerActive()) {
+            player.unregisterListener(this);
+        }
     }
 
     @Override
@@ -104,21 +107,23 @@ public class SongsListFragment extends ListFragment implements
     }
 
     public void onServiceBound(){
-        player = App.getMusicService().getLocalPlayer();
+        player = App.getLocalPlayer();
         player.registerListener(this);
         initAdapter();
     }
 
     public void highlightCurrentSong(){
-        player = App.getMusicService().getLocalPlayer();
-        if(player.hasCurrentSong()) {
-            Song song = player.getCurrentSong();
-            int pos = songs.indexOf(song);
-            if(pos != -1) {
-                setSelection(pos);
+        if(App.localPlayerActive()) {
+            player = App.getMusicService().getLocalPlayer();
+            if (player.hasCurrentSong()) {
+                Song song = player.getCurrentSong();
+                int pos = songs.indexOf(song);
+                if (pos != -1) {
+                    setSelection(pos);
 
-                // TODO: replace this workaround
-                listView.setSelection(pos-1);
+                    // TODO: replace this workaround
+                    listView.setSelection(pos - 1);
+                }
             }
         }
     }
@@ -222,6 +227,6 @@ public class SongsListFragment extends ListFragment implements
 
     @Override
     public void onPlaybackStarted() {
-
+        highlightCurrentSong();
     }
 }

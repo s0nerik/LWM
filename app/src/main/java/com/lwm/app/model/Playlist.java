@@ -11,21 +11,23 @@ public class Playlist {
 
     public static List<Song> fromCursor(Cursor cursor){
         List<Song> songs = new ArrayList<>();
-        if(cursor.moveToFirst()) {
-            do{
-                songs.add(new Song(
-                        cursor.getLong(SongsCursorGetter._ID),
-                        cursor.getLong(SongsCursorGetter.ARTIST_ID),
-                        cursor.getLong(SongsCursorGetter.ALBUM_ID),
-                        cursor.getString(SongsCursorGetter.TITLE),
-                        cursor.getString(SongsCursorGetter.ARTIST),
-                        cursor.getString(SongsCursorGetter.ALBUM),
-                        cursor.getString(SongsCursorGetter.DATA),
-                        cursor.getInt(SongsCursorGetter.DURATION)
-                ));
-            }while(cursor.moveToNext());
+        if(cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    songs.add(new Song(
+                            cursor.getLong(SongsCursorGetter._ID),
+                            cursor.getLong(SongsCursorGetter.ARTIST_ID),
+                            cursor.getLong(SongsCursorGetter.ALBUM_ID),
+                            cursor.getString(SongsCursorGetter.TITLE),
+                            cursor.getString(SongsCursorGetter.ARTIST),
+                            cursor.getString(SongsCursorGetter.ALBUM),
+                            cursor.getString(SongsCursorGetter.DATA),
+                            cursor.getInt(SongsCursorGetter.DURATION)
+                    ));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
         }
-        cursor.close();
         return songs;
     }
 

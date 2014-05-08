@@ -32,6 +32,7 @@ import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.OnSongSelectedListener;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 
 public class LocalSongChooserActivity extends BasicActivity implements
         WifiAPListener, OnSongSelectedListener {
@@ -251,5 +252,11 @@ public class LocalSongChooserActivity extends BasicActivity implements
             }
         }, wait);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        new NowPlayingNotification(this).show();
     }
 }

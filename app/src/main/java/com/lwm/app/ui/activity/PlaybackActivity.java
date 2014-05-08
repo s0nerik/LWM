@@ -17,6 +17,7 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.task.SeekBarUpdateTask;
 import com.lwm.app.ui.fragment.PlaybackFragment;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.util.Timer;
 
@@ -60,6 +61,7 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+        NowPlayingNotification.hide();
     }
 
     @Override

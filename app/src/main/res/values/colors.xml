@@ -28,5 +28,8 @@
     <color name="title_shadow_color">#000000</color>
     <color name="subtitle_text_color">#dddddd</color>
     <color name="subtitle_shadow_color">#000000</color>
+
+    <color name="notification_button_bg_pressed">#88ffffff</color>
+    <color name="notification_button_bg">@android:color/transparent</color>
     
 </resources>

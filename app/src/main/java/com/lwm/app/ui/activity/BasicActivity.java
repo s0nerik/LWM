@@ -16,6 +16,7 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 
 public class BasicActivity extends ActionBarActivity implements PlayerListener {
 
@@ -39,12 +40,10 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
     }
 
     protected void onServiceBound(){
-        player = App.getMusicService().getLocalPlayer();
-        player.registerListener(this);
-        if (player.hasCurrentSong()) {
-            showNowPlayingBar(true);
-        } else {
-            showNowPlayingBar(false);
+        if(App.localPlayerActive()) {
+            player = App.getMusicService().getLocalPlayer();
+            player.registerListener(this);
+            toggleNowPlayingBar();
         }
     }
 
@@ -59,21 +58,31 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
         }
     };
 
+    private void toggleNowPlayingBar(){
+        if (App.localPlayerActive() && App.getLocalPlayer().hasCurrentSong()) {
+            showNowPlayingBar(true);
+        } else {
+            showNowPlayingBar(false);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+
         registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
-        if(App.isMusicServiceBound()) {
-            onServiceBound();
-        }
+
+        toggleNowPlayingBar();
+
+        NowPlayingNotification.hide();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(onBroadcast);
-        if(App.isMusicServiceBound()) {
-            player.unregisterListener(this);
+        if(App.localPlayerActive()) {
+            App.getLocalPlayer().unregisterListener(this);
         }
     }
 
@@ -83,13 +92,11 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
     }
 
     @Override
-    public void onPlaybackPaused() {
-
-    }
+    public void onPlaybackPaused() {}
 
     @Override
     public void onPlaybackStarted() {
-
+        showNowPlayingBar(true);
     }
 
     public void showNowPlayingBar(boolean show){
@@ -105,9 +112,6 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
                     .commitAllowingStateLoss();
 
             nowPlaying.setCurrentSongInfo();
-//
-//            LocalPlayer player = App.getMusicService().getLocalPlayer();
-//            nowPlaying.setPlayButton(player.isPlaying());
         } else {
             fragmentManager.beginTransaction()
                     .hide(nowPlaying)

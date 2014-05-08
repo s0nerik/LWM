@@ -10,12 +10,7 @@ import com.lwm.app.player.StreamPlayer;
 
 public class MusicService extends Service {
 
-    public static int PLAYER_LOCAL = 0;
-    public static int PLAYER_STREAM = 1;
-
-    private int currentPlayerType = -1;
-
-    private LocalPlayer player;
+    private LocalPlayer localPlayer;
     private StreamPlayer streamPlayer;
 
     private final MusicServiceBinder binder = new MusicServiceBinder();
@@ -26,28 +21,38 @@ public class MusicService extends Service {
     }
 
     public void setLocalPlayer(LocalPlayer player){
-        if(this.player != null && this.player.isPlaying()){
-            this.player.stop();
-            this.player.release();
-            this.player = null;
+        if(localPlayer != null && localPlayer.isPlaying()){
+            stopLocalPlayer();
         }
-        this.player = player;
-        currentPlayerType = PLAYER_LOCAL;
+        localPlayer = player;
     }
 
     public LocalPlayer getLocalPlayer(){
-        if(player == null){
-            player = new LocalPlayer(this);
-        }
-
         if(streamPlayer != null && streamPlayer.isPlaying()){
-            streamPlayer.stop();
-            streamPlayer.release();
-            streamPlayer = null;
+            stopStreamPlayer();
         }
 
-        currentPlayerType = PLAYER_LOCAL;
-        return player;
+        return localPlayer;
+    }
+
+    public boolean localPlayerActive(){
+        return localPlayer != null;
+    }
+
+    public boolean streamPlayerActive(){
+        return streamPlayer != null;
+    }
+
+    public void stopLocalPlayer(){
+        localPlayer.stop();
+        localPlayer.release();
+        localPlayer = null;
+    }
+
+    public void stopStreamPlayer(){
+        streamPlayer.stop();
+        streamPlayer.release();
+        streamPlayer = null;
     }
 
     public StreamPlayer getStreamPlayer(){
@@ -55,18 +60,11 @@ public class MusicService extends Service {
             streamPlayer = new StreamPlayer(this);
         }
 
-        if(player != null && player.isPlaying()){
-            player.stop();
-            player.release();
-            player = null;
+        if(localPlayer != null && localPlayer.isPlaying()){
+            stopLocalPlayer();
         }
 
-        currentPlayerType = PLAYER_STREAM;
         return streamPlayer;
-    }
-
-    public int getCurrentPlayerType() {
-        return currentPlayerType;
     }
 
     public class MusicServiceBinder extends Binder {

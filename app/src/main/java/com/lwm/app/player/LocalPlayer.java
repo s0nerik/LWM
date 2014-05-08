@@ -12,6 +12,7 @@ import com.lwm.app.model.Song;
 import com.lwm.app.server.ClientsStateListener;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.server.async.ClientsManager;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private boolean shuffle;
     private boolean repeat;
+
+    private boolean updateNotification;
 
     private boolean active = false;
     private int currentQueuePosition = -1;
@@ -112,6 +115,10 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
                 new ClientsManager(this).changeSong();
             }else{
                 start();
+            }
+
+            if(updateNotification){
+                new NowPlayingNotification(context).show();
             }
 
         } catch (IOException e) {
@@ -242,4 +249,9 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public void onWaitClients() {
 
     }
+
+    public void setUpdateNotification(boolean updateNotification) {
+        this.updateNotification = updateNotification;
+    }
+
 }

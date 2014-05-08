@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.MusicService;
 
@@ -42,8 +43,17 @@ public class App extends Application {
 
     @Override
     public void onTerminate() {
+        Log.d(App.TAG, "App: onTerminate");
         super.onTerminate();
         unbindService(musicServiceConnection);
+    }
+
+    public static boolean localPlayerActive(){
+        return musicServiceBound && musicService.localPlayerActive();
+    }
+
+    public static LocalPlayer getLocalPlayer(){
+        return musicServiceBound ? musicService.getLocalPlayer() : null;
     }
 
     /** Defines callbacks for service binding, passed to bindService() */
