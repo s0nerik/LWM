@@ -60,8 +60,8 @@ public class QueueFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-        if(App.isMusicServiceBound()) {
-            player = App.getMusicService().getLocalPlayer();
+        if(App.localPlayerActive()) {
+            player = App.getLocalPlayer();
             setListAdapter(new SongsListAdapter(getActivity(), player.getQueue()));
         }
     }
@@ -70,8 +70,8 @@ public class QueueFragment extends ListFragment {
     public void onResume() {
         super.onResume();
 
-        if(App.isMusicServiceBound()){
-            int pos = player.getCurrentQueuePosition();
+        if(App.localPlayerActive()){
+            int pos = App.getLocalPlayer().getCurrentQueuePosition();
             setSelection(pos);
         }
     }
@@ -92,11 +92,10 @@ public class QueueFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
-        if(App.isMusicServiceBound()){
-            player = App.getMusicService().getLocalPlayer();
-            player.play(position);
+        if(App.localPlayerActive()){
+            App.getLocalPlayer().play(position);
+            mCallback.onSongSelected(position);
         }
-        mCallback.onSongSelected(position);
     }
 
     @Override
@@ -109,11 +108,13 @@ public class QueueFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_shuffle:
-                player = App.getMusicService().getLocalPlayer();
-                player.shuffleQueue();
-                player.play(0);
-                ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
-                setSelection(0);
+                if(App.localPlayerActive()) {
+                    player = App.getLocalPlayer();
+                    player.shuffleQueue();
+                    player.play(0);
+                    ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
+                    setSelection(0);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

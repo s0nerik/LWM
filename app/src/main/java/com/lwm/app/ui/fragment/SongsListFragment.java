@@ -1,6 +1,8 @@
 package com.lwm.app.ui.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -12,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ListView;
 
 import com.lwm.app.App;
@@ -70,6 +73,26 @@ public class SongsListFragment extends ListFragment implements
         Log.d(App.TAG, "onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
+
+        // KitKat fast-scroll workaround
+        if (Build.VERSION.SDK_INT >= 19) {
+            listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @SuppressWarnings("deprecation")
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onGlobalLayout() {
+                    listView.setFastScrollEnabled(true);
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        } else {
+            listView.setFastScrollEnabled(true);
+        }
+
         if(App.isMusicServiceBound()) {
             player = App.getLocalPlayer();
             initAdapter();
@@ -90,7 +113,7 @@ public class SongsListFragment extends ListFragment implements
     public void onPause() {
         super.onPause();
         if(App.localPlayerActive()) {
-            player.unregisterListener(this);
+            App.getLocalPlayer().unregisterListener(this);
         }
     }
 
@@ -114,7 +137,7 @@ public class SongsListFragment extends ListFragment implements
 
     public void highlightCurrentSong(){
         if(App.localPlayerActive()) {
-            player = App.getMusicService().getLocalPlayer();
+            player = App.getLocalPlayer();
             if (player.hasCurrentSong()) {
                 Song song = player.getCurrentSong();
                 int pos = songs.indexOf(song);

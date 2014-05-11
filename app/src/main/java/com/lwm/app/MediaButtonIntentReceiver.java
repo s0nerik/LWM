@@ -11,10 +11,10 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())){
+        if(App.localPlayerActive() && Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())){
             KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
             assert keyEvent != null : "keyEvent == null";
-            LocalPlayer player = App.getMusicService().getLocalPlayer();
+            LocalPlayer player = App.getLocalPlayer();
             switch (keyEvent.getKeyCode()) {
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
                     player.nextSong();

@@ -11,9 +11,9 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if(fromUser){
-            LocalPlayer player = App.getMusicService().getLocalPlayer();
             // TODO: make seekTo available in streaming mode
-            if(App.isMusicServiceBound() && !StreamServer.hasClients()){
+            if(App.localPlayerActive() && !StreamServer.hasClients()){
+                LocalPlayer player = App.getLocalPlayer();
                 player.seekTo((int)((progress/100.)*player.getDuration()));
             }
         }

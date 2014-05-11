@@ -14,27 +14,31 @@ public class PendingIntentReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if(App.isMusicServiceBound()) {
             MusicService musicService = App.getMusicService();
-            LocalPlayer player = musicService.getLocalPlayer();
-            if(player.hasCurrentSong()) {
-                switch (intent.getAction()) {
-                    case NowPlayingNotification.ACTION_CLOSE:
-                        musicService.stopLocalPlayer();
-                        NowPlayingNotification.hide();
-                        break;
-                    case NowPlayingNotification.ACTION_PREV:
-                        player.prevSong();
-                        new NowPlayingNotification(context).show();
-                        break;
-                    case NowPlayingNotification.ACTION_PLAY_PAUSE:
-                        player.togglePause();
-                        new NowPlayingNotification(context).show();
-                        break;
-                    case NowPlayingNotification.ACTION_NEXT:
-                        player.nextSong();
-                        new NowPlayingNotification(context).show();
-                        break;
+
+            if(App.localPlayerActive()){
+                LocalPlayer player = musicService.getLocalPlayer();
+                if(player.hasCurrentSong()) {
+                    switch (intent.getAction()) {
+                        case NowPlayingNotification.ACTION_CLOSE:
+                            musicService.stopLocalPlayer();
+                            NowPlayingNotification.hide();
+                            break;
+                        case NowPlayingNotification.ACTION_PREV:
+                            player.prevSong();
+                            new NowPlayingNotification(context).show();
+                            break;
+                        case NowPlayingNotification.ACTION_PLAY_PAUSE:
+                            player.togglePause();
+                            new NowPlayingNotification(context).show();
+                            break;
+                        case NowPlayingNotification.ACTION_NEXT:
+                            player.nextSong();
+                            new NowPlayingNotification(context).show();
+                            break;
+                    }
                 }
             }
+
         }
     }
 

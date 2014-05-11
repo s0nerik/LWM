@@ -12,6 +12,22 @@ import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.MusicService;
 
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+
+@ReportsCrashes(
+        formKey = "",
+        formUri = "https://sonerik.cloudant.com/acra-lwm/_design/acra-storage/_update/report",
+        reportType = org.acra.sender.HttpSender.Type.JSON,
+        httpMethod = org.acra.sender.HttpSender.Method.PUT,
+        formUriBasicAuthLogin="baboommellowasthessizedi",
+        formUriBasicAuthPassword="xGXD18c8AAuHq0jlopdtUNYJ",
+
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.crash_toast_text
+)
+
 public class App extends Application {
 
     public static final String TAG = "LWM";
@@ -39,6 +55,9 @@ public class App extends Application {
         // Bind to MusicService
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, musicServiceConnection, Context.BIND_AUTO_CREATE);
+
+        // Start ACRA
+        ACRA.init(this);
     }
 
     @Override

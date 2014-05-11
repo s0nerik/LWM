@@ -41,7 +41,7 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
 
     protected void onServiceBound(){
         if(App.localPlayerActive()) {
-            player = App.getMusicService().getLocalPlayer();
+            player = App.getLocalPlayer();
             player.registerListener(this);
             toggleNowPlayingBar();
         }

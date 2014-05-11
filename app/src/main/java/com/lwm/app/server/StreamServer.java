@@ -108,39 +108,43 @@ public class StreamServer extends NanoHTTPD {
                 return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "");
 
             case GET: // Outcoming info
-                LocalPlayer localPlayer = App.getMusicService().getLocalPlayer();
-                Song song = localPlayer.getCurrentSong();
-                switch(uri){
+                if(App.localPlayerActive()){
+                    LocalPlayer localPlayer = App.getMusicService().getLocalPlayer();
+                    Song song = localPlayer.getCurrentSong();
+                    switch(uri){
 
-                    case STREAM:
-                        Log.d(App.TAG, "StreamServer: STREAM");
-                        FileInputStream fis = null;
-                        try {
+                        case STREAM:
+                            Log.d(App.TAG, "StreamServer: STREAM");
+                            FileInputStream fis = null;
+                            try {
 
-                            fis = new FileInputStream(song.getSource());
+                                fis = new FileInputStream(song.getSource());
 
-                        } catch (FileNotFoundException e) {e.printStackTrace();}
+                            } catch (FileNotFoundException e) {e.printStackTrace();}
 
-                        Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
-                        res.addHeader("Connection", "Keep-alive");
-                        res.setChunkedTransfer(true);
-                        return res;
+                            Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
+                            res.addHeader("Connection", "Keep-alive");
+                            res.setChunkedTransfer(true);
+                            return res;
 
-                    case CURRENT_INFO:
-                        Log.d(App.TAG, "StreamServer: CURRENT_INFO");
-                        return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
+                        case CURRENT_INFO:
+                            Log.d(App.TAG, "StreamServer: CURRENT_INFO");
+                            return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
 
-                    case CURRENT_POSITION:
-                        Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
-                        return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(localPlayer.getCurrentPosition()));
+                        case CURRENT_POSITION:
+                            Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
+                            return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(localPlayer.getCurrentPosition()));
 
-                    case CURRENT_ALBUMART:
-                        Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
-                        InputStream is = null;
-                        try {
-                            is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
-                        } catch (FileNotFoundException ignored) {}
-                        return new Response(Response.Status.OK, "image", is);
+                        case CURRENT_ALBUMART:
+                            Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
+                            InputStream is = null;
+                            try {
+                                is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
+                            } catch (FileNotFoundException ignored) {}
+                            return new Response(Response.Status.OK, "image", is);
+                    }
+                } else {
+                    return new Response(Response.Status.NO_CONTENT, MIME_PLAINTEXT, "LocalPlayer isn't instantiated");
                 }
 
             default:

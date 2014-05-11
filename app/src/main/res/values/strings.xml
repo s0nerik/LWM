@@ -88,4 +88,6 @@
     <string name="connecting_to_the_station">Connecting to the station...</string>
     <string name="wifi_disabled">Please turn on Wi-Fi</string>
 
+    <string name="crash_toast_text">Sending crash report...</string>
+
 </resources>

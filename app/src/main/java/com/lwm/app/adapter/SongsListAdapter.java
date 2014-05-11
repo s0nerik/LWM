@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
+import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.service.MusicServerService;
+import com.lwm.app.service.MusicService;
 
 import java.util.List;
 
@@ -50,7 +53,14 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
                 case R.id.action_add_to_queue:
-                    App.getMusicService().getLocalPlayer().addToQueue(list.get(position));
+                    MusicService musicService = App.getMusicService();
+                    LocalPlayer player = musicService.getLocalPlayer();
+                    if(player == null){
+                        player = new LocalPlayer(context);
+                        musicService.setLocalPlayer(player);
+                    }
+                    player.addToQueue(list.get(position));
+//                    App.getMusicService().getLocalPlayer().addToQueue(list.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
                     return true;

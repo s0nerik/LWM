@@ -36,10 +36,12 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        player = App.getMusicService().getLocalPlayer();
-        playbackFragment.setPlayButton(player.isPlaying());
-        playbackFragment.setShuffleButton(player.isShuffle());
-        playbackFragment.setRepeatButton(player.isRepeat());
+        if(App.localPlayerActive()) {
+            player = App.getLocalPlayer();
+            playbackFragment.setPlayButton(player.isPlaying());
+            playbackFragment.setShuffleButton(player.isShuffle());
+            playbackFragment.setRepeatButton(player.isRepeat());
+        }
     }
 
     @Override
