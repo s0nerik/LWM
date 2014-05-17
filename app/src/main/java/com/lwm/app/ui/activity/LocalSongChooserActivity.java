@@ -257,6 +257,8 @@ public class LocalSongChooserActivity extends BasicActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        new NowPlayingNotification(this).show();
+        if (App.localPlayerActive() && App.getLocalPlayer().isPlaying()) {
+            new NowPlayingNotification(this).show();
+        }
     }
 }
