@@ -48,6 +48,9 @@
     // SongsListFragment
     <string name="no_songs_found">No songs found</string>
 
+    // QueueFragment
+    <string name="queue_is_empty">Queue is empty</string>
+
     // PlaybackFragment
     <string name="waiting_for_server">Waiting for station...</string>
 

@@ -60,9 +60,10 @@ public class QueueFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-        if(App.localPlayerActive()) {
-            player = App.getLocalPlayer();
-            setListAdapter(new SongsListAdapter(getActivity(), player.getQueue()));
+        if (App.localPlayerActive() && !App.getLocalPlayer().getQueue().isEmpty()) {
+            setListAdapter(new SongsListAdapter(getActivity(), App.getLocalPlayer().getQueue()));
+        } else {
+            view.findViewById(R.id.empty_queue_layout).setVisibility(View.VISIBLE);
         }
     }
 
