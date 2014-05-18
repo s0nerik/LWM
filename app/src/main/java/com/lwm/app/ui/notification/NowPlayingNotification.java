@@ -96,12 +96,9 @@ public class NowPlayingNotification {
             builder.setSmallIcon(R.drawable.ic_stat_av_pause);
         }
 
-        // Build a backStack
         Intent intent = new Intent(context, LocalPlaybackActivity.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addNextIntentWithParentStack(intent);
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
+        intent.putExtra("from_notification", true);
+        builder.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
 
         Notification notification = builder.build();
 

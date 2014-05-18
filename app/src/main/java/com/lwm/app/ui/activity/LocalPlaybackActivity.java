@@ -1,6 +1,7 @@
 package com.lwm.app.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -21,16 +22,20 @@ import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerListener;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 
 public class LocalPlaybackActivity extends PlaybackActivity implements
         WifiAPListener, PlayerListener {
 
     private LocalPlayer player;
 
+    private boolean fromNotification = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_playback);
+        fromNotification = getIntent().getBooleanExtra("from_notification", false);
     }
 
     @Override
@@ -122,7 +127,8 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                finish();
+                startActivity(new Intent(this, LocalSongChooserActivity.class));
                 return true;
             case R.id.action_broadcast:
                 WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -208,7 +214,11 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        NavUtils.navigateUpFromSameTask(this);
+        if (fromNotification && App.localPlayerActive() && App.getLocalPlayer().isPlaying()) {
+            new NowPlayingNotification(this).show();
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
