@@ -147,7 +147,7 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.broadcast, menu);
+        getMenuInflater().inflate(R.menu.local_playback, menu);
 
         broadcastButton = menu.findItem(R.id.action_broadcast);
 

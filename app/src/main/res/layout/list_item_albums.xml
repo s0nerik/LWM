@@ -16,7 +16,6 @@
 
     <ImageView
         android:id="@+id/albums_list_item_cover"
-        android:src="@drawable/no_cover"
         android:scaleType="centerCrop"
         android:layout_gravity="left"
         android:layout_width="71dp"

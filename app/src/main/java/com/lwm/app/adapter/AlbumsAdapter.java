@@ -8,38 +8,37 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.List;
 
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
-//    private static final Uri artworkUri = Uri
-//            .parse("content://media/external/audio/albumart");
-
     private static final String artworkUri = "content://media/external/audio/albumart/";
 
     private final Context context;
     private List<Album> albumsList;
-    private ImageLoader imageLoader;
+
+    private ImageLoader imageLoader = ImageLoader.getInstance();
+
+    private DisplayImageOptions displayOptions = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.no_cover)
+            .showImageForEmptyUri(R.drawable.no_cover)
+            .showImageOnFail(R.drawable.no_cover)
+            .displayer(new FadeInBitmapDisplayer(200))
+            .build();
 
     public AlbumsAdapter(final Context context, AlbumsList albums) {
         super(context, R.layout.list_item_songs, albums.getAlbums());
         this.context = context;
         albumsList = albums.getAlbums();
-        imageLoader = ImageLoader.getInstance();
-        imageLoader.init(new ImageLoaderConfiguration.Builder(context)
-                .defaultDisplayImageOptions(
-                        new DisplayImageOptions.Builder()
-                            .showImageOnLoading(R.drawable.no_cover)
-                            .build()
-                ).build()
-        );
     }
 
     static class ViewHolder {
@@ -72,7 +71,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         holder.album.setText(album.getTitle());
         holder.artist.setText(album.getArtist());
 
-        imageLoader.displayImage(artworkUri+album.getId(), holder.albumArt);
+        imageLoader.displayImage(artworkUri+album.getId(), holder.albumArt, displayOptions);
 
         return rowView;
     }

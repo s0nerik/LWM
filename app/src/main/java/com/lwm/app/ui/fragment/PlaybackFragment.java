@@ -22,8 +22,11 @@ import android.widget.TextView;
 
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
-import com.lwm.app.ui.async.AlbumArtAsyncGetter;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.IOException;
 
@@ -39,6 +42,14 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     private SeekBar seekBar;
     private ImageView albumArt;
     private ImageView background;
+
+    private ImageLoader imageLoader;
+
+    private DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+            .showImageForEmptyUri(R.drawable.no_cover)
+            .showImageOnFail(R.drawable.no_cover)
+            .displayer(new FadeInBitmapDisplayer(500))
+            .build();
 
     // Playback control buttons
     private ImageView playPauseButton;
@@ -60,6 +71,8 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
         seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
+
+        imageLoader = ImageLoader.getInstance();
 
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
         ImageView nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
@@ -99,16 +112,16 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        new AlbumArtAsyncGetter(getActivity(), albumArt).execute(uri);
+        imageLoader.displayImage(uri.toString(), albumArt, displayImageOptions);
     }
 
     public void setRemoteAlbumArt(){
         new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background).execute();
     }
 
-    public void setDefaultAlbumArt() {
-        albumArt.setImageResource(R.drawable.no_cover);
-    }
+//    public void setDefaultAlbumArt() {
+//        albumArt.setImageResource(R.drawable.no_cover);
+//    }
 
     public void setBackgroundImageUri(Uri uri){
         new BackgroundChanger(getActivity(), background).execute(uri);

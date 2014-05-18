@@ -16,14 +16,25 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
-import com.lwm.app.ui.async.AlbumArtAsyncGetter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 public class NowPlayingFragment extends Fragment implements PlayerListener {
+
+    private ImageLoader imageLoader;
 
     private ImageView albumArt;
     private ImageView playPauseButton;
     private TextView artist;
     private TextView title;
+
+    private DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+            .showImageForEmptyUri(R.drawable.no_cover)
+            .showImageOnFail(R.drawable.no_cover)
+            .displayer(new FadeInBitmapDisplayer(200))
+            .build();
 
     View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
         @Override
@@ -57,6 +68,8 @@ public class NowPlayingFragment extends Fragment implements PlayerListener {
         playPauseButton.setOnClickListener(onPlayPauseClicked);
         view.findViewById(R.id.now_playing_bar_layout).setOnClickListener(onNowPlayingBarClicked);
         title.setSelected(true);
+
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -94,7 +107,7 @@ public class NowPlayingFragment extends Fragment implements PlayerListener {
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        new AlbumArtAsyncGetter(getActivity(), albumArt).execute(uri);
+        imageLoader.displayImage(uri.toString(), albumArt, displayImageOptions);
     }
 
     public void setPlayButton(boolean playing){

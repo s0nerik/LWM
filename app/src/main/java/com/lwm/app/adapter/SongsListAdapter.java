@@ -60,7 +60,6 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
                         musicService.setLocalPlayer(player);
                     }
                     player.addToQueue(list.get(position));
-//                    App.getMusicService().getLocalPlayer().addToQueue(list.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
                     return true;

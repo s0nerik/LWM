@@ -11,6 +11,9 @@ import android.util.Log;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.MusicService;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
@@ -58,6 +61,10 @@ public class App extends Application {
 
         // Start ACRA
         ACRA.init(this);
+
+        // Init ImageLoader
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
     }
 
     @Override

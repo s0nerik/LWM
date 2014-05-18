@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lwm.app.R;
@@ -17,8 +18,10 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
     private final Context context;
     private List<Song> songsList;
 
+    private int checked = -1;
+
     public SimpleSongsListAdapter(Context context, List<Song> playlist) {
-        super(context, R.layout.list_item_songs, playlist);
+        super(context, R.layout.list_item_songs_simple, playlist);
         this.context = context;
         songsList = playlist;
     }
@@ -26,6 +29,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
     static class ViewHolder {
         public TextView title;
         public TextView duration;
+        public ImageView nowPlayingIcon;
     }
 
     @Override
@@ -41,6 +45,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
 
             holder.title = (TextView) rowView.findViewById(R.id.songs_list_item_title);
             holder.duration = (TextView) rowView.findViewById(R.id.songs_list_item_duration);
+            holder.nowPlayingIcon = (ImageView) rowView.findViewById(R.id.now_playing_icon);
 
             rowView.setTag(holder);
         } else {
@@ -51,7 +56,18 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         holder.title.setText(song.getTitle());
         holder.duration.setText(song.getDurationString());
 
+        if (checked == position){
+            holder.nowPlayingIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.nowPlayingIcon.setVisibility(View.GONE);
+        }
+
         return rowView;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
+        notifyDataSetChanged();
     }
 
 }

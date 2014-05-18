@@ -53,7 +53,6 @@
                 android:layout_height="@dimen/albumart_size"
                 android:scaleType="centerCrop"
                 android:id="@+id/fragment_playback_cover"
-                android:src="@drawable/no_cover"
                 android:layout_gravity="center" />
         </FrameLayout>
 

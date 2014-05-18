@@ -3,6 +3,7 @@ package com.lwm.app.ui.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,11 +27,12 @@ import com.manuelpeinado.fadingactionbar.extras.actionbarcompat.FadingActionBarH
 
 import java.util.List;
 
-public class AlbumInfoActivity extends BasicActivity implements
-        OnSongSelectedListener, AdapterView.OnItemClickListener {
+public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnItemClickListener {
 
     private List<Song> playlist;
     private ListView listView;
+
+    private SimpleSongsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,8 @@ public class AlbumInfoActivity extends BasicActivity implements
         long albumId = getIntent().getIntExtra("album_id", -1);
         assert albumId != -1 : "albumId == -1";
         playlist = Playlist.fromCursor(new SongsCursorGetter(this).getSongsCursor(albumId));
-        listView.setAdapter(new SimpleSongsListAdapter(this, playlist));
+        adapter = new SimpleSongsListAdapter(this, playlist);
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(this);
 
@@ -124,13 +127,11 @@ public class AlbumInfoActivity extends BasicActivity implements
     }
 
     @Override
-    public void onSongSelected(int position) {
-        listView.setItemChecked(position, true);
-        listView.setSelection(position);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(App.TAG, "onItemClick: "+position);
+        listView.setItemChecked(position, true);
+        adapter.setChecked(position-1);
+
         LocalPlayer player = new LocalPlayer(this, playlist);
         App.getMusicService().setLocalPlayer(player);
         player.registerListener(this);
