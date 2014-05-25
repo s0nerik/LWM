@@ -63,7 +63,7 @@ public class QueueFragment extends ListFragment {
         if (App.localPlayerActive() && !App.getLocalPlayer().getQueue().isEmpty()) {
             setListAdapter(new SongsListAdapter(getActivity(), App.getLocalPlayer().getQueue()));
         } else {
-            view.findViewById(R.id.empty_queue_layout).setVisibility(View.VISIBLE);
+//            view.findViewById(R.id.empty_queue_layout).setVisibility(View.VISIBLE);
         }
     }
 

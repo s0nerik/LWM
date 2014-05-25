@@ -4,26 +4,47 @@
         <shape android:shape="rectangle"
             android:dither="true">
 
-            <corners android:radius="2dp"/>
+            <corners android:radius="1dp"/>
 
-            <solid android:color="#666" />
+            <solid android:color="@color/card_shadow" />
 
         </shape>
     </item>
 
-    <item android:bottom="2dp">
+    <item android:bottom="1dp"
+        android:right="1dp"
+        android:left="1dp"
+        android:top="1dp">
         <shape android:shape="rectangle"
             android:dither="true">
 
-            <corners android:radius="2dp" />
+            <solid android:color="#c3c3c3" />
 
-            <solid android:color="@color/checked" />
-
-            <!--<padding android:bottom="2dp"-->
-                <!--android:left="2dp"-->
-                <!--android:right="2dp"-->
-                <!--android:top="2dp" />-->
         </shape>
     </item>
 
+    <item android:bottom="2dp"
+        android:right="1dp"
+        android:left="1dp"
+        android:top="1dp">
+        <shape android:shape="rectangle"
+            android:dither="true">
+
+            <solid android:color="@color/card_checked_inner_shadow" />
+
+        </shape>
+    </item>
+
+    <item android:bottom="2dp"
+        android:right="2dp"
+        android:left="2dp"
+        android:top="3dp">
+
+        <shape android:shape="rectangle"
+            android:dither="true">
+
+            <solid android:color="@color/card_checked" />
+
+        </shape>
+    </item>
 </layer-list>

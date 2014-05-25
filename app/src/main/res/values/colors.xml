@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="checked">#4f535f</color>
-    <color name="pressed">#c3c3c3</color>
-    <color name="list_background">#ffdddddd</color>
+    // Card colors
+    <color name="card_shadow">#ccc</color>
+    <color name="card_checked">#2d2d2d</color>
+    <color name="card_checked_inner_shadow">#262626</color>
+    <color name="card_pressed">#c3c3c3</color>
+
+    <color name="card_list_background">#ffdddddd</color>
 
     <color name="actionbar_spinner_item_pressed">#222222</color>
 
     <color name="drawer_item_text_inactive">#59585B</color>
     <color name="drawer_item_text_active">#FFFFFF</color>
-    <color name="drawer_item_background_active">#4f535f</color>
+    <color name="drawer_item_background_active">@color/card_checked</color>
     <color name="drawer_item_background_pressed">#c3c3c3</color>
     <color name="drawer_divider">#DBDBDB</color>
     <color name="drawer_background">#EDEDED</color>

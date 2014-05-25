@@ -3,16 +3,15 @@
 <com.lwm.app.ui.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
-    style="@style/Card"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
     <com.lwm.app.ui.custom_view.CheckedLinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        style="@style/Card"
         android:orientation="vertical" >
 
         <com.lwm.app.ui.custom_view.CheckedLinearLayout
@@ -59,6 +58,7 @@
                 android:paddingLeft="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tint="#888"
                 android:src="@drawable/ic_core_overflow" />
 
         </com.lwm.app.ui.custom_view.CheckedLinearLayout>

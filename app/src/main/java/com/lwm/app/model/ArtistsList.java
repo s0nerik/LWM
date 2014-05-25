@@ -12,21 +12,23 @@ public class ArtistsList {
     private List<Artist> artists = new ArrayList<>();
 
     public ArtistsList(Cursor cursor) {
-        cursor.moveToFirst();
+        if(cursor.moveToFirst()) {
+            int id = ArtistsCursorGetter._ID;
+            int artist = ArtistsCursorGetter.ARTIST;
+            int numberOfAlbums = ArtistsCursorGetter.NUMBER_OF_ALBUMS;
+            int numberOfTracks = ArtistsCursorGetter.NUMBER_OF_TRACKS;
 
-        int id = ArtistsCursorGetter._ID;
-        int artist = ArtistsCursorGetter.ARTIST;
-        int numberOfAlbums = ArtistsCursorGetter.NUMBER_OF_ALBUMS;
-        int numberOfTracks = ArtistsCursorGetter.NUMBER_OF_TRACKS;
+            do {
+                artists.add(new Artist(
+                        cursor.getInt(id),
+                        cursor.getString(artist),
+                        cursor.getInt(numberOfAlbums),
+                        cursor.getInt(numberOfTracks)
+                ));
+            } while (cursor.moveToNext());
 
-        do{
-            artists.add(new Artist(
-                    cursor.getInt(id),
-                    cursor.getString(artist),
-                    cursor.getInt(numberOfAlbums),
-                    cursor.getInt(numberOfTracks)
-            ));
-        }while(cursor.moveToNext());
+//            cursor.close();
+        }
         cursor.close();
     }
 

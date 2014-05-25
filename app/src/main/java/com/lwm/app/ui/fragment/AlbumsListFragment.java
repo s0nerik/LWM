@@ -41,7 +41,7 @@ public class AlbumsListFragment extends ListFragment {
         }
 
         albumsList = new AlbumsList(albums);
-        albums.close();
+//        albums.close();
         ListAdapter adapter = new AlbumsAdapter(getActivity(), albumsList);
 
         setListAdapter(adapter);

@@ -46,10 +46,16 @@
     <string name="remote_music">Remote music</string>
 
     // SongsListFragment
-    <string name="no_songs_found">No songs found</string>
+    <string name="no_songs_found">No songs found.</string>
+
+    // AlbumsListFragment
+    <string name="no_albums_found">No albums found.</string>
+
+    // ArtistsListFragment
+    <string name="no_artists_found">No artists found.</string>
 
     // QueueFragment
-    <string name="queue_is_empty">Queue is empty</string>
+    <string name="queue_is_empty">Queue is empty.</string>
 
     // PlaybackFragment
     <string name="waiting_for_server">Waiting for station...</string>
@@ -87,10 +93,11 @@
     </string-array>
 
     // Station chooser activity
-    <string name="title_activity_station_chooser">Choose a station</string>
+    <string name="title_activity_station_chooser">Stations around</string>
     <string name="connecting_to_the_station">Connecting to the station...</string>
     <string name="wifi_disabled">Please turn on Wi-Fi</string>
 
     <string name="crash_toast_text">Sending crash report...</string>
+    <string name="nobody_around">Nobody wants you to listen with him...</string>
 
 </resources>

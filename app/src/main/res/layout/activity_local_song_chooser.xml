@@ -11,9 +11,12 @@
         android:orientation="vertical" >
 
         <FrameLayout
+            android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:foreground="@drawable/horizontal_shadow"
+            android:foregroundGravity="bottom|fill_horizontal"
             android:id="@+id/container" />
 
         <fragment

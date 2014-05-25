@@ -196,6 +196,7 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public Loader<List<Song>> onCreateLoader(int id, Bundle args) {
         Log.d(App.TAG, "onCreateLoader");
+        getActivity().findViewById(android.R.id.empty).setVisibility(View.GONE);
         getActivity().findViewById(android.R.id.progress).setVisibility(View.VISIBLE);
         return songsLoader;
     }
@@ -209,7 +210,7 @@ public class SongsListFragment extends ListFragment implements
             ((SongsListAdapter) getListAdapter()).notifyDataSetChanged();
             highlightCurrentSong();
         }else{
-            getActivity().findViewById(R.id.no_songs_layout).setVisibility(View.VISIBLE);
+            getActivity().findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
         }
     }
 
