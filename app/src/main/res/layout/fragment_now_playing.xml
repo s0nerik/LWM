@@ -65,6 +65,8 @@
                     android:layout_weight="1"
                     android:id="@+id/now_playing_bar_artist"
 
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textSize="16sp"
                     android:textColor="#cccccc"
 
