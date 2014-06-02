@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
 import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.helper.AlbumsCursorGetter;
@@ -24,8 +25,12 @@ public class AlbumsListFragment extends ListFragment {
 
     public AlbumsListFragment() {}
 
-    public AlbumsListFragment(Artist artist) {
-        this.artist = artist;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null && getArguments().getString("artist") != null) {
+            artist = new Gson().fromJson(getArguments().getString("artist"), Artist.class);
+        }
     }
 
     @Override

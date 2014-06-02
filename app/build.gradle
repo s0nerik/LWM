@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.10.+'
     }
 }
 apply plugin: 'android'
@@ -14,49 +14,40 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.3'
-
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 19
-        versionCode 1
-        versionName "0.1"
+        versionCode 2
+        versionName '0.2'
 
         // 9-patch bug workaround
         android.aaptOptions.useAaptPngCruncher = true
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-
     signingConfigs {
         release {
-            storeFile file("/mnt/Media/Dropbox/Dev/keystores/lwm/KEYSTORE.keystore")
-            storePassword "q1w2e3r4t5y6u7i8o9p0"
-            keyAlias "IDontKnow"
-            keyPassword "q1w2e3r4t5y6u7i8o9p0"
-        }
-
-        buildTypes {
-            release {
-                runProguard true
-                signingConfig signingConfigs.release
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            }
+            storeFile file('/mnt/Media/Dropbox/Dev/keystores/lwm/KEYSTORE.keystore')
+            storePassword 'q1w2e3r4t5y6u7i8o9p0'
+            keyAlias 'IDontKnow'
+            keyPassword 'q1w2e3r4t5y6u7i8o9p0'
         }
     }
-
     buildTypes {
         release {
-            runProguard false
+            runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
+            proguardFile '/home/sonerik/IDE/android-studio/sdk/tools/proguard/proguard-android-optimize.txt'
         }
     }
-
     lintOptions {
         abortOnError false
+    }
+    productFlavors {
     }
 }
 

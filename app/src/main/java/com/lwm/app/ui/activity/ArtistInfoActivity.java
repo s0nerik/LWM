@@ -1,8 +1,10 @@
 package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 
+import com.google.gson.Gson;
 import com.lwm.app.R;
 import com.lwm.app.helper.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
@@ -24,8 +26,13 @@ public class ArtistInfoActivity extends BasicActivity {
         actionBar.setTitle(artist.getName());
         actionBar.setSubtitle("ALBUMS: "+artist.getNumberOfAlbums());
 
+        Fragment albumsListFragment = new AlbumsListFragment();
+        Bundle args = new Bundle();
+        args.putString("artist", new Gson().toJson(artist));
+        albumsListFragment.setArguments(args);
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, new AlbumsListFragment(artist))
+                .replace(R.id.container, albumsListFragment)
                 .commit();
     }
 
