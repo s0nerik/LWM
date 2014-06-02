@@ -16,8 +16,8 @@ public class WifiAP {
     private static final int WIFI_AP_STATE_UNKNOWN = -1;
     private static int WIFI_AP_STATE_DISABLING = 0;
     private static int WIFI_AP_STATE_DISABLED = 1;
-    public int WIFI_AP_STATE_ENABLING = 2;
-    public int WIFI_AP_STATE_ENABLED = 3;
+    public static int WIFI_AP_STATE_ENABLING = 2;
+    public static int WIFI_AP_STATE_ENABLED = 3;
     private static int WIFI_AP_STATE_FAILED = 4;
 
     private final String[] WIFI_STATE_TEXTSTATE = new String[] {

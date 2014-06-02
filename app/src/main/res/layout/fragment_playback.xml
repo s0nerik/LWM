@@ -4,35 +4,13 @@
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#000000"
     android:layout_height="match_parent" >
-
-    <LinearLayout
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_alerts_and_states_error" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/waiting_for_server"
-            android:textColor="#ffffff" />
-
-    </LinearLayout>
 
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragment_playback_layout"
-        android:background="@android:color/black" >
+        android:id="@+id/fragment_playback_layout" >
 
         <ImageView
             android:id="@+id/fragment_playback_background"
@@ -177,5 +155,18 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <TextView
+        tools:visibility="visible"
+        android:id="@+id/waiting_for_station"
+        android:visibility="gone"
+        android:drawableTop="@drawable/ic_alerts_and_states_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/waiting_for_server"
+        android:drawablePadding="10dp"
+        android:gravity="center"
+        android:textColor="#ffffff" />
 
 </FrameLayout>

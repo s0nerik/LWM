@@ -64,6 +64,11 @@ public class LocalSongChooserActivity extends BasicActivity implements
         super.onCreate(savedInstanceState);
         sharedPreferences = getPreferences(MODE_PRIVATE);
         setContentView(R.layout.activity_local_song_chooser);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
         initActionBar();
         initNavigationDrawer();
@@ -71,11 +76,7 @@ public class LocalSongChooserActivity extends BasicActivity implements
         if (savedInstanceState == null) {
             showSelectedFragment(sharedPreferences.getInt(DRAWER_SELECTION, 0));
         }
-    }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
     }
 

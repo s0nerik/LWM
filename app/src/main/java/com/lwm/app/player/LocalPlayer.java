@@ -16,6 +16,7 @@ import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         addIndexes(queue.size());
     }
 
-    public void addToQueue(List<Song> songs){
+    public void addToQueue(Collection<Song> songs){
         queue.addAll(songs);
         addIndexes(songs.size());
     }

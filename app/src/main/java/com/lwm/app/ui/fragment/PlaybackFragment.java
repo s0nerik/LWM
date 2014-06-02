@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -25,7 +26,6 @@ import com.lwm.app.R;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.io.IOException;
@@ -116,15 +116,21 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     }
 
     public void setRemoteAlbumArt(){
-        new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background).execute();
+        RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background);
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+            remoteAlbumArtAsyncGetter.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            remoteAlbumArtAsyncGetter.execute();
+        }
     }
 
-//    public void setDefaultAlbumArt() {
-//        albumArt.setImageResource(R.drawable.no_cover);
-//    }
-
     public void setBackgroundImageUri(Uri uri){
-        new BackgroundChanger(getActivity(), background).execute(uri);
+        BackgroundChanger backgroundChanger = new BackgroundChanger(getActivity(), background);
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+            backgroundChanger.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, uri);
+        } else {
+            backgroundChanger.execute(uri);
+        }
     }
 
     public void setPlayButton(boolean playing){

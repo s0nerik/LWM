@@ -42,8 +42,8 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        actionBar = getSupportActionBar();
-        initActionBar();
+//        actionBar = getSupportActionBar();
+//        initActionBar();
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         mediaButtonIntentReceiver = new ComponentName(getPackageName(),
                 MediaButtonIntentReceiver.class.getName());
@@ -60,6 +60,9 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        initActionBar();
+
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
         NowPlayingNotification.hide();
     }
@@ -82,6 +85,7 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     }
 
     protected void initActionBar(){
+        actionBar = getSupportActionBar();
         actionBar.setIcon(R.drawable.ic_playback_activity);
         actionBar.setDisplayHomeAsUpEnabled(true);
 

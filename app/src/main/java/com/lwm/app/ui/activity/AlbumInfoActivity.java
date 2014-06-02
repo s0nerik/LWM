@@ -22,7 +22,6 @@ import com.lwm.app.model.Album;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.ui.fragment.OnSongSelectedListener;
 import com.manuelpeinado.fadingactionbar.extras.actionbarcompat.FadingActionBarHelper;
 
 import java.util.List;
@@ -118,7 +117,12 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
             case R.id.action_settings:
                 return true;
             case R.id.action_add_to_queue:
-                player.addToQueue(playlist);
+                if (player == null) {
+                    player = new LocalPlayer(this, playlist);
+                    App.getMusicService().setLocalPlayer(player);
+                } else {
+                    player.addToQueue(playlist);
+                }
                 Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT);
                 toast.show();
                 return true;

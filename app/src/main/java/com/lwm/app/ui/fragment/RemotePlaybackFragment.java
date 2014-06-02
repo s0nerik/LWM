@@ -29,9 +29,9 @@ public class RemotePlaybackFragment extends PlaybackFragment {
 
     public void showWaitingFrame(boolean show){
         if(show) {
-            getActivity().findViewById(R.id.fragment_playback_layout).setVisibility(View.GONE);
+            getActivity().findViewById(R.id.waiting_for_station).setVisibility(View.VISIBLE);
         }else{
-            getActivity().findViewById(R.id.fragment_playback_layout).setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.waiting_for_station).setVisibility(View.GONE);
         }
     }
 
