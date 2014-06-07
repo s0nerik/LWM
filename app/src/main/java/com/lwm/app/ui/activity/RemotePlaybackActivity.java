@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -46,14 +47,16 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
         if(song != null) {
             playbackFragment.showWaitingFrame(false);
 
+            View v = actionBar.getCustomView();
+            TextView title = (TextView) v.findViewById(R.id.title);
+            TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
+            title.setText(song.getTitle());
+            subtitle.setText(song.getArtist());
+
             durationString = song.getDurationString();
             playbackFragment.setDuration(durationString);
             duration = song.getDuration();
             initSeekBarUpdater(player, duration);
-            title = song.getTitle();
-            actionBar.setTitle(title);
-            artist = song.getArtist();
-            actionBar.setSubtitle(artist);
             playbackFragment.setRemoteAlbumArt();
         }else{
             playbackFragment.showWaitingFrame(true);
