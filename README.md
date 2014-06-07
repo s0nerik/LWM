@@ -21,4 +21,5 @@ This project uses NDK library so you will need NDK to build it successfully. (Do
 Release notes
 --
 **0.2** Second Alpha
+
 **0.1** First Alpha
