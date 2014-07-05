@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 apply plugin: 'android'
@@ -52,15 +52,14 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
-    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.android.support:support-v4:19.+'
+    compile 'com.google.code.gson:gson:2.2.+'
     compile project(':libs:UnifiedPreference')
     compile project(':libs:StackBlur')
     compile project(':libs:Fontify')
-    compile 'com.google.code.gson:gson:2.2.+'
-    compile 'com.android.support:gridlayout-v7:+'
+    compile project(':libs:FadingActionBar')
     compile project(':libs:androidsvg')
     compile files('../libs/universal-image-loader-1.9.1.jar')
     compile files('../libs/acra-4.5.0.jar')
-    compile 'com.github.manuelpeinado.fadingactionbar:fadingactionbar-abc:3.1.2'
 }

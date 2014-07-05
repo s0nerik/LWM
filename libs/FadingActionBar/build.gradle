@@ -13,6 +13,13 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
 
+    defaultConfig {
+        versionName '1'
+        versionCode 1
+
+        targetSdkVersion 19
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -20,4 +27,8 @@ android {
             res.srcDirs = ['res']
         }
     }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:19.+'
 }
