@@ -22,7 +22,7 @@ import com.lwm.app.model.Album;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.manuelpeinado.fadingactionbar.extras.actionbarcompat.FadingActionBarHelper;
+import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
 
 import java.util.List;
 

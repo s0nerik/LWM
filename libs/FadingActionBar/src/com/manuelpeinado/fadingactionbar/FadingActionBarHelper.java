@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.manuelpeinado.fadingactionbar.extras.actionbarcompat;
+package com.manuelpeinado.fadingactionbar;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
