@@ -1,13 +1,16 @@
 package com.lwm.app.player;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
+import com.lwm.app.MediaButtonIntentReceiver;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.ClientsStateListener;
 import com.lwm.app.server.StreamServer;
@@ -23,6 +26,9 @@ import java.util.List;
 public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Context context;
+
+    private  AudioManager audioManager;
+    private ComponentName mediaButtonIntentReceiver;
 
     private boolean shuffle;
     private boolean repeat;
@@ -54,12 +60,20 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public LocalPlayer(Context context){
         this.context = context;
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mediaButtonIntentReceiver = new ComponentName(context.getPackageName(),
+                MediaButtonIntentReceiver.class.getName());
+
         setOnCompletionListener(onCompletionListener);
         setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
     }
 
     public LocalPlayer(Context context, List<Song> playlist){
         this.context = context;
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mediaButtonIntentReceiver = new ComponentName(context.getPackageName(),
+                MediaButtonIntentReceiver.class.getName());
+
         queue = playlist;
         addIndexes(playlist.size());
         setOnCompletionListener(onCompletionListener);
@@ -94,7 +108,15 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         return currentSong;
     }
 
+    @Override
+    public void stop() throws IllegalStateException {
+        super.stop();
+        audioManager.unregisterMediaButtonEventReceiver(mediaButtonIntentReceiver);
+    }
+
     public void play(int position){
+        audioManager.registerMediaButtonEventReceiver(mediaButtonIntentReceiver);
+
         currentQueuePosition = position;
         currentSong = queue.get(position);
 
