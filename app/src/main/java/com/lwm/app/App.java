@@ -41,6 +41,8 @@ public class App extends Application {
     private static MusicService musicService;
     private static boolean musicServiceBound = false;
 
+    private Utils utils;
+
     public static MusicService getMusicService(){
         assert musicService != null : "musicService == null!";
         return musicService;
@@ -73,6 +75,8 @@ public class App extends Application {
                 )
                 .build()
         );
+
+        utils = new Utils(this);
     }
 
     @Override

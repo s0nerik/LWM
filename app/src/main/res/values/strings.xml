@@ -47,6 +47,7 @@
 
     // SongsListFragment
     <string name="no_songs_found">No songs found.</string>
+    <string name="unknown_artist">Unknown artist</string>
 
     // AlbumsListFragment
     <string name="no_albums_found">No albums found.</string>

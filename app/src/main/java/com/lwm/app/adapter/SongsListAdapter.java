@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicService;
@@ -104,7 +105,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
 
         Song song = list.get(position);
         holder.title.setText(song.getTitle());
-        holder.artist.setText(song.getArtist());
+        holder.artist.setText(Utils.getArtistName(song.getArtist()));
         holder.duration.setText(song.getDurationString());
 
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));

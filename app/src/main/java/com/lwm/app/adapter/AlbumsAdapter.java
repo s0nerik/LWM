@@ -1,6 +1,7 @@
 package com.lwm.app.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,6 +23,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     private static final String artworkUri = "content://media/external/audio/albumart/";
 
     private final Context context;
+    private Resources resources;
     private List<Album> albumsList;
 
     private ImageLoader imageLoader = ImageLoader.getInstance();
@@ -35,6 +38,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     public AlbumsAdapter(final Context context, AlbumsList albums) {
         super(context, R.layout.list_item_songs, albums.getAlbums());
         this.context = context;
+        resources = context.getResources();
         albumsList = albums.getAlbums();
     }
 
@@ -66,7 +70,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
 
         Album album = albumsList.get(position);
         holder.album.setText(album.getTitle());
-        holder.artist.setText(album.getArtist());
+        holder.artist.setText(Utils.getArtistName(album.getArtist()));
 
         imageLoader.displayImage(artworkUri+album.getId(), holder.albumArt, displayOptions);
 

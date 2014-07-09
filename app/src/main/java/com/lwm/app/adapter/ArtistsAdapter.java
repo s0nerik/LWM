@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.model.Artist;
 import com.lwm.app.model.ArtistsList;
 
@@ -49,7 +50,7 @@ public class ArtistsAdapter extends ArrayAdapter<Artist> {
         }
 
         Artist artist = artistsList.get(position);
-        holder.artist.setText(artist.getName());
+        holder.artist.setText(Utils.getArtistName(artist.getName()));
         holder.albums.setText("Albums: "+artist.getNumberOfAlbums());
 
         return rowView;
