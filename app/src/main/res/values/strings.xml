@@ -100,4 +100,7 @@
     <string name="crash_toast_text">Sending crash report...</string>
     <string name="nobody_around">Nobody wants you to listen with him...</string>
 
+
+    <string name="nothing_to_shuffle">There\'s nothing to shuffle</string>
+
 </resources>

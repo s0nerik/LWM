@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -229,14 +230,18 @@ public class SongsListFragment extends ListFragment implements
     }
 
     private void shuffleAll(){
-        List<Song> queue = new ArrayList<>(songs);
-        Collections.shuffle(queue);
-        player = new LocalPlayer(getActivity(), queue);
-        App.getMusicService().setLocalPlayer(player);
-        player.registerListener(this);
-        player.play(0);
-        highlightCurrentSong();
-        ((OnSongSelectedListener) getActivity()).onSongSelected(0);
+        if (songs != null && !songs.isEmpty()) {
+            List<Song> queue = new ArrayList<>(songs);
+            Collections.shuffle(queue);
+            player = new LocalPlayer(getActivity(), queue);
+            App.getMusicService().setLocalPlayer(player);
+            player.registerListener(this);
+            player.play(0);
+            highlightCurrentSong();
+            ((OnSongSelectedListener) getActivity()).onSongSelected(0);
+        } else {
+            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG);
+        }
     }
 
     @Override
