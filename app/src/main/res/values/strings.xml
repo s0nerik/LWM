@@ -42,8 +42,8 @@
 
 
     // Start activity
-    <string name="local_music">Local music</string>
-    <string name="remote_music">Remote music</string>
+    <string name="my_music">My music</string>
+    <string name="stations_around">Stations around</string>
 
     // SongsListFragment
     <string name="no_songs_found">No songs found.</string>

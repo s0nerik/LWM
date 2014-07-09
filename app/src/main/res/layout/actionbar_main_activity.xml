@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:gravity="center"
         android:layout_centerInParent="true">
         <com.danh32.fontify.TextView
@@ -16,7 +16,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:text="@string/app_name"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textColor="#eeeeee"
 
             android:shadowColor="#000000"
