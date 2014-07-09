@@ -11,13 +11,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.receiver.PendingIntentReceiver;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 
 import java.io.FileNotFoundException;
@@ -26,6 +26,8 @@ import java.io.InputStream;
 public class NowPlayingNotification {
 
     public static final int NOTIFICATION_NOW_PLAYING_ID = 0;
+
+    public static final String ACTION_SHOW = "com.lwm.app.notification.now_playing.SHOW";
 
     public static final String ACTION_CLOSE = "com.lwm.app.player.close";
     public static final String ACTION_PLAY_PAUSE = "com.lwm.app.player.play_pause";

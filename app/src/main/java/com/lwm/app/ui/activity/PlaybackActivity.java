@@ -1,5 +1,7 @@
 package com.lwm.app.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -11,6 +13,7 @@ import android.view.View;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
+import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
 import com.lwm.app.task.SeekBarUpdateTask;
 import com.lwm.app.ui.fragment.PlaybackFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
@@ -24,6 +27,8 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     protected ActionBar actionBar;
 
     protected MenuItem broadcastButton;
+
+    private BroadcastReceiver notificationBroadcastReceiver = new AbortingNotificationIntentReceiver();
 
     protected long currentAlbumId;
 
@@ -47,6 +52,18 @@ public abstract class PlaybackActivity extends ActionBarActivity {
 
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
         NowPlayingNotification.hide();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(notificationBroadcastReceiver, new IntentFilter(NowPlayingNotification.ACTION_SHOW));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(notificationBroadcastReceiver);
     }
 
     @Override

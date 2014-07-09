@@ -15,12 +15,15 @@ import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerListener;
+import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 public class BasicActivity extends ActionBarActivity implements PlayerListener {
 
     protected LocalPlayer player;
+
+    private BroadcastReceiver notificationIntentReceiver = new AbortingNotificationIntentReceiver();
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -71,6 +74,7 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
         super.onResume();
 
         registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
+        registerReceiver(notificationIntentReceiver, new IntentFilter(NowPlayingNotification.ACTION_SHOW));
 
         toggleNowPlayingBar();
 
@@ -81,6 +85,7 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(onBroadcast);
+        unregisterReceiver(notificationIntentReceiver);
         if(App.localPlayerActive()) {
             App.getLocalPlayer().unregisterListener(this);
         }

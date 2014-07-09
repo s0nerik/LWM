@@ -2,6 +2,7 @@ package com.lwm.app.player;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -10,7 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
-import com.lwm.app.MediaButtonIntentReceiver;
+import com.lwm.app.receiver.MediaButtonIntentReceiver;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.ClientsStateListener;
 import com.lwm.app.server.StreamServer;
@@ -140,9 +141,11 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
                 start();
             }
 
-            if(updateNotification){
-                new NowPlayingNotification(context).show();
-            }
+//            if(updateNotification){
+//                new NowPlayingNotification(context).show();
+//            }
+
+            context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
 
         } catch (IOException e) {
             e.printStackTrace();

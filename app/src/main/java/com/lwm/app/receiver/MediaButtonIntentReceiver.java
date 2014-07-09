@@ -1,10 +1,11 @@
-package com.lwm.app;
+package com.lwm.app.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
 
+import com.lwm.app.App;
 import com.lwm.app.player.LocalPlayer;
 
 public class MediaButtonIntentReceiver extends BroadcastReceiver {
