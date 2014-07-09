@@ -8,14 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
             .showImageOnLoading(R.drawable.no_cover)
             .showImageForEmptyUri(R.drawable.no_cover)
             .showImageOnFail(R.drawable.no_cover)
-            .displayer(new FadeInBitmapDisplayer(200))
+            .cacheInMemory(true)
             .build();
 
     public AlbumsAdapter(final Context context, AlbumsList albums) {

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -64,7 +65,14 @@ public class App extends Application {
 
         // Init ImageLoader
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+        imageLoader.init(new ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(new DisplayImageOptions.Builder()
+                        .cacheInMemory(true)
+                        .bitmapConfig(Bitmap.Config.RGB_565)
+                        .build()
+                )
+                .build()
+        );
     }
 
     @Override

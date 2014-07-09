@@ -107,9 +107,8 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         holder.artist.setText(song.getArtist());
         holder.duration.setText(song.getDurationString());
 
-        // A very bad solution, but I don't see any other way how to do it.
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
-//
+
 //        if(position == 0){
 //            rowView.findViewById(R.id.space).setVisibility(View.VISIBLE);
 //        }
