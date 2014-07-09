@@ -263,5 +263,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
         if (App.localPlayerActive() && App.getLocalPlayer().isPlaying()) {
             new NowPlayingNotification(this).show();
         }
+        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 }

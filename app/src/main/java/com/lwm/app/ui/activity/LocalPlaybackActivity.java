@@ -219,5 +219,6 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         } else {
             super.onBackPressed();
         }
+        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 }

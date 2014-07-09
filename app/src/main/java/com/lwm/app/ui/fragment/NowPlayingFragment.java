@@ -18,7 +18,6 @@ import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 public class NowPlayingFragment extends Fragment implements PlayerListener {
@@ -50,6 +49,7 @@ public class NowPlayingFragment extends Fragment implements PlayerListener {
         public void onClick(View view) {
             Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
 

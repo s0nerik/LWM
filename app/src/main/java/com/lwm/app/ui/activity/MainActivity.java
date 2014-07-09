@@ -63,6 +63,7 @@ public class MainActivity extends ActionBarActivity {
             Log.d(App.TAG, "onClick");
             localMusicButtonIcon.setImageAsset("icons/local_music_glow.svg");
             startActivity(new Intent(MainActivity.this, LocalSongChooserActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
 
