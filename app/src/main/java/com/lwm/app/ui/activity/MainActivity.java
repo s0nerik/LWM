@@ -8,12 +8,10 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -23,7 +21,6 @@ public class MainActivity extends ActionBarActivity {
     private View.OnClickListener localMusicButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(App.TAG, "onClick");
             startActivity(new Intent(MainActivity.this, LocalSongChooserActivity.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
@@ -32,16 +29,16 @@ public class MainActivity extends ActionBarActivity {
     private View.OnClickListener remoteMusicButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d(App.TAG, "onClick");
             startActivity(new Intent(MainActivity.this, StationChooserActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
 
     private View.OnClickListener settingsButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, PreferenceActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, PreferenceActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
 
@@ -93,33 +90,22 @@ public class MainActivity extends ActionBarActivity {
         localBtnAnimation.playTogether(
                 ObjectAnimator.ofFloat(localBtn, "translationX", 300f, 0f),
                 ObjectAnimator.ofFloat(localBtnShadow, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(localBtnText, "alpha", 0f, 1f)
+                ObjectAnimator.ofFloat(localBtnText, "alpha", 0f, 0.25f, 1f)
         );
 
         remoteBtnAnimation = new AnimatorSet();
         remoteBtnAnimation.playTogether(
                 ObjectAnimator.ofFloat(remoteBtn, "translationX", 300f, 0f),
                 ObjectAnimator.ofFloat(remoteBtnShadow, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(remoteBtnText, "alpha", 0f, 1f)
+                ObjectAnimator.ofFloat(remoteBtnText, "alpha", 0f, 0.25f, 1f)
         );
 
         settingsBtnAnimation = new AnimatorSet();
         settingsBtnAnimation.playTogether(
                 ObjectAnimator.ofFloat(settingsBtn, "translationX", 300f, 0f),
                 ObjectAnimator.ofFloat(settingsBtnShadow, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(settingsBtnText, "alpha", 0f, 1f)
+                ObjectAnimator.ofFloat(settingsBtnText, "alpha", 0f, 0.25f, 1f)
         );
-
-//        // Hide everything before animation it
-//        localBtn.setVisibility(View.INVISIBLE);
-//        localBtnShadow.setVisibility(View.INVISIBLE);
-//        localBtnText.setVisibility(View.INVISIBLE);
-//        remoteBtn.setVisibility(View.INVISIBLE);
-//        remoteBtnShadow.setVisibility(View.INVISIBLE);
-//        remoteBtnText.setVisibility(View.INVISIBLE);
-//        settingsBtn.setVisibility(View.INVISIBLE);
-//        settingsBtnShadow.setVisibility(View.INVISIBLE);
-//        settingsBtnText.setVisibility(View.INVISIBLE);
 
         new Handler().postDelayed(new Runnable() {
             @Override

@@ -15,6 +15,12 @@ public class PreferenceActivity extends UnifiedPreferenceActivity{
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
+    }
+
     public static class AccessPointSettingsFragment extends UnifiedPreferenceFragment {}
     public static class AppSettingsFragment extends UnifiedPreferenceFragment {}
 }
