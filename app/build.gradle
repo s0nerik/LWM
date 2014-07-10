@@ -62,4 +62,5 @@ dependencies {
     compile project(':libs:FadingActionBar')
     compile project(':libs:androidsvg')
     compile files('../libs/acra-4.5.0.jar')
+    compile 'com.nineoldandroids:library:2.4.+'
 }

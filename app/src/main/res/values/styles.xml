@@ -95,11 +95,6 @@
         <item name="android:paddingBottom">0dp</item>
     </style>
 
-    <style name="StartScreenRoundButton">
-        <item name="android:background">@drawable/selector_roundbutton</item>
-        <item name="android:padding">40dp</item>
-    </style>
-
     <style name="ListOfCards">
         <item name="android:padding">6dp</item>
         <item name="android:clipToPadding">false</item>
@@ -111,6 +106,51 @@
         <item name="android:cacheColorHint">#00000000</item>
         <item name="android:fadingEdge">none</item>
         <item name="android:requiresFadingEdge">none</item>
+    </style>
+
+    <style name="StartScreenCircleButton">
+
+        // Needed for "smoothness" hack to work
+        <item name="android:visibility">invisible</item>
+
+        <item name="cb_color">@android:color/white</item>
+        <item name="cb_pressed_ring_width">20dp</item>
+        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">140dp</item>
+        <item name="android:tint">#333</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
+
+    <style name="StartScreenText">
+
+        // Needed for "smoothness" hack to work
+        <item name="android:visibility">invisible</item>
+
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="font">@string/FONT_ROBOTO_THIN_ITALIC</item>
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">0.01</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
+
+    <style name="StartScreenButtonBackground">
+
+        // Needed for "smoothness" hack to work
+        <item name="android:visibility">invisible</item>
+
+        <item name="android:background">#333</item>
+        <item name="android:layout_width">70dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">35dp</item>
+        <item name="android:layout_marginBottom">35dp</item>
+        <item name="android:layout_alignParentRight">true</item>
     </style>
 
 </resources>

@@ -2,79 +2,68 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_main_activity">
 
-    <TextView
+    <com.danh32.fontify.TextView
+        android:id="@+id/btn_local_text"
         android:text="@string/my_music"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/btn_local"
         android:layout_alignBottom="@+id/btn_local"
-        android:layout_alignTop="@+id/btn_local" />
-    
+        android:layout_alignTop="@+id/btn_local"
+        style="@style/StartScreenText" />
+
+    <View
+        android:id="@+id/shadow_local_btn"
+        android:layout_alignBottom="@+id/btn_local"
+        android:layout_alignTop="@+id/btn_local"
+        style="@style/StartScreenButtonBackground" />
+
     <com.lwm.app.ui.custom_view.CircleButton
+        style="@style/StartScreenCircleButton"
         android:id="@+id/btn_local"
         android:src="@drawable/ic_local_music"
-        android:tint="#000"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        app:cb_color="@android:color/white"
-        app:cb_pressed_ring_width="20dp"
-        android:layout_above="@+id/btn_remote"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp" />
+        android:layout_above="@+id/btn_remote" />
 
-    <TextView
+    <com.danh32.fontify.TextView
+        android:id="@+id/btn_remote_text"
         android:text="@string/stations_around"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btn_remote"
         android:layout_alignBottom="@+id/btn_remote"
-        android:layout_toLeftOf="@+id/btn_remote" />
+        android:layout_toLeftOf="@+id/btn_remote"
+        style="@style/StartScreenText" />
+
+    <View
+        android:id="@+id/shadow_remote_btn"
+        android:layout_alignBottom="@+id/btn_remote"
+        android:layout_alignTop="@+id/btn_remote"
+        style="@style/StartScreenButtonBackground" />
 
     <com.lwm.app.ui.custom_view.CircleButton
+        style="@style/StartScreenCircleButton"
         android:id="@+id/btn_remote"
         android:src="@drawable/ic_remote_music"
-        android:tint="#000"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        app:cb_color="@android:color/white"
-        app:cb_pressed_ring_width="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp" />
+        android:layout_centerVertical="true" />
 
-    <TextView
+    <com.danh32.fontify.TextView
+        android:id="@+id/btn_settings_text"
         android:text="@string/action_settings"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btn_settings"
         android:layout_toLeftOf="@+id/btn_settings"
-        android:layout_alignBottom="@+id/btn_settings" />
+        android:layout_alignBottom="@+id/btn_settings"
+        style="@style/StartScreenText" />
+
+    <View
+        android:id="@+id/shadow_settings_btn"
+        android:layout_alignBottom="@+id/btn_settings"
+        android:layout_alignTop="@+id/btn_settings"
+        style="@style/StartScreenButtonBackground" />
 
     <com.lwm.app.ui.custom_view.CircleButton
+        style="@style/StartScreenCircleButton"
         android:id="@+id/btn_settings"
         android:src="@drawable/ic_settings"
-        android:tint="#000"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_gravity="left"
-        app:cb_color="@android:color/white"
-        app:cb_pressed_ring_width="20dp"
-        android:layout_below="@+id/btn_remote"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp" />
+        android:layout_below="@+id/btn_remote" />
 
 </RelativeLayout>

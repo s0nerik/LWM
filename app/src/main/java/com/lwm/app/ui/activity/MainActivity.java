@@ -4,15 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -41,9 +45,23 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    private AnimatorSet settingsBtnAnimation;
+    private AnimatorSet localBtnAnimation;
+    private AnimatorSet remoteBtnAnimation;
+    private View localBtn;
+    private View localBtnShadow;
+    private View localBtnText;
+    private View remoteBtn;
+    private View remoteBtnShadow;
+    private View remoteBtnText;
+    private View settingsBtn;
+    private View settingsBtnShadow;
+    private View settingsBtnText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.nothing, R.anim.nothing);
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("always_local", false)){
             startActivity(new Intent(this, LocalSongChooserActivity.class));
         }
@@ -54,32 +72,81 @@ public class MainActivity extends ActionBarActivity {
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
 
-        findViewById(R.id.btn_local).setOnClickListener(localMusicButtonClickListener);
-        findViewById(R.id.btn_remote).setOnClickListener(remoteMusicButtonClickListener);
-        findViewById(R.id.btn_settings).setOnClickListener(settingsButtonClickListener);
+        localBtn = findViewById(R.id.btn_local);
+        localBtn.setOnClickListener(localMusicButtonClickListener);
+
+        remoteBtn = findViewById(R.id.btn_remote);
+        remoteBtn.setOnClickListener(remoteMusicButtonClickListener);
+
+        settingsBtn = findViewById(R.id.btn_settings);
+        settingsBtn.setOnClickListener(settingsButtonClickListener);
+
+        localBtnShadow = findViewById(R.id.shadow_local_btn);
+        remoteBtnShadow = findViewById(R.id.shadow_remote_btn);
+        settingsBtnShadow = findViewById(R.id.shadow_settings_btn);
+
+        localBtnText = findViewById(R.id.btn_local_text);
+        remoteBtnText = findViewById(R.id.btn_remote_text);
+        settingsBtnText = findViewById(R.id.btn_settings_text);
+
+        localBtnAnimation = new AnimatorSet();
+        localBtnAnimation.playTogether(
+                ObjectAnimator.ofFloat(localBtn, "translationX", 300f, 0f),
+                ObjectAnimator.ofFloat(localBtnShadow, "translationX", 300f, 0f),
+                ObjectAnimator.ofFloat(localBtnText, "alpha", 0f, 1f)
+        );
+
+        remoteBtnAnimation = new AnimatorSet();
+        remoteBtnAnimation.playTogether(
+                ObjectAnimator.ofFloat(remoteBtn, "translationX", 300f, 0f),
+                ObjectAnimator.ofFloat(remoteBtnShadow, "translationX", 300f, 0f),
+                ObjectAnimator.ofFloat(remoteBtnText, "alpha", 0f, 1f)
+        );
+
+        settingsBtnAnimation = new AnimatorSet();
+        settingsBtnAnimation.playTogether(
+                ObjectAnimator.ofFloat(settingsBtn, "translationX", 300f, 0f),
+                ObjectAnimator.ofFloat(settingsBtnShadow, "translationX", 300f, 0f),
+                ObjectAnimator.ofFloat(settingsBtnText, "alpha", 0f, 1f)
+        );
+
+//        // Hide everything before animation it
+//        localBtn.setVisibility(View.INVISIBLE);
+//        localBtnShadow.setVisibility(View.INVISIBLE);
+//        localBtnText.setVisibility(View.INVISIBLE);
+//        remoteBtn.setVisibility(View.INVISIBLE);
+//        remoteBtnShadow.setVisibility(View.INVISIBLE);
+//        remoteBtnText.setVisibility(View.INVISIBLE);
+//        settingsBtn.setVisibility(View.INVISIBLE);
+//        settingsBtnShadow.setVisibility(View.INVISIBLE);
+//        settingsBtnText.setVisibility(View.INVISIBLE);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Show everything before animating it
+                localBtn.setVisibility(View.VISIBLE);
+                localBtnShadow.setVisibility(View.VISIBLE);
+                localBtnText.setVisibility(View.VISIBLE);
+                remoteBtn.setVisibility(View.VISIBLE);
+                remoteBtnShadow.setVisibility(View.VISIBLE);
+                remoteBtnText.setVisibility(View.VISIBLE);
+                settingsBtn.setVisibility(View.VISIBLE);
+                settingsBtnShadow.setVisibility(View.VISIBLE);
+                settingsBtnText.setVisibility(View.VISIBLE);
+
+                // Actually animate it
+                AnimatorSet set = new AnimatorSet();
+                set.playTogether(
+                        localBtnAnimation.setDuration(200),
+                        remoteBtnAnimation.setDuration(400),
+                        settingsBtnAnimation.setDuration(800)
+                );
+                set.start();
+            }
+        }, 500);
+
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.start_screen, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            Intent intent = new Intent(this, PreferenceActivity.class);
-//            startActivity(intent);
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -95,6 +162,13 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             default:
                 return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private class ReverseInterpolator implements Interpolator {
+        @Override
+        public float getInterpolation(float paramFloat) {
+            return Math.abs(paramFloat -1f);
         }
     }
 

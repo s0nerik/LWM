@@ -31,10 +31,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:paddingLeft="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:text="αlpha"
             android:layout_gravity="top"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:textColor="#ffffff"
 
             android:shadowColor="#000000"
@@ -42,7 +43,7 @@
             android:shadowDy="0"
             android:shadowRadius="2"
 
-            fontify:font="@string/FONT_ROBOTO_THIN" />
+            fontify:font="@string/FONT_ROBOTO_THIN_ITALIC" />
     </LinearLayout>
 
 </RelativeLayout>
