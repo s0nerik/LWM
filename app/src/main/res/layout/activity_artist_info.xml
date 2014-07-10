@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_now_playing"
+        android:layout_marginTop="-5dp"
         android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
         tools:layout="@layout/fragment_now_playing" />
 

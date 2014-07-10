@@ -5,12 +5,18 @@
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="-5dp"
     android:orientation="vertical" >
 
+    <View
+        android:background="@drawable/horizontal_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+    
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:background="@drawable/background_fragment_now_playing"
+        android:background="#0F0A06"
         android:id="@+id/fragment_now_playing"
         android:layout_height="wrap_content">
 
