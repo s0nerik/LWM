@@ -36,4 +36,9 @@ public class ArtistInfoActivity extends BasicActivity {
                 .commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
+    }
 }

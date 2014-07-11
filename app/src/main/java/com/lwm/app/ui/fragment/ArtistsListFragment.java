@@ -44,5 +44,6 @@ public class ArtistsListFragment extends ListFragment {
         Intent intent = new Intent(getActivity(), ArtistInfoActivity.class);
         intent.putExtra("artist_id", artistsList.getArtists().get(position).getId());
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
     }
 }

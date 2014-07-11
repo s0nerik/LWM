@@ -55,12 +55,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.android.support:support-v4:19.+'
     compile 'com.google.code.gson:gson:2.2.+'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
     compile project(':libs:UnifiedPreference')
     compile project(':libs:StackBlur')
     compile project(':libs:Fontify')
     compile project(':libs:FadingActionBar')
-    compile project(':libs:androidsvg')
     compile files('../libs/acra-4.5.0.jar')
     compile 'com.nineoldandroids:library:2.4.+'
+    compile 'com.squareup.picasso:picasso:2.3.+'
 }

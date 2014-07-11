@@ -1,6 +1,5 @@
 package com.lwm.app.ui.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -23,6 +22,7 @@ import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -32,6 +32,7 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
     private ListView listView;
 
     private SimpleSongsListAdapter adapter;
+    private int screenWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +58,26 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
 
         Album album = new AlbumsCursorGetter(this).getAlbumById(albumId);
 
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+
         initHeader(album);
     }
 
     private void initHeader(Album album){
         ImageView header = (ImageView) findViewById(R.id.image_header);
 
-        String uri = album.getAlbumArtUri();
-        if(uri != null) {
-            header.setImageURI(Uri.parse(uri));
-        }else{
-            header.setImageResource(R.drawable.no_cover);
-        }
+        Picasso.with(this)
+                .load("file://"+album.getAlbumArtUri())
+                .resize(screenWidth, screenWidth)
+                .placeholder(R.drawable.no_cover)
+                .centerCrop()
+                .into(header);
+//        String uri = album.getAlbumArtUri();
+//        if(uri != null) {
+//            header.setImageURI(Uri.parse(uri));
+//        }else{
+//            header.setImageResource(R.drawable.no_cover);
+//        }
 
         String artistName = album.getArtist();
         String title = String.valueOf(album.getTitle());
@@ -105,6 +114,12 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.album_info, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 
     @Override

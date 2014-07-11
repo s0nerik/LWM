@@ -96,7 +96,9 @@
                 android:value="com.lwm.app.ui.activity.StationChooserActivity" />
         </activity>
 
-        <activity android:name="com.lwm.app.ui.activity.PreferenceActivity" />
+        <activity
+            android:label="@string/action_settings"
+            android:name="com.lwm.app.ui.activity.PreferenceActivity" />
 
         <activity
             android:screenOrientation="portrait"

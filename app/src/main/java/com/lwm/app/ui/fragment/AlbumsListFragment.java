@@ -59,5 +59,6 @@ public class AlbumsListFragment extends ListFragment {
         Intent intent = new Intent(getActivity(), AlbumInfoActivity.class);
         intent.putExtra("album_id", albumsList.getAlbums().get(position).getId());
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
     }
 }

@@ -13,8 +13,7 @@ import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -25,15 +24,6 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     private final Context context;
     private Resources resources;
     private List<Album> albumsList;
-
-    private ImageLoader imageLoader = ImageLoader.getInstance();
-
-    private DisplayImageOptions displayOptions = new DisplayImageOptions.Builder()
-            .showImageOnLoading(R.drawable.no_cover)
-            .showImageForEmptyUri(R.drawable.no_cover)
-            .showImageOnFail(R.drawable.no_cover)
-            .cacheInMemory(true)
-            .build();
 
     public AlbumsAdapter(final Context context, AlbumsList albums) {
         super(context, R.layout.list_item_songs, albums.getAlbums());
@@ -72,7 +62,12 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         holder.album.setText(album.getTitle());
         holder.artist.setText(Utils.getArtistName(album.getArtist()));
 
-        imageLoader.displayImage(artworkUri+album.getId(), holder.albumArt, displayOptions);
+        Picasso.with(context)
+                .load(artworkUri+album.getId())
+                .resize(214, 214)
+                .placeholder(R.drawable.no_cover)
+                .centerCrop()
+                .into(holder.albumArt);
 
         return rowView;
     }

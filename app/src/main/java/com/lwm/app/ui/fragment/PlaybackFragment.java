@@ -24,9 +24,7 @@ import android.widget.TextView;
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -43,14 +41,6 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     private ImageView albumArt;
     private ImageView background;
 
-    private ImageLoader imageLoader;
-
-    private DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-            .showImageForEmptyUri(R.drawable.no_cover)
-            .showImageOnFail(R.drawable.no_cover)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .build();
-
     // Playback control buttons
     private ImageView playPauseButton;
     private ImageView shuffleButton;
@@ -58,6 +48,14 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
 
     private Drawable[] drawables;
     private TransitionDrawable transitionDrawable;
+
+    private int screenWidth;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,8 +69,6 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
         seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
-
-        imageLoader = ImageLoader.getInstance();
 
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
         ImageView nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
@@ -112,7 +108,12 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        imageLoader.displayImage(uri.toString(), albumArt, displayImageOptions);
+        Picasso.with(getActivity())
+                .load(uri.toString())
+                .resize(screenWidth, screenWidth)
+                .placeholder(R.drawable.no_cover)
+                .centerCrop()
+                .into(albumArt);
     }
 
     public void setRemoteAlbumArt(){
@@ -217,7 +218,7 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 //Button Pressed
-                view.setBackgroundColor(Color.parseColor("#5533b5e5"));
+                view.setBackgroundColor(Color.parseColor("#33ffffff"));
             }
             if(motionEvent.getAction() == MotionEvent.ACTION_UP){
                 //finger was lifted
