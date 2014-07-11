@@ -85,14 +85,24 @@
     </style>
 
     <style name="Card">
-        <item name="android:background">@drawable/background_list_item</item>
+        <item name="android:background">@drawable/background_list_item_checkable</item>
         <item name="android:checkMark">@null</item>
         <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Card.NonCheckable" parent="Card">
+        <item name="android:background">@drawable/background_list_item</item>
+        <item name="android:checkable">false</item>
     </style>
 
     <style name="CardWithImage" parent="Card">
         <item name="android:paddingTop">1dp</item>
         <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="CardWithImage.NonCheckable" parent="CardWithImage">
+        <item name="android:background">@drawable/background_list_item</item>
+        <item name="android:checkable">false</item>
     </style>
 
     <style name="ListOfCards">

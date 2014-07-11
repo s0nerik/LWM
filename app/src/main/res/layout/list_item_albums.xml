@@ -5,7 +5,7 @@
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    style="@style/CardWithImage"
+    style="@style/CardWithImage.NonCheckable"
     android:orientation="horizontal">
 
     <ProgressBar
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:textColor="@color/selector_songs_list_item_title"
+            android:textColor="@color/songs_list_item_title_inactive"
 
             android:singleLine="true"
             android:ellipsize="end"
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:textColor="@color/selector_songs_list_item_artist"
+            android:textColor="@color/songs_list_item_artist_inactive"
 
             fontify:font="@string/FONT_ROBOTO_THIN"
 

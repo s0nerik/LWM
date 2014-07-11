@@ -3,7 +3,8 @@
 <com.lwm.app.ui.custom_view.CheckedLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
-    style="@style/Card"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.NonCheckable"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
@@ -22,10 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:textColor="@color/selector_songs_list_item_title"
+            android:textColor="@color/songs_list_item_title_inactive"
             android:fontFamily="sans-serif"
             android:gravity="center_vertical"
-
+            tools:text="Test"
             fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
         <com.lwm.app.ui.custom_view.CheckedTextView
@@ -36,11 +37,11 @@
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:textColor="@color/selector_songs_list_item_artist"
+            android:textColor="@color/songs_list_item_artist_inactive"
             android:fontFamily="sans-serif"
             android:gravity="start"
             android:layout_height="0dp"
-
+            tools:text="Test"
             fontify:font="@string/FONT_ROBOTO_THIN" />
 
     </com.lwm.app.ui.custom_view.CheckedLinearLayout>

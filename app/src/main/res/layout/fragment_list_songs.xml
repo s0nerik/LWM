@@ -15,6 +15,7 @@
         android:saveEnabled="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        tools:listitem="@layout/list_item_songs"
         android:layout_centerHorizontal="true" />
 
     <ProgressBar
