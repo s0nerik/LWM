@@ -8,12 +8,14 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.player.PlaybackPausedEvent;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.PlayerListener;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
+import com.squareup.otto.Subscribe;
 
-public class RemotePlaybackActivity extends PlaybackActivity implements PlayerListener {
+public class RemotePlaybackActivity extends PlaybackActivity {
 
     private StreamPlayer player;
 
@@ -32,7 +34,6 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
 
         player = App.getMusicService().getStreamPlayer();
         if(savedInstanceState == null) {
-            player.registerListener(this);
             player.playFromCurrentPosition();
         }
     }
@@ -73,7 +74,7 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     @Override
     protected void onResume() {
         super.onResume();
-        player.registerListener(this);
+        App.getEventBus().register(this);
         Song song = StreamPlayer.getCurrentSong();
         if (song != null) {
             setSongInfo(StreamPlayer.getCurrentSong());
@@ -83,7 +84,18 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
     @Override
     protected void onPause() {
         super.onPause();
-        player.unregisterListener(this);
+        App.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void onPlaybackStarted(PlaybackStartedEvent event) {
+        setSongInfo(event.getSong());
+        playbackFragment.setPlayButton(true);
+    }
+
+    @Subscribe
+    public void onPlaybackPaused(PlaybackPausedEvent event) {
+        playbackFragment.setPlayButton(false);
     }
 
     @Override
@@ -95,31 +107,6 @@ public class RemotePlaybackActivity extends PlaybackActivity implements PlayerLi
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSongChanged(Song song) {
-        setSongInfo(song);
-    }
-
-    @Override
-    public void onPlaybackPaused() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                playbackFragment.setPlayButton(false);
-            }
-        });
-    }
-
-    @Override
-    public void onPlaybackStarted() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                playbackFragment.setPlayButton(true);
-            }
-        });
     }
 
     @Override

@@ -12,14 +12,12 @@ import android.view.KeyEvent;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerListener;
 import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
-public class BasicActivity extends ActionBarActivity implements PlayerListener {
+public class BasicActivity extends ActionBarActivity {
 
     protected LocalPlayer player;
 
@@ -45,7 +43,6 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
     protected void onServiceBound(){
         if(App.localPlayerActive()) {
             player = App.getLocalPlayer();
-            player.registerListener(this);
             toggleNowPlayingBar();
         }
     }
@@ -86,22 +83,6 @@ public class BasicActivity extends ActionBarActivity implements PlayerListener {
         super.onPause();
         unregisterReceiver(onBroadcast);
         unregisterReceiver(notificationIntentReceiver);
-        if(App.localPlayerActive()) {
-            App.getLocalPlayer().unregisterListener(this);
-        }
-    }
-
-    @Override
-    public void onSongChanged(Song song) {
-        showNowPlayingBar(true);
-    }
-
-    @Override
-    public void onPlaybackPaused() {}
-
-    @Override
-    public void onPlaybackStarted() {
-        showNowPlayingBar(true);
     }
 
     public void showNowPlayingBar(boolean show){

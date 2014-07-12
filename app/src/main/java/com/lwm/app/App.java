@@ -11,6 +11,8 @@ import android.util.Log;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.MusicService;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
@@ -44,6 +46,12 @@ public class App extends Application {
         return musicService;
     }
 
+    private static Bus eventBus;
+
+    public static Bus getEventBus() {
+        return eventBus;
+    }
+
     public static boolean isMusicServiceBound() {
         return musicServiceBound;
     }
@@ -62,6 +70,9 @@ public class App extends Application {
         ACRA.init(this);
 
         utils = new Utils(this);
+
+        eventBus = new Bus(ThreadEnforcer.ANY);
+//        eventBus = new Bus();
     }
 
     @Override

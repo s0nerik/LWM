@@ -1,7 +1,6 @@
 package com.lwm.app.ui.fragment;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -24,7 +23,6 @@ import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.async.SongsListLoader;
 
 import java.util.ArrayList;
@@ -32,9 +30,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class SongsListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<List<Song>>, PlayerListener {
-
-    OnSongSelectedListener mCallback;
+        LoaderManager.LoaderCallbacks<List<Song>>
+//        , PlayerListener
+{
 
     private List<Song> songs;
     private LocalPlayer player;
@@ -48,20 +46,6 @@ public class SongsListFragment extends ListFragment implements
     private final static int SMOOTH_SCROLL_MAX = 50;
 
     public SongsListFragment() {}
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            mCallback = (OnSongSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnSongSelectedListener");
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,7 +90,7 @@ public class SongsListFragment extends ListFragment implements
         if(App.localPlayerActive()) {
             player = App.getLocalPlayer();
             highlightCurrentSong();
-            player.registerListener(this);
+//            player.registerListener(this);
         }
     }
 
@@ -114,7 +98,7 @@ public class SongsListFragment extends ListFragment implements
     public void onPause() {
         super.onPause();
         if(App.localPlayerActive()) {
-            App.getLocalPlayer().unregisterListener(this);
+//            App.getLocalPlayer().unregisterListener(this);
         }
     }
 
@@ -132,7 +116,7 @@ public class SongsListFragment extends ListFragment implements
 
     public void onServiceBound(){
         player = App.getLocalPlayer();
-        player.registerListener(this);
+//        player.registerListener(this);
         initAdapter();
     }
 
@@ -181,7 +165,6 @@ public class SongsListFragment extends ListFragment implements
 
             player.play(position);
         }
-        mCallback.onSongSelected(position);
     }
 
     private void initAdapter(){
@@ -235,27 +218,11 @@ public class SongsListFragment extends ListFragment implements
             Collections.shuffle(queue);
             player = new LocalPlayer(getActivity(), queue);
             App.getMusicService().setLocalPlayer(player);
-            player.registerListener(this);
             player.play(0);
             highlightCurrentSong();
-            ((OnSongSelectedListener) getActivity()).onSongSelected(0);
         } else {
             Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG);
         }
     }
 
-    @Override
-    public void onSongChanged(Song song) {
-        highlightCurrentSong();
-    }
-
-    @Override
-    public void onPlaybackPaused() {
-
-    }
-
-    @Override
-    public void onPlaybackStarted() {
-        highlightCurrentSong();
-    }
 }

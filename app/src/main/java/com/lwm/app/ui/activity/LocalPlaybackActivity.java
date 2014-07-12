@@ -15,16 +15,18 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.player.PlaybackPausedEvent;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.squareup.otto.Subscribe;
 
 public class LocalPlaybackActivity extends PlaybackActivity implements
-        WifiAPListener, PlayerListener {
+        WifiAPListener {
 
     private LocalPlayer player;
 
@@ -88,13 +90,13 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     protected void onResume() {
         super.onResume();
         setSongInfo(player.getCurrentSong());
-        player.registerListener(this);
+        App.getEventBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        player.unregisterListener(this);
+        App.getEventBus().unregister(this);
     }
 
     @Override
@@ -171,29 +173,15 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
         setBroadcastButtonState(4000);
     }
 
-    @Override
-    public void onSongChanged(Song song) {
-        setSongInfo(song);
+    @Subscribe
+    public void onPlaybackPaused(PlaybackPausedEvent event) {
+        playbackFragment.setPlayButton(false);
     }
 
-    @Override
-    public void onPlaybackPaused() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                playbackFragment.setPlayButton(false);
-            }
-        });
-    }
-
-    @Override
-    public void onPlaybackStarted() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                playbackFragment.setPlayButton(true);
-            }
-        });
+    @Subscribe
+    public void onPlaybackStarted(PlaybackStartedEvent event) {
+        setSongInfo(event.getSong());
+        playbackFragment.setPlayButton(true);
     }
 
     private void setBroadcastButtonState(int wait){

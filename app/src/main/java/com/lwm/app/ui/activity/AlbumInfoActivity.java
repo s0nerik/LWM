@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.helper.AlbumsCursorGetter;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Album;
@@ -22,6 +23,7 @@ import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -72,12 +74,6 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
                 .placeholder(R.drawable.no_cover)
                 .centerCrop()
                 .into(header);
-//        String uri = album.getAlbumArtUri();
-//        if(uri != null) {
-//            header.setImageURI(Uri.parse(uri));
-//        }else{
-//            header.setImageResource(R.drawable.no_cover);
-//        }
 
         String artistName = album.getArtist();
         String title = String.valueOf(album.getTitle());
@@ -110,8 +106,6 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.album_info, menu);
         return true;
     }
@@ -153,8 +147,24 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
 
         LocalPlayer player = new LocalPlayer(this, playlist);
         App.getMusicService().setLocalPlayer(player);
-        player.registerListener(this);
         player.play(position-1);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App.getEventBus().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void playbackStarted(PlaybackStartedEvent event) {
+        showNowPlayingBar(true);
     }
 
 }

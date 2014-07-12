@@ -14,11 +14,12 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerListener;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.squareup.picasso.Picasso;
 
-public class NowPlayingFragment extends Fragment implements PlayerListener {
+public class NowPlayingFragment extends Fragment
+//        implements PlayerListener
+{
 
     private ImageView albumArt;
     private ImageView playPauseButton;
@@ -65,7 +66,7 @@ public class NowPlayingFragment extends Fragment implements PlayerListener {
         super.onResume();
         if(App.localPlayerActive()){
             LocalPlayer player = App.getLocalPlayer();
-            player.registerListener(this);
+//            player.registerListener(this);
             if(player.hasCurrentSong()){
                 setCurrentSongInfo();
                 setPlayButton(App.getLocalPlayer().isPlaying());
@@ -76,9 +77,9 @@ public class NowPlayingFragment extends Fragment implements PlayerListener {
     @Override
     public void onPause() {
         super.onPause();
-        if(App.localPlayerActive()){
-            App.getLocalPlayer().unregisterListener(this);
-        }
+//        if(App.localPlayerActive()){
+//            App.getLocalPlayer().unregisterListener(this);
+//        }
     }
 
     public void setCurrentSongInfo(){
@@ -107,18 +108,18 @@ public class NowPlayingFragment extends Fragment implements PlayerListener {
         playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
     }
 
-    @Override
-    public void onSongChanged(Song song) {
-        setCurrentSongInfo();
-    }
-
-    @Override
-    public void onPlaybackPaused() {
-        setPlayButton(false);
-    }
-
-    @Override
-    public void onPlaybackStarted() {
-        setPlayButton(true);
-    }
+//    @Override
+//    public void onSongChanged(Song song) {
+//        setCurrentSongInfo();
+//    }
+//
+//    @Override
+//    public void onPlaybackPaused() {
+//        setPlayButton(false);
+//    }
+//
+//    @Override
+//    public void onPlaybackStarted() {
+//        setPlayButton(true);
+//    }
 }

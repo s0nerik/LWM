@@ -11,8 +11,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
-import com.lwm.app.receiver.MediaButtonIntentReceiver;
+import com.lwm.app.event.player.PlaybackPausedEvent;
+import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.event.player.PlaylistAddedToQueueEvent;
+import com.lwm.app.event.player.QueueShuffledEvent;
+import com.lwm.app.event.player.SongAddedToQueueEvent;
 import com.lwm.app.model.Song;
+import com.lwm.app.receiver.MediaButtonIntentReceiver;
 import com.lwm.app.server.ClientsStateListener;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.server.async.ClientsManager;
@@ -28,7 +33,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Context context;
 
-    private  AudioManager audioManager;
+    private AudioManager audioManager;
     private ComponentName mediaButtonIntentReceiver;
 
     private boolean shuffle;
@@ -91,16 +96,19 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         Collections.shuffle(queue);
         indexes = new ArrayList<>();
         addIndexes(queue.size());
+        App.getEventBus().post(new QueueShuffledEvent(queue));
     }
 
     public void addToQueue(Collection<Song> songs){
         queue.addAll(songs);
         addIndexes(songs.size());
+        App.getEventBus().post(new PlaylistAddedToQueueEvent(queue));
     }
 
     public void addToQueue(Song song){
         queue.add(song);
         addIndexes(1);
+        App.getEventBus().post(new SongAddedToQueueEvent(queue, song));
     }
 
     public Song getCurrentSong(){
@@ -128,12 +136,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             prepare();
 
             active = true;
-
-            if(hasListeners()){
-                for(PlayerListener listener:playbackListeners) {
-                    listener.onSongChanged(currentSong);
-                }
-            }
 
             if(StreamServer.hasClients()) {
                 new ClientsManager(this).changeSong();
@@ -220,11 +222,9 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         if(StreamServer.hasClients()){
             new ClientsManager(this).pause();
         }
-        if(hasListeners()) {
-            for(PlayerListener listener:playbackListeners) {
-                listener.onPlaybackPaused();
-            }
-        }
+
+        App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
+
     }
 
     @Override
@@ -233,17 +233,16 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             ClientsManager manager = new ClientsManager(this);
             manager.start();
             try {
-                Thread.sleep(manager.getClientsMaxPing());
+                long maxPing = manager.getClientsMaxPing();
+                Thread.sleep(maxPing);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         super.start();
-        if(hasListeners()) {
-            for(PlayerListener listener:playbackListeners) {
-                listener.onPlaybackStarted();
-            }
-        }
+
+        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+
     }
 
     @Override

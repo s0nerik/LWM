@@ -1,6 +1,5 @@
 package com.lwm.app.ui.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -22,28 +21,12 @@ public class QueueFragment extends ListFragment {
 
     private LocalPlayer player;
 
-    OnSongSelectedListener mCallback;
-
     private ListView listView;
     private int currentPosition = -1;
 
     private final static int SMOOTH_SCROLL_MAX = 50;
 
     public QueueFragment() {}
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            mCallback = (OnSongSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnSongSelectedListener");
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +78,6 @@ public class QueueFragment extends ListFragment {
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
         if(App.localPlayerActive()){
             App.getLocalPlayer().play(position);
-            mCallback.onSongSelected(position);
         }
     }
 

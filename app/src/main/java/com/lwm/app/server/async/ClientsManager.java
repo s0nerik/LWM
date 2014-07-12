@@ -1,5 +1,6 @@
 package com.lwm.app.server.async;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.lwm.app.App;
@@ -28,22 +29,32 @@ public class ClientsManager {
             new CommandRunner(client).execute(CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
         }
 
-        new Thread(new Runnable() {
+        new AsyncTask<Void, Void, Void>() {
+
             @Override
-            public void run() {
+            protected void onPreExecute() {
+                listener.onWaitClients();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
                 int i = 0;
                 try {
-                    listener.onWaitClients();
                     while(!clients.equals(ready) && i++<5) Thread.sleep(1000);
                     if(i == 5){
                         clients.retainAll(ready);
                     }
-                    listener.onClientsReady();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                return null;
             }
-        }).start();
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                listener.onClientsReady();
+            }
+        }.execute();
     }
 
     public void pause(){

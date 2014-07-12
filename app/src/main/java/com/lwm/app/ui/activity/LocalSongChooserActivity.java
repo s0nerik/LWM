@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,18 +24,19 @@ import android.widget.ListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
-import com.lwm.app.ui.fragment.OnSongSelectedListener;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.squareup.otto.Subscribe;
 
 public class LocalSongChooserActivity extends BasicActivity implements
-        WifiAPListener, OnSongSelectedListener {
+        WifiAPListener {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
@@ -174,11 +174,22 @@ public class LocalSongChooserActivity extends BasicActivity implements
         updateActionBarTitle();
     }
 
+    @Subscribe
+    public void playbackStarted(PlaybackStartedEvent event) {
+        showNowPlayingBar(true);
+    }
+
     @Override
     protected void onResume() {
-        Log.d(App.TAG, "LocalSongChooserActivity: onResume");
         super.onResume();
         updateActionBarTitle();
+        App.getEventBus().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getEventBus().unregister(this);
     }
 
     @Override
@@ -235,11 +246,6 @@ public class LocalSongChooserActivity extends BasicActivity implements
     public void onAPStateChanged() {
         setMenuProgressIndicator(false);
         setBroadcastButtonState(4000);
-    }
-
-    @Override
-    public void onSongSelected(int position) {
-        showNowPlayingBar(true);
     }
 
     private void setBroadcastButtonState(int wait) {

@@ -5,10 +5,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 
 import com.google.gson.Gson;
+import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.helper.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
+import com.squareup.otto.Subscribe;
 
 public class ArtistInfoActivity extends BasicActivity {
 
@@ -41,4 +44,22 @@ public class ArtistInfoActivity extends BasicActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App.getEventBus().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void playbackStarted(PlaybackStartedEvent event) {
+        showNowPlayingBar(true);
+    }
+
 }

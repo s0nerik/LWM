@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
+import com.lwm.app.event.player.PlaybackPausedEvent;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
 
@@ -87,21 +89,13 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
-        if(hasListeners()) {
-            for(PlayerListener listener:playbackListeners) {
-                listener.onPlaybackPaused();
-            }
-        }
+        App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
     }
 
     @Override
     public void start() throws IllegalStateException {
         super.start();
-        if(hasListeners()) {
-            for(PlayerListener listener:playbackListeners) {
-                listener.onPlaybackStarted();
-            }
-        }
+        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
     }
 
     public void detachFromStation(){
@@ -176,11 +170,7 @@ public class StreamPlayer extends BasePlayer {
         @Override
         protected void onPostExecute(Void aVoid) {
             currentSong = song;
-            if(hasListeners()) {
-                for (PlayerListener listener : playbackListeners) {
-                    listener.onSongChanged(song);
-                }
-            }
+            App.getEventBus().post(new PlaybackStartedEvent(song, getCurrentPosition()));
         }
     }
 
