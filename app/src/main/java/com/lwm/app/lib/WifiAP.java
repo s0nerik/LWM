@@ -8,6 +8,10 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.lwm.app.App;
+import com.lwm.app.event.server.StartServerRequestedEvent;
+import com.lwm.app.event.server.StopServerRequestedEvent;
+
 import java.lang.reflect.Method;
 
 public class WifiAP {
@@ -179,6 +183,12 @@ public class WifiAP {
             super.onPostExecute(aVoid);
 
             ((WifiAPListener) context).onAPStateChanged();
+
+            if (mMode) {
+                App.getEventBus().post(new StartServerRequestedEvent());
+            } else {
+                App.getEventBus().post(new StopServerRequestedEvent());
+            }
 
         }
 

@@ -8,11 +8,14 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.lwm.app.event.server.StartServerRequestedEvent;
+import com.lwm.app.event.server.StopServerRequestedEvent;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.MusicService;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 import org.acra.ACRA;
@@ -61,8 +64,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        startService(new Intent(this, MusicServerService.class));
-
         // Bind to MusicService
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, musicServiceConnection, Context.BIND_AUTO_CREATE);
@@ -73,7 +74,7 @@ public class App extends Application {
         utils = new Utils(this);
 
         eventBus = new Bus(ThreadEnforcer.ANY);
-//        eventBus = new Bus();
+        eventBus.register(this);
     }
 
     @Override
@@ -81,6 +82,7 @@ public class App extends Application {
         Log.d(App.TAG, "App: onTerminate");
         super.onTerminate();
         unbindService(musicServiceConnection);
+        eventBus.unregister(this);
     }
 
     public static boolean localPlayerActive(){
@@ -113,5 +115,15 @@ public class App extends Application {
             musicServiceBound = false;
         }
     };
+
+    @Subscribe
+    public void startServer(StartServerRequestedEvent event) {
+        startService(new Intent(this, MusicServerService.class));
+    }
+
+    @Subscribe
+    public void stopServer(StopServerRequestedEvent event) {
+        stopService(new Intent(this, MusicServerService.class));
+    }
 
 }
