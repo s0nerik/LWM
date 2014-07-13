@@ -58,98 +58,135 @@ public class StreamServer extends NanoHTTPD {
 
         switch(method){
             case POST: // Incoming info
-                if(PING.equals(uri)){
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
-                } else if (PLAY.equals(uri)) {
-                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
-                    Log.d(App.TAG, "StreamServer: PLAY");
-                    streamPlayer.start();
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
-                } else if (PAUSE.equals(uri)) {
-                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
-                    Log.d(App.TAG, "StreamServer: PAUSE");
-                    streamPlayer.pause();
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
-                } else if (PREPARE.equals(uri)) {
-                    StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
-                    Log.d(App.TAG, "StreamServer: PREPARE");
-                    streamPlayer.prepareNewSong();
-                    return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
-                } else {
-                    switch(uri){
-                        case CLIENT_REGISTER:
-                            clients.add(new Client(clientIP));
-                            Log.d(App.TAG, "--- CLIENTS ---");
-                            for (Client client : clients) {
-                                Log.d(App.TAG, "client: " + client.getIP());
-                            }
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client added.");
+                switch (uri) {
+                    case PING:
+                        return ping();
+                    case PLAY:
+                        return play();
+                    case PAUSE:
+                        return pause();
+                    case PREPARE:
+                        return prepare();
 
-                        case CLIENT_UNREGISTER:
-                            for(Client client:clients){
-                                if(clientIP.equals(client.getIP())){
-                                    clients.remove(client);
-                                    break;
-                                }
-                            }
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+clientIP+" removed.");
+                    case CLIENT_REGISTER:
+                        return registerClient(clientIP);
+                    case CLIENT_UNREGISTER:
+                        return unregisterClient(clientIP);
+                    case CLIENT_READY:
+                        return clientReady(clientIP);
 
-                        case CLIENT_READY:
-                            for(Client client:clients){
-                                if(clientIP.equals(client.getIP())){
-                                    ready.add(client);
-                                    break;
-                                }
-                            }
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client "+clientIP+" is ready.");
-                    }
+                    default:
+                        return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "Bad request.");
                 }
-
-                return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "");
 
             case GET: // Outcoming info
                 if(App.localPlayerActive()){
-                    LocalPlayer localPlayer = App.getMusicService().getLocalPlayer();
+                    LocalPlayer localPlayer = App.getLocalPlayer();
                     Song song = localPlayer.getCurrentSong();
-                    switch(uri){
-
+                    switch (uri) {
                         case STREAM:
-                            Log.d(App.TAG, "StreamServer: STREAM");
-                            FileInputStream fis = null;
-                            try {
-
-                                fis = new FileInputStream(song.getSource());
-
-                            } catch (FileNotFoundException e) {e.printStackTrace();}
-
-                            Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
-                            res.addHeader("Connection", "Keep-alive");
-                            res.setChunkedTransfer(true);
-                            return res;
-
+                            return stream(song);
                         case CURRENT_INFO:
-                            Log.d(App.TAG, "StreamServer: CURRENT_INFO");
-                            return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
-
+                            return currentInfo(song);
                         case CURRENT_POSITION:
-                            Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
-                            return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(localPlayer.getCurrentPosition()));
-
+                            return currentPosition(song);
                         case CURRENT_ALBUMART:
-                            Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
-                            InputStream is = null;
-                            try {
-                                is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
-                            } catch (FileNotFoundException ignored) {}
-                            return new Response(Response.Status.OK, "image", is);
+                            return currentAlbumArt(song);
                     }
                 } else {
                     return new Response(Response.Status.NO_CONTENT, MIME_PLAINTEXT, "LocalPlayer isn't instantiated");
                 }
-
             default:
                 return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "Only POST and GET are supported.");
         }
+    }
+
+    private Response ping() {
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
+    }
+
+    private Response play() {
+        StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+        Log.d(App.TAG, "StreamServer: PLAY");
+        streamPlayer.start();
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
+    }
+
+    private Response pause() {
+        StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+        Log.d(App.TAG, "StreamServer: PAUSE");
+        streamPlayer.pause();
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
+    }
+
+    private Response prepare() {
+        StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+        Log.d(App.TAG, "StreamServer: PREPARE");
+        streamPlayer.prepareNewSong();
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
+    }
+
+    private Response registerClient(String clientIP) {
+        clients.add(new Client(clientIP));
+        Log.d(App.TAG, "--- CLIENTS ---");
+        for (Client client : clients) {
+            Log.d(App.TAG, "client: " + client.getIP());
+        }
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client added.");
+    }
+
+    private Response unregisterClient(String clientIP) {
+        for (Client client : clients) {
+            if (clientIP.equals(client.getIP())) {
+                clients.remove(client);
+                break;
+            }
+        }
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client " + clientIP + " removed.");
+    }
+
+    private Response clientReady(String clientIP) {
+        for (Client client : clients) {
+            if (clientIP.equals(client.getIP())) {
+                ready.add(client);
+                break;
+            }
+        }
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Client " + clientIP + " is ready.");
+    }
+
+    private Response stream(Song song) {
+        Log.d(App.TAG, "StreamServer: STREAM");
+        FileInputStream fis = null;
+        try {
+
+            fis = new FileInputStream(song.getSource());
+
+        } catch (FileNotFoundException e) {e.printStackTrace();}
+
+        Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
+        res.addHeader("Connection", "Keep-Alive");
+        res.setChunkedTransfer(true);
+        return res;
+    }
+
+    private Response currentInfo(Song song) {
+        Log.d(App.TAG, "StreamServer: CURRENT_INFO");
+        return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
+    }
+
+    private Response currentPosition(Song song) {
+        Log.d(App.TAG, "StreamServer: CURRENT_INFO");
+        return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
+    }
+
+    private Response currentAlbumArt(Song song) {
+        Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
+        InputStream is = null;
+        try {
+            is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
+        } catch (FileNotFoundException ignored) {}
+        return new Response(Response.Status.OK, "image", is);
     }
 
     public static boolean hasClients(){
@@ -172,7 +209,9 @@ public class StreamServer extends NanoHTTPD {
         return ready;
     }
 
-    public static int getNumberOfClients(){return clients.size();}
+    public static int getNumberOfClients(){
+        return clients.size();
+    }
 
     private String getSongInfoJSON(Song song){
         return new Gson().toJson(song);
