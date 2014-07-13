@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,9 +23,11 @@ import android.widget.ListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
+import com.lwm.app.event.access_point.AccessPointDisabledEvent;
+import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
-import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
@@ -35,8 +36,7 @@ import com.lwm.app.ui.fragment.SongsListFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Subscribe;
 
-public class LocalSongChooserActivity extends BasicActivity implements
-        WifiAPListener {
+public class LocalSongChooserActivity extends BasicActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
@@ -199,7 +199,8 @@ public class LocalSongChooserActivity extends BasicActivity implements
 
         broadcastButton = menu.findItem(R.id.action_broadcast);
 
-        setBroadcastButtonState(0);
+        WifiApManager manager = new WifiApManager(this);
+        setBroadcastButtonState(manager.isWifiApEnabled());
 
         return true;
     }
@@ -237,30 +238,29 @@ public class LocalSongChooserActivity extends BasicActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onChangeAPState() {
+    @Subscribe
+    public void accessPointStateChanging(AccessPointStateChangingEvent event) {
         setMenuProgressIndicator(true);
     }
 
-    @Override
-    public void onAPStateChanged() {
+    @Subscribe
+    public void accessPointEnabled(AccessPointEnabledEvent event) {
         setMenuProgressIndicator(false);
-        setBroadcastButtonState(4000);
+        setBroadcastButtonState(true);
     }
 
-    private void setBroadcastButtonState(int wait) {
-        final WifiApManager manager = new WifiApManager(this);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (manager.isWifiApEnabled()) {
-                    broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
-                } else {
-                    broadcastButton.setIcon(R.drawable.ic_action_broadcast);
-                }
-            }
-        }, wait);
+    @Subscribe
+    public void accessPointDisabled(AccessPointDisabledEvent event) {
+        setMenuProgressIndicator(false);
+        setBroadcastButtonState(false);
+    }
 
+    private void setBroadcastButtonState(boolean broadcasting) {
+        if (broadcasting) {
+            broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
+        } else {
+            broadcastButton.setIcon(R.drawable.ic_action_broadcast);
+        }
     }
 
     @Override

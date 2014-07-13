@@ -9,8 +9,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.lwm.app.App;
-import com.lwm.app.event.server.StartServerRequestedEvent;
-import com.lwm.app.event.server.StopServerRequestedEvent;
+import com.lwm.app.event.access_point.AccessPointDisabledEvent;
+import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
 
 import java.lang.reflect.Method;
 
@@ -174,7 +175,7 @@ public class WifiAP {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            ((WifiAPListener) context).onChangeAPState();
+            App.getEventBus().post(new AccessPointStateChangingEvent());
 
         }
 
@@ -182,12 +183,10 @@ public class WifiAP {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            ((WifiAPListener) context).onAPStateChanged();
-
             if (mMode) {
-                App.getEventBus().post(new StartServerRequestedEvent());
+                App.getEventBus().post(new AccessPointEnabledEvent());
             } else {
-                App.getEventBus().post(new StopServerRequestedEvent());
+                App.getEventBus().post(new AccessPointDisabledEvent());
             }
 
         }

@@ -8,8 +8,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lwm.app.event.server.StartServerRequestedEvent;
-import com.lwm.app.event.server.StopServerRequestedEvent;
+import com.lwm.app.event.access_point.AccessPointDisabledEvent;
+import com.lwm.app.event.access_point.AccessPointEnabledEvent;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.service.MusicServerService;
@@ -117,12 +117,12 @@ public class App extends Application {
     };
 
     @Subscribe
-    public void startServer(StartServerRequestedEvent event) {
+    public void startServer(AccessPointEnabledEvent event) {
         startService(new Intent(this, MusicServerService.class));
     }
 
     @Subscribe
-    public void stopServer(StopServerRequestedEvent event) {
+    public void stopServer(AccessPointDisabledEvent event) {
         stopService(new Intent(this, MusicServerService.class));
     }
 

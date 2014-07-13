@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
@@ -15,18 +14,19 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.access_point.AccessPointDisabledEvent;
+import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
-import com.lwm.app.lib.WifiAPListener;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Subscribe;
 
-public class LocalPlaybackActivity extends PlaybackActivity implements
-        WifiAPListener {
+public class LocalPlaybackActivity extends PlaybackActivity {
 
     private LocalPlayer player;
 
@@ -158,19 +158,35 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
 
         broadcastButton = menu.findItem(R.id.action_broadcast);
 
-        setBroadcastButtonState(0);
+        WifiApManager manager = new WifiApManager(this);
+        setBroadcastButtonState(manager.isWifiApEnabled());
+
         return true;
     }
 
-    @Override
-    public void onChangeAPState() {
+    @Subscribe
+    public void accessPointStateChanging(AccessPointStateChangingEvent event) {
         setMenuProgressIndicator(true);
     }
 
-    @Override
-    public void onAPStateChanged() {
+    @Subscribe
+    public void accessPointEnabled(AccessPointEnabledEvent event) {
         setMenuProgressIndicator(false);
-        setBroadcastButtonState(4000);
+        setBroadcastButtonState(true);
+    }
+
+    @Subscribe
+    public void accessPointDisabled(AccessPointDisabledEvent event) {
+        setMenuProgressIndicator(false);
+        setBroadcastButtonState(false);
+    }
+
+    private void setBroadcastButtonState(boolean broadcasting) {
+        if (broadcastButton != null) if (broadcasting) {
+            broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
+        } else {
+            broadcastButton.setIcon(R.drawable.ic_action_broadcast);
+        }
     }
 
     @Subscribe
@@ -182,21 +198,6 @@ public class LocalPlaybackActivity extends PlaybackActivity implements
     public void onPlaybackStarted(PlaybackStartedEvent event) {
         setSongInfo(event.getSong());
         playbackFragment.setPlayButton(true);
-    }
-
-    private void setBroadcastButtonState(int wait){
-        final WifiApManager manager = new WifiApManager(this);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(manager.isWifiApEnabled()){
-                    broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
-                }else{
-                    broadcastButton.setIcon(R.drawable.ic_action_broadcast);
-                }
-            }
-        }, wait);
-
     }
 
     @Override
