@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.MusicService;
 import com.squareup.otto.Bus;
@@ -88,6 +89,10 @@ public class App extends Application {
 
     public static LocalPlayer getLocalPlayer(){
         return musicServiceBound ? musicService.getLocalPlayer() : null;
+    }
+
+    public static StreamPlayer getStreamPlayer(){
+        return musicServiceBound ? musicService.getStreamPlayer() : null;
     }
 
     /** Defines callbacks for service binding, passed to bindService() */

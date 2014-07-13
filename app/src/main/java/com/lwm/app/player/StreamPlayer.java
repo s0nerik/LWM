@@ -2,23 +2,17 @@ package com.lwm.app.player;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.lwm.app.server.async.tasks.ClientRegister;
+import com.lwm.app.server.async.tasks.ClientUnregister;
+import com.lwm.app.server.async.tasks.GetPositionAndStart;
+import com.lwm.app.server.async.tasks.ReadinessReporter;
 
 import java.io.IOException;
 
@@ -26,9 +20,9 @@ public class StreamPlayer extends BasePlayer {
 
     private Context context;
     private static boolean active = false;
-    private static Song currentSong;
+    private Song currentSong;
 
-    private static final Uri STREAM_URI = Uri.parse(StreamServer.SERVER_ADDRESS+StreamServer.STREAM);
+    public static final String STREAM_PATH = StreamServer.SERVER_ADDRESS+StreamServer.STREAM;
 
     public StreamPlayer(Context context){
         this.context = context;
@@ -37,7 +31,7 @@ public class StreamPlayer extends BasePlayer {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 Log.d("LWM", "StreamPlayer: onPrepared");
-                new ReadinessReporter().execute();
+                new ReadinessReporter(StreamPlayer.this).execute();
             }
         });
     }
@@ -49,7 +43,7 @@ public class StreamPlayer extends BasePlayer {
     public void prepareNewSong(){
         reset();
         try {
-            setDataSource(context, STREAM_URI);
+            setDataSource(STREAM_PATH);
             prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +52,7 @@ public class StreamPlayer extends BasePlayer {
 
     public void playFromCurrentPosition(){
 
-        new GetPositionAndStart().execute();
+        new GetPositionAndStart(this).execute();
 
         active = true;
 
@@ -106,133 +100,11 @@ public class StreamPlayer extends BasePlayer {
         return active;
     }
 
-    public static Song getCurrentSong() {
+    public Song getCurrentSong() {
         return currentSong;
     }
 
-    private class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+StreamServer.CURRENT_POSITION);
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        int pos;
-        long correctionStart, correctionEnd, correction;
-
-        @Override
-        protected Void doInBackground(Void... aVoid){
-
-            try {
-                reset();
-                setDataSource(context, STREAM_URI);
-                prepare();
-
-                correctionStart = System.currentTimeMillis();
-                pos = Integer.parseInt(httpclient.execute(httpGetPosition, responseHandler));
-                correctionEnd = System.currentTimeMillis();
-                correction = correctionEnd - correctionStart;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            seekTo(pos+(int)correction);
-            start();
-            new SongInfoGetter().execute();
-        }
+    public void setCurrentSong(Song currentSong) {
+        this.currentSong = currentSong;
     }
-
-    private class SongInfoGetter extends AsyncTask<Void, Void, Void> {
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+StreamServer.CURRENT_INFO);
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        Song song;
-
-        @Override
-        protected Void doInBackground(Void... aVoid){
-
-            try {
-                String response = httpclient.execute(httpGetPosition, responseHandler);
-
-                //Debug
-                Log.d(App.TAG, "response: " + response);
-
-                song = new Gson().fromJson(response, Song.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            currentSong = song;
-            App.getEventBus().post(new PlaybackStartedEvent(song, getCurrentPosition()));
-        }
-    }
-
-    private class ClientRegister extends AsyncTask<Void, Void, Void> {
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostRegister = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_REGISTER);
-
-        @Override
-        protected Void doInBackground(Void... aVoid){
-
-            try {
-                httpclient.execute(httpPostRegister);
-            } catch (IOException e) {
-                Log.e(App.TAG, "Error: ClientRegister");
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-    }
-
-    private class ClientUnregister extends AsyncTask<Void, Void, Void> {
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostUnregister = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_UNREGISTER);
-
-        @Override
-        protected Void doInBackground(Void... aVoid){
-
-            try {
-                httpclient.execute(httpPostUnregister);
-            } catch (IOException e) {
-                Log.e(App.TAG, "Error: ClientUnregister");
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-    }
-
-    private class ReadinessReporter extends AsyncTask<Void, Void, Void> {
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostReady = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_READY);
-
-        @Override
-        protected Void doInBackground(Void... aVoid){
-
-            try {
-                httpclient.execute(httpPostReady);
-            } catch (IOException e) {
-                Log.e(App.TAG, "Error: ReadinessReporter");
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            new SongInfoGetter().execute();
-        }
-    }
-
 }

@@ -75,9 +75,9 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     protected void onResume() {
         super.onResume();
         App.getEventBus().register(this);
-        Song song = StreamPlayer.getCurrentSong();
+        Song song = App.getStreamPlayer().getCurrentSong();
         if (song != null) {
-            setSongInfo(StreamPlayer.getCurrentSong());
+            setSongInfo(song);
         }
     }
 

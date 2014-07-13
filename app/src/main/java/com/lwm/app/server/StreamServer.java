@@ -2,6 +2,7 @@ package com.lwm.app.server;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -89,7 +90,7 @@ public class StreamServer extends NanoHTTPD {
                         case CURRENT_INFO:
                             return currentInfo(song);
                         case CURRENT_POSITION:
-                            return currentPosition(song);
+                            return currentPosition(localPlayer);
                         case CURRENT_ALBUMART:
                             return currentAlbumArt(song);
                     }
@@ -175,9 +176,9 @@ public class StreamServer extends NanoHTTPD {
         return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
     }
 
-    private Response currentPosition(Song song) {
-        Log.d(App.TAG, "StreamServer: CURRENT_INFO");
-        return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
+    private Response currentPosition(MediaPlayer player) {
+        Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(player.getCurrentPosition()));
     }
 
     private Response currentAlbumArt(Song song) {
