@@ -1,1 +1,7 @@
-include ':app', ':libs:UnifiedPreference', ':libs:StackBlur', ':libs:Fontify', ':libs:androidsvg', ':libs:FadingActionBar'
+include ':app'
+include ':libs:UnifiedPreference'
+include ':libs:StackBlur'
+include ':libs:Fontify'
+include ':libs:androidsvg'
+include ':libs:FadingActionBar'
+include ':libs:ExoPlayer'

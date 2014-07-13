@@ -59,6 +59,7 @@ dependencies {
     compile project(':libs:StackBlur')
     compile project(':libs:Fontify')
     compile project(':libs:FadingActionBar')
+    compile project(':libs:ExoPlayer')
     compile files('../libs/acra-4.5.0.jar')
     compile 'com.nineoldandroids:library:+'
     compile 'com.squareup.picasso:picasso:+'
