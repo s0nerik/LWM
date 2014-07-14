@@ -11,7 +11,7 @@
     <View
         android:background="@drawable/horizontal_shadow"
         android:layout_width="match_parent"
-        android:layout_height="5dp" />
+        android:layout_height="2dp" />
     
     <LinearLayout
         android:orientation="horizontal"
