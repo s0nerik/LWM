@@ -16,16 +16,18 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
             KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
             assert keyEvent != null : "keyEvent == null";
             LocalPlayer player = App.getLocalPlayer();
-            switch (keyEvent.getKeyCode()) {
-                case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    player.nextSong();
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    player.prevSong();
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                    player.togglePause();
-                    break;
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                switch (keyEvent.getKeyCode()) {
+                    case KeyEvent.KEYCODE_MEDIA_NEXT:
+                        player.nextSong();
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                        player.prevSong();
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                        player.togglePause();
+                        break;
+                }
             }
         }
     }
