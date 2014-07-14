@@ -37,9 +37,15 @@ public class PendingIntentReceiver extends BroadcastReceiver {
                             new NowPlayingNotification(context).show();
                             break;
                     }
+                } else {
+                    NowPlayingNotification.hide();
                 }
+            } else {
+                NowPlayingNotification.hide();
             }
 
+        } else {
+            NowPlayingNotification.hide();
         }
     }
 

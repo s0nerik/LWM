@@ -1,7 +1,6 @@
 package com.lwm.app.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -128,8 +127,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                finish();
-                startActivity(new Intent(this, LocalSongChooserActivity.class));
+                onBackPressed();
                 return true;
             case R.id.action_broadcast:
                 WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);

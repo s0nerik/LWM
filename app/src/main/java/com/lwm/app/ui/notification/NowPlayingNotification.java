@@ -10,7 +10,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.lwm.app.App;
@@ -99,8 +101,14 @@ public class NowPlayingNotification {
         }
 
         Intent intent = new Intent(context, LocalPlaybackActivity.class);
-        intent.putExtra("from_notification", true);
-        builder.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(LocalPlaybackActivity.class);
+        stackBuilder.addNextIntent(intent);
+
+        Bundle extras = new Bundle();
+        extras.putBoolean("from_notification", true);
+        builder.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT, extras));
+//        builder.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
 
         Notification notification = builder.build();
 
