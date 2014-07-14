@@ -7,6 +7,8 @@
     </style>
 
     <style name="StartActivity" parent="AppTheme">
+        <item name="actionBarStyle">@style/Widget.ActionBar.Custom</item>
+        <item name="android:actionBarStyle">@style/Widget.ActionBar.Custom</item>
         <item name="android:windowBackground">@drawable/background_main_activity</item>
     </style>
 
@@ -20,6 +22,12 @@
     <style name="Widget" />
 
     <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.Base.ActionBar" />
+
+    <style name="Widget.ActionBar.Custom" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="displayOptions">showCustom</item>
+        <item name="android:displayOptions">showCustom</item>
+        <item name="android:icon">@android:color/transparent</item>
+    </style>
 
     <style name="Widget.ActionBar.Transparent" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@android:color/transparent</item>

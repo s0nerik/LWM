@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import com.lwm.app.R;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -54,11 +53,11 @@ public class MainActivity extends ActionBarActivity {
     private View settingsBtn;
     private View settingsBtnShadow;
     private View settingsBtnText;
+    private AnimatorSet animatorSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.nothing, R.anim.nothing);
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("always_local", false)){
             startActivity(new Intent(this, LocalSongChooserActivity.class));
         }
@@ -107,6 +106,14 @@ public class MainActivity extends ActionBarActivity {
                 ObjectAnimator.ofFloat(settingsBtnText, "alpha", 0f, 0.25f, 1f)
         );
 
+        // Actually animate it
+        animatorSet = new AnimatorSet();
+        animatorSet.playTogether(
+                localBtnAnimation.setDuration(200),
+                remoteBtnAnimation.setDuration(400),
+                settingsBtnAnimation.setDuration(800)
+        );
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -121,14 +128,7 @@ public class MainActivity extends ActionBarActivity {
                 settingsBtnShadow.setVisibility(View.VISIBLE);
                 settingsBtnText.setVisibility(View.VISIBLE);
 
-                // Actually animate it
-                AnimatorSet set = new AnimatorSet();
-                set.playTogether(
-                        localBtnAnimation.setDuration(200),
-                        remoteBtnAnimation.setDuration(400),
-                        settingsBtnAnimation.setDuration(800)
-                );
-                set.start();
+                animatorSet.start();
             }
         }, 500);
 
@@ -148,13 +148,6 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             default:
                 return super.onKeyDown(keyCode, event);
-        }
-    }
-
-    private class ReverseInterpolator implements Interpolator {
-        @Override
-        public float getInterpolation(float paramFloat) {
-            return Math.abs(paramFloat -1f);
         }
     }
 
