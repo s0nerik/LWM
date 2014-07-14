@@ -1,9 +1,11 @@
 package com.lwm.app.ui.activity;
 
 import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -64,6 +66,14 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(notificationBroadcastReceiver);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
+            }
+        }, 1000);
+
     }
 
     @Override

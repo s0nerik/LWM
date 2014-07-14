@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -83,6 +84,14 @@ public class BasicActivity extends ActionBarActivity {
         super.onPause();
         unregisterReceiver(onBroadcast);
         unregisterReceiver(notificationIntentReceiver);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
+            }
+        }, 1000);
+
     }
 
     public void showNowPlayingBar(boolean show){

@@ -33,7 +33,6 @@ import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
-import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Subscribe;
 
 public class LocalSongChooserActivity extends BasicActivity {
@@ -266,9 +265,6 @@ public class LocalSongChooserActivity extends BasicActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (App.localPlayerActive() && App.getLocalPlayer().isPlaying()) {
-            new NowPlayingNotification(this).show();
-        }
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 }
