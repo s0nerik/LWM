@@ -3,10 +3,12 @@ package com.lwm.app.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.helper.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
@@ -26,8 +28,10 @@ public class ArtistInfoActivity extends BasicActivity {
         Artist artist = new ArtistsCursorGetter(this).getArtistById(artistId);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(artist.getName());
+        actionBar.setTitle(Utils.getArtistName(artist.getName()));
         actionBar.setSubtitle("ALBUMS: "+artist.getNumberOfAlbums());
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setIcon(android.R.color.transparent);
 
         Fragment albumsListFragment = new AlbumsListFragment();
         Bundle args = new Bundle();
@@ -37,6 +41,18 @@ public class ArtistInfoActivity extends BasicActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, albumsListFragment)
                 .commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

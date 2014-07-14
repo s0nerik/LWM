@@ -91,8 +91,9 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
         songsTV.setText(String.valueOf(album.getSongsCount()));
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setIcon(android.R.color.transparent);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
 
         actionBar.setCustomView(R.layout.actionbar_album);
 
