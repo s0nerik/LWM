@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.lwm.app.App;
+import com.lwm.app.event.notification.ShowNowPlayingNotificationEvent;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 public class NotificationIntentReceiver extends BroadcastReceiver {
@@ -11,7 +13,7 @@ public class NotificationIntentReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(NowPlayingNotification.ACTION_SHOW.equals(intent.getAction())){
-            new NowPlayingNotification(context).show();
+            App.getEventBus().post(new ShowNowPlayingNotificationEvent());
         }
     }
 

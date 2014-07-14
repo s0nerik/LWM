@@ -147,8 +147,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 //                new NowPlayingNotification(context).show();
 //            }
 
-            context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -225,6 +223,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
         App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
 
+        context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
+
     }
 
     @Override
@@ -242,6 +242,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         super.start();
 
         App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+
+        context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
 
     }
 

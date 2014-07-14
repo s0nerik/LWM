@@ -5,8 +5,13 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.lwm.app.App;
+import com.lwm.app.event.notification.HideNowPlayingNotificationEvent;
+import com.lwm.app.event.notification.ShowNowPlayingNotificationEvent;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.squareup.otto.Subscribe;
 
 public class MusicService extends Service {
 
@@ -14,6 +19,18 @@ public class MusicService extends Service {
     private StreamPlayer streamPlayer;
 
     private final MusicServiceBinder binder = new MusicServiceBinder();
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        App.getEventBus().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        App.getEventBus().unregister(this);
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -71,6 +88,16 @@ public class MusicService extends Service {
         public MusicService getService() {
             return MusicService.this;
         }
+    }
+
+    @Subscribe
+    public void showNowPlayingNotification (ShowNowPlayingNotificationEvent event) {
+        new NowPlayingNotification(this).show();
+    }
+
+    @Subscribe
+    public void hideNowPlayingNotification (HideNowPlayingNotificationEvent event) {
+        NowPlayingNotification.hide();
     }
 
 }

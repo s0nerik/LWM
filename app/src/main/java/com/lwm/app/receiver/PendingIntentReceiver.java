@@ -26,15 +26,12 @@ public class PendingIntentReceiver extends BroadcastReceiver {
                             break;
                         case NowPlayingNotification.ACTION_PREV:
                             player.prevSong();
-                            new NowPlayingNotification(context).show();
                             break;
                         case NowPlayingNotification.ACTION_PLAY_PAUSE:
                             player.togglePause();
-                            new NowPlayingNotification(context).show();
                             break;
                         case NowPlayingNotification.ACTION_NEXT:
                             player.nextSong();
-                            new NowPlayingNotification(context).show();
                             break;
                     }
                 } else {
