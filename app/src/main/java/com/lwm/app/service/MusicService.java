@@ -1,7 +1,10 @@
 package com.lwm.app.service;
 
 import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -10,6 +13,7 @@ import com.lwm.app.event.notification.HideNowPlayingNotificationEvent;
 import com.lwm.app.event.notification.ShowNowPlayingNotificationEvent;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.receiver.MediaButtonIntentReceiver;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Subscribe;
 
@@ -18,18 +22,26 @@ public class MusicService extends Service {
     private LocalPlayer localPlayer;
     private StreamPlayer streamPlayer;
 
+    private AudioManager mAudioManager;
+    private ComponentName mRemoteControlResponder;
+
     private final MusicServiceBinder binder = new MusicServiceBinder();
 
     @Override
     public void onCreate() {
         super.onCreate();
         App.getEventBus().register(this);
+        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mRemoteControlResponder = new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName());
+        mAudioManager.registerMediaButtonEventReceiver(mRemoteControlResponder);
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         App.getEventBus().unregister(this);
+        mAudioManager.unregisterMediaButtonEventReceiver(
+                mRemoteControlResponder);
+        super.onDestroy();
     }
 
     @Override

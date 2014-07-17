@@ -179,7 +179,7 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         protected Void doInBackground(Uri... uri) {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
-                assert bitmap != null : "bitmap == null";
+//                assert bitmap != null : "bitmap == null";
                 if(bitmap != null) {
                     bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
                 }else{

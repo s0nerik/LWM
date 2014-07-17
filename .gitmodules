@@ -1,0 +1,3 @@
+[submodule "libs/android-stackblur"]
+	path = libs/android-stackblur
+	url = https://github.com/kikoso/android-stackblur.git
