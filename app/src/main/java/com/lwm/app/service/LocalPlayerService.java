@@ -130,8 +130,8 @@ public class LocalPlayerService extends Service {
         player.onWaitClients();
     }
 
-    public void setUpdateNotification(boolean updateNotification) {
-        player.setUpdateNotification(updateNotification);
+    public int getQueueSize() {
+        return player.getQueueSize();
     }
 
     public String getCurrentDurationInMinutes() {

@@ -50,9 +50,9 @@ public class NowPlayingNotification {
         if(notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_NOW_PLAYING_ID);
         }
-        if(App.localPlayerActive()){
-            App.getLocalPlayerService().setUpdateNotification(false);
-        }
+//        if(App.localPlayerActive()){
+//            App.getLocalPlayerService().setUpdateNotification(false);
+//        }
     }
 
     public static Notification create(Context context){
