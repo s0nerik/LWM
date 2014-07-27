@@ -13,14 +13,14 @@ import android.view.KeyEvent;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
+import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 public class BasicActivity extends ActionBarActivity {
 
-    protected LocalPlayer player;
+    protected LocalPlayerService player;
 
     private BroadcastReceiver notificationIntentReceiver = new AbortingNotificationIntentReceiver();
 
@@ -41,26 +41,8 @@ public class BasicActivity extends ActionBarActivity {
         }
     }
 
-    protected void onServiceBound(){
-        if(App.localPlayerActive()) {
-            player = App.getLocalPlayer();
-            toggleNowPlayingBar();
-        }
-    }
-
-    private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent i) {
-            switch (i.getAction()) {
-                case App.SERVICE_BOUND:
-                    onServiceBound();
-                    break;
-            }
-        }
-    };
-
     private void toggleNowPlayingBar(){
-        if (App.localPlayerActive() && App.getLocalPlayer().hasCurrentSong()) {
+        if (App.localPlayerActive() && App.getLocalPlayerService().hasCurrentSong()) {
             showNowPlayingBar(true);
         } else {
             showNowPlayingBar(false);
@@ -68,10 +50,17 @@ public class BasicActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (App.localPlayerActive()) {
+            player = App.getLocalPlayerService();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
-        registerReceiver(onBroadcast, new IntentFilter(App.SERVICE_BOUND));
         registerReceiver(notificationIntentReceiver, new IntentFilter(NowPlayingNotification.ACTION_SHOW));
 
         toggleNowPlayingBar();
@@ -82,7 +71,6 @@ public class BasicActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(onBroadcast);
         unregisterReceiver(notificationIntentReceiver);
 
         new Handler().postDelayed(new Runnable() {

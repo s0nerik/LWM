@@ -18,11 +18,13 @@ public class ArtistsAdapter extends ArrayAdapter<Artist> {
 
     private final Context context;
     private List<Artist> artistsList;
+    private Utils utils;
 
     public ArtistsAdapter(final Context context, ArtistsList artists) {
         super(context, R.layout.list_item_songs, artists.getArtists());
         this.context = context;
         artistsList = artists.getArtists();
+        utils = new Utils(context);
     }
 
     static class ViewHolder {
@@ -50,7 +52,7 @@ public class ArtistsAdapter extends ArrayAdapter<Artist> {
         }
 
         Artist artist = artistsList.get(position);
-        holder.artist.setText(Utils.getArtistName(artist.getName()));
+        holder.artist.setText(utils.getArtistName(artist.getName()));
         holder.albums.setText("Albums: "+artist.getNumberOfAlbums());
 
         return rowView;

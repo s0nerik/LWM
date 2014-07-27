@@ -26,7 +26,11 @@ import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.event.access_point.AccessPointDisabledEvent;
 import com.lwm.app.event.access_point.AccessPointEnabledEvent;
 import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
+import com.lwm.app.event.player.StartForegroundLocalPlayerEvent;
+import com.lwm.app.event.player.binding.BindLocalPlayerServiceEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.event.player.binding.LocalPlayerServiceBoundEvent;
+import com.lwm.app.event.player.binding.UnbindLocalPlayerServiceEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
@@ -51,18 +55,12 @@ public class LocalSongChooserActivity extends BasicActivity {
     private SharedPreferences sharedPreferences;
 
     @Override
-    protected void onServiceBound() {
-        super.onServiceBound();
-        if(activeFragment == 0){
-            ((SongsListFragment) fragmentManager.findFragmentById(R.id.container)).onServiceBound();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getPreferences(MODE_PRIVATE);
         setContentView(R.layout.activity_local_song_chooser);
+
+        App.getEventBus().post(new BindLocalPlayerServiceEvent());
     }
 
     @Override
@@ -199,7 +197,12 @@ public class LocalSongChooserActivity extends BasicActivity {
         broadcastButton = menu.findItem(R.id.action_broadcast);
 
         WifiApManager manager = new WifiApManager(this);
-        setBroadcastButtonState(manager.isWifiApEnabled());
+        if (manager.isWifiApEnabled()) {
+            setBroadcastButtonState(true);
+            App.getEventBus().post(new AccessPointEnabledEvent());
+        } else {
+            setBroadcastButtonState(false);
+        }
 
         return true;
     }
@@ -254,6 +257,11 @@ public class LocalSongChooserActivity extends BasicActivity {
         setBroadcastButtonState(false);
     }
 
+    @Subscribe
+    public void onLocalPlayerServiceBound(LocalPlayerServiceBoundEvent event) {
+        player = event.getLocalPlayerService();
+    }
+
     private void setBroadcastButtonState(boolean broadcasting) {
         if (broadcasting) {
             broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
@@ -264,6 +272,11 @@ public class LocalSongChooserActivity extends BasicActivity {
 
     @Override
     public void onBackPressed() {
+        if (!player.isPlaying()) {
+            App.getEventBus().post(new UnbindLocalPlayerServiceEvent());
+        } else {
+            App.getEventBus().post(new StartForegroundLocalPlayerEvent());
+        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }

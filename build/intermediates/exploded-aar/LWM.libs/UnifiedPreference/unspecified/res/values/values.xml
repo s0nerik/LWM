@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/home/sonerik/Projects/LWM/libs/UnifiedPreference/res/values/attrs.xml -->
+    <eat-comment />
+
+    <declare-styleable name="PreferenceHeader">
+
+        <!-- Identifier value for the header. -->
+        <attr name="up_id" format="integer" />
+        <!-- The title of the item that is shown to the user. -->
+        <attr name="up_title" format="string" />
+        <!-- The summary for the item. -->
+        <attr name="up_summary" format="string" />
+        <!-- The title for the bread crumb of this item. -->
+        <attr name="up_breadCrumbTitle" format="string" />
+        <!-- The short title for the bread crumb of this item. -->
+        <attr name="up_breadCrumbShortTitle" format="string" />
+        <!-- An icon for the item. -->
+        <attr name="up_icon" format="reference" />
+        <!-- The fragment that is displayed when the user selects this item. -->
+        <attr name="up_fragment" format="string" />
+        <!-- The resource with the PreferenceScreen to inflate. -->
+        <attr name="up_preferenceRes" format="reference" />
+    </declare-styleable>
+    <!-- From: file:/home/sonerik/Projects/LWM/libs/UnifiedPreference/res/values/__internal_strings.xml -->
+    <eat-comment />
+
+    <string name="ringtone_silent">Silent</string>
+
+</resources>

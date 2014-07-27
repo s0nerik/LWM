@@ -1,6 +1,5 @@
 package com.lwm.app.ui.custom_view;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -11,6 +10,7 @@ import android.util.TypedValue;
 import android.widget.ImageView;
 
 import com.lwm.app.R;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 
 public class CircleButton extends ImageView {

@@ -2,9 +2,7 @@ package com.lwm.app.player;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,11 +28,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Context context;
 
-//    private AudioManager audioManager;
-//    private ComponentName mediaButtonIntentReceiver;
-
-    private boolean shuffle;
-    private boolean repeat;
+    private boolean shuffle = false;
+    private boolean repeat = false;
 
     private boolean updateNotification;
 
@@ -63,48 +58,32 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public LocalPlayer(Context context){
         this.context = context;
-//        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-//        mediaButtonIntentReceiver = new ComponentName(context.getPackageName(),
-//                MediaButtonIntentReceiver.class.getName());
 
         setOnCompletionListener(onCompletionListener);
-        setShuffle(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("shuffle", false));
-    }
-
-    public LocalPlayer(Context context, List<Song> playlist){
-        this.context = context;
-//        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-//        mediaButtonIntentReceiver = new ComponentName(context.getPackageName(),
-//                MediaButtonIntentReceiver.class.getName());
-
-        queue = playlist;
-        addIndexes(playlist.size());
-        setOnCompletionListener(onCompletionListener);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        setShuffle(sharedPreferences.getBoolean("shuffle", false));
-        setRepeat(sharedPreferences.getBoolean("repeat", false));
     }
 
     public List<Song> getQueue(){
         return queue;
     }
 
+    public void setQueue(List<Song> queue){
+        this.queue = queue;
+        shuffle = false;
+    }
+
     public void shuffleQueue(){
         Collections.shuffle(queue);
-        indexes = new ArrayList<>();
-        addIndexes(queue.size());
         App.getEventBus().post(new QueueShuffledEvent(queue));
+        shuffle = true;
     }
 
     public void addToQueue(Collection<Song> songs){
         queue.addAll(songs);
-        addIndexes(songs.size());
         App.getEventBus().post(new PlaylistAddedToQueueEvent(queue));
     }
 
     public void addToQueue(Song song){
         queue.add(song);
-        addIndexes(1);
         App.getEventBus().post(new SongAddedToQueueEvent(queue, song));
     }
 
@@ -153,33 +132,17 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public void nextSong() {
         Log.d(App.TAG, "LocalPlayer: nextSong");
 
-        if(currentIndex+1 < indexes.size()) {
-            currentQueuePosition = indexes.get(++currentIndex);
+        if(currentQueuePosition+1 < indexes.size()) {
+            play(++currentQueuePosition);
         }else{
             Toast t = Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT);
             t.show();
         }
 
-        play(currentQueuePosition);
-
     }
 
     public boolean isShuffle() {
         return shuffle;
-    }
-
-    public void setShuffle(boolean flag) {
-        shuffle = flag;
-        if(shuffle){
-            Collections.shuffle(indexes);
-            currentIndex = 0;
-        }else if(!indexes.isEmpty()){
-            currentIndex = indexes.get(currentIndex);
-            Collections.sort(indexes);
-        }else{
-            currentIndex = 0;
-        }
-
     }
 
     public boolean isRepeat() {
@@ -244,13 +207,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             pause();
         }else{
             start();
-        }
-    }
-
-    private void addIndexes(int n){
-        int x = indexes.size();
-        for(int i=x;i<x+n;i++){
-            indexes.add(i);
         }
     }
 

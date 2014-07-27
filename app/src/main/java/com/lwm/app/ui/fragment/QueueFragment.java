@@ -15,11 +15,11 @@ import android.widget.ListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
-import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.service.LocalPlayerService;
 
 public class QueueFragment extends ListFragment {
 
-    private LocalPlayer player;
+    private LocalPlayerService player;
 
     private ListView listView;
     private int currentPosition = -1;
@@ -43,8 +43,8 @@ public class QueueFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
-        if (App.localPlayerActive() && !App.getLocalPlayer().getQueue().isEmpty()) {
-            setListAdapter(new SongsListAdapter(getActivity(), App.getLocalPlayer().getQueue()));
+        if (App.localPlayerActive() && !App.getLocalPlayerService().getQueue().isEmpty()) {
+            setListAdapter(new SongsListAdapter(getActivity(), App.getLocalPlayerService().getQueue()));
         } else {
 //            view.findViewById(R.id.empty_queue_layout).setVisibility(View.VISIBLE);
         }
@@ -55,7 +55,7 @@ public class QueueFragment extends ListFragment {
         super.onResume();
 
         if(App.localPlayerActive()){
-            int pos = App.getLocalPlayer().getCurrentQueuePosition();
+            int pos = App.getLocalPlayerService().getCurrentQueuePosition();
             setSelection(pos);
         }
     }
@@ -77,7 +77,7 @@ public class QueueFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
         if(App.localPlayerActive()){
-            App.getLocalPlayer().play(position);
+            App.getLocalPlayerService().play(position);
         }
     }
 
@@ -92,7 +92,7 @@ public class QueueFragment extends ListFragment {
         switch (item.getItemId()){
             case R.id.action_shuffle:
                 if(App.localPlayerActive()) {
-                    player = App.getLocalPlayer();
+                    player = App.getLocalPlayerService();
                     player.shuffleQueue();
                     player.play(0);
                     ((BaseAdapter) getListAdapter()).notifyDataSetChanged();

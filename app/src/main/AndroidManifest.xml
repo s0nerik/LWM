@@ -39,7 +39,10 @@
         </receiver>
 
         <service
-            android:name="com.lwm.app.service.MusicService" />
+            android:name="com.lwm.app.service.LocalPlayerService" />
+
+        <service
+            android:name="com.lwm.app.service.StreamPlayerService" />
 
         <service
             android:name="com.lwm.app.service.MusicServerService" />

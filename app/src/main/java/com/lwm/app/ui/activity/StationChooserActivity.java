@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.player.binding.BindStreamPlayerServiceEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
 
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class StationChooserActivity extends ActionBarActivity {
 
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
 
     private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
         @Override
@@ -61,6 +62,7 @@ public class StationChooserActivity extends ActionBarActivity {
         registerReceiver(onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
         toggleNoWifiFrame();
+        App.getEventBus().register(this);
     }
 
     private void toggleNoWifiFrame(){
@@ -84,12 +86,14 @@ public class StationChooserActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(onBroadcast);
+        App.getEventBus().unregister(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_chooser);
+        App.getEventBus().post(new BindStreamPlayerServiceEvent());
     }
 
     @Override

@@ -20,22 +20,22 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
+import com.lwm.app.event.player.binding.LocalPlayerServiceBoundEvent;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.async.SongsListLoader;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class SongsListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<List<Song>>
-//        , PlayerListener
-{
+        LoaderManager.LoaderCallbacks<List<Song>> {
 
     private List<Song> songs;
-    private LocalPlayer player;
+    private LocalPlayerService player;
     private ListView listView;
     private int currentPosition = -1;
 
@@ -78,8 +78,8 @@ public class SongsListFragment extends ListFragment implements
             listView.setFastScrollEnabled(true);
         }
 
-        if(App.isMusicServiceBound()) {
-            player = App.getLocalPlayer();
+        if(App.isLocalPlayerServiceBound()) {
+            player = App.getLocalPlayerService();
             initAdapter();
         }
     }
@@ -87,8 +87,9 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        App.getEventBus().register(this);
         if(App.localPlayerActive()) {
-            player = App.getLocalPlayer();
+            player = App.getLocalPlayerService();
             highlightCurrentSong();
 //            player.registerListener(this);
         }
@@ -97,9 +98,7 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        if(App.localPlayerActive()) {
-//            App.getLocalPlayer().unregisterListener(this);
-        }
+        App.getEventBus().unregister(this);
     }
 
     @Override
@@ -114,15 +113,15 @@ public class SongsListFragment extends ListFragment implements
         setHasOptionsMenu(true);
     }
 
-    public void onServiceBound(){
-        player = App.getLocalPlayer();
-//        player.registerListener(this);
+    @Subscribe
+    public void onServiceBound(LocalPlayerServiceBoundEvent event){
+        player = event.getLocalPlayerService();
         initAdapter();
     }
 
     public void highlightCurrentSong(){
         if(App.localPlayerActive()) {
-            player = App.getLocalPlayer();
+            player = App.getLocalPlayerService();
             if (player.hasCurrentSong()) {
                 Song song = player.getCurrentSong();
                 int pos = songs.indexOf(song);
@@ -155,11 +154,10 @@ public class SongsListFragment extends ListFragment implements
     public void onListItemClick(ListView l, View v, int position, long id) {
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
 
-        if (App.isMusicServiceBound()) {
+        if (App.isLocalPlayerServiceBound()) {
 
             if (isFirstClick) {
-                player = new LocalPlayer(getActivity(), songs);
-                App.getMusicService().setLocalPlayer(player);
+                player.setQueue(songs);
                 isFirstClick = false;
             }
 
@@ -216,12 +214,11 @@ public class SongsListFragment extends ListFragment implements
         if (songs != null && !songs.isEmpty()) {
             List<Song> queue = new ArrayList<>(songs);
             Collections.shuffle(queue);
-            player = new LocalPlayer(getActivity(), queue);
-            App.getMusicService().setLocalPlayer(player);
+            player.setQueue(queue);
             player.play(0);
             highlightCurrentSong();
         } else {
-            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG);
+            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show();
         }
     }
 

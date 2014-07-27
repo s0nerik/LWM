@@ -21,13 +21,12 @@ import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.lwm.app.service.LocalPlayerService;
 import com.squareup.otto.Subscribe;
 
 public class LocalPlaybackActivity extends PlaybackActivity {
 
-    private LocalPlayer player;
+    private LocalPlayerService player;
 
     private boolean fromNotification = false;
 
@@ -42,7 +41,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         if(App.localPlayerActive()) {
-            player = App.getLocalPlayer();
+            player = App.getLocalPlayerService();
             playbackFragment.setPlayButton(player.isPlaying());
             playbackFragment.setShuffleButton(player.isShuffle());
             playbackFragment.setRepeatButton(player.isRepeat());
@@ -67,7 +66,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
                 break;
 
             case R.id.fragment_playback_shuffle_button:
-                player.setShuffle(!player.isShuffle());
+                player.shuffleQueue();
                 playbackFragment.setShuffleButton(player.isShuffle());
 
                 editor.putBoolean("shuffle", player.isShuffle());
@@ -107,7 +106,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         title.setText(song.getTitle());
         subtitle.setText(song.getArtist());
 
-        initSeekBarUpdater(player);
+        initSeekBarUpdater(player.getPlayer());
 
         // Now playing fragment changes
         playbackFragment.setDuration(song.getDurationString());
@@ -200,12 +199,12 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Override
     public void onBackPressed() {
-        if (fromNotification && App.localPlayerActive() && App.getLocalPlayer().isPlaying()) {
-            new NowPlayingNotification(this).show();
-            finish();
-        } else {
+//        if (fromNotification && App.localPlayerActive() && App.getLocalPlayerService().isPlaying()) {
+//            new NowPlayingNotification(this).show();
+//            finish();
+//        } else {
             super.onBackPressed();
-        }
+//        }
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 }

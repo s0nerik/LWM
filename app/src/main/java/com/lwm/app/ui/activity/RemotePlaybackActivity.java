@@ -11,13 +11,13 @@ import com.lwm.app.R;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
 import com.squareup.otto.Subscribe;
 
 public class RemotePlaybackActivity extends PlaybackActivity {
 
-    private StreamPlayer player;
+    private StreamPlayerService player;
 
     private int duration;
     private String durationString;
@@ -32,7 +32,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
 
         playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
 
-        player = App.getMusicService().getStreamPlayer();
+        player = App.getStreamPlayerService();
         if(savedInstanceState == null) {
             player.playFromCurrentPosition();
         }
@@ -57,7 +57,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
             durationString = song.getDurationString();
             playbackFragment.setDuration(durationString);
             duration = song.getDuration();
-            initSeekBarUpdater(player, duration);
+            initSeekBarUpdater(player.getPlayer(), duration);
             playbackFragment.setRemoteAlbumArt();
         }else{
             playbackFragment.showWaitingFrame(true);
@@ -75,7 +75,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     protected void onResume() {
         super.onResume();
         App.getEventBus().register(this);
-        Song song = App.getStreamPlayer().getCurrentSong();
+        Song song = App.getStreamPlayerService().getCurrentSong();
         if (song != null) {
             setSongInfo(song);
         }

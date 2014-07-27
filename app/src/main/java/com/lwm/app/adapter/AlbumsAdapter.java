@@ -19,17 +19,17 @@ import java.util.List;
 
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
-    private static final String artworkUri = "content://media/external/audio/albumart/";
-
     private final Context context;
     private Resources resources;
     private List<Album> albumsList;
+    private Utils utils;
 
     public AlbumsAdapter(final Context context, AlbumsList albums) {
         super(context, R.layout.list_item_songs, albums.getAlbums());
         this.context = context;
         resources = context.getResources();
         albumsList = albums.getAlbums();
+        utils = new Utils(context);
     }
 
     static class ViewHolder {
@@ -60,13 +60,13 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
 
         Album album = albumsList.get(position);
         holder.album.setText(album.getTitle());
-        holder.artist.setText(Utils.getArtistName(album.getArtist()));
+        holder.artist.setText(utils.getArtistName(album.getArtist()));
 
         Picasso.with(context)
-                .load(artworkUri+album.getId())
-                .resize(214, 214)
-                .placeholder(R.drawable.no_cover)
+                .load("file://"+album.getAlbumArtUri())
+                .fit()
                 .centerCrop()
+                .placeholder(R.drawable.no_cover)
                 .into(holder.albumArt);
 
         return rowView;

@@ -6,22 +6,22 @@ import android.widget.SeekBar;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.service.StreamPlayerService;
 
 public class RemotePlaybackFragment extends PlaybackFragment {
 
-    StreamPlayer player;
+    StreamPlayerService player;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        player = App.getMusicService().getStreamPlayer();
+        player = App.getStreamPlayerService();
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 //        if(fromUser){
-//            if(App.isMusicServiceBound()){
+//            if(App.isLocalPlayerServiceBound()){
 //                player.seekTo((int)((progress/100.)*player.getDuration()));
 //            }
 //        }

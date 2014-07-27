@@ -28,7 +28,7 @@ public class ArtistInfoActivity extends BasicActivity {
         Artist artist = new ArtistsCursorGetter(this).getArtistById(artistId);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(Utils.getArtistName(artist.getName()));
+        actionBar.setTitle(new Utils(this).getArtistName(artist.getName()));
         actionBar.setSubtitle("ALBUMS: "+artist.getNumberOfAlbums());
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setIcon(android.R.color.transparent);

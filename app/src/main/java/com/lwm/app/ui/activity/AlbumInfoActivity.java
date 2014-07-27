@@ -21,7 +21,6 @@ import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
 import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -127,12 +126,7 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
             case R.id.action_settings:
                 return true;
             case R.id.action_add_to_queue:
-                if (player == null) {
-                    player = new LocalPlayer(this, playlist);
-                    App.getMusicService().setLocalPlayer(player);
-                } else {
-                    player.addToQueue(playlist);
-                }
+                player.addToQueue(playlist);
                 Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT);
                 toast.show();
                 return true;
@@ -146,8 +140,7 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
         listView.setItemChecked(position, true);
         adapter.setChecked(position-1);
 
-        LocalPlayer player = new LocalPlayer(this, playlist);
-        App.getMusicService().setLocalPlayer(player);
+        player.setQueue(playlist);
         player.play(position-1);
     }
 

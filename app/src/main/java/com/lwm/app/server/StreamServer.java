@@ -2,7 +2,6 @@ package com.lwm.app.server;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -11,8 +10,8 @@ import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.model.Client;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
-import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.service.StreamPlayerService;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -82,7 +81,7 @@ public class StreamServer extends NanoHTTPD {
 
             case GET: // Outcoming info
                 if(App.localPlayerActive()){
-                    LocalPlayer localPlayer = App.getLocalPlayer();
+                    LocalPlayerService localPlayer = App.getLocalPlayerService();
                     Song song = localPlayer.getCurrentSong();
                     switch (uri) {
                         case STREAM:
@@ -107,21 +106,21 @@ public class StreamServer extends NanoHTTPD {
     }
 
     private Response play() {
-        StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+        StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: PLAY");
         streamPlayer.start();
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started.");
     }
 
     private Response pause() {
-        StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+        StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: PAUSE");
         streamPlayer.pause();
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
     }
 
     private Response prepare() {
-        StreamPlayer streamPlayer = App.getMusicService().getStreamPlayer();
+        StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: PREPARE");
         streamPlayer.prepareNewSong();
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Preparation started.");
@@ -176,7 +175,7 @@ public class StreamServer extends NanoHTTPD {
         return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
     }
 
-    private Response currentPosition(MediaPlayer player) {
+    private Response currentPosition(LocalPlayerService player) {
         Log.d(App.TAG, "StreamServer: CURRENT_POSITION");
         return new Response(Response.Status.OK, MIME_PLAINTEXT, String.valueOf(player.getCurrentPosition()));
     }

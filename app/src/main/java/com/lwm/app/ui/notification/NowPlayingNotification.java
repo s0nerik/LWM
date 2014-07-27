@@ -18,8 +18,8 @@ import android.widget.RemoteViews;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.receiver.PendingIntentReceiver;
+import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 
 import java.io.FileNotFoundException;
@@ -51,22 +51,22 @@ public class NowPlayingNotification {
             notificationManager.cancel(NOTIFICATION_NOW_PLAYING_ID);
         }
         if(App.localPlayerActive()){
-            App.getLocalPlayer().setUpdateNotification(false);
+            App.getLocalPlayerService().setUpdateNotification(false);
         }
     }
 
-    public void show(){
+    public static Notification create(Context context){
 
         boolean isPlaying;
         Song currentSong;
-        if(App.localPlayerActive() && App.getLocalPlayer().hasCurrentSong()){
-            LocalPlayer player = App.getLocalPlayer();
+//        if(App.localPlayerActive() && App.getLocalPlayerService().hasCurrentSong()){
+            LocalPlayerService player = App.getLocalPlayerService();
             currentSong = player.getCurrentSong();
             isPlaying = player.isPlaying();
-            player.setUpdateNotification(true);
-        }else{
-            return;
-        }
+//            player.setUpdateNotification(true);
+//        }else{
+//            return;
+//        }
 
         ContentResolver contentResolver = context.getContentResolver();
         Resources resources = context.getResources();
@@ -115,10 +115,10 @@ public class NowPlayingNotification {
         // Set default content view
         notification.contentView = contentView;
 
-        PendingIntent closeIntent = PendingIntent.getBroadcast(context, 0, createIntent(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent prevIntent = PendingIntent.getBroadcast(context, 1, createIntent(ACTION_PREV), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent playPauseIntent = PendingIntent.getBroadcast(context, 2, createIntent(ACTION_PLAY_PAUSE), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent nextIntent = PendingIntent.getBroadcast(context, 3, createIntent(ACTION_NEXT), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent closeIntent = PendingIntent.getBroadcast(context, 0, createIntent(context, ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent prevIntent = PendingIntent.getBroadcast(context, 1, createIntent(context, ACTION_PREV), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent playPauseIntent = PendingIntent.getBroadcast(context, 2, createIntent(context, ACTION_PLAY_PAUSE), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent nextIntent = PendingIntent.getBroadcast(context, 3, createIntent(context, ACTION_NEXT), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // If Android >= 3.0, add PendingIntent's to default contentView and make a big one
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
@@ -148,17 +148,16 @@ public class NowPlayingNotification {
             notification.bigContentView = bigContentView;
         }
 
-        notificationManager.notify(NOTIFICATION_NOW_PLAYING_ID, notification);
-
+        return notification;
     }
 
-    private Intent createIntent(String action) {
+    private static Intent createIntent(Context context, String action) {
         Intent intent = new Intent(context, PendingIntentReceiver.class);
         intent.setAction(action);
         return intent;
     }
 
-    private Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Resources res) {
+    private static Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Resources res) {
 
         final float densityMultiplier = res.getDisplayMetrics().density;
 

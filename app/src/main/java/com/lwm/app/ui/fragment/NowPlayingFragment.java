@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.squareup.picasso.Picasso;
 
@@ -29,7 +29,7 @@ public class NowPlayingFragment extends Fragment
     View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            LocalPlayer player = App.getLocalPlayer();
+            LocalPlayerService player = App.getLocalPlayerService();
             player.togglePause();
             setPlayButton(player.isPlaying());
         }
@@ -65,11 +65,11 @@ public class NowPlayingFragment extends Fragment
     public void onResume() {
         super.onResume();
         if(App.localPlayerActive()){
-            LocalPlayer player = App.getLocalPlayer();
+            LocalPlayerService player = App.getLocalPlayerService();
 //            player.registerListener(this);
             if(player.hasCurrentSong()){
                 setCurrentSongInfo();
-                setPlayButton(App.getLocalPlayer().isPlaying());
+                setPlayButton(App.getLocalPlayerService().isPlaying());
             }
         }
     }
@@ -84,7 +84,7 @@ public class NowPlayingFragment extends Fragment
 
     public void setCurrentSongInfo(){
         if(App.localPlayerActive()) {
-            LocalPlayer player = App.getLocalPlayer();
+            LocalPlayerService player = App.getLocalPlayerService();
             if (player.hasCurrentSong()) {
                 Song song = player.getCurrentSong();
                 setAlbumArtFromUri(song.getAlbumArtUri());
@@ -98,9 +98,9 @@ public class NowPlayingFragment extends Fragment
     public void setAlbumArtFromUri(Uri uri){
         Picasso.with(getActivity())
                 .load(uri.toString())
-                .resize(300, 300)
-                .placeholder(R.drawable.no_cover)
+                .fit()
                 .centerCrop()
+                .placeholder(R.drawable.no_cover)
                 .into(albumArt);
     }
 

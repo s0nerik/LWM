@@ -15,8 +15,7 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.service.MusicService;
+import com.lwm.app.service.LocalPlayerService;
 
 import java.util.List;
 
@@ -24,6 +23,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
 
     private final Context context;
     private List<Song> list;
+    private Utils utils;
 
     private class OnContextButtonClickListener implements View.OnClickListener {
         private int position;
@@ -53,12 +53,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
                 case R.id.action_add_to_queue:
-                    MusicService musicService = App.getMusicService();
-                    LocalPlayer player = musicService.getLocalPlayer();
-                    if(player == null){
-                        player = new LocalPlayer(context);
-                        musicService.setLocalPlayer(player);
-                    }
+                    LocalPlayerService player = App.getLocalPlayerService();
                     player.addToQueue(list.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
@@ -73,6 +68,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         super(context, R.layout.list_item_songs, list);
         this.context = context;
         this.list = list;
+        utils = new Utils(context);
     }
 
     static class ViewHolder {
@@ -105,7 +101,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
 
         Song song = list.get(position);
         holder.title.setText(song.getTitle());
-        holder.artist.setText(Utils.getArtistName(song.getArtist()));
+        holder.artist.setText(utils.getArtistName(song.getArtist()));
         holder.duration.setText(song.getDurationString());
 
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
