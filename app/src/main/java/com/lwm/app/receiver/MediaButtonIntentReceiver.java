@@ -29,6 +29,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
                         break;
                 }
             }
+            abortBroadcast();
         }
     }
 

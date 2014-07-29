@@ -45,6 +45,7 @@ public class App extends Application {
     public static final String TAG = "LWM";
 
     public static final String SERVICE_BOUND = "com.lwm.app.service_bound";
+    public static final int SERVICE_NOTIFICATION_ID = 1337;
 
     private static LocalPlayerService localPlayerService;
     private static StreamPlayerService streamPlayerService;
@@ -167,7 +168,7 @@ public class App extends Application {
     @Subscribe
     public void startForegroundLocalPlayer(StartForegroundLocalPlayerEvent event) {
         if (localPlayerServiceBound) {
-            localPlayerService.startForeground(0, NowPlayingNotification.create(this));
+            localPlayerService.startForeground(SERVICE_NOTIFICATION_ID, NowPlayingNotification.create(localPlayerService));
         }
     }
 

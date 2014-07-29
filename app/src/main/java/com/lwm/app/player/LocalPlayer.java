@@ -2,6 +2,7 @@ package com.lwm.app.player;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     private List<Song> queue = new ArrayList<>();
     private int queueSize = 0;
 
+    private AudioManager audioManager;
+
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
@@ -57,6 +60,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         this.context = context;
 
         setOnCompletionListener(onCompletionListener);
+
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     public List<Song> getQueue(){
@@ -200,6 +205,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
         context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
 
+        audioManager.requestAudioFocus(afListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
     }
 
     @Override
@@ -225,5 +232,30 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public int getQueueSize() {
         return queueSize;
+    }
+
+    private AFListener afListener = new AFListener();
+
+    private class AFListener implements AudioManager.OnAudioFocusChangeListener {
+
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            String event = "";
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    event = "AUDIOFOCUS_LOSS";
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    event = "AUDIOFOCUS_LOSS_TRANSIENT";
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    event = "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK";
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    event = "AUDIOFOCUS_GAIN";
+                    break;
+            }
+            Log.d(App.TAG, "onAudioFocusChange: " + event);
+        }
     }
 }
