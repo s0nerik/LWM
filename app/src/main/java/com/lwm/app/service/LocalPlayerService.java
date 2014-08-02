@@ -34,9 +34,9 @@ public class LocalPlayerService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         player.release();
         player = null;
+        super.onDestroy();
     }
 
     public void setPlayer(LocalPlayer player) {

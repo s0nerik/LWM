@@ -11,6 +11,7 @@ import android.util.Log;
 import com.lwm.app.event.access_point.AccessPointDisabledEvent;
 import com.lwm.app.event.access_point.AccessPointEnabledEvent;
 import com.lwm.app.event.player.StartForegroundLocalPlayerEvent;
+import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.event.player.binding.BindLocalPlayerServiceEvent;
 import com.lwm.app.event.player.binding.BindStreamPlayerServiceEvent;
 import com.lwm.app.event.player.binding.LocalPlayerServiceBoundEvent;
@@ -45,13 +46,14 @@ public class App extends Application {
     public static final String TAG = "LWM";
 
     public static final String SERVICE_BOUND = "com.lwm.app.service_bound";
-    public static final int SERVICE_NOTIFICATION_ID = 1337;
+    public static final int PLAYBACK_SERVICE_NOTIFICATION_ID = 1337;
 
     private static LocalPlayerService localPlayerService;
     private static StreamPlayerService streamPlayerService;
     private static boolean localPlayerServiceBound = false;
     private static boolean streamPlayerServiceBound = false;
     private static boolean serverStarted = false;
+    private static boolean serviceInForeground = false;
 
     public static LocalPlayerService getLocalPlayerService(){
         assert localPlayerService != null : "localPlayerService == null!";
@@ -90,6 +92,10 @@ public class App extends Application {
         unbindService(localPlayerServiceConnection);
         eventBus.unregister(this);
         super.onTerminate();
+    }
+
+    public static boolean isServiceInForeground() {
+        return serviceInForeground;
     }
 
     public static boolean localPlayerActive(){
@@ -168,7 +174,18 @@ public class App extends Application {
     @Subscribe
     public void startForegroundLocalPlayer(StartForegroundLocalPlayerEvent event) {
         if (localPlayerServiceBound) {
-            localPlayerService.startForeground(SERVICE_NOTIFICATION_ID, NowPlayingNotification.create(localPlayerService));
+            localPlayerService.startForeground(
+                    NowPlayingNotification.NOTIFICATION_ID,
+                    NowPlayingNotification.create(localPlayerService));
+            serviceInForeground = true;
+        }
+    }
+
+    @Subscribe
+    public void stopForegroundLocalPlayer(StopForegroundLocalPlayerEvent event) {
+        if (localPlayerServiceBound && serviceInForeground) {
+            localPlayerService.stopForeground(true);
+            serviceInForeground = false;
         }
     }
 

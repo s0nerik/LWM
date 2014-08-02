@@ -1,7 +1,6 @@
 package com.lwm.app.ui.notification;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,7 +26,7 @@ import java.io.InputStream;
 
 public class NowPlayingNotification {
 
-    public static final int NOTIFICATION_NOW_PLAYING_ID = 0;
+    public static final int NOTIFICATION_ID = 505173; // LOL
 
     public static final String ACTION_SHOW = "com.lwm.app.notification.now_playing.SHOW";
 
@@ -38,35 +37,14 @@ public class NowPlayingNotification {
 
     public static final int ALBUM_ART_SIZE = 120;
 
-    private Context context;
-    private static NotificationManager notificationManager;
-
-    public NowPlayingNotification(Context context){
-        this.context = context;
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    }
-
-    public static void hide(){
-        if(notificationManager != null) {
-            notificationManager.cancel(NOTIFICATION_NOW_PLAYING_ID);
-        }
-//        if(App.localPlayerActive()){
-//            App.getLocalPlayerService().setUpdateNotification(false);
-//        }
-    }
-
     public static Notification create(Context context){
 
         boolean isPlaying;
         Song currentSong;
-//        if(App.localPlayerActive() && App.getLocalPlayerService().hasCurrentSong()){
-            LocalPlayerService player = App.getLocalPlayerService();
-            currentSong = player.getCurrentSong();
-            isPlaying = player.isPlaying();
-//            player.setUpdateNotification(true);
-//        }else{
-//            return;
-//        }
+
+        LocalPlayerService player = App.getLocalPlayerService();
+        currentSong = player.getCurrentSong();
+        isPlaying = player.isPlaying();
 
         ContentResolver contentResolver = context.getContentResolver();
         Resources resources = context.getResources();
@@ -94,11 +72,10 @@ public class NowPlayingNotification {
                 .setTicker(currentSong.getArtist() + " - " + currentSong.getTitle())
                 .setOngoing(true);
 
-        if(isPlaying){
+        if(isPlaying)
             builder.setSmallIcon(R.drawable.ic_stat_av_play);
-        }else{
+        else
             builder.setSmallIcon(R.drawable.ic_stat_av_pause);
-        }
 
         Intent intent = new Intent(context, LocalPlaybackActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);

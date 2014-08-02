@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
@@ -65,7 +66,7 @@ public class BasicActivity extends ActionBarActivity {
 
         toggleNowPlayingBar();
 
-        NowPlayingNotification.hide();
+        App.getEventBus().post(new StopForegroundLocalPlayerEvent());
     }
 
     @Override

@@ -8,6 +8,12 @@
         revision="19.1.0"
         sha1="07558439e168259aff9933ae47c1c2f9e2070129"/>
     <item
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/butterknife-5.1.2-b18cc74ce663a6af7dacadadbf7bd496f47f719b.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/5.1.2/daf5472b0df6dabaceb6ad755b3812535863965a/butterknife-5.1.2.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="daf5472b0df6dabaceb6ad755b3812535863965a"/>
+    <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-900d1c8c732a83a883892de823a805ad7c2e8d7d.jar"
         jar="/home/sonerik/Development/android-studio/sdk/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
         jumboMode="false"
@@ -25,12 +31,6 @@
         jumboMode="false"
         revision="19.1.0"
         sha1="9fd2c8105b9ca0af1c4cdaa53110c49ad44ab5fb"/>
-    <item
-        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/butterknife-5.1.1-d578151ad3c74f7059212f43ad3eb1809457f948.jar"
-        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/5.1.1/b3652dfd65ca0bcf18790ff1a1f7624af4cb2bb8/butterknife-5.1.1.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="b3652dfd65ca0bcf18790ff1a1f7624af4cb2bb8"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/acra-4.5.0-2f4b3e8104eb363d1dbba1fe668a52c0e3eefd50.jar"
         jar="/home/sonerik/Projects/LWM/libs/acra-4.5.0.jar"
