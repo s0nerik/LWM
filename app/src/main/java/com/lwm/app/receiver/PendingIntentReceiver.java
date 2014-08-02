@@ -22,7 +22,6 @@ public class PendingIntentReceiver extends BroadcastReceiver {
                     case NowPlayingNotification.ACTION_CLOSE:
                         App.getEventBus().post(new StopForegroundLocalPlayerEvent());
                         App.getEventBus().post(new UnbindLocalPlayerServiceEvent());
-//                        player.stopSelf();
                         break;
                     case NowPlayingNotification.ACTION_PREV:
                         player.prevSong();

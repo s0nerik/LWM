@@ -226,7 +226,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     }
 
     private void updateNotificationIfForeground() {
-        if (App.isServiceInForeground())
+        if (App.isLocalPlayerServiceInForeground())
             notificationManager.notify(
                     NowPlayingNotification.NOTIFICATION_ID,
                     NowPlayingNotification.create(context));

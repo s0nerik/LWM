@@ -53,7 +53,7 @@ public class App extends Application {
     private static boolean localPlayerServiceBound = false;
     private static boolean streamPlayerServiceBound = false;
     private static boolean serverStarted = false;
-    private static boolean serviceInForeground = false;
+    private static boolean localPlayerServiceInForeground = false;
 
     public static LocalPlayerService getLocalPlayerService(){
         assert localPlayerService != null : "localPlayerService == null!";
@@ -94,8 +94,8 @@ public class App extends Application {
         super.onTerminate();
     }
 
-    public static boolean isServiceInForeground() {
-        return serviceInForeground;
+    public static boolean isLocalPlayerServiceInForeground() {
+        return localPlayerServiceInForeground;
     }
 
     public static boolean localPlayerActive(){
@@ -169,6 +169,7 @@ public class App extends Application {
         unbindService(localPlayerServiceConnection);
         localPlayerServiceBound = false;
         localPlayerService = null;
+        localPlayerServiceInForeground = false;
     }
 
     @Subscribe
@@ -177,15 +178,15 @@ public class App extends Application {
             localPlayerService.startForeground(
                     NowPlayingNotification.NOTIFICATION_ID,
                     NowPlayingNotification.create(localPlayerService));
-            serviceInForeground = true;
+            localPlayerServiceInForeground = true;
         }
     }
 
     @Subscribe
     public void stopForegroundLocalPlayer(StopForegroundLocalPlayerEvent event) {
-        if (localPlayerServiceBound && serviceInForeground) {
+        if (localPlayerServiceBound && localPlayerServiceInForeground) {
             localPlayerService.stopForeground(true);
-            serviceInForeground = false;
+            localPlayerServiceInForeground = false;
         }
     }
 
