@@ -18,6 +18,8 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.event.access_point.StartServerEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
 import com.lwm.app.event.player.binding.BindStreamPlayerServiceEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
@@ -94,6 +96,13 @@ public class StationChooserActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_chooser);
         App.getEventBus().post(new BindStreamPlayerServiceEvent());
+        App.getEventBus().post(new StartServerEvent());
+    }
+
+    @Override
+    protected void onDestroy() {
+        App.getEventBus().post(new StopServerEvent());
+        super.onDestroy();
     }
 
     @Override

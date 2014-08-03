@@ -65,4 +65,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:+'
     compile 'com.jakewharton:butterknife:+'
     compile 'com.squareup:otto:+'
+    compile 'com.squareup.okhttp:okhttp:+'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:+'
 }

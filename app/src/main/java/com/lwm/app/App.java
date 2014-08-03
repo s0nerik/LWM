@@ -8,8 +8,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lwm.app.event.access_point.AccessPointDisabledEvent;
-import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
+import com.lwm.app.event.access_point.StartServerEvent;
 import com.lwm.app.event.player.StartForegroundLocalPlayerEvent;
 import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.event.player.binding.BindLocalPlayerServiceEvent;
@@ -191,13 +191,13 @@ public class App extends Application {
     }
 
     @Subscribe
-    public void startServer(AccessPointEnabledEvent event) {
+    public void startServer(StartServerEvent event) {
         startService(new Intent(this, MusicServerService.class));
         serverStarted = true;
     }
 
     @Subscribe
-    public void stopServer(AccessPointDisabledEvent event) {
+    public void stopServer(StopServerEvent event) {
         stopService(new Intent(this, MusicServerService.class));
         serverStarted = false;
     }

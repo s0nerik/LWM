@@ -23,8 +23,8 @@ import android.widget.ListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
-import com.lwm.app.event.access_point.AccessPointDisabledEvent;
-import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
+import com.lwm.app.event.access_point.StartServerEvent;
 import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.event.player.StartForegroundLocalPlayerEvent;
 import com.lwm.app.event.player.binding.BindLocalPlayerServiceEvent;
@@ -199,7 +199,7 @@ public class LocalSongChooserActivity extends BasicActivity {
         WifiApManager manager = new WifiApManager(this);
         if (manager.isWifiApEnabled()) {
             setBroadcastButtonState(true);
-            App.getEventBus().post(new AccessPointEnabledEvent());
+            App.getEventBus().post(new StartServerEvent());
         } else {
             setBroadcastButtonState(false);
         }
@@ -246,13 +246,13 @@ public class LocalSongChooserActivity extends BasicActivity {
     }
 
     @Subscribe
-    public void accessPointEnabled(AccessPointEnabledEvent event) {
+    public void accessPointEnabled(StartServerEvent event) {
         setMenuProgressIndicator(false);
         setBroadcastButtonState(true);
     }
 
     @Subscribe
-    public void accessPointDisabled(AccessPointDisabledEvent event) {
+    public void accessPointDisabled(StopServerEvent event) {
         setMenuProgressIndicator(false);
         setBroadcastButtonState(false);
     }

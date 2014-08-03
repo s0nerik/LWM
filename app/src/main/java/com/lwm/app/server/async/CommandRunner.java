@@ -6,25 +6,28 @@ import android.util.Log;
 import com.lwm.app.App;
 import com.lwm.app.model.Client;
 import com.lwm.app.server.StreamServer;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
 public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> {
 
-    HttpClient httpclient = new DefaultHttpClient();
-    HttpPost request;
-    ResponseHandler<String> responseHandler = new BasicResponseHandler();
+    private OkHttpClient httpClient = new OkHttpClient();
 
-    Client client;
+    private Request pingRequest;
+
+    private Client client;
 
     public CommandRunner(Client client) {
         this.client = client;
+
+        pingRequest = new Request.Builder()
+                .url("http://" + client.getIP() + ":8888" + StreamServer.PING)
+                .post(null)
+                .build();
     }
 
     public static enum Command { PREPARE, PLAY, PAUSE, SEEK_TO, PING }
@@ -40,12 +43,13 @@ public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> 
     private void sendRequest(Command command) {
         String method;
         if(Command.PING.equals(command)){
-            request = new HttpPost("http://" + client.getIP() + ":8888" + StreamServer.PING);
             try {
                 long start = System.currentTimeMillis();
-                httpclient.execute(request, responseHandler);
+                Response response = httpClient.newCall(pingRequest).execute();
                 long ping = System.currentTimeMillis() - start;
                 client.setPing(Math.round(ping/2.));
+
+                response.body().close();
 
                 // Debug
                 Log.d(App.TAG, "Ping: "+client.getPing());
@@ -74,10 +78,14 @@ public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> 
                     return;
             }
 
-            request = new HttpPost("http://" + client.getIP() + ":8888" + method);
+            Request request = new Request.Builder()
+                    .url("http://" + client.getIP() + ":8888" + method)
+                    .post(RequestBody.create(null, ""))
+                    .build();
 
             try {
-                String response = httpclient.execute(request, responseHandler);
+                Response response = httpClient.newCall(request).execute();
+                response.body().close();
 
                 // Debug
                 Log.d(App.TAG, "response: " + response);

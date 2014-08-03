@@ -9,8 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.lwm.app.App;
-import com.lwm.app.event.access_point.AccessPointDisabledEvent;
-import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
+import com.lwm.app.event.access_point.StartServerEvent;
 import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
 
 import java.lang.reflect.Method;
@@ -184,9 +184,9 @@ public class WifiAP {
             super.onPostExecute(aVoid);
 
             if (mMode) {
-                App.getEventBus().post(new AccessPointEnabledEvent());
+                App.getEventBus().post(new StartServerEvent());
             } else {
-                App.getEventBus().post(new AccessPointDisabledEvent());
+                App.getEventBus().post(new StopServerEvent());
             }
 
         }

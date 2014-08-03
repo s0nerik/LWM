@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.event.access_point.AccessPointDisabledEvent;
-import com.lwm.app.event.access_point.AccessPointEnabledEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
+import com.lwm.app.event.access_point.StartServerEvent;
 import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
@@ -167,13 +167,13 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     }
 
     @Subscribe
-    public void accessPointEnabled(AccessPointEnabledEvent event) {
+    public void accessPointEnabled(StartServerEvent event) {
         setMenuProgressIndicator(false);
         setBroadcastButtonState(true);
     }
 
     @Subscribe
-    public void accessPointDisabled(AccessPointDisabledEvent event) {
+    public void accessPointDisabled(StopServerEvent event) {
         setMenuProgressIndicator(false);
         setBroadcastButtonState(false);
     }

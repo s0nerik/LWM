@@ -2,11 +2,23 @@
 <pre-dex-items>
 
     <item
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-2.0.0-d79c231400942172b2b8a21a359ddf3075a69230.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-urlconnection/2.0.0/afe8399d352713b66e597e9670c741d1e60ae923/okhttp-urlconnection-2.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="afe8399d352713b66e597e9670c741d1e60ae923"/>
+    <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/classes-978d05fc083ba77ed8ed787c263e07fdf00d961d.jar"
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs.android-stackblur/StackBlur/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="07558439e168259aff9933ae47c1c2f9e2070129"/>
+    <item
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/okhttp-2.0.0-31c24551f7f4e0eeda843286be0bd9d7ed807973.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.0.0/4c8d1536dba3812cc1592090dc20c47a4ed3c35e/okhttp-2.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="4c8d1536dba3812cc1592090dc20c47a4ed3c35e"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/butterknife-5.1.2-b18cc74ce663a6af7dacadadbf7bd496f47f719b.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/5.1.2/daf5472b0df6dabaceb6ad755b3812535863965a/butterknife-5.1.2.jar"
@@ -49,6 +61,12 @@
         jumboMode="false"
         revision="19.1.0"
         sha1="50809f223afc3075d6c2d761f51a7b9cb6be1123"/>
+    <item
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/okio-1.0.0-565b47f0ababd4ba8f46c88bd4a4e49e7c6b59b5.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.0.0/2534c458682c73f5b9871131ab3098d3f987ca3/okio-1.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="02534c458682c73f5b9871131ab3098d3f987ca3"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/library-2.4.0-7d36e5b5e2a1d258e95ecc544665fdd6a66152f5.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"

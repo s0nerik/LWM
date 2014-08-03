@@ -1,6 +1,7 @@
 package com.lwm.app.server.async;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import com.lwm.app.App;
@@ -26,7 +27,11 @@ public class ClientsManager {
     public void changeSong() {
         ready.clear();
         for(Client client:clients) {
-            new CommandRunner(client).execute(CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                new CommandRunner(client).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                        CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
+            else
+                new CommandRunner(client).execute(CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
         }
 
         new AsyncTask<Void, Void, Void>() {
@@ -60,14 +65,20 @@ public class ClientsManager {
     public void pause(){
         Log.d(App.TAG, "ClientsManager: pause");
         for(Client client:clients) {
-            new CommandRunner(client).execute(CommandRunner.Command.PAUSE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                new CommandRunner(client).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, CommandRunner.Command.PAUSE);
+            else
+                new CommandRunner(client).execute(CommandRunner.Command.PAUSE);
         }
     }
 
     public void start(){
         Log.d(App.TAG, "ClientsManager: start");
         for(Client client:clients) {
-            new CommandRunner(client).execute(CommandRunner.Command.PLAY);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                new CommandRunner(client).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, CommandRunner.Command.PLAY);
+            else
+                new CommandRunner(client).execute(CommandRunner.Command.PLAY);
         }
     }
 
