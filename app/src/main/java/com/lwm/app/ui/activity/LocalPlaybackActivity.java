@@ -199,12 +199,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Override
     public void onBackPressed() {
-//        if (fromNotification && App.localPlayerActive() && App.getLocalPlayerService().isPlaying()) {
-//            new NowPlayingNotification(this).show();
-//            finish();
-//        } else {
-            super.onBackPressed();
-//        }
+        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 }

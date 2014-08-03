@@ -109,10 +109,10 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
 
     public void setAlbumArtFromUri(Uri uri){
         Picasso.with(getActivity())
-                .load(uri.toString())
-                .resize(screenWidth, screenWidth)
-                .placeholder(R.drawable.no_cover)
+                .load(uri)
+                .fit()
                 .centerCrop()
+                .placeholder(R.drawable.no_cover)
                 .into(albumArt);
     }
 
