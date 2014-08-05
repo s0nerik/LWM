@@ -84,11 +84,7 @@ public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> 
                     .build();
 
             try {
-                Response response = httpClient.newCall(request).execute();
-                response.body().close();
-
-                // Debug
-                Log.d(App.TAG, "response: " + response);
+                httpClient.newCall(request).execute().body().close();
 
             } catch (IOException e) {
                 StreamServer.removeClient(client);

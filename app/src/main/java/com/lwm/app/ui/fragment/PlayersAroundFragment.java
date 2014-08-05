@@ -78,7 +78,7 @@ public class PlayersAroundFragment extends ListFragment {
 
     private class StationConnectionTask extends AsyncTask<String, Void, Void> {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPostPing = new HttpPost(StreamServer.SERVER_ADDRESS);
+        HttpPost httpPostPing = new HttpPost(StreamServer.Url.SERVER_ADDRESS);
 
         ProgressDialog progressDialog;
 

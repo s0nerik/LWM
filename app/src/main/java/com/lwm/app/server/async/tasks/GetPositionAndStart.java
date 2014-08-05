@@ -4,12 +4,8 @@ import android.os.AsyncTask;
 
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.StreamServer;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 
 import java.io.IOException;
 
@@ -18,9 +14,11 @@ import java.io.IOException;
 */
 public class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
     private StreamPlayer streamPlayer;
-    HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+StreamServer.CURRENT_POSITION);
-    ResponseHandler<String> responseHandler = new BasicResponseHandler();
+    private OkHttpClient httpClient = new OkHttpClient();
+    private Request httpGetPosition = new Request.Builder()
+            .url(StreamServer.Url.CURRENT_POSITION)
+            .get()
+            .build();
     int pos;
     long correctionStart, correctionEnd, correction;
 
@@ -37,7 +35,7 @@ public class GetPositionAndStart extends AsyncTask<Void, Void, Void> {
             streamPlayer.prepare();
 
             correctionStart = System.currentTimeMillis();
-            pos = Integer.parseInt(httpclient.execute(httpGetPosition, responseHandler));
+            pos = Integer.parseInt(httpClient.newCall(httpGetPosition).execute().body().string());
             correctionEnd = System.currentTimeMillis();
             correction = correctionEnd - correctionStart;
 

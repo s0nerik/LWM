@@ -35,6 +35,22 @@ public class StreamServer extends NanoHTTPD {
     public static final String CLIENT_REGISTER = "/register";
     public static final String CLIENT_UNREGISTER = "/unregister";
 
+    public static class Url {
+        public static final String SERVER_ADDRESS = "http://192.168.43.1:8888";
+        public static final String CURRENT_POSITION = SERVER_ADDRESS + "/position";
+        public static final String CURRENT_INFO = SERVER_ADDRESS + "/info";
+        public static final String CURRENT_ALBUMART = SERVER_ADDRESS + "/albumart";
+        public static final String STREAM = SERVER_ADDRESS + "/stream";
+        public static final String PAUSE = SERVER_ADDRESS + "/pause";
+        public static final String PLAY = SERVER_ADDRESS + "/play";
+        public static final String PREPARE = SERVER_ADDRESS + "/prepare";
+        public static final String PING = SERVER_ADDRESS + "/ping";
+        public static final String SEEK_TO = SERVER_ADDRESS + "/seekTo/";
+        public static final String CLIENT_READY = SERVER_ADDRESS + "/ready";
+        public static final String CLIENT_REGISTER = SERVER_ADDRESS + "/register";
+        public static final String CLIENT_UNREGISTER = SERVER_ADDRESS + "/unregister";
+    }
+
     private static Set<Client> clients = new HashSet<>();
     private static Set<Client> ready = new HashSet<>();
 //    private boolean clientsCanManage = true;

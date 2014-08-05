@@ -17,7 +17,7 @@ import java.io.IOException;
 */
 public class ClientUnregister extends AsyncTask<Void, Void, Void> {
     HttpClient httpclient = new DefaultHttpClient();
-    HttpPost httpPostUnregister = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_UNREGISTER);
+    HttpPost httpPostUnregister = new HttpPost(StreamServer.Url.CLIENT_UNREGISTER);
 
     @Override
     protected Void doInBackground(Void... aVoid){

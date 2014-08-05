@@ -6,16 +6,19 @@ import android.util.Log;
 import com.lwm.app.App;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.StreamServer;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
 public class ReadinessReporter extends AsyncTask<Void, Void, Void> {
-    private HttpClient httpclient = new DefaultHttpClient();
-    private HttpPost httpPostReady = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_READY);
+    private OkHttpClient httpClient = new OkHttpClient();
+    private Request httpPostReady = new Request.Builder()
+                                        .url(StreamServer.Url.CLIENT_READY)
+                                        .post(RequestBody.create(null, ""))
+                                        .build();
     private StreamPlayer player;
 
     public ReadinessReporter(StreamPlayer player) {
@@ -26,7 +29,8 @@ public class ReadinessReporter extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... aVoid){
 
         try {
-            httpclient.execute(httpPostReady);
+            Response response = httpClient.newCall(httpPostReady).execute();
+            response.body().close();
         } catch (IOException e) {
             Log.e(App.TAG, "Error: ReadinessReporter");
             e.printStackTrace();

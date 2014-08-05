@@ -32,7 +32,7 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
     private Bitmap background;
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetAlbumArt = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_ALBUMART);
+    HttpGet httpGetAlbumArt = new HttpGet(StreamServer.Url.CURRENT_ALBUMART);
 
     public RemoteAlbumArtAsyncGetter(Context context, ImageView albumArt, ImageView bg){
         this.albumArt = albumArt;

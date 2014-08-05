@@ -9,12 +9,9 @@ import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.StreamServer;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
@@ -23,10 +20,13 @@ import java.io.IOException;
 */
 public class SongInfoGetter extends AsyncTask<Void, Void, Void> {
     private StreamPlayer streamPlayer;
-    HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetPosition = new HttpGet(StreamServer.SERVER_ADDRESS+StreamServer.CURRENT_INFO);
-    ResponseHandler<String> responseHandler = new BasicResponseHandler();
-    Song song;
+    private OkHttpClient httpClient = new OkHttpClient();
+    private Request httpGetInfo = new Request.Builder()
+            .url(StreamServer.Url.CURRENT_INFO)
+            .get()
+            .build();
+
+    private Song song;
 
     public SongInfoGetter(StreamPlayer streamPlayer) {
         this.streamPlayer = streamPlayer;
@@ -36,12 +36,12 @@ public class SongInfoGetter extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... aVoid){
 
         try {
-            String response = httpclient.execute(httpGetPosition, responseHandler);
+            Response response = httpClient.newCall(httpGetInfo).execute();
 
             //Debug
             Log.d(App.TAG, "response: " + response);
 
-            song = new Gson().fromJson(response, Song.class);
+            song = new Gson().fromJson(response.body().charStream(), Song.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -17,8 +17,8 @@ public class ClientsManager {
 
     ClientsStateListener listener;
 
-    Set<Client> clients = StreamServer.getClients();
-    Set<Client> ready = StreamServer.getReadyClients();
+    private Set<Client> clients = StreamServer.getClients();
+    private Set<Client> ready = StreamServer.getReadyClients();
 
     public ClientsManager(ClientsStateListener listener){
         this.listener = listener;
@@ -45,8 +45,8 @@ public class ClientsManager {
             protected Void doInBackground(Void... params) {
                 int i = 0;
                 try {
-                    while(!clients.equals(ready) && i++<5) Thread.sleep(1000);
-                    if(i == 5){
+                    while (!clients.equals(ready) && i++ < 15) Thread.sleep(1000);
+                    if (i == 15) {
                         clients.retainAll(ready);
                     }
                 } catch (InterruptedException e) {

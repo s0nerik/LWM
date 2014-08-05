@@ -5,10 +5,9 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.server.StreamServer;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 
 import java.io.IOException;
 
@@ -16,14 +15,17 @@ import java.io.IOException;
 * Created by sonerik on 7/13/14.
 */
 public class ClientRegister extends AsyncTask<Void, Void, Void> {
-    HttpClient httpclient = new DefaultHttpClient();
-    HttpPost httpPostRegister = new HttpPost(StreamServer.SERVER_ADDRESS+StreamServer.CLIENT_REGISTER);
+    private OkHttpClient httpClient = new OkHttpClient();
+    private Request httpPostRegister = new Request.Builder()
+            .url(StreamServer.Url.CLIENT_REGISTER)
+            .post(RequestBody.create(null, ""))
+            .build();
 
     @Override
     protected Void doInBackground(Void... aVoid){
 
         try {
-            httpclient.execute(httpPostRegister);
+            httpClient.newCall(httpPostRegister).execute().body().close();
         } catch (IOException e) {
             Log.e(App.TAG, "Error: ClientRegister");
             e.printStackTrace();

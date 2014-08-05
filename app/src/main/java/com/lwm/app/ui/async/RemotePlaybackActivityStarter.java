@@ -31,7 +31,7 @@ public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
     String tag;
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetInfo = new HttpGet(StreamServer.SERVER_ADDRESS+ StreamServer.CURRENT_INFO);
+    HttpGet httpGetInfo = new HttpGet(StreamServer.Url.CURRENT_INFO);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
     ProgressDialog progressDialog;

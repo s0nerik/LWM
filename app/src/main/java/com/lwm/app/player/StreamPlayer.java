@@ -22,7 +22,7 @@ public class StreamPlayer extends BasePlayer {
     private static boolean active = false;
     private Song currentSong;
 
-    public static final String STREAM_PATH = StreamServer.SERVER_ADDRESS+StreamServer.STREAM;
+    public static final String STREAM_PATH = StreamServer.Url.STREAM;
 
     public StreamPlayer(Context context){
         this.context = context;
