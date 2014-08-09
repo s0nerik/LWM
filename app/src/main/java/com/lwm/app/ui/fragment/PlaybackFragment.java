@@ -8,8 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -23,6 +21,7 @@ import android.widget.TextView;
 
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
+import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 import com.squareup.picasso.Picasso;
 
@@ -118,20 +117,12 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
 
     public void setRemoteAlbumArt(){
         RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background);
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-            remoteAlbumArtAsyncGetter.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            remoteAlbumArtAsyncGetter.execute();
-        }
+        remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
     }
 
     public void setBackgroundImageUri(Uri uri){
         BackgroundChanger backgroundChanger = new BackgroundChanger(getActivity(), background);
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-            backgroundChanger.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, uri);
-        } else {
-            backgroundChanger.execute(uri);
-        }
+        backgroundChanger.executeWithThreadPoolExecutor(uri);
     }
 
     public void setPlayButton(boolean playing){
@@ -164,7 +155,7 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {}
 
-    private class BackgroundChanger extends AsyncTask<Uri, Void, Void> {
+    private class BackgroundChanger extends SupportAsyncTask<Uri, Void, Void> {
         private Context context;
         private ImageView bg;
         private Bitmap bitmap;

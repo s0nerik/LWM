@@ -6,11 +6,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
+import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.fragment.PlaybackFragment;
 
@@ -22,7 +22,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
+public class RemoteAlbumArtAsyncGetter extends SupportAsyncTask<Void, Void, Void> {
     private Context context;
     private ImageView albumArt;
     private ImageView bg;

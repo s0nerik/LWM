@@ -1,9 +1,9 @@
 package com.lwm.app.server.async;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.model.Client;
 import com.lwm.app.server.StreamServer;
 import com.squareup.okhttp.OkHttpClient;
@@ -13,7 +13,7 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-public class CommandRunner extends AsyncTask<CommandRunner.Command, Void, Void> {
+public class CommandRunner extends SupportAsyncTask<CommandRunner.Command, Void, Void> {
 
     private OkHttpClient httpClient = new OkHttpClient();
 

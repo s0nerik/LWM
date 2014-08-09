@@ -1,7 +1,7 @@
 package com.lwm.app.server.async;
 
-import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.lwm.app.App;
@@ -20,6 +20,8 @@ public class ClientsManager {
     private Set<Client> clients = StreamServer.getClients();
     private Set<Client> ready = StreamServer.getReadyClients();
 
+    private Handler handler;
+
     public ClientsManager(ClientsStateListener listener){
         this.listener = listener;
     }
@@ -27,58 +29,48 @@ public class ClientsManager {
     public void changeSong() {
         ready.clear();
         for(Client client:clients) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                new CommandRunner(client).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                        CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
-            else
-                new CommandRunner(client).execute(CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
+            new CommandRunner(client).executeWithThreadPoolExecutor(CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
         }
 
-        new AsyncTask<Void, Void, Void>() {
+        handler = new Handler(Looper.getMainLooper());
 
+        new Thread(new Runnable() {
             @Override
-            protected void onPreExecute() {
-                listener.onWaitClients();
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
+            public void run() {
                 int i = 0;
-                try {
-                    while (!clients.equals(ready) && i++ < 15) Thread.sleep(1000);
-                    if (i == 15) {
-                        clients.retainAll(ready);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
+                handler.post(waitingClients);
+                while (!clients.equals(ready) && i++ < 15) try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+                clients.retainAll(ready);
+                handler.post(clientsReady);
             }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                listener.onClientsReady();
-            }
-        }.execute();
+        }).start();
     }
+
+    private Runnable waitingClients = new Runnable() {
+        @Override
+        public void run() {
+            listener.onWaitClients();
+        }
+    };
+
+    private Runnable clientsReady = new Runnable() {
+        @Override
+        public void run() {
+            listener.onClientsReady();
+        }
+    };
 
     public void pause(){
         Log.d(App.TAG, "ClientsManager: pause");
         for(Client client:clients) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                new CommandRunner(client).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, CommandRunner.Command.PAUSE);
-            else
-                new CommandRunner(client).execute(CommandRunner.Command.PAUSE);
+            new CommandRunner(client).executeWithThreadPoolExecutor(CommandRunner.Command.PAUSE);
         }
     }
 
     public void start(){
         Log.d(App.TAG, "ClientsManager: start");
         for(Client client:clients) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                new CommandRunner(client).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, CommandRunner.Command.PLAY);
-            else
-                new CommandRunner(client).execute(CommandRunner.Command.PLAY);
+            new CommandRunner(client).executeWithThreadPoolExecutor(CommandRunner.Command.PLAY);
         }
     }
 
