@@ -22,8 +22,8 @@ import android.widget.TextView;
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.SupportAsyncTask;
+import com.lwm.app.Utils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -107,12 +107,7 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        Picasso.with(getActivity())
-                .load(uri)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.no_cover)
-                .into(albumArt);
+        Utils.setAlbumArtFromUri(getActivity(), albumArt, uri);
     }
 
     public void setRemoteAlbumArt(){
@@ -155,11 +150,10 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {}
 
-    private class BackgroundChanger extends SupportAsyncTask<Uri, Void, Void> {
+    private class BackgroundChanger extends SupportAsyncTask<Uri, Void, Drawable> {
         private Context context;
         private ImageView bg;
         private Bitmap bitmap;
-        private BitmapDrawable newDrawable;
 
         public BackgroundChanger(Context context, ImageView bg){
             this.context = context;
@@ -167,26 +161,27 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         }
 
         @Override
-        protected Void doInBackground(Uri... uri) {
+        protected Drawable doInBackground(Uri... uri) {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
 //                assert bitmap != null : "bitmap == null";
-                if(bitmap != null) {
+                if (bitmap != null) {
                     bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
-                }else{
+                } else {
                     bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
                 }
             } catch (IOException e) {
                 bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
             }
-            try{
-                newDrawable = new BitmapDrawable(getResources(), bitmap);
-            }catch (IllegalStateException ignored){}
-            return null;
+            try {
+                return new BitmapDrawable(getResources(), bitmap);
+            } catch (IllegalStateException ignored){
+                return null;
+            }
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Drawable newDrawable) {
             if(newDrawable != null){
                 Drawable oldDrawable = bg.getDrawable();
 

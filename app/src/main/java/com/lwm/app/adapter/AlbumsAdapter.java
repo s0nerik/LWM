@@ -63,7 +63,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         holder.artist.setText(utils.getArtistName(album.getArtist()));
 
         Picasso.with(context)
-                .load("file://"+album.getAlbumArtUri())
+                .load("file://"+album.getAlbumArtPath())
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.no_cover)

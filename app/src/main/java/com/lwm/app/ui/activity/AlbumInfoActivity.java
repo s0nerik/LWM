@@ -68,7 +68,7 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
         ImageView header = (ImageView) findViewById(R.id.image_header);
 
         Picasso.with(this)
-                .load("file://"+album.getAlbumArtUri())
+                .load("file://"+album.getAlbumArtPath())
                 .resize(screenWidth, screenWidth)
                 .placeholder(R.drawable.no_cover)
                 .centerCrop()

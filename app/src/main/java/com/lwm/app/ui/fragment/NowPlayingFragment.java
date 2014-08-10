@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
-import com.squareup.picasso.Picasso;
 
 public class NowPlayingFragment extends Fragment
 //        implements PlayerListener
@@ -96,12 +96,7 @@ public class NowPlayingFragment extends Fragment
     }
 
     public void setAlbumArtFromUri(Uri uri){
-        Picasso.with(getActivity())
-                .load(uri.toString())
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.no_cover)
-                .into(albumArt);
+        Utils.setAlbumArtFromUri(getActivity(), albumArt, uri);
     }
 
     public void setPlayButton(boolean playing){

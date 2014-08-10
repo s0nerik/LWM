@@ -6,7 +6,7 @@ public class Album {
     private String artist;
     private int year;
     private int songsCount;
-    private String albumArtUri;
+    private String albumArtPath;
 
     public Album(String title) {
         this.title = title;
@@ -23,27 +23,27 @@ public class Album {
         this.year = year;
     }
 
-    public Album(String title, String artist, int year, String albumArtUri) {
+    public Album(String title, String artist, int year, String albumArtPath) {
         this.title = title;
         this.artist = artist;
         this.year = year;
-        this.albumArtUri = albumArtUri;
+        this.albumArtPath = albumArtPath;
     }
 
-    public Album(String title, String artist, int year, String albumArtUri, int songsCount) {
+    public Album(String title, String artist, int year, String albumArtPath, int songsCount) {
         this.title = title;
         this.artist = artist;
         this.year = year;
-        this.albumArtUri = albumArtUri;
+        this.albumArtPath = albumArtPath;
         this.songsCount = songsCount;
     }
 
-    public Album(int id, String title, String artist, int year, String albumArtUri, int songsCount) {
+    public Album(int id, String title, String artist, int year, String albumArtPath, int songsCount) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.year = year;
-        this.albumArtUri = albumArtUri;
+        this.albumArtPath = albumArtPath;
         this.songsCount = songsCount;
     }
 
@@ -63,8 +63,8 @@ public class Album {
         return songsCount;
     }
 
-    public String getAlbumArtUri() {
-        return albumArtUri;
+    public String getAlbumArtPath() {
+        return albumArtPath;
     }
 
     public int getId() {
