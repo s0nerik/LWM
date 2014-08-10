@@ -29,7 +29,7 @@ public class ClientsManager {
     public void changeSong() {
         ready.clear();
         for(Client client:clients) {
-            new CommandRunner(client).executeWithThreadPoolExecutor(CommandRunner.Command.PING, CommandRunner.Command.PREPARE);
+            new CommandRunner(client).executeWithThreadPoolExecutor(StreamServer.Method.PING, StreamServer.Method.PREPARE);
         }
 
         handler = new Handler(Looper.getMainLooper());
@@ -63,14 +63,14 @@ public class ClientsManager {
     public void pause(){
         Log.d(App.TAG, "ClientsManager: pause");
         for(Client client:clients) {
-            new CommandRunner(client).executeWithThreadPoolExecutor(CommandRunner.Command.PAUSE);
+            new CommandRunner(client).executeWithThreadPoolExecutor(StreamServer.Method.PAUSE);
         }
     }
 
     public void start(){
         Log.d(App.TAG, "ClientsManager: start");
         for(Client client:clients) {
-            new CommandRunner(client).executeWithThreadPoolExecutor(CommandRunner.Command.PLAY);
+            new CommandRunner(client).executeWithThreadPoolExecutor(StreamServer.Method.PLAY);
         }
     }
 

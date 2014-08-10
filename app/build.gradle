@@ -67,4 +67,5 @@ dependencies {
     compile 'com.squareup:otto:+'
     compile 'com.squareup.okhttp:okhttp:+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:+'
+
 }

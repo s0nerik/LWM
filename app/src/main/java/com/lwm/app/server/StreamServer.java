@@ -21,34 +21,35 @@ import java.util.Set;
 
 public class StreamServer extends NanoHTTPD {
 
-    public static final String SERVER_ADDRESS = "http://192.168.43.1:8888";
-    public static final String CURRENT_POSITION = "/position";
-    public static final String CURRENT_INFO = "/info";
-    public static final String CURRENT_ALBUMART = "/albumart";
-    public static final String STREAM = "/stream";
-    public static final String PAUSE = "/pause";
-    public static final String PLAY = "/play";
-    public static final String PREPARE = "/prepare";
-    public static final String PING = "/ping";
-    public static final String SEEK_TO = "/seekTo/";
-    public static final String CLIENT_READY = "/ready";
-    public static final String CLIENT_REGISTER = "/register";
-    public static final String CLIENT_UNREGISTER = "/unregister";
+    public interface Method {
+        String CURRENT_POSITION = "/position";
+        String CURRENT_INFO = "/info";
+        String CURRENT_ALBUMART = "/albumart";
+        String STREAM = "/stream";
+        String PAUSE = "/pause";
+        String PLAY = "/play";
+        String PREPARE = "/prepare";
+        String PING = "/ping";
+        String SEEK_TO = "/seekTo/";
+        String CLIENT_READY = "/ready";
+        String CLIENT_REGISTER = "/register";
+        String CLIENT_UNREGISTER = "/unregister";
+    }
 
-    public static class Url {
-        public static final String SERVER_ADDRESS = "http://192.168.43.1:8888";
-        public static final String CURRENT_POSITION = SERVER_ADDRESS + "/position";
-        public static final String CURRENT_INFO = SERVER_ADDRESS + "/info";
-        public static final String CURRENT_ALBUMART = SERVER_ADDRESS + "/albumart";
-        public static final String STREAM = SERVER_ADDRESS + "/stream";
-        public static final String PAUSE = SERVER_ADDRESS + "/pause";
-        public static final String PLAY = SERVER_ADDRESS + "/play";
-        public static final String PREPARE = SERVER_ADDRESS + "/prepare";
-        public static final String PING = SERVER_ADDRESS + "/ping";
-        public static final String SEEK_TO = SERVER_ADDRESS + "/seekTo/";
-        public static final String CLIENT_READY = SERVER_ADDRESS + "/ready";
-        public static final String CLIENT_REGISTER = SERVER_ADDRESS + "/register";
-        public static final String CLIENT_UNREGISTER = SERVER_ADDRESS + "/unregister";
+    public interface Url {
+        String SERVER_ADDRESS = "http://192.168.43.1:8888";
+        String CURRENT_POSITION = SERVER_ADDRESS + "/position";
+        String CURRENT_INFO = SERVER_ADDRESS + "/info";
+        String CURRENT_ALBUMART = SERVER_ADDRESS + "/albumart";
+        String STREAM = SERVER_ADDRESS + "/stream";
+        String PAUSE = SERVER_ADDRESS + "/pause";
+        String PLAY = SERVER_ADDRESS + "/play";
+        String PREPARE = SERVER_ADDRESS + "/prepare";
+        String PING = SERVER_ADDRESS + "/ping";
+        String SEEK_TO = SERVER_ADDRESS + "/seekTo/";
+        String CLIENT_READY = SERVER_ADDRESS + "/ready";
+        String CLIENT_REGISTER = SERVER_ADDRESS + "/register";
+        String CLIENT_UNREGISTER = SERVER_ADDRESS + "/unregister";
     }
 
     private static Set<Client> clients = new HashSet<>();
@@ -66,7 +67,7 @@ public class StreamServer extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
-        Method method = session.getMethod();
+        NanoHTTPD.Method method = session.getMethod();
         String uri = session.getUri();
         String clientIP = session.getHeaders().get("remote-addr");
 
@@ -75,20 +76,20 @@ public class StreamServer extends NanoHTTPD {
         switch(method){
             case POST: // Incoming info
                 switch (uri) {
-                    case PING:
+                    case Method.PING:
                         return ping();
-                    case PLAY:
+                    case Method.PLAY:
                         return play();
-                    case PAUSE:
+                    case Method.PAUSE:
                         return pause();
-                    case PREPARE:
+                    case Method.PREPARE:
                         return prepare();
 
-                    case CLIENT_REGISTER:
+                    case Method.CLIENT_REGISTER:
                         return registerClient(clientIP);
-                    case CLIENT_UNREGISTER:
+                    case Method.CLIENT_UNREGISTER:
                         return unregisterClient(clientIP);
-                    case CLIENT_READY:
+                    case Method.CLIENT_READY:
                         return clientReady(clientIP);
 
                     default:
@@ -100,13 +101,13 @@ public class StreamServer extends NanoHTTPD {
                     LocalPlayerService localPlayer = App.getLocalPlayerService();
                     Song song = localPlayer.getCurrentSong();
                     switch (uri) {
-                        case STREAM:
+                        case Method.STREAM:
                             return stream(song);
-                        case CURRENT_INFO:
+                        case Method.CURRENT_INFO:
                             return currentInfo(song);
-                        case CURRENT_POSITION:
+                        case Method.CURRENT_POSITION:
                             return currentPosition(localPlayer);
-                        case CURRENT_ALBUMART:
+                        case Method.CURRENT_ALBUMART:
                             return currentAlbumArt(song);
                     }
                 } else {
@@ -118,7 +119,7 @@ public class StreamServer extends NanoHTTPD {
     }
 
     private Response ping() {
-        return new Response(Response.Status.OK, MIME_PLAINTEXT, "");
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Ping");
     }
 
     private Response play() {

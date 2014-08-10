@@ -6,14 +6,17 @@ import com.lwm.app.App;
 import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.model.Client;
 import com.lwm.app.server.StreamServer;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
+import java.io.EOFException;
 import java.io.IOException;
 
-public class CommandRunner extends SupportAsyncTask<CommandRunner.Command, Void, Void> {
+public class CommandRunner extends SupportAsyncTask<String, Void, Void> {
+
+    private static final int MAX_RETRIES = 3;
 
     private OkHttpClient httpClient = new OkHttpClient();
 
@@ -25,31 +28,31 @@ public class CommandRunner extends SupportAsyncTask<CommandRunner.Command, Void,
         this.client = client;
 
         pingRequest = new Request.Builder()
-                .url("http://" + client.getIP() + ":8888" + StreamServer.PING)
-                .post(null)
+                .url("http://" + client.getIP() + ":8888" + StreamServer.Method.PING)
+                .post(RequestBody.create(MediaType.parse("text/plain"), ""))
                 .build();
     }
 
-    public static enum Command { PREPARE, PLAY, PAUSE, SEEK_TO, PING }
-
     @Override
-    protected Void doInBackground(CommandRunner.Command... commands) {
-        for(Command command:commands){
-            sendRequest(command);
+    protected Void doInBackground(String... methods) {
+        for(String method:methods){
+            sendRequest(method);
         }
         return null;
     }
 
-    private void sendRequest(Command command) {
-        String method;
-        if(Command.PING.equals(command)){
+    private void sendRequest(String method) {
+        sendRequest(method, 0);
+    }
+
+    private void sendRequest(String method, int retryCount) {
+        if(StreamServer.Method.PING.equals(method)){
             try {
                 long start = System.currentTimeMillis();
-                Response response = httpClient.newCall(pingRequest).execute();
+                System.setProperty("http.keepAlive", "false");
+                httpClient.newCall(pingRequest).execute().body().close();
                 long ping = System.currentTimeMillis() - start;
                 client.setPing(Math.round(ping/2.));
-
-                response.body().close();
 
                 // Debug
                 Log.d(App.TAG, "Ping: "+client.getPing());
@@ -57,38 +60,23 @@ public class CommandRunner extends SupportAsyncTask<CommandRunner.Command, Void,
                 e.printStackTrace();
             }
         } else {
-            switch (command) {
-                case PREPARE:
-                    Log.d(App.TAG, "CommandRunner: PREPARE");
-                    method = StreamServer.PREPARE;
-                    break;
-                case PLAY:
-                    Log.d(App.TAG, "CommandRunner: PLAY");
-                    method = StreamServer.PLAY;
-                    break;
-                case PAUSE:
-                    Log.d(App.TAG, "CommandRunner: PAUSE");
-                    method = StreamServer.PAUSE;
-                    break;
-                case SEEK_TO:
-                    Log.d(App.TAG, "CommandRunner: SEEK_TO");
-                    method = StreamServer.SEEK_TO;
-                    break;
-                default:
-                    return;
-            }
-
             Request request = new Request.Builder()
                     .url("http://" + client.getIP() + ":8888" + method)
-                    .post(RequestBody.create(null, ""))
+                    .post(RequestBody.create(MediaType.parse("text/plain"), ""))
                     .build();
 
             try {
                 httpClient.newCall(request).execute().body().close();
 
+            } catch (EOFException e) {
+                // TODO: workaround this bug (or use another HttpClient)
+                if (retryCount < MAX_RETRIES) {
+                    sendRequest(method, retryCount + 1);
+                }
             } catch (IOException e) {
+                Log.e(App.TAG, "IOException in CommandRunner, method: " + method);
+                Log.e(App.TAG, "", e);
                 StreamServer.removeClient(client);
-//                e.printStackTrace();
             }
         }
     }
