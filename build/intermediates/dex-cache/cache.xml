@@ -32,17 +32,23 @@
         revision="19.1.0"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
     <item
-        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/gson-2.2.4-46106cdf35b0d576b8539a667a471d3c52a6d09a.jar"
-        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/httpclient-android-4.3.5-eee2fc78e6ca276fc67a0d19ec1ef03d8d3dadb7.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient-android/4.3.5/82edcaec6c7b4599eaeaaf11167ceea41db42f33/httpclient-android-4.3.5.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
+        sha1="82edcaec6c7b4599eaeaaf11167ceea41db42f33"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/classes-0458912f1fabcea76e4c8599b7709d7ec44401f3.jar"
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs/Fontify/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="9fd2c8105b9ca0af1c4cdaa53110c49ad44ab5fb"/>
+    <item
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/gson-2.3-6ac78ab89022d04c1882c03f210cff2e52447d1e.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/acra-4.5.0-2f4b3e8104eb363d1dbba1fe668a52c0e3eefd50.jar"
         jar="/home/sonerik/Projects/LWM/libs/acra-4.5.0.jar"

@@ -67,5 +67,5 @@ dependencies {
     compile 'com.squareup:otto:+'
     compile 'com.squareup.okhttp:okhttp:+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:+'
-
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.+'
 }

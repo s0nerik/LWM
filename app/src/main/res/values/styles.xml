@@ -6,13 +6,17 @@
         <!--<item name="android:dropDownListViewStyle">@style/SpinnerCompatStyle</item>-->
     </style>
 
-    <style name="StartActivity" parent="AppTheme">
+    <style name="AppTheme.StartActivity" parent="AppTheme">
         <item name="actionBarStyle">@style/Widget.ActionBar.Custom</item>
         <item name="android:actionBarStyle">@style/Widget.ActionBar.Custom</item>
         <item name="android:windowBackground">@drawable/background_main_activity</item>
     </style>
 
-    <style name="PlaybackActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme">
+        <item name="android:windowBackground">@color/card_list_background</item>
+    </style>
+
+    <style name="AppTheme.PlaybackActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarStyle">@style/ActionBar</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/ActionBar</item>

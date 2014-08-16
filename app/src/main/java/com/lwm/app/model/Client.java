@@ -2,7 +2,7 @@ package com.lwm.app.model;
 
 public class Client {
 
-    private long ping = -1;
+    private long ping = 0;
     private String ip;
 
     public Client(String ip) {
