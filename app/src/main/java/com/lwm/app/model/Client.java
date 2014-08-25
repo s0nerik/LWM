@@ -1,8 +1,17 @@
 package com.lwm.app.model;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.koushikdutta.async.future.Future;
+import com.koushikdutta.ion.Ion;
+import com.lwm.app.App;
+import com.lwm.app.server.StreamServer;
+import com.squareup.okhttp.OkHttpClient;
+
 public class Client {
 
-    private long ping = 0;
+    private long ping = -1;
     private String ip;
 
     public Client(String ip) {
@@ -17,17 +26,19 @@ public class Client {
         return ping;
     }
 
-    public void setPing(long ping) {
-        this.ping = ping;
+    public String getServerAddress() {
+        return "http://" + ip + ":" + StreamServer.PORT;
     }
 
-//    public void setPing(long ping) {
-//        if(this.ping != -1) {
-//            this.ping = Math.round((this.ping + ping) / 2f);
-//        }else{
-//            this.ping = ping;
-//        }
-//    }
+    private OkHttpClient httpClient = new OkHttpClient();
+
+    public void setPing(long ping) {
+        if (this.ping != -1) {
+            this.ping = Math.round((this.ping + ping * 2) / 3f); // New ping priority is higher
+        } else {
+            this.ping = ping;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -39,4 +50,43 @@ public class Client {
         int result = 17;
         return 37 * result + (ip == null ? 0 : ip.hashCode());
     }
+
+    private Future<String> executeMethodRequest(Context context, String method) {
+        return Ion.with(context)
+                .load(getServerAddress() + method)
+                .noCache()
+                .setLogging(App.TAG, Log.DEBUG)
+                .setStringBody("")
+                .asString();
+    }
+
+    public Future<String> prepare(Context context) {
+        return executeMethodRequest(context, StreamServer.Method.PREPARE);
+    }
+
+    public Future<String> start(Context context) {
+        return executeMethodRequest(context, StreamServer.Method.START);
+    }
+
+    public Future<String> pause(Context context) {
+        return executeMethodRequest(context, StreamServer.Method.PAUSE);
+    }
+
+    public Future<String> unpause(Context context) {
+        return executeMethodRequest(context, StreamServer.Method.UNPAUSE);
+    }
+
+    public Future<String> startFrom(Context context, int pos) {
+        return Ion.with(context)
+                .load(getServerAddress() + StreamServer.Method.START_FROM)
+                .noCache()
+                .setLogging(App.TAG, Log.DEBUG)
+                .setBodyParameter(StreamServer.Params.POSITION, String.valueOf(pos + ping))
+                .asString();
+    }
+
+//    public RequestHandle seekTo(int time, ResponseHandlerInterface handler) {
+//        return httpClient.post(getServerAddress() + StreamServer.Method.SEEK_TO, handler);
+//    }
+
 }

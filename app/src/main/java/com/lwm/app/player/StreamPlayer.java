@@ -1,18 +1,14 @@
 package com.lwm.app.player;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.event.player.PlaybackPausedEvent;
-import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.server.async.tasks.ClientRegister;
 import com.lwm.app.server.async.tasks.ClientUnregister;
-import com.lwm.app.server.async.tasks.GetPositionAndStart;
-import com.lwm.app.server.async.tasks.ReadinessReporter;
 
 import java.io.IOException;
 
@@ -24,19 +20,21 @@ public class StreamPlayer extends BasePlayer {
 
     public static final String STREAM_PATH = StreamServer.Url.STREAM;
 
+//    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+//        @Override
+//        public void onPrepared(MediaPlayer mediaPlayer) {
+//            Log.d("LWM", "StreamPlayer: onPrepared");
+//            new ReadinessReporter(StreamPlayer.this).execute();
+//        }
+//    };
+
     public StreamPlayer(Context context){
         this.context = context;
-        attachToStation();
-        setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                Log.d("LWM", "StreamPlayer: onPrepared");
-                new ReadinessReporter(StreamPlayer.this).execute();
-            }
-        });
+//        setOnPreparedListener(onPreparedListener);
     }
 
-    public void attachToStation(){
+    public void register(){
+        active = true;
         new ClientRegister().execute();
     }
 
@@ -44,19 +42,10 @@ public class StreamPlayer extends BasePlayer {
         reset();
         try {
             setDataSource(STREAM_PATH);
-            prepareAsync();
+            prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void playFromCurrentPosition(){
-
-        new GetPositionAndStart(this).execute();
-
-        active = true;
-
-        Log.d(App.TAG, "StreamPlayer: playFromCurrentPosition()");
     }
 
     @Override
@@ -89,10 +78,10 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void start() throws IllegalStateException {
         super.start();
-        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+//        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
     }
 
-    public void detachFromStation(){
+    public void unregister(){
         new ClientUnregister().execute();
     }
 

@@ -49,7 +49,7 @@ public class StreamPlayerService extends Service {
     }
 
     public void attachToStation() {
-        player.attachToStation();
+        player.register();
     }
 
     public void start() throws IllegalStateException {
@@ -76,10 +76,6 @@ public class StreamPlayerService extends Service {
         player.prepareNewSong();
     }
 
-    public void playFromCurrentPosition() {
-        player.playFromCurrentPosition();
-    }
-
     public Song getCurrentSong() {
         return player.getCurrentSong();
     }
@@ -93,7 +89,7 @@ public class StreamPlayerService extends Service {
     }
 
     public void detachFromStation() {
-        player.detachFromStation();
+        player.unregister();
     }
 
     public static boolean isActive() {

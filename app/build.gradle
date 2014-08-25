@@ -65,7 +65,10 @@ dependencies {
     compile 'com.squareup.picasso:picasso:+'
     compile 'com.jakewharton:butterknife:+'
     compile 'com.squareup:otto:+'
+    compile 'com.squareup.okio:okio:+'
+    compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.squareup.okhttp:okhttp:+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:+'
-    compile 'org.apache.httpcomponents:httpclient-android:4.3.+'
+    compile 'com.squareup.mimecraft:mimecraft:+'
+    compile 'com.koushikdutta.ion:ion:1.+'
 }

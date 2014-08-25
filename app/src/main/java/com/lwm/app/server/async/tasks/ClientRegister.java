@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.server.StreamServer;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -18,7 +19,7 @@ public class ClientRegister extends AsyncTask<Void, Void, Void> {
     private OkHttpClient httpClient = new OkHttpClient();
     private Request httpPostRegister = new Request.Builder()
             .url(StreamServer.Url.CLIENT_REGISTER)
-            .post(RequestBody.create(null, ""))
+            .post(RequestBody.create(MediaType.parse("text/plain"), ""))
             .build();
 
     @Override

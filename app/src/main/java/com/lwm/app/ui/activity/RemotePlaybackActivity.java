@@ -33,9 +33,6 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
 
         player = App.getStreamPlayerService();
-        if(savedInstanceState == null) {
-            player.playFromCurrentPosition();
-        }
     }
 
     @Override

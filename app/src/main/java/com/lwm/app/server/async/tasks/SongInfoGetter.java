@@ -41,7 +41,7 @@ public class SongInfoGetter extends AsyncTask<Void, Void, Void> {
             //Debug
             Log.d(App.TAG, "response: " + response);
 
-            song = new Gson().fromJson(response.body().charStream(), Song.class);
+            song = new Gson().fromJson(response.body().string(), Song.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

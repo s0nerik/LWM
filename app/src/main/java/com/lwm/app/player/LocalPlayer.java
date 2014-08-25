@@ -43,6 +43,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     private AudioManager audioManager;
     private NotificationManager notificationManager;
 
+    private ClientsManager clientsManager;
+
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
@@ -60,6 +62,8 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public LocalPlayer(Context context){
         this.context = context;
+
+        clientsManager = new ClientsManager(context, this);
 
         setOnCompletionListener(onCompletionListener);
 
@@ -123,7 +127,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             active = true;
 
             if(StreamServer.hasClients()) {
-                new ClientsManager(this).changeSong();
+                clientsManager.changeSong();
             }else{
                 start();
             }
@@ -180,9 +184,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
-        if(StreamServer.hasClients()){
-            new ClientsManager(this).pause();
-        }
 
         updateNotificationIfForeground();
 
@@ -194,16 +195,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     @Override
     public void start() throws IllegalStateException {
-        if(StreamServer.hasClients()){
-            ClientsManager manager = new ClientsManager(this);
-            manager.start();
-            try {
-                long maxPing = manager.getClientsMaxPing();
-                Thread.sleep(maxPing);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         super.start();
 
         updateNotificationIfForeground();
@@ -219,8 +210,14 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     @Override
     public void togglePause(){
         if (isPlaying()){
+            if(StreamServer.hasClients()){
+                clientsManager.pause();
+            }
             pause();
-        }else{
+        } else {
+            if(StreamServer.hasClients()){
+                clientsManager.unpause();
+            }
             start();
         }
     }
