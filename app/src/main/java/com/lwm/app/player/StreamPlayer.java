@@ -1,15 +1,16 @@
 package com.lwm.app.player;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.server.StreamServer;
 import com.lwm.app.server.async.tasks.ClientRegister;
 import com.lwm.app.server.async.tasks.ClientUnregister;
 
+import java.io.File;
 import java.io.IOException;
 
 public class StreamPlayer extends BasePlayer {
@@ -18,8 +19,9 @@ public class StreamPlayer extends BasePlayer {
     private static boolean active = false;
     private Song currentSong;
 
-    public static final String STREAM_PATH = StreamServer.Url.STREAM;
+    private File tempFile;
 
+//    public static final String STREAM_PATH = StreamServer.Url.STREAM;
 //    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
 //        @Override
 //        public void onPrepared(MediaPlayer mediaPlayer) {
@@ -28,8 +30,19 @@ public class StreamPlayer extends BasePlayer {
 //        }
 //    };
 
-    public StreamPlayer(Context context){
+    private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
+        @Override
+        public void onSeekComplete(MediaPlayer mediaPlayer) {
+            start();
+        }
+    };
+
+    public StreamPlayer(Context context) {
         this.context = context;
+        setOnSeekCompleteListener(onSeekCompleteListener);
+
+        tempFile = new File(context.getCacheDir(), "song.mp3");
+
 //        setOnPreparedListener(onPreparedListener);
     }
 
@@ -41,7 +54,8 @@ public class StreamPlayer extends BasePlayer {
     public void prepareNewSong(){
         reset();
         try {
-            setDataSource(STREAM_PATH);
+//            setDataSource(STREAM_PATH);
+            setDataSource(tempFile.getPath());
             prepare();
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,6 +93,10 @@ public class StreamPlayer extends BasePlayer {
     public void start() throws IllegalStateException {
         super.start();
 //        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+    }
+
+    public File getTempFile() {
+        return tempFile;
     }
 
     public void unregister(){

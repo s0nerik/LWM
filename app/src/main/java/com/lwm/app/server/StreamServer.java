@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
 import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.model.Client;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 public class StreamServer extends NanoHTTPD {
 
@@ -152,7 +154,7 @@ public class StreamServer extends NanoHTTPD {
         StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: START_FROM");
         streamPlayer.seekTo(pos);
-        streamPlayer.start();
+//        streamPlayer.start();
 
         new SongInfoGetter(streamPlayer.getPlayer()).execute();
 
@@ -179,6 +181,17 @@ public class StreamServer extends NanoHTTPD {
     private Response prepare() {
         StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: PREPARE");
+
+        try {
+            Ion.with(context)
+                    .load(Url.STREAM)
+                    .write(streamPlayer.getTempFile())
+                    .get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Error loading song.");
+        }
+
         streamPlayer.prepareNewSong();
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Prepared.");
     }
@@ -224,7 +237,7 @@ public class StreamServer extends NanoHTTPD {
 
         } catch (FileNotFoundException e) {e.printStackTrace();}
 
-        Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
+        Response res = new Response(Response.Status.OK, "audio/mpeg", fis);
         res.addHeader("Connection", "Keep-Alive");
         res.setChunkedTransfer(true);
         return res;
