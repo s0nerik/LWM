@@ -92,30 +92,31 @@ public class StreamServer extends NanoHTTPD {
 
         Log.d("LWM", "\nserve:\nmethod: " + method + "\nuri: " + uri);
 
+        Map<String, String> files = new HashMap<String, String>();
+        try {
+            session.parseBody(files);
+        } catch (IOException ioe) {
+            return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
+        } catch (ResponseException re) {
+            return new Response(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
+        }
+        Map<String, String> params = session.getParms();
+
         switch(method){
             case POST: // Incoming info
                 switch (uri) {
                     case Method.START:
                         return play();
                     case Method.START_FROM:
-
-                        Map<String, String> files = new HashMap<String, String>();
-                        try {
-                            session.parseBody(files);
-                        } catch (IOException ioe) {
-                            return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
-                        } catch (ResponseException re) {
-                            return new Response(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
-                        }
-                        Map<String, String> params = session.getParms();
-                        int pos = Integer.parseInt(params.get(Params.POSITION));
-
-                        return playFrom(pos);
+                        return playFrom(Integer.parseInt(params.get(Params.POSITION)));
                     case Method.PAUSE:
                         return pause();
+                    case Method.UNPAUSE:
+                        return unpause();
                     case Method.PREPARE:
                         return prepare();
-
+                    case Method.SEEK_TO:
+                        return seekTo(Integer.parseInt(params.get(Params.POSITION)));
                     case Method.CLIENT_REGISTER:
                         return registerClient(clientIP);
                     case Method.CLIENT_UNREGISTER:
@@ -161,6 +162,14 @@ public class StreamServer extends NanoHTTPD {
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback started from: "+pos);
     }
 
+    private Response seekTo(int pos) {
+        StreamPlayerService streamPlayer = App.getStreamPlayerService();
+        Log.d(App.TAG, "StreamServer: SEEK_TO");
+        streamPlayer.seekTo(pos);
+
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Seeked to: "+pos);
+    }
+
     private Response play() {
         StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: START");
@@ -176,6 +185,13 @@ public class StreamServer extends NanoHTTPD {
         Log.d(App.TAG, "StreamServer: PAUSE");
         streamPlayer.pause();
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
+    }
+
+    private Response unpause() {
+        StreamPlayerService streamPlayer = App.getStreamPlayerService();
+        Log.d(App.TAG, "StreamServer: UNPAUSE");
+        streamPlayer.start();
+        return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback unpaused.");
     }
 
     private Response prepare() {

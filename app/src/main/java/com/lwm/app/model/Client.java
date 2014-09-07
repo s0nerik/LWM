@@ -26,7 +26,7 @@ public class Client {
         return ping;
     }
 
-    public String getServerAddress() {
+    public String getClientAddress() {
         return "http://" + ip + ":" + StreamServer.PORT;
     }
 
@@ -53,7 +53,7 @@ public class Client {
 
     private Future<String> executeMethodRequest(Context context, String method) {
         return Ion.with(context)
-                .load(getServerAddress() + method)
+                .load(getClientAddress() + method)
                 .noCache()
                 .setLogging(App.TAG, Log.DEBUG)
                 .setStringBody("")
@@ -78,15 +78,20 @@ public class Client {
 
     public Future<String> startFrom(Context context, int pos) {
         return Ion.with(context)
-                .load(getServerAddress() + StreamServer.Method.START_FROM)
+                .load(getClientAddress() + StreamServer.Method.START_FROM)
                 .noCache()
                 .setLogging(App.TAG, Log.DEBUG)
                 .setBodyParameter(StreamServer.Params.POSITION, String.valueOf(pos + ping))
                 .asString();
     }
 
-//    public RequestHandle seekTo(int time, ResponseHandlerInterface handler) {
-//        return httpClient.post(getServerAddress() + StreamServer.Method.SEEK_TO, handler);
-//    }
+    public Future<String> seekTo(Context context, int pos) {
+        return Ion.with(context)
+                .load(getClientAddress() + StreamServer.Method.SEEK_TO)
+                .noCache()
+                .setLogging(App.TAG, Log.DEBUG)
+                .setBodyParameter(StreamServer.Params.POSITION, String.valueOf(pos + ping))
+                .asString();
+    }
 
 }

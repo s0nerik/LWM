@@ -99,6 +99,12 @@ public class ClientsManager {
         }
     }
 
+    public void seekTo(int pos) {
+        for(Client client:clients) {
+            client.seekTo(context, pos);
+        }
+    }
+
     public long getClientsMaxPing(){
         return Collections.max(clients, new Comparator<Client>() {
             @Override

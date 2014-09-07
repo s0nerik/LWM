@@ -156,6 +156,14 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     }
 
+    @Override
+    public void seekTo(int msec) throws IllegalStateException {
+        if(StreamServer.hasClients()) {
+            clientsManager.seekTo(msec);
+        }
+        super.seekTo(msec);
+    }
+
     public boolean isShuffle() {
         return shuffle;
     }
