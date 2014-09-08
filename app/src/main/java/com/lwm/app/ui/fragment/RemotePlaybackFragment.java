@@ -10,7 +10,7 @@ import com.lwm.app.service.StreamPlayerService;
 
 public class RemotePlaybackFragment extends PlaybackFragment {
 
-    StreamPlayerService player;
+    private StreamPlayerService player;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

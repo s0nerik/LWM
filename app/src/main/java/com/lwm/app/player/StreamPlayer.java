@@ -2,10 +2,12 @@ package com.lwm.app.player;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.event.player.PlaybackPausedEvent;
+import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.async.tasks.ClientRegister;
 import com.lwm.app.server.async.tasks.ClientUnregister;
@@ -18,6 +20,8 @@ public class StreamPlayer extends BasePlayer {
     private Context context;
     private static boolean active = false;
     private Song currentSong;
+
+    private Handler handler;
 
     private File tempFile;
 
@@ -39,6 +43,7 @@ public class StreamPlayer extends BasePlayer {
 
     public StreamPlayer(Context context) {
         this.context = context;
+        handler = new Handler(context.getMainLooper());
         setOnSeekCompleteListener(onSeekCompleteListener);
 
         tempFile = new File(context.getCacheDir(), "song.mp3");
@@ -86,13 +91,23 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
-        App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
+            }
+        });
     }
 
     @Override
     public void start() throws IllegalStateException {
         super.start();
-//        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+            }
+        });
     }
 
     public File getTempFile() {
