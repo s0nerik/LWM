@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
 import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.model.Client;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 public class StreamServer extends NanoHTTPD {
 
@@ -112,7 +110,7 @@ public class StreamServer extends NanoHTTPD {
                     case Method.PAUSE:
                         return pause();
                     case Method.UNPAUSE:
-                        return unpause();
+                        return unpause(Integer.parseInt(params.get(Params.POSITION)));
                     case Method.PREPARE:
                         return prepare();
                     case Method.SEEK_TO:
@@ -187,10 +185,10 @@ public class StreamServer extends NanoHTTPD {
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback paused.");
     }
 
-    private Response unpause() {
+    private Response unpause(int pos) {
         StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: UNPAUSE");
-        streamPlayer.start();
+        streamPlayer.seekTo(pos);
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Playback unpaused.");
     }
 
@@ -198,15 +196,15 @@ public class StreamServer extends NanoHTTPD {
         StreamPlayerService streamPlayer = App.getStreamPlayerService();
         Log.d(App.TAG, "StreamServer: PREPARE");
 
-        try {
-            Ion.with(context)
-                    .load(Url.STREAM)
-                    .write(streamPlayer.getTempFile())
-                    .get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Error loading song.");
-        }
+//        try {
+//            Ion.with(context)
+//                    .load(Url.STREAM)
+//                    .write(streamPlayer.getTempFile())
+//                    .get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//            return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Error loading song.");
+//        }
 
         streamPlayer.prepareNewSong();
         return new Response(Response.Status.OK, MIME_PLAINTEXT, "Prepared.");

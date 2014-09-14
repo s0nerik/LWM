@@ -92,10 +92,10 @@ public class ClientsManager {
         }
     }
 
-    public void unpause(){
+    public void unpause(int pos){
         Log.d(App.TAG, "ClientsManager: unpause");
         for(Client client:clients) {
-            client.unpause(context);
+            client.unpause(context, pos);
         }
     }
 

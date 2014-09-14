@@ -12,7 +12,6 @@ import android.view.SurfaceHolder;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.StreamPlayer;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
@@ -241,9 +240,9 @@ public class StreamPlayerService extends Service {
         player.setOnInfoListener(listener);
     }
 
-    public File getTempFile() {
-        return player.getTempFile();
-    }
+//    public File getTempFile() {
+//        return player.getTempFile();
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {

@@ -60,12 +60,20 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         }
     };
 
+    private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
+        @Override
+        public void onSeekComplete(MediaPlayer mediaPlayer) {
+            start();
+        }
+    };
+
     public LocalPlayer(Context context){
         this.context = context;
 
         clientsManager = new ClientsManager(context, this);
 
         setOnCompletionListener(onCompletionListener);
+        setOnSeekCompleteListener(onSeekCompleteListener);
 
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -224,7 +232,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
             pause();
         } else {
             if(StreamServer.hasClients()){
-                clientsManager.unpause();
+                clientsManager.unpause(getCurrentPosition());
             }
             start();
         }

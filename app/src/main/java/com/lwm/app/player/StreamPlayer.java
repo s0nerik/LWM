@@ -5,14 +5,13 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 
+import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.server.async.tasks.ClientRegister;
-import com.lwm.app.server.async.tasks.ClientUnregister;
+import com.lwm.app.server.StreamServer;
 
-import java.io.File;
 import java.io.IOException;
 
 public class StreamPlayer extends BasePlayer {
@@ -23,9 +22,9 @@ public class StreamPlayer extends BasePlayer {
 
     private Handler handler;
 
-    private File tempFile;
+//    private File tempFile;
 
-//    public static final String STREAM_PATH = StreamServer.Url.STREAM;
+    public static final String STREAM_PATH = StreamServer.Url.STREAM;
 //    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
 //        @Override
 //        public void onPrepared(MediaPlayer mediaPlayer) {
@@ -46,21 +45,26 @@ public class StreamPlayer extends BasePlayer {
         handler = new Handler(context.getMainLooper());
         setOnSeekCompleteListener(onSeekCompleteListener);
 
-        tempFile = new File(context.getCacheDir(), "song.mp3");
+//        tempFile = new File(context.getCacheDir(), "song.mp3");
 
 //        setOnPreparedListener(onPreparedListener);
     }
 
     public void register(){
         active = true;
-        new ClientRegister().execute();
+        Ion.with(context)
+                .load(StreamServer.Url.CLIENT_REGISTER)
+                .noCache()
+                .setLogging(App.TAG, Log.DEBUG)
+                .setStringBody("")
+                .asString();
     }
 
     public void prepareNewSong(){
         reset();
         try {
-//            setDataSource(STREAM_PATH);
-            setDataSource(tempFile.getPath());
+            setDataSource(STREAM_PATH);
+//            setDataSource(tempFile.getPath());
             prepare();
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,12 +114,18 @@ public class StreamPlayer extends BasePlayer {
         });
     }
 
-    public File getTempFile() {
-        return tempFile;
-    }
+//    public File getTempFile() {
+//        return tempFile;
+//    }
 
     public void unregister(){
-        new ClientUnregister().execute();
+        Ion.with(context)
+                .load(StreamServer.Url.CLIENT_UNREGISTER)
+                .noCache()
+                .setLogging(App.TAG, Log.DEBUG)
+                .setStringBody("")
+                .asString();
+//        new ClientUnregister().execute();
     }
 
     public static boolean isActive(){
