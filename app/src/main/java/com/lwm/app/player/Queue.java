@@ -7,6 +7,7 @@ import com.lwm.app.model.Song;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
 
@@ -103,7 +104,7 @@ public class Queue {
             played.pop();
             currentIndex--;
             return true;
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException | EmptyStackException e) {
             currentSong = queue.get(currentIndex);
             return false;
         }
