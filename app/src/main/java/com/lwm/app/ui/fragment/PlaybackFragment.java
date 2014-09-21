@@ -36,9 +36,11 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
 
     private TextView currentTime;
     private TextView duration;
-    private SeekBar seekBar;
+    protected SeekBar seekBar;
     private ImageView albumArt;
     private ImageView background;
+
+    protected View playbackControls;
 
     // Playback control buttons
     private ImageView playPauseButton;
@@ -68,6 +70,8 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
         seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
         albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
+
+        playbackControls = view.findViewById(R.id.fragment_playback_controls);
 
         playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
         ImageView nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);

@@ -16,6 +16,8 @@ public class RemotePlaybackFragment extends PlaybackFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         player = App.getStreamPlayerService();
+        playbackControls.setVisibility(View.GONE);
+        seekBar.setBackgroundResource(R.drawable.background_seekbar_no_controls);
     }
 
     @Override
