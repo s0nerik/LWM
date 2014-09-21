@@ -32,7 +32,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private boolean active = false;
 
-    private Queue queue;
+    private Queue queue = new Queue();
 
     private AudioManager audioManager;
     private NotificationManager notificationManager;
@@ -78,7 +78,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     }
 
     public void setQueue(List<Song> songs){
-        queue = new Queue(this, songs);
+        queue = new Queue(songs);
     }
 
     public void shuffleQueue(){

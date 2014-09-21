@@ -43,14 +43,15 @@ public class LocalSongChooserActivity extends BasicActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
-    private enum DrawerItems {SONGS, ARTISTS, ALBUMS, QUEUE}
+    private enum DrawerItem {SONGS, ARTISTS, ALBUMS, QUEUE}
 
     private MenuItem broadcastButton;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private ActionBar actionBar;
     private ActionBarDrawerToggle drawerToggle;
-    private int activeFragment;
+
+    private DrawerItem activeFragment;
 
     private SharedPreferences sharedPreferences;
 
@@ -71,7 +72,7 @@ public class LocalSongChooserActivity extends BasicActivity {
         initNavigationDrawer();
 
         if (savedInstanceState == null) {
-            showSelectedFragment(sharedPreferences.getInt(DRAWER_SELECTION, 0));
+            showSelectedFragment(activeFragment);
         }
 
         drawerToggle.syncState();
@@ -85,8 +86,8 @@ public class LocalSongChooserActivity extends BasicActivity {
         actionBar.setHomeButtonEnabled(true);
     }
 
-    protected Fragment getFragmentFromDrawer(int i) {
-        switch (DrawerItems.values()[i]) {
+    protected Fragment getFragmentFromDrawer(DrawerItem i) {
+        switch (i) {
             case SONGS:
                 return new SongsListFragment();
             case ARTISTS:
@@ -103,7 +104,7 @@ public class LocalSongChooserActivity extends BasicActivity {
         Resources resources = getResources();
         String title;
         Drawable icon;
-        switch (DrawerItems.values()[activeFragment]) {
+        switch (activeFragment) {
             case SONGS:
                 title = resources.getString(R.string.actionbar_title_songs);
                 icon = resources.getDrawable(R.drawable.ic_drawer_songs_active);
@@ -143,14 +144,19 @@ public class LocalSongChooserActivity extends BasicActivity {
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showSelectedFragment(i);
-                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).commit();
+                showSelectedFragment(DrawerItem.values()[i]);
+                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
                 drawerLayout.closeDrawer(drawerList);
             }
         });
 
-        activeFragment = sharedPreferences.getInt(DRAWER_SELECTION, 0);
-        drawerList.setItemChecked(activeFragment, true);
+        activeFragment = DrawerItem.values()[sharedPreferences.getInt(DRAWER_SELECTION, 0)];
+
+        if (activeFragment == DrawerItem.QUEUE) {
+            activeFragment = DrawerItem.SONGS;
+        }
+
+        drawerList.setItemChecked(activeFragment.ordinal(), true);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -163,7 +169,7 @@ public class LocalSongChooserActivity extends BasicActivity {
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
     }
 
-    protected void showSelectedFragment(int i) {
+    protected void showSelectedFragment(DrawerItem i) {
         fragmentManager.beginTransaction()
                 .replace(R.id.container, getFragmentFromDrawer(i))
                 .commit();

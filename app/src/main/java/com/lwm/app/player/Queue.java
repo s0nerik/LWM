@@ -1,7 +1,5 @@
 package com.lwm.app.player;
 
-import android.media.MediaPlayer;
-
 import com.lwm.app.model.Song;
 
 import java.util.ArrayList;
@@ -13,8 +11,6 @@ import java.util.Stack;
 
 public class Queue {
 
-    private MediaPlayer player;
-
     // Needed only for proper shuffling
     private Stack<Song> played = new Stack<>();
 
@@ -25,8 +21,10 @@ public class Queue {
 
     private boolean shuffled = false;
 
-    public Queue(MediaPlayer player, List<Song> songs) {
-        this.player = player;
+    public Queue() {
+    }
+
+    public Queue(List<Song> songs) {
         this.queue = songs;
     }
 
@@ -51,15 +49,6 @@ public class Queue {
      * then adds played list to the beginning of queue list.
      */
     public void shuffleExceptPlayed() {
-
-//        Collections.shuffle(queue.subList(player.isPlaying()? currentIndex + 1 : currentIndex, queue.size()));
-
-//        if (player.isPlaying()) {
-//            try {
-//                played.pop();
-//            } catch (EmptyStackException ignore) {}
-//        }
-
         queue.removeAll(played);
         Collections.shuffle(queue);
         queue.addAll(0, played);

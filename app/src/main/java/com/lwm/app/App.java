@@ -8,8 +8,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lwm.app.event.access_point.StopServerEvent;
 import com.lwm.app.event.access_point.StartServerEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
 import com.lwm.app.event.player.StartForegroundLocalPlayerEvent;
 import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.event.player.binding.BindLocalPlayerServiceEvent;
@@ -25,7 +25,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
-import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
@@ -79,8 +78,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Start ACRA
-        ACRA.init(this);
+//        // Start ACRA
+//        ACRA.init(this);
 
         eventBus = new Bus(ThreadEnforcer.ANY);
         eventBus.register(this);
