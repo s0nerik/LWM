@@ -21,24 +21,18 @@ import com.lwm.app.server.async.ClientsManager;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     private Context context;
 
-    private boolean shuffle = false;
     private boolean repeat = false;
 
     private boolean active = false;
-    private int currentQueuePosition = -1;
-    private Song currentSong;
 
-    private List<Song> queue = new ArrayList<>();
-    private int queueSize = 0;
+    private Queue queue;
 
     private AudioManager audioManager;
     private NotificationManager notificationManager;
@@ -52,7 +46,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
             if(getCurrentPosition() > getDuration()-1000){
                 if(isRepeat()){
-                    play(currentQueuePosition);
+                    play();
                 }else{
                     nextSong();
                 }
@@ -80,40 +74,36 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     }
 
     public List<Song> getQueue(){
-        return queue;
+        return queue.getQueue();
     }
 
-    public void setQueue(List<Song> queue){
-        this.queue = queue;
-        queueSize = queue.size();
-        shuffle = false;
+    public void setQueue(List<Song> songs){
+        queue = new Queue(this, songs);
     }
 
     public void shuffleQueue(){
-        Collections.shuffle(queue);
-        shuffle = true;
-        currentQueuePosition = 0;
-        play(currentQueuePosition);
+        queue.shuffle();
+        App.getEventBus().post(new QueueShuffledEvent(queue.getQueue()));
+    }
 
-        App.getEventBus().post(new QueueShuffledEvent(queue));
+    public void shuffleQueueExceptPlayed(){
+        queue.shuffleExceptPlayed();
+        App.getEventBus().post(new QueueShuffledEvent(queue.getQueue()));
     }
 
     public void addToQueue(Collection<Song> songs){
-        queue.addAll(songs);
-        queueSize += songs.size();
-        App.getEventBus().post(new PlaylistAddedToQueueEvent(queue));
+        queue.addSongs(songs);
+        App.getEventBus().post(new PlaylistAddedToQueueEvent(queue.getQueue()));
     }
 
     public void addToQueue(Song song){
-        queue.add(song);
-        queueSize++;
-        App.getEventBus().post(new SongAddedToQueueEvent(queue, song));
+        queue.addSong(song);
+        App.getEventBus().post(new SongAddedToQueueEvent(queue.getQueue(), song));
     }
 
     public Song getCurrentSong(){
         Log.d(App.TAG, "getCurrentSong");
-
-        return currentSong;
+        return queue.getSong();
     }
 
     @Override
@@ -122,14 +112,15 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     }
 
     public void play(int position){
+        queue.moveTo(position);
+        play();
+    }
 
-        currentQueuePosition = position;
-        currentSong = queue.get(position);
-
+    public void play(){
         reset();
         try {
             assert queue != null : "queue == null";
-            setDataSource(currentSong.getSource());
+            setDataSource(queue.getSong().getSource());
             prepare();
 
             active = true;
@@ -143,8 +134,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Log.d(App.TAG, "LocalPlayer: play("+position+")");
     }
 
     public boolean hasCurrentSong() {
@@ -155,11 +144,10 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public void nextSong() {
         Log.d(App.TAG, "LocalPlayer: nextSong");
 
-        if(currentQueuePosition+1 < queueSize) {
-            play(++currentQueuePosition);
-        }else{
-            Toast t = Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT);
-            t.show();
+        if(queue.moveToNext()) {
+            play();
+        } else {
+            Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -173,7 +161,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     }
 
     public boolean isShuffle() {
-        return shuffle;
+        return queue.isShuffled();
     }
 
     public boolean isRepeat() {
@@ -188,11 +176,10 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public void prevSong(){
         Log.d(App.TAG, "LocalPlayer: prevSong");
 
-        if(currentQueuePosition-1 >= 0) {
-            play(--currentQueuePosition);
-        }else{
-            Toast t = Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT);
-            t.show();
+        if(queue.moveToPrev()) {
+            play();
+        } else {
+            Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -203,7 +190,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
         updateNotificationIfForeground();
 
-        App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
+        App.getEventBus().post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
 
         context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
 
@@ -215,7 +202,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
         updateNotificationIfForeground();
 
-        App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+        App.getEventBus().post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
 
         context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
 
@@ -246,7 +233,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     }
 
     public int getCurrentQueuePosition() {
-        return currentQueuePosition;
+        return queue.getCurrentIndex();
     }
 
     @Override
@@ -258,7 +245,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public void onWaitClients() {}
 
     public int getQueueSize() {
-        return queueSize;
+        return queue.getSize();
     }
 
     private AFListener afListener = new AFListener();

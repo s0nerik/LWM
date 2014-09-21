@@ -1,10 +1,8 @@
 package com.lwm.app.ui.activity;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,9 +11,9 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.event.access_point.StopServerEvent;
-import com.lwm.app.event.access_point.StartServerEvent;
 import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
+import com.lwm.app.event.access_point.StartServerEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
 import com.lwm.app.event.player.PlaybackPausedEvent;
 import com.lwm.app.event.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
@@ -50,7 +48,6 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Override
     public void onControlButtonClicked(View v){
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         switch(v.getId()){
             case R.id.fragment_playback_next:
                 player.nextSong();
@@ -66,20 +63,13 @@ public class LocalPlaybackActivity extends PlaybackActivity {
                 break;
 
             case R.id.fragment_playback_shuffle_button:
-                player.shuffleQueue();
+                player.shuffleQueueExceptPlayed();
                 playbackFragment.setShuffleButton(player.isShuffle());
-
-                editor.putBoolean("shuffle", player.isShuffle());
-                editor.commit();
-
                 break;
 
             case R.id.fragment_playback_repeat_button:
                 player.setRepeat(!player.isRepeat());
                 playbackFragment.setRepeatButton(player.isRepeat());
-
-                editor.putBoolean("repeat", player.isRepeat());
-                editor.commit();
                 break;
         }
     }

@@ -28,7 +28,6 @@ import com.lwm.app.ui.async.SongsListLoader;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SongsListFragment extends ListFragment implements
@@ -155,12 +154,7 @@ public class SongsListFragment extends ListFragment implements
         Log.d(App.TAG, "SongsListFragment: onListItemClick");
 
         if (App.isLocalPlayerServiceBound()) {
-
-            if (isFirstClick) {
-                player.setQueue(songs);
-                isFirstClick = false;
-            }
-
+            player.setQueue(songs);
             player.play(position);
         }
     }
@@ -213,8 +207,8 @@ public class SongsListFragment extends ListFragment implements
     private void shuffleAll(){
         if (songs != null && !songs.isEmpty()) {
             List<Song> queue = new ArrayList<>(songs);
-            Collections.shuffle(queue);
             player.setQueue(queue);
+            player.shuffleQueue();
             player.play(0);
             highlightCurrentSong();
         } else {

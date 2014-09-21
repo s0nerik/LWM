@@ -62,6 +62,10 @@ public class LocalPlayerService extends Service {
         player.shuffleQueue();
     }
 
+    public void shuffleQueueExceptPlayed() {
+        player.shuffleQueueExceptPlayed();
+    }
+
     public void addToQueue(Collection<Song> songs) {
         player.addToQueue(songs);
     }
