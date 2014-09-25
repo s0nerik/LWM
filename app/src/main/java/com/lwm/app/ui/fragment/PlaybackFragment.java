@@ -50,6 +50,8 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
     private Drawable[] drawables;
     private TransitionDrawable transitionDrawable;
 
+    protected View waitingForStation;
+
     private int screenWidth;
 
     @Override
@@ -80,6 +82,8 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
         repeatButton = (ImageView) view.findViewById(R.id.fragment_playback_repeat_button);
 
         background = (ImageView) view.findViewById(R.id.fragment_playback_background);
+
+        waitingForStation = view.findViewById(R.id.waiting_for_station);
 
         noCover = BitmapFactory.decodeResource(getActivity().getResources(),
                 R.drawable.no_cover);

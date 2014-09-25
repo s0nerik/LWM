@@ -17,6 +17,7 @@ public class RemotePlaybackFragment extends PlaybackFragment {
         super.onViewCreated(view, savedInstanceState);
         player = App.getStreamPlayerService();
         playbackControls.setVisibility(View.GONE);
+        seekBar.setEnabled(false);
         seekBar.setBackgroundResource(R.drawable.background_seekbar_no_controls);
     }
 
@@ -31,9 +32,14 @@ public class RemotePlaybackFragment extends PlaybackFragment {
 
     public void showWaitingFrame(boolean show){
         if(show) {
-            getActivity().findViewById(R.id.waiting_for_station).setVisibility(View.VISIBLE);
+            waitingForStation.setVisibility(View.VISIBLE);
+//            Uri video = Uri.parse("android.resource://com.lwm.app/raw/wait");
+//            waitingForStation.setVideoURI(video);
+//            waitingForStation.requestFocus();
+//            waitingForStation.start();
         }else{
-            getActivity().findViewById(R.id.waiting_for_station).setVisibility(View.GONE);
+//            waitingForStation.stopPlayback();
+            waitingForStation.setVisibility(View.GONE);
         }
     }
 
