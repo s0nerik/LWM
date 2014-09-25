@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.lwm.app.ui.custom_view.CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.danh32.fontify.TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     android:id="@android:id/text1"
     style="@style/Card"
-    android:checkMark="@null"
     android:padding="6dp"
     android:layout_width="match_parent"
     android:layout_height="?android:listPreferredItemHeight"
