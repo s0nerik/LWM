@@ -32,6 +32,9 @@
     <string name="title_ap_name_preference">Station name</string>
     <string name="summary_ap_name_preference">Give name to your local station</string>
 
+    <string name="title_ap_password_preference">Station password</string>
+    <string name="summary_ap_password_preference">Set your station\'s password</string>
+
     <string name="title_ap_clients_can_manage_preference">Clients can manage station playback</string>
     <string name="summary_ap_clients_can_manage_preference">Use it with caution(and only with your friends)</string>
 
@@ -91,6 +94,13 @@
         <item>@drawable/selector_ic_drawer_artists</item>
         <item>@drawable/selector_ic_drawer_albums</item>
         <item>@drawable/selector_ic_drawer_playlists</item>
+    </string-array>
+
+    // Navigation Drawer titles
+    <string-array name="wifi_signal_levels">
+        <item>low</item>
+        <item>medium</item>
+        <item>good</item>
     </string-array>
 
     // Station chooser activity

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -14,13 +15,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.adapter.StationsAdapter;
 import com.lwm.app.lib.Connectivity;
-import com.lwm.app.lib.WifiAP;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 
@@ -33,7 +33,8 @@ import java.util.List;
 
 public class PlayersAroundFragment extends ListFragment {
 
-    private List<String> ssids;
+    private List<ScanResult> scanResults;
+    private StationsAdapter stationsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class PlayersAroundFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        String ap = ssids.get(position) + WifiAP.AP_NAME_POSTFIX;
+        String ap = stationsAdapter.getItem(position).SSID;
 
         new StationConnectionTask().execute(ap);
 
@@ -64,10 +65,13 @@ public class PlayersAroundFragment extends ListFragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void setSSIDs(List<String> ssids){
-        Log.d(App.TAG, "setSSIDs()");
-        this.ssids = ssids;
-        setListAdapter(new ArrayAdapter(getActivity(), R.layout.list_item_players_around, ssids));
+    public void setScanResults(List<ScanResult> results){
+        Log.d(App.TAG, "setScanResults()");
+        scanResults = results;
+
+        stationsAdapter = new StationsAdapter(getActivity(), results);
+
+        setListAdapter(stationsAdapter);
     }
 
     protected void startStreamPlayback(){
@@ -91,14 +95,16 @@ public class PlayersAroundFragment extends ListFragment {
         }
 
         @Override
-        protected Void doInBackground(String... aps) {
-            String ap = aps[0];
+        protected Void doInBackground(String... params) {
+            String ap = params[0];
+//            String pass = params[1];
+
             WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
             if (wifiManager != null && wifiManager.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
                 WifiInfo info = wifiManager.getConnectionInfo();
                 if (info == null || !ap.equals(info.getSSID())) {
                     // Device is connected to different AP or not connected at all
-                    Connectivity.connectToOpenAP(getActivity(), ap);
+                    Connectivity.connectToStation(getActivity(), ap);
                     while(!isWifiNetworkAvailable()){
                         try {
                             Thread.sleep(1000);

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import com.lwm.app.R;
 import com.lwm.app.event.access_point.StartServerEvent;
 import com.lwm.app.event.access_point.StopServerEvent;
 import com.lwm.app.event.player.binding.BindStreamPlayerServiceEvent;
-import com.lwm.app.lib.WifiAP;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
 
 import java.util.ArrayList;
@@ -41,12 +39,7 @@ public class StationChooserActivity extends ActionBarActivity {
                     if (fragment != null) {
                         List<String> ssids = new ArrayList<>();
                         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-                        for (ScanResult result : wm.getScanResults()) {
-                            if (result.SSID.endsWith(WifiAP.AP_NAME_POSTFIX)) {
-                                ssids.add(result.SSID.replace(WifiAP.AP_NAME_POSTFIX, ""));
-                            }
-                        }
-                        fragment.setSSIDs(ssids);
+                        fragment.setScanResults(wm.getScanResults());
                     }
                     break;
                 case WifiManager.WIFI_STATE_CHANGED_ACTION:

@@ -116,34 +116,33 @@ public class Connectivity {
         }
     }
 
-    public static void connectToOpenAP(Context context, String apName){
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        List<WifiConfiguration> configurations = wifiManager.getConfiguredNetworks();
-        for(WifiConfiguration wc:configurations){
-            if(apName.equals(wc.SSID)){
-                wifiManager.enableNetwork(wc.networkId, true);
-                return;
+   public static void connectToStation(Context context, String apName){
+
+        String networkSSID = apName;
+//        String networkPass = apPassword;
+
+        WifiConfiguration conf = new WifiConfiguration();
+        conf.SSID = "\"" + networkSSID + "\"";
+
+        // TODO: password-protected station connection
+//        conf.preSharedKey = "\""+ networkPass +"\"";
+
+        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+        WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.addNetwork(conf);
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        for( WifiConfiguration i : list ) {
+            if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(i.networkId, true);
+                wifiManager.reconnect();
+
+                break;
             }
         }
-        WifiConfiguration wc = new WifiConfiguration();
-        wc.SSID = "\""+apName+"\"";
-        wc.status = WifiConfiguration.Status.DISABLED;
-        wc.priority = 40;
 
-        // Security (open)
-        wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-        wc.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-        wc.allowedAuthAlgorithms.clear();
-        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-
-        int netId = wifiManager.addNetwork(wc);
-        wifiManager.enableNetwork(netId, true);
     }
 
     public static String getIP(Context context){

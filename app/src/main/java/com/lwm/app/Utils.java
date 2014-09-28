@@ -3,12 +3,14 @@ package com.lwm.app;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class Utils {
 
@@ -43,6 +45,19 @@ public class Utils {
             Log.d(App.TAG, "Unable to set ImageView from URI: " + e.toString());
             view.setImageResource(R.drawable.no_cover);
         }
+    }
+
+    public static int getRandomColor() {
+        Random random = new Random();
+        int r = random.nextInt(255);
+        int g = random.nextInt(255);
+        int b = random.nextInt(255);
+
+        return Color.rgb(r, g, b);
+    }
+
+    public static String getRandomColorString() {
+        return String.format("#%06X", 0xFFFFFF & getRandomColor());
     }
 
 }

@@ -9,9 +9,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.lwm.app.App;
-import com.lwm.app.event.access_point.StopServerEvent;
-import com.lwm.app.event.access_point.StartServerEvent;
+import com.lwm.app.Utils;
 import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
+import com.lwm.app.event.access_point.StartServerEvent;
+import com.lwm.app.event.access_point.StopServerEvent;
 
 import java.lang.reflect.Method;
 
@@ -33,7 +34,12 @@ public class WifiAP {
     private String TAG = "WifiAP";
 
     private String AP_NAME;
-    public static String AP_NAME_POSTFIX = " [LWM]";
+    private String AP_COLOR;
+    private String AP_PASSWORD;
+    private String AP_OPEN;
+
+    public static String AP_NAME_REGEXP = "♪ (.{1,22}) #([0123456789abcdefABCDEF]{6})";
+    public static String AP_NAME_FORMAT = "♪ %s %s"; // First - name, second - color
 
     private int stateWifiWasIn = -1;
 
@@ -45,16 +51,27 @@ public class WifiAP {
         }
 
         AP_NAME = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString("ap_name", "Listen With Me!");
+                .getString("ap_name", android.os.Build.MODEL);
+
+        AP_COLOR = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("ap_color", Utils.getRandomColorString());
+
+        AP_PASSWORD = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("ap_password", "12345678");
+
         boolean wifiApIsOn = getWifiAPState()==WIFI_AP_STATE_ENABLED || getWifiAPState()==WIFI_AP_STATE_ENABLING;
-        new SetWifiAPTask(!wifiApIsOn,false,context).execute();
+        new SetWifiAPTask(!wifiApIsOn, false, context).execute();
     }
 
     private int setWifiApEnabled(boolean enabled) {
         Log.d(TAG, "*** setWifiApEnabled CALLED **** " + enabled);
 
         WifiConfiguration config = new WifiConfiguration();
-        config.SSID = AP_NAME+AP_NAME_POSTFIX;
+        config.SSID = String.format(AP_NAME_FORMAT, AP_NAME, AP_COLOR);
+
+        // TODO: Password-protected AP
+//        config.preSharedKey = "\""+ AP_PASSWORD +"\"";
+
         config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
 
         //remember wirelesses current state
