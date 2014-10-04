@@ -6,7 +6,7 @@
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs.android-stackblur/StackBlur/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="07558439e168259aff9933ae47c1c2f9e2070129"/>
+        sha1="470e4cb0050949b0864f3d5796fce3b97d97c863"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.5-21f49fffcb40df50ee1c56f9b119436e7498d894.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.5/77bf7cacf9cefe19dc105e5425d2eb1bb5285881/android-async-http-1.4.5.jar"
@@ -24,7 +24,7 @@
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs/Fontify/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="9fd2c8105b9ca0af1c4cdaa53110c49ad44ab5fb"/>
+        sha1="c7353982bf186c48517ee3030808b841ab8b96c6"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/gson-2.3-6ac78ab89022d04c1882c03f210cff2e52447d1e.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
@@ -36,7 +36,7 @@
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs/UnifiedPreference/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="b32e2c0973d241ef8ffcfb11b497393acf5fdecf"/>
+        sha1="08c39e4bcc60c7621840e2e25ceffd9af97043aa"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/acra-4.5.0-2f4b3e8104eb363d1dbba1fe668a52c0e3eefd50.jar"
         jar="/home/sonerik/Projects/LWM/libs/acra-4.5.0.jar"
@@ -60,7 +60,7 @@
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs/FadingActionBar/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="e1b321c6f617d906b33df4b592f3e259ece1b0d0"/>
+        sha1="105914628a281fc6ba13303c483dd8f9c928f4a1"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/otto-1.3.5-fe3a4abbb9053a008b57d2cbfb8e4e3fccc6dd7e.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.squareup/otto/1.3.5/7941cd2c2c8ec006800d75c35f8a9dacf892ab93/otto-1.3.5.jar"
@@ -114,7 +114,7 @@
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs.android-stackblur/StackBlur/unspecified/libs/native-libs.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="50809f223afc3075d6c2d761f51a7b9cb6be1123"/>
+        sha1="0cf8396fc7e1f209b87b339b13225cb7c7859ed2"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/library-2.4.0-7d36e5b5e2a1d258e95ecc544665fdd6a66152f5.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
@@ -126,7 +126,7 @@
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs/ExoPlayer/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="e4d2bc47575caf1e0a8887429d27d84576beb9f4"/>
+        sha1="6f9f0cebd83e72e86d5156ae88a6405c622a8d49"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/okio-1.0.1-9ea49050f093992ef46c6eac77aff8d0f1cd90e8.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.0.1/39eff75ddcb987ff65888361a29f489c178429a3/okio-1.0.1.jar"

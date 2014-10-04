@@ -10,12 +10,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -31,31 +33,55 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.util.List;
 
-public class PlayersAroundFragment extends ListFragment {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+
+public class PlayersAroundFragment extends Fragment {
+
+    @InjectView(R.id.listView)
+    ListView mListView;
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.emptyView)
+    LinearLayout mEmptyView;
 
     private List<ScanResult> scanResults;
     private StationsAdapter stationsAdapter;
+    private WifiManager wifiManager;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        if(savedInstanceState == null){
-            WifiManager wm = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-            wm.startScan();
-            Log.d(App.TAG, "wm.startScan()");
-        }
-
-        return inflater.inflate(R.layout.fragment_players_around, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_players_around, container, false);
+        ButterKnife.inject(this, v);
+        return v;
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null) {
+            startScanningStations();
+        }
+    }
+
+    @OnItemClick(R.id.listView)
+    void onStationClicked(int position) {
         String ap = stationsAdapter.getItem(position).SSID;
-
         new StationConnectionTask().execute(ap);
+    }
 
+    @OnClick(R.id.btnRefresh)
+    void onRefreshStations(View v) {
+        startScanningStations();
     }
 
     private boolean isWifiNetworkAvailable() {
@@ -65,19 +91,32 @@ public class PlayersAroundFragment extends ListFragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void setScanResults(List<ScanResult> results){
+    public void setScanResults(List<ScanResult> results) {
         Log.d(App.TAG, "setScanResults()");
         scanResults = results;
+        stationsAdapter = new StationsAdapter(getActivity(), scanResults);
 
-        stationsAdapter = new StationsAdapter(getActivity(), results);
-
-        setListAdapter(stationsAdapter);
+        mProgressBar.setVisibility(View.GONE);
+        if (stationsAdapter.getCount() > 0) {
+            mListView.setVisibility(View.VISIBLE);
+            mListView.setAdapter(stationsAdapter);
+        } else {
+            mListView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
     }
 
-    protected void startStreamPlayback(){
+    protected void startStreamPlayback() {
         App.getStreamPlayerService().attachToStation();
         Intent intent = new Intent(getActivity(), RemotePlaybackActivity.class);
         getActivity().startActivity(intent);
+    }
+
+    private void startScanningStations() {
+        wifiManager.startScan();
+        mProgressBar.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.GONE);
     }
 
     private class StationConnectionTask extends AsyncTask<String, Void, Void> {
@@ -105,7 +144,7 @@ public class PlayersAroundFragment extends ListFragment {
                 if (info == null || !ap.equals(info.getSSID())) {
                     // Device is connected to different AP or not connected at all
                     Connectivity.connectToStation(getActivity(), ap);
-                    while(!isWifiNetworkAvailable()){
+                    while (!isWifiNetworkAvailable()) {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -113,7 +152,7 @@ public class PlayersAroundFragment extends ListFragment {
                         }
                     }
 
-                    while(true) {
+                    while (true) {
                         try {
                             httpclient.execute(httpPostPing);
                             break;

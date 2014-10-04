@@ -13,12 +13,24 @@
 
     <ListView
         style="@style/ListOfCards"
-        android:id="@android:id/list"
-        android:layout_width="wrap_content"
+        tools:visibility="gone"
+        android:id="@+id/listView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
-        android:id="@android:id/empty"
+        android:id="@+id/emptyView"
+        tools:visibility="visible"
+        android:visibility="gone"
         android:orientation="vertical"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
@@ -33,6 +45,14 @@
         <TextView
             android:layout_marginTop="10dp"
             android:text="@string/nobody_around"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_marginTop="10dp"
+            android:text="@string/refresh"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
