@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,13 +12,16 @@
     android:background="@color/card_list_background"
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$PlayersAroundFragment">
 
-    <ListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
         style="@style/ListOfCards"
-        tools:visibility="gone"
         android:id="@+id/listView"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        app:ptrMode="google"
+        app:ptrViewRefeshableViewProgressBarOnCenterWhileRefreshingEnabled="false"
+        app:ptrHideRefeshableViewWhileRefreshingEnabled="false"
+        app:ptrShowGoogleStyleViewAnimationEnabled="true"
+        tools:visibility="gone"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"

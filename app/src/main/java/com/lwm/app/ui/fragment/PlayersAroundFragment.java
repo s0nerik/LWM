@@ -15,10 +15,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
@@ -36,20 +39,21 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 
 public class PlayersAroundFragment extends Fragment {
 
-    @InjectView(R.id.listView)
-    ListView mListView;
     @InjectView(R.id.progressBar)
     ProgressBar mProgressBar;
     @InjectView(R.id.emptyView)
     LinearLayout mEmptyView;
+    @InjectView(R.id.listView)
+    PullToRefreshListView mListView;
 
     private List<ScanResult> scanResults;
     private StationsAdapter stationsAdapter;
     private WifiManager wifiManager;
+
+    private boolean isRefreshing = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,22 @@ public class PlayersAroundFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_players_around, container, false);
         ButterKnife.inject(this, v);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String ap = stationsAdapter.getItem(position-1).SSID;
+                new StationConnectionTask().execute(ap);
+            }
+        });
+
+        mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase) {
+                startScanningStations(true);
+            }
+        });
+
         return v;
     }
 
@@ -69,19 +89,13 @@ public class PlayersAroundFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null) {
-            startScanningStations();
+            startScanningStations(false);
         }
-    }
-
-    @OnItemClick(R.id.listView)
-    void onStationClicked(int position) {
-        String ap = stationsAdapter.getItem(position).SSID;
-        new StationConnectionTask().execute(ap);
     }
 
     @OnClick(R.id.btnRefresh)
     void onRefreshStations(View v) {
-        startScanningStations();
+        startScanningStations(false);
     }
 
     private boolean isWifiNetworkAvailable() {
@@ -95,6 +109,11 @@ public class PlayersAroundFragment extends Fragment {
         Log.d(App.TAG, "setScanResults()");
         scanResults = results;
         stationsAdapter = new StationsAdapter(getActivity(), scanResults);
+
+        if (isRefreshing) {
+            mListView.onRefreshComplete();
+            isRefreshing = false;
+        }
 
         mProgressBar.setVisibility(View.GONE);
         if (stationsAdapter.getCount() > 0) {
@@ -112,10 +131,15 @@ public class PlayersAroundFragment extends Fragment {
         getActivity().startActivity(intent);
     }
 
-    private void startScanningStations() {
+    private void startScanningStations(boolean isPulled) {
         wifiManager.startScan();
-        mProgressBar.setVisibility(View.VISIBLE);
-        mListView.setVisibility(View.GONE);
+        if (isPulled) {
+            mProgressBar.setVisibility(View.GONE);
+            isRefreshing = true;
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
+        }
         mEmptyView.setVisibility(View.GONE);
     }
 
