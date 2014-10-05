@@ -12,16 +12,17 @@
     android:background="@color/card_list_background"
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$PlayersAroundFragment">
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        style="@style/ListOfCards"
-        android:id="@+id/listView"
-        app:ptrMode="google"
-        app:ptrViewRefeshableViewProgressBarOnCenterWhileRefreshingEnabled="false"
-        app:ptrHideRefeshableViewWhileRefreshingEnabled="false"
-        app:ptrShowGoogleStyleViewAnimationEnabled="true"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
         tools:visibility="gone"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            style="@style/ListOfCards"
+            android:id="@+id/listView"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"

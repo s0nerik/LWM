@@ -11,17 +11,15 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
@@ -39,6 +37,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 public class PlayersAroundFragment extends Fragment {
 
@@ -47,7 +46,9 @@ public class PlayersAroundFragment extends Fragment {
     @InjectView(R.id.emptyView)
     LinearLayout mEmptyView;
     @InjectView(R.id.listView)
-    PullToRefreshListView mListView;
+    ListView mListView;
+    @InjectView(R.id.refreshLayout)
+    SwipeRefreshLayout mRefreshLayout;
 
     private List<ScanResult> scanResults;
     private StationsAdapter stationsAdapter;
@@ -66,17 +67,16 @@ public class PlayersAroundFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_players_around, container, false);
         ButterKnife.inject(this, v);
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String ap = stationsAdapter.getItem(position-1).SSID;
-                new StationConnectionTask().execute(ap);
-            }
-        });
+        mRefreshLayout.setColorScheme(
+                R.color.pull_to_refresh_1,
+                R.color.pull_to_refresh_2,
+                R.color.pull_to_refresh_3,
+                R.color.pull_to_refresh_4
+        );
 
-        mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase) {
+            public void onRefresh() {
                 startScanningStations(true);
             }
         });
@@ -91,6 +91,12 @@ public class PlayersAroundFragment extends Fragment {
         if (savedInstanceState == null) {
             startScanningStations(false);
         }
+    }
+
+    @OnItemClick(R.id.listView)
+    void onStationClicked(int position) {
+        String ap = stationsAdapter.getItem(position).SSID;
+        new StationConnectionTask().execute(ap);
     }
 
     @OnClick(R.id.btnRefresh)
@@ -111,7 +117,7 @@ public class PlayersAroundFragment extends Fragment {
         stationsAdapter = new StationsAdapter(getActivity(), scanResults);
 
         if (isRefreshing) {
-            mListView.onRefreshComplete();
+            mRefreshLayout.setRefreshing(false);
             isRefreshing = false;
         }
 

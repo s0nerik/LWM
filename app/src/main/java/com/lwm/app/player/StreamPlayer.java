@@ -41,6 +41,7 @@ public class StreamPlayer extends BasePlayer {
     };
 
     public StreamPlayer(Context context) {
+        super(context);
         this.context = context;
         handler = new Handler(context.getMainLooper());
         setOnSeekCompleteListener(onSeekCompleteListener);
