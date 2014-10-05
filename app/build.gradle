@@ -52,6 +52,8 @@ android {
 }
 
 dependencies {
+    compile fileTree(dir: '../libs', include: '*.jar')
+
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.android.support:support-v4:19.+'
     compile 'com.google.code.gson:gson:+'
@@ -60,7 +62,6 @@ dependencies {
     compile project(':libs:Fontify')
     compile project(':libs:FadingActionBar')
     compile project(':libs:ExoPlayer')
-    compile files('../libs/acra-4.5.0.jar')
     compile 'com.nineoldandroids:library:+'
     compile 'com.squareup.picasso:picasso:+'
     compile 'com.jakewharton:butterknife:+'
