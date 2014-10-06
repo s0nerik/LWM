@@ -8,15 +8,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
-import com.lwm.app.event.player.PlaybackPausedEvent;
-import com.lwm.app.event.player.PlaybackStartedEvent;
-import com.lwm.app.event.player.PlaylistAddedToQueueEvent;
-import com.lwm.app.event.player.QueueShuffledEvent;
-import com.lwm.app.event.player.SongAddedToQueueEvent;
+import com.lwm.app.events.player.PlaybackPausedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
+import com.lwm.app.events.player.QueueShuffledEvent;
+import com.lwm.app.events.player.SongAddedToQueueEvent;
+import com.lwm.app.events.server.PauseClientsEvent;
+import com.lwm.app.events.server.PrepareClientsEvent;
+import com.lwm.app.events.server.SeekToClientsEvent;
+import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.ClientsStateListener;
-import com.lwm.app.server.StreamServer;
-import com.lwm.app.server.async.ClientsManager;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.io.IOException;
@@ -34,8 +36,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     private Queue queue = new Queue();
 
     private NotificationManager notificationManager;
-
-    private ClientsManager clientsManager;
 
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
@@ -63,8 +63,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
         super(context);
         this.context = context;
 
-        clientsManager = new ClientsManager(context, this);
-
         setOnCompletionListener(onCompletionListener);
         setOnSeekCompleteListener(onSeekCompleteListener);
 
@@ -81,22 +79,22 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     public void shuffleQueue(){
         queue.shuffle();
-        App.getEventBus().post(new QueueShuffledEvent(queue.getQueue()));
+        App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
     }
 
     public void shuffleQueueExceptPlayed(){
         queue.shuffleExceptPlayed();
-        App.getEventBus().post(new QueueShuffledEvent(queue.getQueue()));
+        App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
     }
 
     public void addToQueue(Collection<Song> songs){
         queue.addSongs(songs);
-        App.getEventBus().post(new PlaylistAddedToQueueEvent(queue.getQueue()));
+        App.getBus().post(new PlaylistAddedToQueueEvent(queue.getQueue()));
     }
 
     public void addToQueue(Song song){
         queue.addSong(song);
-        App.getEventBus().post(new SongAddedToQueueEvent(queue.getQueue(), song));
+        App.getBus().post(new SongAddedToQueueEvent(queue.getQueue(), song));
     }
 
     public Song getCurrentSong(){
@@ -123,9 +121,9 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
             active = true;
 
-            if(StreamServer.hasClients()) {
-                clientsManager.changeSong();
-            }else{
+            if (App.isServerStarted()) {
+                App.getBus().post(new PrepareClientsEvent());
+            } else {
                 start();
             }
 
@@ -152,10 +150,11 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
     @Override
     public void seekTo(int msec) throws IllegalStateException {
-        if(StreamServer.hasClients()) {
-            clientsManager.seekTo(msec);
+        if (App.isServerStarted()) {
+            App.getBus().post(new SeekToClientsEvent(msec));
+        } else {
+            super.seekTo(msec);
         }
-        super.seekTo(msec);
     }
 
     public boolean isShuffle() {
@@ -188,7 +187,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
         updateNotificationIfForeground();
 
-        App.getEventBus().post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
+        App.getBus().post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
 
         context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
     }
@@ -199,7 +198,7 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
 
         updateNotificationIfForeground();
 
-        App.getEventBus().post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
+        App.getBus().post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
 
         context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
     }
@@ -207,15 +206,17 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     @Override
     public void togglePause(){
         if (isPlaying()){
-            if(StreamServer.hasClients()){
-                clientsManager.pause();
+            if(App.isServerStarted()) {
+                App.getBus().post(new PauseClientsEvent());
+            } else {
+                pause();
             }
-            pause();
         } else {
-            if(StreamServer.hasClients()){
-                clientsManager.unpause(getCurrentPosition());
+            if(App.isServerStarted()) {
+                App.getBus().post(new StartClientsEvent());
+            } else {
+                start();
             }
-            start();
         }
     }
 

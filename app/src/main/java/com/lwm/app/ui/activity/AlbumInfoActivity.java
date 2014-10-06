@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
-import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.helper.AlbumsCursorGetter;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Album;
@@ -147,13 +147,13 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
     @Override
     protected void onResume() {
         super.onResume();
-        App.getEventBus().register(this);
+        App.getBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getEventBus().unregister(this);
+        App.getBus().unregister(this);
     }
 
     @Subscribe

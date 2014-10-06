@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.event.player.PlaybackPausedEvent;
-import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaybackPausedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
@@ -71,7 +71,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        App.getEventBus().register(this);
+        App.getBus().register(this);
         Song song = App.getStreamPlayerService().getCurrentSong();
         if (song != null) {
             setSongInfo(song);
@@ -81,7 +81,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        App.getEventBus().unregister(this);
+        App.getBus().unregister(this);
     }
 
     @Subscribe
@@ -112,7 +112,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         if(player.isPlaying()) {
             player.stop();
         }
-        player.detachFromStation();
+//        player.detachFromStation();
     }
 
 }

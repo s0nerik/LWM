@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
-import com.lwm.app.event.player.binding.LocalPlayerServiceBoundEvent;
+import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
@@ -86,7 +86,7 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        App.getEventBus().register(this);
+        App.getBus().register(this);
         if(App.localPlayerActive()) {
             player = App.getLocalPlayerService();
             highlightCurrentSong();
@@ -97,7 +97,7 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        App.getEventBus().unregister(this);
+        App.getBus().unregister(this);
     }
 
     @Override

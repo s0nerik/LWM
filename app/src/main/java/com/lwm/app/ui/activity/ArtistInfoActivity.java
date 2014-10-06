@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
-import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.helper.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
@@ -64,13 +64,13 @@ public class ArtistInfoActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        App.getEventBus().register(this);
+        App.getBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getEventBus().unregister(this);
+        App.getBus().unregister(this);
     }
 
     @Subscribe

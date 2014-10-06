@@ -10,9 +10,9 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.Utils;
-import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
-import com.lwm.app.event.access_point.StartServerEvent;
-import com.lwm.app.event.access_point.StopServerEvent;
+import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
+import com.lwm.app.events.access_point.StartServerEvent;
+import com.lwm.app.events.access_point.StopServerEvent;
 
 import java.lang.reflect.Method;
 
@@ -192,7 +192,7 @@ public class WifiAP {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            App.getEventBus().post(new AccessPointStateChangingEvent());
+            App.getBus().post(new AccessPointStateChangingEvent());
 
         }
 
@@ -201,9 +201,9 @@ public class WifiAP {
             super.onPostExecute(aVoid);
 
             if (mMode) {
-                App.getEventBus().post(new StartServerEvent());
+                App.getBus().post(new StartServerEvent());
             } else {
-                App.getEventBus().post(new StopServerEvent());
+                App.getBus().post(new StopServerEvent());
             }
 
         }

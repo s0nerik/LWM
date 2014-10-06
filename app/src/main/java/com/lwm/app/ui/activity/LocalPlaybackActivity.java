@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.event.access_point.AccessPointStateChangingEvent;
-import com.lwm.app.event.access_point.StartServerEvent;
-import com.lwm.app.event.access_point.StopServerEvent;
-import com.lwm.app.event.player.PlaybackPausedEvent;
-import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
+import com.lwm.app.events.access_point.StartServerEvent;
+import com.lwm.app.events.access_point.StopServerEvent;
+import com.lwm.app.events.player.PlaybackPausedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
@@ -78,13 +78,13 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     protected void onResume() {
         super.onResume();
         setSongInfo(player.getCurrentSong());
-        App.getEventBus().register(this);
+        App.getBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getEventBus().unregister(this);
+        App.getBus().unregister(this);
     }
 
     @Override

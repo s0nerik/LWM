@@ -17,9 +17,7 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.event.access_point.StartServerEvent;
-import com.lwm.app.event.access_point.StopServerEvent;
-import com.lwm.app.event.player.binding.BindStreamPlayerServiceEvent;
+import com.lwm.app.events.player.binding.BindStreamPlayerServiceEvent;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
 
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ public class StationChooserActivity extends ActionBarActivity {
         registerReceiver(onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
         toggleNoWifiFrame();
-        App.getEventBus().register(this);
+        App.getBus().register(this);
     }
 
     private void toggleNoWifiFrame(){
@@ -81,22 +79,22 @@ public class StationChooserActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(onBroadcast);
-        App.getEventBus().unregister(this);
+        App.getBus().unregister(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_chooser);
-        App.getEventBus().post(new BindStreamPlayerServiceEvent());
-        App.getEventBus().post(new StartServerEvent());
+        App.getBus().post(new BindStreamPlayerServiceEvent());
+//        App.getBus().post(new StartServerEvent());
     }
 
-    @Override
-    protected void onDestroy() {
-        App.getEventBus().post(new StopServerEvent());
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        App.getBus().post(new StopServerEvent());
+//        super.onDestroy();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

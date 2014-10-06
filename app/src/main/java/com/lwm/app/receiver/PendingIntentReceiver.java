@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.lwm.app.App;
-import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
-import com.lwm.app.event.player.binding.UnbindLocalPlayerServiceEvent;
+import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
+import com.lwm.app.events.player.binding.UnbindLocalPlayerServiceEvent;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
@@ -20,8 +20,8 @@ public class PendingIntentReceiver extends BroadcastReceiver {
             if(player.hasCurrentSong()) {
                 switch (intent.getAction()) {
                     case NowPlayingNotification.ACTION_CLOSE:
-                        App.getEventBus().post(new StopForegroundLocalPlayerEvent());
-                        App.getEventBus().post(new UnbindLocalPlayerServiceEvent());
+                        App.getBus().post(new StopForegroundLocalPlayerEvent());
+                        App.getBus().post(new UnbindLocalPlayerServiceEvent());
                         break;
                     case NowPlayingNotification.ACTION_PREV:
                         player.prevSong();
@@ -34,11 +34,11 @@ public class PendingIntentReceiver extends BroadcastReceiver {
                         break;
                 }
             } else {
-                App.getEventBus().post(new StopForegroundLocalPlayerEvent());
+                App.getBus().post(new StopForegroundLocalPlayerEvent());
             }
 
         } else {
-            App.getEventBus().post(new StopForegroundLocalPlayerEvent());
+            App.getBus().post(new StopForegroundLocalPlayerEvent());
         }
     }
 

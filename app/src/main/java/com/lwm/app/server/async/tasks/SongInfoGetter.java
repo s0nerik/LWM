@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
-import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.StreamServer;
@@ -52,6 +52,6 @@ public class SongInfoGetter extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         streamPlayer.setCurrentSong(song);
-        App.getEventBus().post(new PlaybackStartedEvent(song, streamPlayer.getCurrentPosition()));
+        App.getBus().post(new PlaybackStartedEvent(song, streamPlayer.getCurrentPosition()));
     }
 }

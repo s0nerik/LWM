@@ -5,10 +5,9 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 
-import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
-import com.lwm.app.event.player.PlaybackPausedEvent;
-import com.lwm.app.event.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaybackPausedEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
 
@@ -51,15 +50,15 @@ public class StreamPlayer extends BasePlayer {
 //        setOnPreparedListener(onPreparedListener);
     }
 
-    public void register(){
-        active = true;
-        Ion.with(context)
-                .load(StreamServer.Url.CLIENT_REGISTER)
-                .noCache()
-                .setLogging(App.TAG, Log.DEBUG)
-                .setStringBody("")
-                .asString();
-    }
+//    public void register(){
+//        active = true;
+//        Ion.with(context)
+//                .load(StreamServer.Url.CLIENT_REGISTER)
+//                .noCache()
+//                .setLogging(App.TAG, Log.DEBUG)
+//                .setStringBody("")
+//                .asString();
+//    }
 
     public void prepareNewSong(){
         reset();
@@ -99,7 +98,7 @@ public class StreamPlayer extends BasePlayer {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                App.getEventBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
+                App.getBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
             }
         });
     }
@@ -110,7 +109,7 @@ public class StreamPlayer extends BasePlayer {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                App.getEventBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
+                App.getBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
             }
         });
     }
@@ -119,15 +118,15 @@ public class StreamPlayer extends BasePlayer {
 //        return tempFile;
 //    }
 
-    public void unregister(){
-        Ion.with(context)
-                .load(StreamServer.Url.CLIENT_UNREGISTER)
-                .noCache()
-                .setLogging(App.TAG, Log.DEBUG)
-                .setStringBody("")
-                .asString();
-//        new ClientUnregister().execute();
-    }
+//    public void unregister(){
+//        Ion.with(context)
+//                .load(StreamServer.Url.CLIENT_UNREGISTER)
+//                .noCache()
+//                .setLogging(App.TAG, Log.DEBUG)
+//                .setStringBody("")
+//                .asString();
+////        new ClientUnregister().execute();
+//    }
 
     public static boolean isActive(){
         return active;

@@ -8,11 +8,11 @@
         revision="19.1.0"
         sha1="afe8399d352713b66e597e9670c741d1e60ae923"/>
     <item
-        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.5-21f49fffcb40df50ee1c56f9b119436e7498d894.jar"
-        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.5/77bf7cacf9cefe19dc105e5425d2eb1bb5285881/android-async-http-1.4.5.jar"
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/androidasync-1.3.8-771efbb178aad181f934f1f4e865053c126c9dec.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.koushikdutta.async/androidasync/1.3.8/1f8e4f77d5f24179688c32b24dd5f79e889e7110/androidasync-1.3.8.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881"/>
+        sha1="1f8e4f77d5f24179688c32b24dd5f79e889e7110"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/classes-978d05fc083ba77ed8ed787c263e07fdf00d961d.jar"
         jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/LWM.libs.android-stackblur/StackBlur/unspecified/classes.jar"
@@ -20,11 +20,11 @@
         revision="19.1.0"
         sha1="470e4cb0050949b0864f3d5796fce3b97d97c863"/>
     <item
-        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/androidasync-1.3.8-771efbb178aad181f934f1f4e865053c126c9dec.jar"
-        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.koushikdutta.async/androidasync/1.3.8/1f8e4f77d5f24179688c32b24dd5f79e889e7110/androidasync-1.3.8.jar"
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.5-21f49fffcb40df50ee1c56f9b119436e7498d894.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.5/77bf7cacf9cefe19dc105e5425d2eb1bb5285881/android-async-http-1.4.5.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="1f8e4f77d5f24179688c32b24dd5f79e889e7110"/>
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/ion-1.3.8-b632f2169539821262639f426dbf07266ed4514a.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.koushikdutta.ion/ion/1.3.8/1fc0413880bde2e3ffab3c5e5a243f39dd409b1c/ion-1.3.8.jar"
@@ -56,11 +56,11 @@
         revision="19.1.0"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
     <item
-        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/classes-636e66827a1494bcaaa95457cffd2b356c62e186.jar"
-        jar="/home/sonerik/Projects/LWM/app/build/intermediates/exploded-aar/com.navercorp.pulltorefresh/library/3.2.0/classes.jar"
+        dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/Java-WebSocket-1.3.0-6376709cc2dfaa03b34b58d059fb820edb8e6d5f.jar"
+        jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/org.java-websocket/Java-WebSocket/1.3.0/db2658f013fb163de4a99274c2eb9e17efe535d2/Java-WebSocket-1.3.0.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="e81a90331089d2f9018e493b0fdd6bab92fae40c"/>
+        sha1="db2658f013fb163de4a99274c2eb9e17efe535d2"/>
     <item
         dex="/home/sonerik/Projects/LWM/app/build/intermediates/pre-dexed/debug/picasso-2.3.4-344d4c6279a4a7335dae418aedcb7718c1bef325.jar"
         jar="/home/sonerik/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.3.4/3b646ddbdac8a33fc45b64564011da81d23e4635/picasso-2.3.4.jar"

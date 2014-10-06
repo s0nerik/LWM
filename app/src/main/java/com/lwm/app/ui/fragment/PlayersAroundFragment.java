@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
+import com.lwm.app.events.server.StartWebSocketClientEvent;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
@@ -131,8 +132,7 @@ public class PlayersAroundFragment extends Fragment {
         }
     }
 
-    protected void startStreamPlayback() {
-        App.getStreamPlayerService().attachToStation();
+    protected void startStreamActivity() {
         Intent intent = new Intent(getActivity(), RemotePlaybackActivity.class);
         getActivity().startActivity(intent);
     }
@@ -202,7 +202,8 @@ public class PlayersAroundFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            startStreamPlayback();
+            App.getBus().post(new StartWebSocketClientEvent());
+//            startStreamActivity();
         }
     }
 

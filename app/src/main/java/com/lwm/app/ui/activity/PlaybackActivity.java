@@ -14,7 +14,7 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
+import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
@@ -55,7 +55,7 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         initActionBar();
 
         playbackFragment = (PlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
-        App.getEventBus().post(new StopForegroundLocalPlayerEvent());
+        App.getBus().post(new StopForegroundLocalPlayerEvent());
     }
 
     @Override

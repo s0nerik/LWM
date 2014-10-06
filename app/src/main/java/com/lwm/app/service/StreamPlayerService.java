@@ -48,10 +48,6 @@ public class StreamPlayerService extends Service {
         return player;
     }
 
-    public void attachToStation() {
-        player.register();
-    }
-
     public void start() throws IllegalStateException {
         player.start();
     }
@@ -86,10 +82,6 @@ public class StreamPlayerService extends Service {
 
     public void stop() throws IllegalStateException {
         player.stop();
-    }
-
-    public void detachFromStation() {
-        player.unregister();
     }
 
     public static boolean isActive() {

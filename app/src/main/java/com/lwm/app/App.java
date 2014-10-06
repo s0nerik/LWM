@@ -8,25 +8,33 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lwm.app.event.access_point.StartServerEvent;
-import com.lwm.app.event.access_point.StopServerEvent;
-import com.lwm.app.event.player.StartForegroundLocalPlayerEvent;
-import com.lwm.app.event.player.StopForegroundLocalPlayerEvent;
-import com.lwm.app.event.player.binding.BindLocalPlayerServiceEvent;
-import com.lwm.app.event.player.binding.BindStreamPlayerServiceEvent;
-import com.lwm.app.event.player.binding.LocalPlayerServiceBoundEvent;
-import com.lwm.app.event.player.binding.StreamPlayerServiceBoundEvent;
-import com.lwm.app.event.player.binding.UnbindLocalPlayerServiceEvent;
+import com.lwm.app.events.access_point.StartServerEvent;
+import com.lwm.app.events.access_point.StopServerEvent;
+import com.lwm.app.events.player.StartForegroundLocalPlayerEvent;
+import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
+import com.lwm.app.events.player.binding.BindLocalPlayerServiceEvent;
+import com.lwm.app.events.player.binding.BindStreamPlayerServiceEvent;
+import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
+import com.lwm.app.events.player.binding.StreamPlayerServiceBoundEvent;
+import com.lwm.app.events.player.binding.UnbindLocalPlayerServiceEvent;
+import com.lwm.app.events.server.StartWebSocketClientEvent;
+import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.service.MusicServerService;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.lwm.app.websocket.WebSocketMessageClient;
+import com.lwm.app.websocket.WebSocketMessageServer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.java_websocket.client.WebSocketClient;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @ReportsCrashes(
         formKey = "",
@@ -54,6 +62,8 @@ public class App extends Application {
     private static boolean serverStarted = false;
     private static boolean localPlayerServiceInForeground = false;
 
+    private WebSocketClient webSocketClient;
+
     public static LocalPlayerService getLocalPlayerService(){
         assert localPlayerService != null : "localPlayerService == null!";
         return localPlayerService;
@@ -66,7 +76,7 @@ public class App extends Application {
 
     private static Bus eventBus;
 
-    public static Bus getEventBus() {
+    public static Bus getBus() {
         return eventBus;
     }
 
@@ -203,5 +213,20 @@ public class App extends Application {
 
     public static boolean isServerStarted() {
         return serverStarted;
+    }
+
+    @Subscribe
+    public void startWebSocketClient(StartWebSocketClientEvent event) {
+        try {
+            webSocketClient = new WebSocketMessageClient(new URI(WebSocketMessageServer.URI));
+            webSocketClient.connect();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    public void stopWebSocketClient(StopWebSocketClientEvent e) {
+        webSocketClient.close();
     }
 }
