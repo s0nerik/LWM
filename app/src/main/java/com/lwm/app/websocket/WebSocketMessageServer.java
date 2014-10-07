@@ -49,6 +49,9 @@ public class WebSocketMessageServer extends WebSocketServer {
                 boolean isPlaying = player.isPlaying();
                 conn.send(String.format(SocketMessage.FORMAT_IS_PLAYING, isPlaying));
                 break;
+            case SocketMessage.READY:
+                conn.send(String.format(SocketMessage.FORMAT_START_FROM, player.getCurrentPosition()));
+                break;
 
 // TODO: client playback manipulation
 //            case SocketMessage.START:
@@ -62,9 +65,6 @@ public class WebSocketMessageServer extends WebSocketServer {
 //                break;
 //            case SocketMessage.PREPARE:
 //                // TODO: prepare
-//                break;
-//            case SocketMessage.READY:
-//                // TODO: unpause
 //                break;
 //            default:
 //                Scanner sc = new Scanner(message);

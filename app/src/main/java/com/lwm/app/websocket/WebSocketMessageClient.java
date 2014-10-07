@@ -61,14 +61,19 @@ public class WebSocketMessageClient extends WebSocketClient {
                 break;
             default:
                 Scanner sc = new Scanner(message);
-                if (sc.hasNextInt()) {
-                    int position = sc.nextInt();
-                    if (message.startsWith(SocketMessage.SEEK_TO)) {
-                        playFrom(position);
-                        send(SocketMessage.SEEK_TO);
-                    } else if (message.startsWith(SocketMessage.START_FROM)) {
-                        seekTo(position);
-                        send(SocketMessage.START_FROM);
+                if (sc.hasNext()) {
+                    String command = sc.next();
+                    if (sc.hasNextInt()) {
+                        int position = sc.nextInt();
+                        if (command.startsWith(SocketMessage.SEEK_TO)) {
+                            playFrom(position);
+                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
+                        } else if (command.startsWith(SocketMessage.START_FROM)) {
+                            seekTo(position);
+                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
+                        }
+                    } else {
+                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                     }
                 } else {
                     Log.e(App.TAG, "Wrong WebSocket message:\n" + message);

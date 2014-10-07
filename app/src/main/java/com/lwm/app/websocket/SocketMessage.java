@@ -7,7 +7,7 @@ public interface SocketMessage {
     /**
      * String format for starting prom position
      */
-    String FORMAT_START_FROM = START_FROM + ":%d";
+    String FORMAT_START_FROM = START_FROM + ": %d";
 
 
     String SEEK_TO = "seek_to";
@@ -15,7 +15,7 @@ public interface SocketMessage {
     /**
      * String format for seeking to position
      */
-    String FORMAT_SEEK_TO = SEEK_TO + ":%d";
+    String FORMAT_SEEK_TO = SEEK_TO + ": %d";
 
 
     String CURRENT_POSITION = "current_position";
@@ -23,7 +23,7 @@ public interface SocketMessage {
     /**
      * String format for sending current position
      */
-    String FORMAT_CURRENT_POSITION = CURRENT_POSITION + ":%d";
+    String FORMAT_CURRENT_POSITION = CURRENT_POSITION + ": %d";
 
 
     String IS_PLAYING = "is_playing";
@@ -31,7 +31,7 @@ public interface SocketMessage {
     /**
      * String format for sending current position
      */
-    String FORMAT_IS_PLAYING = IS_PLAYING + ":%b";
+    String FORMAT_IS_PLAYING = IS_PLAYING + ": %b";
 
 
     String OK = "ok";
@@ -39,7 +39,7 @@ public interface SocketMessage {
     /**
      * String format for sending ok response
      */
-    String FORMAT_OK = OK + ":%s";
+    String FORMAT_OK = OK + ": %s";
 
 
     String ERROR = "error";
@@ -47,7 +47,7 @@ public interface SocketMessage {
     /**
      * String format for sending error response
      */
-    String FORMAT_ERROR = ERROR + ":%s";
+    String FORMAT_ERROR = ERROR + ": %s";
 
 
     String PAUSE = "pause";
