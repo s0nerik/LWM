@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
@@ -24,13 +25,14 @@ public class StreamPlayer extends BasePlayer {
 //    private File tempFile;
 
     public static final String STREAM_PATH = StreamServer.Url.STREAM;
-//    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
-//        @Override
-//        public void onPrepared(MediaPlayer mediaPlayer) {
-//            Log.d("LWM", "StreamPlayer: onPrepared");
+    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mediaPlayer) {
+            Log.d("LWM", "StreamPlayer: onPrepared");
+            App.getBus().post(new SendReadyEvent());
 //            new ReadinessReporter(StreamPlayer.this).execute();
-//        }
-//    };
+        }
+    };
 
     private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
         @Override
@@ -47,7 +49,7 @@ public class StreamPlayer extends BasePlayer {
 
 //        tempFile = new File(context.getCacheDir(), "song.mp3");
 
-//        setOnPreparedListener(onPreparedListener);
+        setOnPreparedListener(onPreparedListener);
     }
 
 //    public void register(){
@@ -65,7 +67,7 @@ public class StreamPlayer extends BasePlayer {
         try {
             setDataSource(STREAM_PATH);
 //            setDataSource(tempFile.getPath());
-            prepare();
+            prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }

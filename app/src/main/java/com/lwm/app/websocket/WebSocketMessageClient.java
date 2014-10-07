@@ -3,8 +3,10 @@ package com.lwm.app.websocket;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.server.async.tasks.SongInfoGetter;
 import com.lwm.app.service.StreamPlayerService;
+import com.squareup.otto.Subscribe;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -26,6 +28,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         Log.d(App.TAG, "WebSocketMessageClient: opened with handshake:"
                 + "\nStatus: " + handshakedata.getHttpStatus()
                 + "\nMessage: " + handshakedata.getHttpStatusMessage());
+        App.getBus().register(this);
     }
 
     @Override
@@ -77,11 +80,13 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageClient: closed:\nCode: "+code+" Reason: "+reason);
+        App.getBus().unregister(this);
     }
 
     @Override
     public void onError(Exception ex) {
         Log.d(App.TAG, "WebSocketMessageClient: error:\n" + ex);
+//        App.getBus().unregister(this);
     }
 
     private void playFrom(int pos) {
@@ -111,6 +116,11 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private void prepare() {
         player.prepareNewSong();
+    }
+
+    @Subscribe
+    public void onSendReadyEvent(SendReadyEvent event) {
+        send(SocketMessage.READY);
     }
 
 }

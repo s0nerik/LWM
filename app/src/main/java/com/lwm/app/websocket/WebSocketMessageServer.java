@@ -26,6 +26,9 @@ public class WebSocketMessageServer extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         Log.d(App.TAG, "WebSocketMessageServer: New connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
+        if (player.isPlaying()) {
+            conn.send(SocketMessage.PREPARE);
+        }
     }
 
     @Override
@@ -42,6 +45,12 @@ public class WebSocketMessageServer extends WebSocketServer {
                 int pos = player.getCurrentPosition();
                 conn.send(String.format(SocketMessage.FORMAT_CURRENT_POSITION, pos));
                 break;
+            case SocketMessage.IS_PLAYING:
+                boolean isPlaying = player.isPlaying();
+                conn.send(String.format(SocketMessage.FORMAT_IS_PLAYING, isPlaying));
+                break;
+
+// TODO: client playback manipulation
 //            case SocketMessage.START:
 //                // TODO: start
 //                break;
@@ -57,10 +66,6 @@ public class WebSocketMessageServer extends WebSocketServer {
 //            case SocketMessage.READY:
 //                // TODO: unpause
 //                break;
-            case SocketMessage.IS_PLAYING:
-                boolean isPlaying = player.isPlaying();
-                conn.send(String.format(SocketMessage.FORMAT_IS_PLAYING, isPlaying));
-                break;
 //            default:
 //                Scanner sc = new Scanner(message);
 //                if (sc.hasNextInt()) {
