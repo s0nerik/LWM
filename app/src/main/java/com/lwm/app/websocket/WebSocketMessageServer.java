@@ -1,8 +1,12 @@
 package com.lwm.app.websocket;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.events.server.AllClientsReadyEvent;
+import com.lwm.app.events.server.ClientReadyEvent;
 import com.lwm.app.service.LocalPlayerService;
 
 import org.java_websocket.WebSocket;
@@ -10,16 +14,27 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
     public static final String URI = "ws://192.168.43.1:8080";
 
+    private static final int TIMEOUT = 10 * 1000; // 10 seconds
+
+    private List<WebSocket> ready;
+
+    private long lastMessageTime = -1;
+
     private LocalPlayerService player;
+
+    private Handler handler;
 
     public WebSocketMessageServer(InetSocketAddress address) {
         super(address);
         player = App.getLocalPlayerService();
+        handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
@@ -50,7 +65,7 @@ public class WebSocketMessageServer extends WebSocketServer {
                 conn.send(String.format(SocketMessage.FORMAT_IS_PLAYING, isPlaying));
                 break;
             case SocketMessage.READY:
-                conn.send(String.format(SocketMessage.FORMAT_START_FROM, player.getCurrentPosition()));
+                processReadiness(conn);
                 break;
 
 // TODO: client playback manipulation
@@ -80,11 +95,28 @@ public class WebSocketMessageServer extends WebSocketServer {
 //                }
 //                sc.close();
         }
+
+        lastMessageTime = System.currentTimeMillis();
+
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
+        Log.e(App.TAG,"WebSocketMessageServer onError:\n", ex);
+    }
 
+    private void processReadiness(WebSocket conn) {
+        if (ready == null) {
+            ready = new ArrayList<>();
+        }
+        ready.add(conn);
+
+        App.getBus().post(new ClientReadyEvent(conn));
+
+        if(ready.size() == connections().size()) {
+            App.getBus().post(new AllClientsReadyEvent());
+            ready = null;
+        }
     }
 
 }

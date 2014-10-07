@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.lwm.app.App;
+import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
@@ -21,6 +22,7 @@ import java.net.InetSocketAddress;
 public class MusicServerService extends Service {
 
     private WebSocketMessageServer webSocketMessageServer;
+    private LocalPlayerService player;
 
     @Override
     public void onCreate() {
@@ -37,6 +39,7 @@ public class MusicServerService extends Service {
                 webSocketMessageServer.start();
             }
         }).start();
+        player = App.getLocalPlayerService();
         App.getBus().register(this);
     }
 
@@ -60,7 +63,16 @@ public class MusicServerService extends Service {
 
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
-        sendAll(SocketMessage.PREPARE);
+        if (webSocketMessageServer.connections().size() != 0) {
+            sendAll(SocketMessage.PREPARE);
+        } else {
+            App.getBus().post(new AllClientsReadyEvent());
+        }
+    }
+
+    @Subscribe
+    public void allClientsReady(AllClientsReadyEvent event) {
+        sendAll(String.format(SocketMessage.FORMAT_START_FROM, player.getCurrentPosition()));
     }
 
     @Subscribe

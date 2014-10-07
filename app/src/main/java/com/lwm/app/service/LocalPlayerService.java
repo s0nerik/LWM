@@ -9,8 +9,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.view.SurfaceHolder;
 
+import com.lwm.app.App;
+import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.squareup.otto.Subscribe;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -30,12 +33,14 @@ public class LocalPlayerService extends Service {
     public void onCreate() {
         super.onCreate();
         player = new LocalPlayer(this);
+        App.getBus().register(this);
     }
 
     @Override
     public void onDestroy() {
         player.release();
         player = null;
+        App.getBus().unregister(this);
         super.onDestroy();
     }
 
@@ -291,6 +296,11 @@ public class LocalPlayerService extends Service {
         public LocalPlayerService getService() {
             return LocalPlayerService.this;
         }
+    }
+
+    @Subscribe
+    public void allClientsReady(AllClientsReadyEvent event) {
+        start();
     }
 
 }

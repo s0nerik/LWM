@@ -1,6 +1,6 @@
 include ':app'
 include ':libs:UnifiedPreference'
-include ':libs:android-stackblur:StackBlur'
+include ':libs:android-stackblur'
 include ':libs:Fontify'
 include ':libs:androidsvg'
 include ':libs:FadingActionBar'
