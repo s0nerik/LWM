@@ -10,6 +10,7 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
@@ -107,12 +108,11 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void onDestroy() {
         if(player.isPlaying()) {
             player.stop();
         }
-//        player.detachFromStation();
+        App.getBus().post(new StopWebSocketClientEvent());
+        super.onDestroy();
     }
-
 }

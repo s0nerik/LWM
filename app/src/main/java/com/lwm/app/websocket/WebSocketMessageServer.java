@@ -1,7 +1,5 @@
 package com.lwm.app.websocket;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.lwm.app.App;
@@ -29,12 +27,9 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private LocalPlayerService player;
 
-    private Handler handler;
-
     public WebSocketMessageServer(InetSocketAddress address) {
         super(address);
         player = App.getLocalPlayerService();
-        handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
@@ -68,7 +63,7 @@ public class WebSocketMessageServer extends WebSocketServer {
                 processReadiness(conn);
                 break;
 
-// TODO: client playback manipulation
+//  TODO: client playback manipulation
 //            case SocketMessage.START:
 //                // TODO: start
 //                break;
@@ -81,17 +76,25 @@ public class WebSocketMessageServer extends WebSocketServer {
 //            case SocketMessage.PREPARE:
 //                // TODO: prepare
 //                break;
+
 //            default:
 //                Scanner sc = new Scanner(message);
-//                if (sc.hasNextInt()) {
-//                    int position = sc.nextInt();
-//                    if (message.startsWith(SocketMessage.SEEK_TO)) {
-//                        // TODO: seek to position
-//                    } else if (message.startsWith(SocketMessage.START_FROM)) {
-//                        // TODO: start from position
+//                if (sc.hasNext()) {
+//                    String command = sc.next();
+//                    if (sc.hasNextInt()) {
+//                        int position = sc.nextInt();
+//                        if (command.startsWith(SocketMessage.SEEK_TO)) {
+//                            playFrom(position);
+//                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
+//                        } else if (command.startsWith(SocketMessage.START_FROM)) {
+//                            seekTo(position);
+//                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
+//                        }
+//                    } else {
+//                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
 //                    }
 //                } else {
-//                    Log.e(App.TAG, "Wrong WebSocket message:\n"+message);
+//                    Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
 //                }
 //                sc.close();
         }

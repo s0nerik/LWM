@@ -18,14 +18,13 @@ import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.server.ClientsStateListener;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-public class LocalPlayer extends BasePlayer implements ClientsStateListener {
+public class LocalPlayer extends BasePlayer {
 
     private Context context;
 
@@ -230,14 +229,6 @@ public class LocalPlayer extends BasePlayer implements ClientsStateListener {
     public int getCurrentQueuePosition() {
         return queue.getCurrentIndex();
     }
-
-    @Override
-    public void onClientsReady() {
-        start();
-    }
-
-    @Override
-    public void onWaitClients() {}
 
     public int getQueueSize() {
         return queue.getSize();

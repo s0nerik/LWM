@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.lwm.app.events.MainThreadBus;
 import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.player.StartForegroundLocalPlayerEvent;
@@ -62,6 +63,8 @@ public class App extends Application {
     private static boolean serverStarted = false;
     private static boolean localPlayerServiceInForeground = false;
 
+    private static Context context;
+
     private WebSocketClient webSocketClient;
 
     public static LocalPlayerService getLocalPlayerService(){
@@ -91,7 +94,9 @@ public class App extends Application {
 //        // Start ACRA
 //        ACRA.init(this);
 
-        eventBus = new Bus(ThreadEnforcer.ANY);
+        context = getApplicationContext();
+
+        eventBus = new MainThreadBus(ThreadEnforcer.ANY);
         eventBus.register(this);
     }
 
@@ -144,6 +149,10 @@ public class App extends Application {
             streamPlayerServiceBound = false;
         }
     };
+
+    public static Context getContext() {
+        return context;
+    }
 
     @Subscribe
     public void bindLocalPlayerService(BindLocalPlayerServiceEvent event) {

@@ -131,14 +131,6 @@ public class LocalPlayerService extends Service {
         return player.getCurrentQueuePosition();
     }
 
-    public void onClientsReady() {
-        player.onClientsReady();
-    }
-
-    public void onWaitClients() {
-        player.onWaitClients();
-    }
-
     public int getQueueSize() {
         return player.getQueueSize();
     }

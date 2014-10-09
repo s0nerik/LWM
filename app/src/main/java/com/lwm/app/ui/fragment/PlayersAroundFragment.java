@@ -23,10 +23,12 @@ import android.widget.ProgressBar;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
+import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.events.server.StartWebSocketClientEvent;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
+import com.squareup.otto.Subscribe;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -205,6 +207,23 @@ public class PlayersAroundFragment extends Fragment {
             App.getBus().post(new StartWebSocketClientEvent());
 //            startStreamActivity();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        App.getBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        App.getBus().unregister(this);
+    }
+
+    @Subscribe
+    public void onSocketOpened(SocketOpenedEvent event) {
+        startStreamActivity();
     }
 
 }

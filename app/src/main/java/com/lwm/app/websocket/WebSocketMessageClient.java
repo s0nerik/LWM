@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.events.client.SendReadyEvent;
+import com.lwm.app.events.client.SocketClosedEvent;
+import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.server.async.tasks.SongInfoGetter;
 import com.lwm.app.service.StreamPlayerService;
 import com.squareup.otto.Subscribe;
@@ -29,6 +31,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                 + "\nStatus: " + handshakedata.getHttpStatus()
                 + "\nMessage: " + handshakedata.getHttpStatusMessage());
         App.getBus().register(this);
+        App.getBus().post(new SocketOpenedEvent());
     }
 
     @Override
@@ -85,6 +88,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageClient: closed:\nCode: "+code+" Reason: "+reason);
+        App.getBus().post(new SocketClosedEvent());
         App.getBus().unregister(this);
     }
 
