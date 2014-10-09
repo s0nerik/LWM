@@ -6,7 +6,6 @@ import com.lwm.app.App;
 import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.client.SocketOpenedEvent;
-import com.lwm.app.server.async.tasks.SongInfoGetter;
 import com.lwm.app.service.StreamPlayerService;
 import com.squareup.otto.Subscribe;
 
@@ -102,7 +101,6 @@ public class WebSocketMessageClient extends WebSocketClient {
         player.seekTo(pos);
 //        streamPlayer.start();
 
-        new SongInfoGetter(player.getPlayer()).execute();
     }
 
     private void seekTo(int pos) {
@@ -112,7 +110,6 @@ public class WebSocketMessageClient extends WebSocketClient {
     private void play() {
         player.start();
 
-        new SongInfoGetter(player.getPlayer()).execute();
     }
 
     private void pause() {

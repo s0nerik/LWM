@@ -87,6 +87,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
 
     @Subscribe
     public void onPlaybackStarted(PlaybackStartedEvent event) {
+        Log.d(App.TAG, "Playback started (RemotePlaybackActivity)");
         setSongInfo(event.getSong());
         playbackFragment.setPlayButton(true);
     }

@@ -5,9 +5,11 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
 import com.lwm.app.App;
 import com.lwm.app.events.client.SendReadyEvent;
-import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
@@ -30,7 +32,6 @@ public class StreamPlayer extends BasePlayer {
         public void onPrepared(MediaPlayer mediaPlayer) {
             Log.d("LWM", "StreamPlayer: onPrepared");
             App.getBus().post(new SendReadyEvent());
-//            new ReadinessReporter(StreamPlayer.this).execute();
         }
     };
 
@@ -46,27 +47,13 @@ public class StreamPlayer extends BasePlayer {
         this.context = context;
         handler = new Handler(context.getMainLooper());
         setOnSeekCompleteListener(onSeekCompleteListener);
-
-//        tempFile = new File(context.getCacheDir(), "song.mp3");
-
         setOnPreparedListener(onPreparedListener);
     }
-
-//    public void register(){
-//        active = true;
-//        Ion.with(context)
-//                .load(StreamServer.Url.CLIENT_REGISTER)
-//                .noCache()
-//                .setLogging(App.TAG, Log.DEBUG)
-//                .setStringBody("")
-//                .asString();
-//    }
 
     public void prepareNewSong(){
         reset();
         try {
             setDataSource(STREAM_PATH);
-//            setDataSource(tempFile.getPath());
             prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,38 +84,33 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                App.getBus().post(new PlaybackPausedEvent(currentSong, getCurrentPosition()));
-            }
-        });
+        updateSongInfo();
     }
 
     @Override
     public void start() throws IllegalStateException {
         super.start();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                App.getBus().post(new PlaybackStartedEvent(currentSong, getCurrentPosition()));
-            }
-        });
+        updateSongInfo();
     }
 
-//    public File getTempFile() {
-//        return tempFile;
-//    }
+    private void updateSongInfo() {
+        Ion.with(App.getContext())
+                .load(StreamServer.Url.CURRENT_INFO)
+                .as(Song.class)
+                .withResponse()
+                .setCallback(new FutureCallback<Response<Song>>() {
+                    @Override
+                    public void onCompleted(Exception e, Response<Song> result) {
+                        if (e == null) {
+                            setCurrentSong(result.getResult());
+                            App.getBus().post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
+                        } else {
+                            Log.e(App.TAG, "Error getting song info", e);
+                        }
+                    }
+                });
+    }
 
-//    public void unregister(){
-//        Ion.with(context)
-//                .load(StreamServer.Url.CLIENT_UNREGISTER)
-//                .noCache()
-//                .setLogging(App.TAG, Log.DEBUG)
-//                .setStringBody("")
-//                .asString();
-////        new ClientUnregister().execute();
-//    }
 
     public static boolean isActive(){
         return active;
