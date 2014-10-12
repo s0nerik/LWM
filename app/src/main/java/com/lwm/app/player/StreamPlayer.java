@@ -38,7 +38,15 @@ public class StreamPlayer extends BasePlayer {
     private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
         @Override
         public void onSeekComplete(MediaPlayer mediaPlayer) {
+            Log.d(App.TAG, "StreamPlayer: onSeekComplete");
             start();
+        }
+    };
+
+    private OnBufferingUpdateListener onBufferingUpdateListener = new OnBufferingUpdateListener() {
+        @Override
+        public void onBufferingUpdate(MediaPlayer mp, int percent) {
+            Log.d(App.TAG, "Buffered: "+percent);
         }
     };
 
@@ -48,6 +56,7 @@ public class StreamPlayer extends BasePlayer {
         handler = new Handler(context.getMainLooper());
         setOnSeekCompleteListener(onSeekCompleteListener);
         setOnPreparedListener(onPreparedListener);
+        setOnBufferingUpdateListener(onBufferingUpdateListener);
     }
 
     public void prepareNewSong(){
@@ -84,7 +93,6 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
-        updateSongInfo();
     }
 
     @Override

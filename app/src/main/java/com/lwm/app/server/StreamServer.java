@@ -92,9 +92,9 @@ public class StreamServer extends NanoHTTPD {
 
         } catch (FileNotFoundException e) {e.printStackTrace();}
 
-        Response res = new Response(Response.Status.OK, "audio/mpeg", fis);
+        Response res = new Response(Response.Status.OK, "audio/x-mpeg", fis);
         res.addHeader("Connection", "Keep-Alive");
-        res.setChunkedTransfer(true);
+//        res.setChunkedTransfer(true);
         return res;
     }
 

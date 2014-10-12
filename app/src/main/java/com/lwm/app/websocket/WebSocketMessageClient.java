@@ -46,16 +46,12 @@ public class WebSocketMessageClient extends WebSocketClient {
                     send(SocketMessage.formatWithInt(SocketMessage.CURRENT_POSITION, pos));
                     break;
                 case START:
-                    play();
+                    start();
                     send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START));
                     break;
                 case PAUSE:
                     pause();
                     send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PAUSE));
-                    break;
-                case UNPAUSE:
-                    unpause();
-                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.UNPAUSE));
                     break;
                 case PREPARE:
                     prepare();
@@ -71,14 +67,24 @@ public class WebSocketMessageClient extends WebSocketClient {
             Scanner sc = new Scanner(message);
             if (sc.hasNext()) {
                 String command = sc.next();
+
                 if (sc.hasNextInt()) {
                     int position = sc.nextInt();
-                    if (command.startsWith(SocketMessage.SEEK_TO.name())) {
-                        playFrom(position);
-                        send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
-                    } else if (command.startsWith(SocketMessage.START_FROM.name())) {
-                        seekTo(position);
-                        send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
+
+                    try {
+                        SocketMessage socketMessage = SocketMessage.valueOf(command);
+                        switch (socketMessage) {
+                            case SEEK_TO:
+                                seekTo(position);
+                                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
+                                break;
+                            case START_FROM:
+                                startFrom(position);
+                                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
+                                break;
+                        }
+                    } catch (IllegalArgumentException e1) {
+                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                     }
                 } else {
                     Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
@@ -100,30 +106,23 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     public void onError(Exception ex) {
         Log.d(App.TAG, "WebSocketMessageClient: error:\n" + ex);
-//        App.getBus().unregister(this);
     }
 
-    private void playFrom(int pos) {
+    private void startFrom(int pos) {
         player.seekTo(pos);
-//        streamPlayer.start();
-
+        player.start();
     }
 
     private void seekTo(int pos) {
         player.seekTo(pos);
     }
 
-    private void play() {
+    private void start() {
         player.start();
-
     }
 
     private void pause() {
         player.pause();
-    }
-
-    private void unpause() {
-        player.start();
     }
 
     private void prepare() {

@@ -31,6 +31,8 @@ public class LocalPlayerService extends Service {
     private final LocalPlayerServiceBinder binder = new LocalPlayerServiceBinder();
     private LocalPlayer player;
 
+    private boolean isSeeking = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -306,6 +308,5 @@ public class LocalPlayerService extends Service {
     public void onPauseClients(PauseClientsEvent event) {
         pause();
     }
-
 
 }

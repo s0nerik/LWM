@@ -149,11 +149,11 @@ public class LocalPlayer extends BasePlayer {
 
     @Override
     public void seekTo(int msec) throws IllegalStateException {
+        Log.d(App.TAG, "LocalPlayer: seekTo("+msec+")");
         if (App.isServerStarted()) {
             App.getBus().post(new SeekToClientsEvent(msec));
-        } else {
-            super.seekTo(msec);
         }
+        super.seekTo(msec);
     }
 
     public boolean isShuffle() {

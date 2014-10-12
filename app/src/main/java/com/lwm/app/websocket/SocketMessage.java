@@ -8,23 +8,23 @@ public enum SocketMessage {
     }
 
     public static String formatWithMessage(SocketMessage message, SocketMessage otherMessage) {
-        return withColon(message) + otherMessage.name();
+        return withSpace(message) + otherMessage.name();
     }
 
     public static String formatWithString(SocketMessage message, String s) {
-        return withColon(message) + s;
+        return withSpace(message) + s;
     }
 
     public static String formatWithInt(SocketMessage message, int i) {
-        return withColon(message) + i;
+        return withSpace(message) + i;
     }
 
     public static String formatWithBoolean(SocketMessage message, boolean b) {
-        return withColon(message) + b;
+        return withSpace(message) + b;
     }
 
-    private static String withColon(SocketMessage message) {
-        return message.name() + ": ";
+    private static String withSpace(SocketMessage message) {
+        return message.name() + " ";
     }
 
 }

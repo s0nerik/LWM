@@ -8,6 +8,7 @@ import com.lwm.app.App;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
+import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.websocket.SocketMessage;
@@ -83,6 +84,11 @@ public class MusicServerService extends Service {
     @Subscribe
     public void pauseClients(PauseClientsEvent event) {
         sendAll(SocketMessage.getStringToSend(SocketMessage.PAUSE));
+    }
+
+    @Subscribe
+    public void seekToClients(SeekToClientsEvent event) {
+        sendAll(SocketMessage.formatWithInt(SocketMessage.SEEK_TO, event.getPosition()));
     }
 
     private void sendAll(String message) {
