@@ -10,12 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
+import com.lwm.app.events.player.SongAddedToQueueEvent;
 import com.lwm.app.service.LocalPlayerService;
+import com.squareup.otto.Subscribe;
 
 public class QueueFragment extends ListFragment {
 
@@ -26,12 +29,21 @@ public class QueueFragment extends ListFragment {
 
     private final static int SMOOTH_SCROLL_MAX = 50;
 
+    private ListAdapter adapter;
+
     public QueueFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        App.getBus().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        App.getBus().unregister(this);
+        super.onDestroy();
     }
 
     @Override
@@ -44,7 +56,8 @@ public class QueueFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         listView = (ListView) view.findViewById(android.R.id.list);
         if (App.localPlayerActive() && !App.getLocalPlayerService().getQueue().isEmpty()) {
-            setListAdapter(new SongsListAdapter(getActivity(), App.getLocalPlayerService().getQueue()));
+            adapter = new SongsListAdapter(getActivity(), App.getLocalPlayerService().getQueue());
+            setListAdapter(adapter);
         } else {
 //            view.findViewById(R.id.empty_queue_layout).setVisibility(View.VISIBLE);
         }
@@ -102,6 +115,11 @@ public class QueueFragment extends ListFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Subscribe
+    public void onSongAddedToQueueEvent(SongAddedToQueueEvent event) {
+        ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
 }

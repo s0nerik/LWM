@@ -1,6 +1,9 @@
 package com.lwm.app.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.os.Build;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -37,6 +40,19 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
             PopupMenu menu = new PopupMenu(context, view);
             menu.inflate(R.menu.songs_popup);
             menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(position));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                final ImageView v = (ImageView) view;
+                final ColorFilter oldFilter = v.getColorFilter();
+                v.setColorFilter(Color.parseColor("#33b5e5"));
+                menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                    @Override
+                    public void onDismiss(PopupMenu popupMenu) {
+                        v.setColorFilter(oldFilter);
+                    }
+                });
+            }
+
             menu.show();
         }
 
@@ -105,10 +121,6 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         holder.duration.setText(song.getDurationString());
 
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
-
-//        if(position == 0){
-//            rowView.findViewById(R.id.space).setVisibility(View.VISIBLE);
-//        }
 
         return rowView;
     }

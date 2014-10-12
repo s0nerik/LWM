@@ -38,9 +38,8 @@
             <com.lwm.app.ui.custom_view.CheckedTextView
                 android:id="@+id/songs_list_item_duration"
                 android:checkMark="@null"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:paddingLeft="6dp"
+                android:padding="6dp"
+                android:layout_marginRight="-14dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="16sp"
@@ -53,11 +52,10 @@
 
             <ImageView
                 android:id="@+id/button_context_menu"
-                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="2dp"
-                android:paddingLeft="2dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:tint="#888"
                 android:src="@drawable/ic_core_overflow" />
 
