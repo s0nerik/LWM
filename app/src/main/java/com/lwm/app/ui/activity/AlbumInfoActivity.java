@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
@@ -23,7 +24,6 @@ import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
 import com.squareup.otto.Subscribe;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -67,12 +67,11 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
     private void initHeader(Album album){
         ImageView header = (ImageView) findViewById(R.id.image_header);
 
-        Picasso.with(this)
-                .load("file://"+album.getAlbumArtPath())
-                .resize(screenWidth, screenWidth)
+        Ion.with(header)
+                .error(R.drawable.no_cover)
                 .placeholder(R.drawable.no_cover)
-                .centerCrop()
-                .into(header);
+                .smartSize(true)
+                .load("file://"+album.getAlbumArtPath());
 
         String artistName = album.getArtist();
         String title = String.valueOf(album.getTitle());

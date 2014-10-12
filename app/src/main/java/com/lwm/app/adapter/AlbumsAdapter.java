@@ -9,11 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.koushikdutta.ion.Ion;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -62,12 +62,11 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         holder.album.setText(album.getTitle());
         holder.artist.setText(utils.getArtistName(album.getArtist()));
 
-        Picasso.with(context)
-                .load("file://"+album.getAlbumArtPath())
-                .fit()
-                .centerCrop()
+        Ion.with(holder.albumArt)
+                .smartSize(true)
                 .placeholder(R.drawable.no_cover)
-                .into(holder.albumArt);
+                .error(R.drawable.no_cover)
+                .load("file://"+album.getAlbumArtPath());
 
         return rowView;
     }
