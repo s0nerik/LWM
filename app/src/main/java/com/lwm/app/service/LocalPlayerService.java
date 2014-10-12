@@ -11,6 +11,8 @@ import android.view.SurfaceHolder;
 
 import com.lwm.app.App;
 import com.lwm.app.events.server.AllClientsReadyEvent;
+import com.lwm.app.events.server.PauseClientsEvent;
+import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.squareup.otto.Subscribe;
@@ -294,5 +296,16 @@ public class LocalPlayerService extends Service {
     public void allClientsReady(AllClientsReadyEvent event) {
         start();
     }
+
+    @Subscribe
+    public void onStartClients(StartClientsEvent event) {
+        start();
+    }
+
+    @Subscribe
+    public void onPauseClients(PauseClientsEvent event) {
+        pause();
+    }
+
 
 }

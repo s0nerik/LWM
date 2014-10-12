@@ -37,7 +37,7 @@ public class WebSocketMessageServer extends WebSocketServer {
         Log.d(App.TAG, "WebSocketMessageServer: New connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
         if (player.isPlaying()) {
-            conn.send(SocketMessage.PREPARE);
+            conn.send(SocketMessage.getStringToSend(SocketMessage.PREPARE));
         }
     }
 
@@ -50,18 +50,22 @@ public class WebSocketMessageServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         Log.d(App.TAG, "WebSocket message: \"" + message + "\"");
-        switch (message) {
-            case SocketMessage.CURRENT_POSITION:
-                int pos = player.getCurrentPosition();
-                conn.send(String.format(SocketMessage.FORMAT_CURRENT_POSITION, pos));
-                break;
-            case SocketMessage.IS_PLAYING:
-                boolean isPlaying = player.isPlaying();
-                conn.send(String.format(SocketMessage.FORMAT_IS_PLAYING, isPlaying));
-                break;
-            case SocketMessage.READY:
-                processReadiness(conn);
-                break;
+
+        try {
+            SocketMessage socketMessage = SocketMessage.valueOf(message);
+
+            switch (socketMessage) {
+                case CURRENT_POSITION:
+                    int pos = player.getCurrentPosition();
+                    conn.send(SocketMessage.formatWithInt(SocketMessage.CURRENT_POSITION, pos));
+                    break;
+                case IS_PLAYING:
+                    boolean isPlaying = player.isPlaying();
+                    conn.send(SocketMessage.formatWithBoolean(SocketMessage.IS_PLAYING, isPlaying));
+                    break;
+                case READY:
+                    processReadiness(conn);
+                    break;
 
 //  TODO: client playback manipulation
 //            case SocketMessage.START:
@@ -97,6 +101,9 @@ public class WebSocketMessageServer extends WebSocketServer {
 //                    Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
 //                }
 //                sc.close();
+            }
+        } catch (IllegalArgumentException e) { // Message with colon
+
         }
 
         lastMessageTime = System.currentTimeMillis();

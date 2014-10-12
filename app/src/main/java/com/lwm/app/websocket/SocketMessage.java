@@ -1,58 +1,30 @@
 package com.lwm.app.websocket;
 
-public interface SocketMessage {
+public enum SocketMessage {
+    START_FROM, SEEK_TO, CURRENT_POSITION, IS_PLAYING, OK, ERROR, PAUSE, UNPAUSE, START, PREPARE, READY;
 
-    String START_FROM = "start_from";
+    public static String getStringToSend(SocketMessage message) {
+        return message.name();
+    }
 
-    /**
-     * String format for starting prom position
-     */
-    String FORMAT_START_FROM = START_FROM + ": %d";
+    public static String formatWithMessage(SocketMessage message, SocketMessage otherMessage) {
+        return withColon(message) + otherMessage.name();
+    }
 
+    public static String formatWithString(SocketMessage message, String s) {
+        return withColon(message) + s;
+    }
 
-    String SEEK_TO = "seek_to";
+    public static String formatWithInt(SocketMessage message, int i) {
+        return withColon(message) + i;
+    }
 
-    /**
-     * String format for seeking to position
-     */
-    String FORMAT_SEEK_TO = SEEK_TO + ": %d";
+    public static String formatWithBoolean(SocketMessage message, boolean b) {
+        return withColon(message) + b;
+    }
 
+    private static String withColon(SocketMessage message) {
+        return message.name() + ": ";
+    }
 
-    String CURRENT_POSITION = "current_position";
-
-    /**
-     * String format for sending current position
-     */
-    String FORMAT_CURRENT_POSITION = CURRENT_POSITION + ": %d";
-
-
-    String IS_PLAYING = "is_playing";
-
-    /**
-     * String format for sending current position
-     */
-    String FORMAT_IS_PLAYING = IS_PLAYING + ": %b";
-
-
-    String OK = "ok";
-
-    /**
-     * String format for sending ok response
-     */
-    String FORMAT_OK = OK + ": %s";
-
-
-    String ERROR = "error";
-
-    /**
-     * String format for sending error response
-     */
-    String FORMAT_ERROR = ERROR + ": %s";
-
-
-    String PAUSE = "pause";
-    String UNPAUSE = "unpause";
-    String START = "start";
-    String PREPARE = "prepare";
-    String READY = "ready";
 }

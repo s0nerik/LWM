@@ -36,51 +36,57 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         Log.d(App.TAG, "WebSocketMessageClient: \"" + message + "\"");
-        switch (message) {
-            case SocketMessage.CURRENT_POSITION:
-                int pos = player.getCurrentPosition();
-                send(String.format(SocketMessage.FORMAT_CURRENT_POSITION, pos));
-                break;
-            case SocketMessage.START:
-                play();
-                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START));
-                break;
-            case SocketMessage.PAUSE:
-                pause();
-                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PAUSE));
-                break;
-            case SocketMessage.UNPAUSE:
-                unpause();
-                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.UNPAUSE));
-                break;
-            case SocketMessage.PREPARE:
-                prepare();
-                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PREPARE));
-                break;
-            case SocketMessage.IS_PLAYING:
-                boolean isPlaying = player.isPlaying();
-                send(String.format(SocketMessage.FORMAT_IS_PLAYING, isPlaying));
-                break;
-            default:
-                Scanner sc = new Scanner(message);
-                if (sc.hasNext()) {
-                    String command = sc.next();
-                    if (sc.hasNextInt()) {
-                        int position = sc.nextInt();
-                        if (command.startsWith(SocketMessage.SEEK_TO)) {
-                            playFrom(position);
-                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
-                        } else if (command.startsWith(SocketMessage.START_FROM)) {
-                            seekTo(position);
-                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
-                        }
-                    } else {
-                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+
+        try {
+            SocketMessage socketMessage = SocketMessage.valueOf(message);
+
+            switch (socketMessage) {
+                case CURRENT_POSITION:
+                    int pos = player.getCurrentPosition();
+                    send(SocketMessage.formatWithInt(SocketMessage.CURRENT_POSITION, pos));
+                    break;
+                case START:
+                    play();
+                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START));
+                    break;
+                case PAUSE:
+                    pause();
+                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PAUSE));
+                    break;
+                case UNPAUSE:
+                    unpause();
+                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.UNPAUSE));
+                    break;
+                case PREPARE:
+                    prepare();
+                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PREPARE));
+                    break;
+                case IS_PLAYING:
+                    boolean isPlaying = player.isPlaying();
+                    send(SocketMessage.formatWithBoolean(SocketMessage.IS_PLAYING, isPlaying));
+                    break;
+            }
+
+        } catch (IllegalArgumentException e) { // Message with colon
+            Scanner sc = new Scanner(message);
+            if (sc.hasNext()) {
+                String command = sc.next();
+                if (sc.hasNextInt()) {
+                    int position = sc.nextInt();
+                    if (command.startsWith(SocketMessage.SEEK_TO.name())) {
+                        playFrom(position);
+                        send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
+                    } else if (command.startsWith(SocketMessage.START_FROM.name())) {
+                        seekTo(position);
+                        send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
                     }
                 } else {
                     Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                 }
-                sc.close();
+            } else {
+                Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+            }
+            sc.close();
         }
     }
 
@@ -126,7 +132,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Subscribe
     public void onSendReadyEvent(SendReadyEvent event) {
-        send(SocketMessage.READY);
+        send(SocketMessage.getStringToSend(SocketMessage.READY));
     }
 
 }

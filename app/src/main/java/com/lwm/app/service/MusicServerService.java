@@ -64,7 +64,7 @@ public class MusicServerService extends Service {
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (webSocketMessageServer.connections().size() != 0) {
-            sendAll(SocketMessage.PREPARE);
+            sendAll(SocketMessage.getStringToSend(SocketMessage.PREPARE));
         } else {
             App.getBus().post(new AllClientsReadyEvent());
         }
@@ -72,17 +72,17 @@ public class MusicServerService extends Service {
 
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
-        sendAll(String.format(SocketMessage.FORMAT_START_FROM, player.getCurrentPosition()));
+        sendAll(SocketMessage.formatWithInt(SocketMessage.START_FROM, player.getCurrentPosition()));
     }
 
     @Subscribe
     public void startClients(StartClientsEvent event) {
-        sendAll(SocketMessage.START);
+        sendAll(SocketMessage.getStringToSend(SocketMessage.START));
     }
 
     @Subscribe
     public void pauseClients(PauseClientsEvent event) {
-        sendAll(SocketMessage.PAUSE);
+        sendAll(SocketMessage.getStringToSend(SocketMessage.PAUSE));
     }
 
     private void sendAll(String message) {
