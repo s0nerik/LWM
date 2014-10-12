@@ -1,1 +1,0 @@
-int raw blur 0x7f020000

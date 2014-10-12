@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- From: file:/home/sonerik/Projects/LWM/libs/UnifiedPreference/res/values-zh-rCN/__internal_strings.xml -->
-    <eat-comment />
-
-    <string name="ringtone_silent">"静音"</string>
-
-</resources>

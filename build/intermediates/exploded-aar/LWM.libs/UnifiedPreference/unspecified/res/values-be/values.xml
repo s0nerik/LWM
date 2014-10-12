@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- From: file:/home/sonerik/Projects/LWM/libs/UnifiedPreference/res/values-be/__internal_strings.xml -->
-    <eat-comment />
-
-    <string name="ringtone_silent">"Ціхі рэжым"</string>
-
-</resources>
