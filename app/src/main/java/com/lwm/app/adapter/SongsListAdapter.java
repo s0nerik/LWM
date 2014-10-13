@@ -1,9 +1,13 @@
 package com.lwm.app.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,6 +24,7 @@ import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
 
+import java.io.File;
 import java.util.List;
 
 public class SongsListAdapter extends ArrayAdapter<Song> {
@@ -74,10 +79,40 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
                     return true;
+                case R.id.set_as_ringtone:
+                    setSongAsRingtone(position);
+                    return true;
                 default:
                     return false;
             }
         }
+    }
+
+    private void setSongAsRingtone(int pos) {
+        Song song = list.get(pos);
+
+        File newRingtone = new File(song.getSource());
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DATA, newRingtone.getAbsolutePath());
+        values.put(MediaStore.MediaColumns.SIZE, newRingtone.length());
+        values.put(MediaStore.MediaColumns.TITLE, song.getTitle());
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
+        values.put(MediaStore.Audio.Media.DURATION, song.getDuration());
+        values.put(MediaStore.Audio.Media.ARTIST, song.getArtist());
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+        values.put(MediaStore.Audio.Media.IS_ALARM, false);
+        values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+
+        Uri uri = MediaStore.Audio.Media.getContentUriForPath(newRingtone.getAbsolutePath());
+        context.getContentResolver().delete(uri, MediaStore.MediaColumns.DATA + "=\"" + newRingtone.getAbsolutePath() + "\"", null);
+        Uri newUri = context.getContentResolver().insert(uri, values);
+
+        try {
+            RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
+            Toast.makeText(context, String.format(context.getString(R.string.format_ringtone), song.getTitle()), Toast.LENGTH_LONG).show();
+        } catch (Throwable t) {}
     }
 
     public SongsListAdapter(Context context, List<Song> list) {
