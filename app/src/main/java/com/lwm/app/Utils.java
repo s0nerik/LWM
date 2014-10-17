@@ -9,7 +9,11 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.lwm.app.model.Song;
+import com.lwm.app.service.LocalPlayerService;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
@@ -58,6 +62,18 @@ public class Utils {
 
     public static String getRandomColorString() {
         return String.format("#%06X", 0xFFFFFF & getRandomColor());
+    }
+
+    public static int getCurrentSongPosition(List<Song> songList) {
+        int pos = -1;
+        if(App.localPlayerActive()) {
+            LocalPlayerService player = App.getLocalPlayerService();
+            if (player.hasCurrentSong()) {
+                Song song = player.getCurrentSong();
+                pos = songList.indexOf(song);
+            }
+        }
+        return pos;
     }
 
 }

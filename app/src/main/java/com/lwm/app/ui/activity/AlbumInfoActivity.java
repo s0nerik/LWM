@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.helper.AlbumsCursorGetter;
@@ -62,6 +63,8 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
         screenWidth = getResources().getDisplayMetrics().widthPixels;
 
         initHeader(album);
+
+        App.getBus().register(this);
     }
 
     private void initHeader(Album album){
@@ -136,28 +139,32 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(App.TAG, "onItemClick: "+position);
-        listView.setItemChecked(position, true);
-        adapter.setChecked(position-1);
+        setSelection(position-1);
 
         player.setQueue(playlist);
         player.play(position-1);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        App.getBus().register(this);
+    protected void onDestroy() {
+        App.getBus().unregister(this);
+        super.onDestroy();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        App.getBus().unregister(this);
+    public void highlightCurrentSong(){
+        int pos = Utils.getCurrentSongPosition(playlist);
+        setSelection(pos);
+    }
+
+    private void setSelection(int position) {
+        listView.setItemChecked(position+1, true);
+        adapter.setChecked(position);
     }
 
     @Subscribe
     public void playbackStarted(PlaybackStartedEvent event) {
         showNowPlayingBar(true);
+        highlightCurrentSong();
     }
 
 }

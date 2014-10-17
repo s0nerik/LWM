@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
 import com.lwm.app.helper.SongsCursorGetter;
@@ -119,19 +120,11 @@ public class SongsListFragment extends ListFragment implements
     }
 
     public void highlightCurrentSong(){
-        if(App.localPlayerActive()) {
-            player = App.getLocalPlayerService();
-            if (player.hasCurrentSong()) {
-                Song song = player.getCurrentSong();
-                int pos = songs.indexOf(song);
-                if (pos != -1) {
-                    setSelection(pos);
+        int pos = Utils.getCurrentSongPosition(songs);
+        setSelection(pos);
 
-                    // TODO: replace this workaround
-                    listView.setSelection(pos - 1);
-                }
-            }
-        }
+        // TODO: replace this workaround
+        listView.setSelection(pos - 1);
     }
 
     @Override
