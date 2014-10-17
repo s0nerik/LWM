@@ -23,14 +23,17 @@
             android:y="0dp" />
 
         <FrameLayout
+            android:id="@+id/offsetted_albumart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?android:actionBarSize"
             android:layout_above="@+id/bottom_bar">
 
-            <ImageView
+            <com.lwm.app.ui.custom_view.SquareWidthImageView
                 android:id="@+id/fragment_playback_cover"
-                android:layout_width="@dimen/albumart_size"
-                android:layout_height="@dimen/albumart_size"
+                android:layout_margin="48dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop" />
         </FrameLayout>

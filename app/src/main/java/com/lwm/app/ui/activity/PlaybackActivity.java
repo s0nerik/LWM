@@ -42,6 +42,7 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     protected Timer seekBarUpdateTimer = new Timer();
 
     public abstract void onControlButtonClicked(View v);
+
     protected abstract void setSongInfo(Song song);
 
     @Override
@@ -99,14 +100,14 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     }
 
     protected void onClientConnected(String name) {
-        Crouton.makeText(this, "Client connected", Style.CONFIRM).show();
+        Crouton.makeText(this, "Client connected", Style.CONFIRM, R.id.offsetted_albumart).show();
     }
 
     protected void onClientDisconnected(String name) {
-        Crouton.makeText(this, "Client disconnected", Style.ALERT).show();
+        Crouton.makeText(this, "Client disconnected", Style.ALERT, R.id.offsetted_albumart).show();
     }
 
-    protected void initActionBar(){
+    protected void initActionBar() {
         actionBar = getSupportActionBar();
         actionBar.setIcon(R.drawable.ic_playback_activity);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -115,21 +116,21 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         actionBar.setCustomView(inflater.inflate(R.layout.actionbar_listen, null));
     }
 
-    protected void initSeekBarUpdater(BasePlayer player){
+    protected void initSeekBarUpdater(BasePlayer player) {
         seekBarUpdateTimer.cancel();
         seekBarUpdateTimer.purge();
         seekBarUpdateTimer = new Timer();
         seekBarUpdateTimer.schedule(new SeekBarUpdateTask(playbackFragment, player, player.getDuration()), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
     }
 
-    protected void initSeekBarUpdater(BasePlayer player, int duration){
+    protected void initSeekBarUpdater(BasePlayer player, int duration) {
         seekBarUpdateTimer.cancel();
         seekBarUpdateTimer.purge();
         seekBarUpdateTimer = new Timer();
         seekBarUpdateTimer.schedule(new SeekBarUpdateTask(playbackFragment, player, duration), 0, PlaybackFragment.SEEK_BAR_UPDATE_INTERVAL);
     }
 
-    protected void cancelSeekBarUpdater(){
+    protected void cancelSeekBarUpdater() {
         seekBarUpdateTimer.cancel();
         seekBarUpdateTimer.purge();
     }
