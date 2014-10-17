@@ -58,6 +58,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_time", false)) {
+            startActivity(new Intent(this, FirstTimeActivity.class));
+        }
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("always_local", false)){
             startActivity(new Intent(this, LocalSongChooserActivity.class));
         }

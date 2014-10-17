@@ -36,6 +36,8 @@
     <color name="notification_button_bg_pressed">#88ffffff</color>
     <color name="notification_button_bg">@android:color/transparent</color>
 
+    <color name="orange_main">#e74c3c</color>
+
     <color name="pull_to_refresh_1">#FF4100</color>
     <color name="pull_to_refresh_2">#F87217</color>
     <color name="pull_to_refresh_3">#FFAA40</color>

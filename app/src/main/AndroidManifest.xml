@@ -140,6 +140,12 @@
                 android:value=".ui.activity.LocalSongChooserActivity" />
         </activity>
 
+        <activity
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.FirstTimeActivity" >
+        </activity>
+
     </application>
 
 </manifest>

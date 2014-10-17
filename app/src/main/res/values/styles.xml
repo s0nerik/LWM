@@ -23,6 +23,12 @@
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
+    </style>
+
     <style name="Widget" />
 
     <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.Base.ActionBar" />

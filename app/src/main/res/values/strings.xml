@@ -78,7 +78,7 @@
     <string name="FONT_ROBOTO_THIN">fonts/Roboto-Thin.ttf</string>
     <string name="FONT_ROBOTO_LIGHT_ITALIC">fonts/Roboto-LightItalic.ttf</string>
     <string name="FONT_ROBOTO_THIN_ITALIC">fonts/Roboto-ThinItalic.ttf</string>
-    <string name="FONT_LECKERLI_ONE_REGULAR">fonts/LeckerliOne-Regular.ttf</string>
+    <string name="FONT_LECKERELI_ONE_REGULAR">fonts/LeckerliOne-Regular.ttf</string>
 
     // Navigation Drawer titles
     <string-array name="drawer_items">
