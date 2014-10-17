@@ -24,6 +24,9 @@ import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.util.Timer;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public abstract class PlaybackActivity extends ActionBarActivity {
 
     protected PlaybackFragment playbackFragment;
@@ -93,6 +96,14 @@ public abstract class PlaybackActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void onClientConnected(String name) {
+        Crouton.makeText(this, "Client connected", Style.CONFIRM).show();
+    }
+
+    protected void onClientDisconnected(String name) {
+        Crouton.makeText(this, "Client disconnected", Style.ALERT).show();
     }
 
     protected void initActionBar(){

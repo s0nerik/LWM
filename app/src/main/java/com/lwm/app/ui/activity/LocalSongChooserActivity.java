@@ -31,6 +31,8 @@ import com.lwm.app.events.player.binding.BindLocalPlayerServiceEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
 import com.lwm.app.events.player.binding.UnbindLocalPlayerServiceEvent;
+import com.lwm.app.events.server.ClientConnectedEvent;
+import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
@@ -266,6 +268,16 @@ public class LocalSongChooserActivity extends BasicActivity {
     @Subscribe
     public void onLocalPlayerServiceBound(LocalPlayerServiceBoundEvent event) {
         player = event.getLocalPlayerService();
+    }
+
+    @Subscribe
+    public void onClientConnected(ClientConnectedEvent event) {
+        onClientConnected(event.getName());
+    }
+
+    @Subscribe
+    public void onClientDisconnected(ClientDisconnectedEvent event) {
+        onClientDisconnected(event.getName());
     }
 
     private void setBroadcastButtonState(boolean broadcasting) {

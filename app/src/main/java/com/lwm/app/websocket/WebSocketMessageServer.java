@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.events.server.AllClientsReadyEvent;
+import com.lwm.app.events.server.ClientConnectedEvent;
+import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.server.ClientReadyEvent;
 import com.lwm.app.service.LocalPlayerService;
 
@@ -39,12 +41,14 @@ public class WebSocketMessageServer extends WebSocketServer {
         if (player.isPlaying()) {
             conn.send(SocketMessage.getStringToSend(SocketMessage.PREPARE));
         }
+        App.getBus().post(new ClientConnectedEvent(""));
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageServer: Close connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
+        App.getBus().post(new ClientDisconnectedEvent(""));
     }
 
     @Override

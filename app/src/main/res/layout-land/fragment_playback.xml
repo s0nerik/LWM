@@ -21,8 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_playback_under_actionbar"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/actionbar_size">
+        android:orientation="horizontal">
 
         <com.lwm.app.ui.custom_view.SquareImageView
             android:layout_width="match_parent"

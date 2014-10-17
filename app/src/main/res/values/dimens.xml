@@ -4,7 +4,6 @@
     <dimen name="activity_vertical_margin">0dp</dimen>
     <dimen name="albumart_size">200dp</dimen>
     <dimen name="start_screen_portrait_button_size">150dp</dimen>
-    <dimen name="actionbar_size">40dp</dimen>
     <dimen name="actionbar_primary_text_size">18sp</dimen>
     <dimen name="actionbar_secondary_text_size">16sp</dimen>
 

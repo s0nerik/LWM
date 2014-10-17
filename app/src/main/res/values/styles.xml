@@ -72,7 +72,6 @@
         <item name="android:background">@color/actionbar_semi_transparent</item>
         <item name="displayOptions">showCustom|showHome</item>
         <item name="android:displayOptions">showCustom|showHome</item>
-        <item name="android:layout_height">@dimen/actionbar_size</item>
     </style>
 
     <style name="SongTitle">

@@ -16,6 +16,8 @@ import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.server.ClientConnectedEvent;
+import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
@@ -167,6 +169,17 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         setMenuProgressIndicator(false);
         setBroadcastButtonState(false);
     }
+
+    @Subscribe
+    public void onClientConnected(ClientConnectedEvent event) {
+        onClientConnected(event.getName());
+    }
+
+    @Subscribe
+    public void onClientDisconnected(ClientDisconnectedEvent event) {
+        onClientDisconnected(event.getName());
+    }
+
 
     private void setBroadcastButtonState(boolean broadcasting) {
         if (broadcastButton != null) if (broadcasting) {
