@@ -1,7 +1,12 @@
 package com.lwm.app.websocket;
 
 public enum SocketMessage {
-    START_FROM, SEEK_TO, CURRENT_POSITION, IS_PLAYING, OK, ERROR, PAUSE, UNPAUSE, START, PREPARE, READY, MESSAGE;
+    START_FROM, SEEK_TO,
+    CURRENT_POSITION, IS_PLAYING,
+    OK, ERROR,
+    PAUSE, UNPAUSE, START,
+    PREPARE, READY,
+    MESSAGE, CLIENT_INFO;
 
     public static String getStringToSend(SocketMessage message) {
         return message.name();

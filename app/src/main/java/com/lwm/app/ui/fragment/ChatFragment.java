@@ -1,6 +1,7 @@
 package com.lwm.app.ui.fragment;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,7 +83,8 @@ public class ChatFragment extends Fragment {
 
     @OnClick(R.id.btnSend)
     public void onSend() {
-        ChatMessage msg = new ChatMessage("Me", mTextField.getText().toString());
+        String name = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("client_name", android.os.Build.MODEL);
+        ChatMessage msg = new ChatMessage(name, mTextField.getText().toString());
         App.getBus().post(new SendChatMessageEvent(msg));
         mTextField.setText("");
     }

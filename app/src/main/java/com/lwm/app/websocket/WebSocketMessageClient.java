@@ -8,11 +8,13 @@ import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
+import com.lwm.app.events.client.ClientInfoReceivedEvent;
 import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.model.chat.ChatMessage;
 import com.lwm.app.service.StreamPlayerService;
+import com.lwm.app.websocket.entities.ClientInfo;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
@@ -101,12 +103,18 @@ public class WebSocketMessageClient extends WebSocketClient {
                     if (sc.hasNextLine()) {
                         try {
                             SocketMessage socketMessage = SocketMessage.valueOf(command);
-                            if (socketMessage == SocketMessage.MESSAGE) {
-                                String json = sc.nextLine();
-                                ChatMessage chatMessage = new Gson().fromJson(json, ChatMessage.class);
-                                App.getBus().post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
-                            } else {
-                                Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+                            String json = sc.nextLine();
+                            switch(socketMessage) {
+                                case MESSAGE:
+                                    ChatMessage chatMessage = new Gson().fromJson(json, ChatMessage.class);
+                                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
+                                    break;
+                                case CLIENT_INFO:
+                                    ClientInfo clientInfo = new Gson().fromJson(json, ClientInfo.class);
+                                    App.getBus().post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
+                                    break;
+                                default:
+                                    Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                             }
                         } catch (IllegalArgumentException e1) {
                             Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
