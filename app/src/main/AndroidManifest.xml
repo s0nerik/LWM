@@ -146,6 +146,12 @@
             android:name=".ui.activity.FirstTimeActivity" >
         </activity>
 
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".ui.activity.ChatActivity" >
+        </activity>
+
+
     </application>
 
 </manifest>

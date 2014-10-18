@@ -1,7 +1,7 @@
 package com.lwm.app.websocket;
 
 public enum SocketMessage {
-    START_FROM, SEEK_TO, CURRENT_POSITION, IS_PLAYING, OK, ERROR, PAUSE, UNPAUSE, START, PREPARE, READY;
+    START_FROM, SEEK_TO, CURRENT_POSITION, IS_PLAYING, OK, ERROR, PAUSE, UNPAUSE, START, PREPARE, READY, MESSAGE;
 
     public static String getStringToSend(SocketMessage message) {
         return message.name();
@@ -15,6 +15,10 @@ public enum SocketMessage {
         return withSpace(message) + s;
     }
 
+    public static String formatWithStringNewLine(SocketMessage message, String s) {
+        return withNewLine(message) + s;
+    }
+
     public static String formatWithInt(SocketMessage message, int i) {
         return withSpace(message) + i;
     }
@@ -25,6 +29,10 @@ public enum SocketMessage {
 
     private static String withSpace(SocketMessage message) {
         return message.name() + " ";
+    }
+
+    private static String withNewLine(SocketMessage message) {
+        return message.name() + "\n";
     }
 
 }

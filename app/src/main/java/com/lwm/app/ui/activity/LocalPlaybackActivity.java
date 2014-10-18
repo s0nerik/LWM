@@ -1,6 +1,7 @@
 package com.lwm.app.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -124,6 +125,9 @@ public class LocalPlaybackActivity extends PlaybackActivity {
                 WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
                 WifiAP wifiAP = new WifiAP();
                 wifiAP.toggleWiFiAP(wm, this);
+                return true;
+            case R.id.action_chat:
+                startActivity(new Intent(this, ChatActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

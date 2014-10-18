@@ -4,15 +4,9 @@
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity" >
 
     <item
-        android:icon="@drawable/ic_action_broadcast"
-        android:id="@+id/action_broadcast"
-        android:title="@string/action_broadcast"
-        app:showAsAction="always" />
-
-    <item
         android:icon="@drawable/ic_action_mode_comment"
         android:id="@+id/action_chat"
         android:title="@string/action_chat"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

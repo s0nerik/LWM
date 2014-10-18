@@ -3,21 +3,29 @@ package com.lwm.app.websocket;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.events.chat.ChatMessageReceivedEvent;
+import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.client.SocketOpenedEvent;
+import com.lwm.app.model.chat.ChatMessage;
 import com.lwm.app.service.StreamPlayerService;
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class WebSocketMessageClient extends WebSocketClient {
 
     private StreamPlayerService player;
+
+    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public WebSocketMessageClient(URI serverURI) {
         super(serverURI);
@@ -63,7 +71,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     break;
             }
 
-        } catch (IllegalArgumentException e) { // Message with colon
+        } catch (IllegalArgumentException e) { // Message with multiple args
             Scanner sc = new Scanner(message);
             if (sc.hasNext()) {
                 String command = sc.next();
@@ -87,7 +95,22 @@ public class WebSocketMessageClient extends WebSocketClient {
                         Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                     }
                 } else {
-                    Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+                    if (sc.hasNextLine()) {
+                        try {
+                            SocketMessage socketMessage = SocketMessage.valueOf(command);
+                            if (socketMessage == SocketMessage.MESSAGE) {
+                                String m = sc.nextLine();
+                                String author = m.substring(0, m.indexOf("\n"));
+                                String text = m.substring(m.indexOf("\n") + 1, m.length());
+                                ChatMessage chatMessage = new ChatMessage(author, text);
+                                App.getBus().post(new ChatMessageReceivedEvent(chatMessage));
+                            } else {
+                                Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+                            }
+                        } catch (IllegalArgumentException e1) {
+                            Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+                        }
+                    }
                 }
             } else {
                 Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
@@ -132,6 +155,16 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Subscribe
     public void onSendReadyEvent(SendReadyEvent event) {
         send(SocketMessage.getStringToSend(SocketMessage.READY));
+    }
+
+    @Subscribe
+    public void onSendChatMessage(ChatMessage message) {
+        send(message.toString());
+    }
+
+    @Produce
+    public ChatMessagesAvailableEvent produceChatMessages() {
+        return new ChatMessagesAvailableEvent(chatMessages);
     }
 
 }

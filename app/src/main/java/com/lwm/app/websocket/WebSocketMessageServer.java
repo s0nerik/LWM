@@ -3,10 +3,12 @@ package com.lwm.app.websocket;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.server.ClientReadyEvent;
+import com.lwm.app.model.chat.ChatMessage;
 import com.lwm.app.service.LocalPlayerService;
 
 import org.java_websocket.WebSocket;
@@ -16,6 +18,7 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
@@ -106,8 +109,31 @@ public class WebSocketMessageServer extends WebSocketServer {
 //                }
 //                sc.close();
             }
-        } catch (IllegalArgumentException e) { // Message with colon
+        } catch (IllegalArgumentException e) { // Message with space or newline
+            Scanner sc = new Scanner(message);
+            if (sc.hasNext()) {
+                String command = sc.next();
 
+                if (sc.hasNextLine()) {
+                    try {
+                        SocketMessage socketMessage = SocketMessage.valueOf(command);
+                        if (socketMessage == SocketMessage.MESSAGE) {
+                            String m = sc.nextLine();
+                            String author = m.substring(0, m.indexOf("\n"));
+                            String text = m.substring(m.indexOf("\n") + 1, m.length());
+                            ChatMessage chatMessage = new ChatMessage(author, text);
+                            App.getBus().post(new ChatMessageReceivedEvent(chatMessage));
+                        } else {
+                            Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+                        }
+                    } catch (IllegalArgumentException e1) {
+                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+                    }
+                }
+            } else {
+                Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
+            }
+            sc.close();
         }
 
         lastMessageTime = System.currentTimeMillis();
