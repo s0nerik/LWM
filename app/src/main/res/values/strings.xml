@@ -117,5 +117,8 @@
     <string name="set_as_ringtone">Set as ringtone</string>
     <string name="format_ringtone">%s is now your new ringtone!</string>
     <string name="action_chat">Chat</string>
+    <string name="pref_client_name_title">Name</string>
+    <string name="pref_client_name_summary">This name will be shown to other users</string>
+    <string name="pref_header_client">Client settings</string>
 
 </resources>

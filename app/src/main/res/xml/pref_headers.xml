@@ -11,4 +11,9 @@
         unified:up_title="@string/pref_header_app"
         unified:up_preferenceRes="@xml/pref_app" />
 
+    <header
+        unified:up_fragment="com.lwm.app.ui.activity.PreferenceActivity$AppSettingsFragment"
+        unified:up_title="@string/pref_header_client"
+        unified:up_preferenceRes="@xml/pref_client" />
+
 </preference-headers>
