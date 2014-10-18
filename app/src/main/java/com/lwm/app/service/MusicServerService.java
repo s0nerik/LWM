@@ -4,10 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
+import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
@@ -109,13 +111,24 @@ public class MusicServerService extends Service {
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
         ChatMessage msg = event.getMessage();
         chatMessages.add(msg);
-        sendAll(msg.toString());
+        sendAllExcept(SocketMessage.formatWithString(SocketMessage.MESSAGE, new Gson().toJson(msg)), event.getWebSocket());
         App.getBus().post(new NotifyMessageAddedEvent(msg));
+    }
+
+    @Subscribe
+    public void onSendChatMessage(SendChatMessageEvent event) {
+        onChatMessageReceived(new ChatMessageReceivedEvent(event.getMessage(), null));
     }
 
     private void sendAll(String message) {
         for (WebSocket conn : webSocketMessageServer.connections()) {
             conn.send(message);
+        }
+    }
+
+    private void sendAllExcept(String message, WebSocket socket) {
+        for (WebSocket conn : webSocketMessageServer.connections()) {
+            if (!conn.equals(socket)) conn.send(message);
         }
     }
 

@@ -8,27 +8,19 @@ public enum SocketMessage {
     }
 
     public static String formatWithMessage(SocketMessage message, SocketMessage otherMessage) {
-        return withSpace(message) + otherMessage.name();
+        return withNewLine(message) + otherMessage.name();
     }
 
     public static String formatWithString(SocketMessage message, String s) {
-        return withSpace(message) + s;
-    }
-
-    public static String formatWithStringNewLine(SocketMessage message, String s) {
         return withNewLine(message) + s;
     }
 
     public static String formatWithInt(SocketMessage message, int i) {
-        return withSpace(message) + i;
+        return withNewLine(message) + i;
     }
 
     public static String formatWithBoolean(SocketMessage message, boolean b) {
-        return withSpace(message) + b;
-    }
-
-    private static String withSpace(SocketMessage message) {
-        return message.name() + " ";
+        return withNewLine(message) + b;
     }
 
     private static String withNewLine(SocketMessage message) {

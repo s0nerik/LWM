@@ -2,6 +2,7 @@ package com.lwm.app.websocket;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
@@ -111,18 +112,15 @@ public class WebSocketMessageServer extends WebSocketServer {
             }
         } catch (IllegalArgumentException e) { // Message with space or newline
             Scanner sc = new Scanner(message);
-            if (sc.hasNext()) {
-                String command = sc.next();
+            if (sc.hasNextLine()) {
+                String command = sc.nextLine();
 
                 if (sc.hasNextLine()) {
                     try {
                         SocketMessage socketMessage = SocketMessage.valueOf(command);
                         if (socketMessage == SocketMessage.MESSAGE) {
-                            String m = sc.nextLine();
-                            String author = m.substring(0, m.indexOf("\n"));
-                            String text = m.substring(m.indexOf("\n") + 1, m.length());
-                            ChatMessage chatMessage = new ChatMessage(author, text);
-                            App.getBus().post(new ChatMessageReceivedEvent(chatMessage));
+                            ChatMessage chatMessage = new Gson().fromJson(sc.nextLine(), ChatMessage.class);
+                            App.getBus().post(new ChatMessageReceivedEvent(chatMessage, conn));
                         } else {
                             Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                         }

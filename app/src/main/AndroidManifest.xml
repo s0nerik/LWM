@@ -149,6 +149,7 @@
 
         <activity
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.activity.ChatActivity" >
         </activity>
 

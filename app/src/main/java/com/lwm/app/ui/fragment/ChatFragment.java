@@ -8,18 +8,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.ChatAdapter;
-import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
+import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.model.chat.ChatMessage;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -33,7 +33,9 @@ public class ChatFragment extends Fragment {
     @InjectView(R.id.textField)
     EditText mTextField;
 
-    private List<ChatMessage> messages;
+    private RecyclerView.Adapter adapter;
+
+    private List<ChatMessage> messages = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,13 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new ChatAdapter(getActivity(), messages));
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override
@@ -64,10 +72,7 @@ public class ChatFragment extends Fragment {
     @Subscribe
     public void onMessagesAvailable(ChatMessagesAvailableEvent event) {
         messages = event.getMessages();
-        RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
+        adapter = new ChatAdapter(getActivity(), messages);
     }
 
     @Subscribe
@@ -76,9 +81,9 @@ public class ChatFragment extends Fragment {
     }
 
     @OnClick(R.id.btnSend)
-    public void onSend(Button btn) {
+    public void onSend() {
         ChatMessage msg = new ChatMessage("Me", mTextField.getText().toString());
-        App.getBus().post(new ChatMessageReceivedEvent(msg));
+        App.getBus().post(new SendChatMessageEvent(msg));
         mTextField.setText("");
     }
 

@@ -1,8 +1,12 @@
 package com.lwm.app.model.chat;
 
+import com.google.gson.annotations.Expose;
+
 public class ChatMessage {
 
+    @Expose
     private String message;
+    @Expose
     private String author;
 
     public ChatMessage(String author, String message) {
@@ -18,8 +22,4 @@ public class ChatMessage {
         return message;
     }
 
-    @Override
-    public String toString() {
-        return author + "\n" + message;
-    }
 }

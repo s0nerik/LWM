@@ -2,9 +2,12 @@ package com.lwm.app.websocket;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.lwm.app.App;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
+import com.lwm.app.events.chat.NotifyMessageAddedEvent;
+import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.client.SocketOpenedEvent;
@@ -73,8 +76,8 @@ public class WebSocketMessageClient extends WebSocketClient {
 
         } catch (IllegalArgumentException e) { // Message with multiple args
             Scanner sc = new Scanner(message);
-            if (sc.hasNext()) {
-                String command = sc.next();
+            if (sc.hasNextLine()) {
+                String command = sc.nextLine();
 
                 if (sc.hasNextInt()) {
                     int position = sc.nextInt();
@@ -99,11 +102,9 @@ public class WebSocketMessageClient extends WebSocketClient {
                         try {
                             SocketMessage socketMessage = SocketMessage.valueOf(command);
                             if (socketMessage == SocketMessage.MESSAGE) {
-                                String m = sc.nextLine();
-                                String author = m.substring(0, m.indexOf("\n"));
-                                String text = m.substring(m.indexOf("\n") + 1, m.length());
-                                ChatMessage chatMessage = new ChatMessage(author, text);
-                                App.getBus().post(new ChatMessageReceivedEvent(chatMessage));
+                                String json = sc.nextLine();
+                                ChatMessage chatMessage = new Gson().fromJson(json, ChatMessage.class);
+                                App.getBus().post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
                             } else {
                                 Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
                             }
@@ -158,8 +159,18 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     @Subscribe
-    public void onSendChatMessage(ChatMessage message) {
-        send(message.toString());
+    public void onSendChatMessage(SendChatMessageEvent event) {
+        ChatMessage message = event.getMessage();
+        send(SocketMessage.formatWithString(SocketMessage.MESSAGE, new Gson().toJson(message)));
+        chatMessages.add(message);
+        App.getBus().post(new NotifyMessageAddedEvent(message));
+    }
+
+    @Subscribe
+    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        ChatMessage msg = event.getMessage();
+        chatMessages.add(msg);
+        App.getBus().post(new NotifyMessageAddedEvent(msg));
     }
 
     @Produce
