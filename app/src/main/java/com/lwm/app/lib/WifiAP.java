@@ -107,7 +107,7 @@ public class WifiAP {
             Method method2 = wifi.getClass().getMethod("getWifiApState");
             state = (Integer) method2.invoke(wifi);
         } catch (Exception e) {
-            Log.e(Activity.WIFI_SERVICE, e.getMessage());
+            Log.e(Activity.WIFI_SERVICE, e.getMessage() != null? e.getMessage() : "");
             // toastText += "ERROR " + e.getMessage();
         }
 
