@@ -19,10 +19,13 @@
 
     <EditText
         android:id="@+id/textField"
-        android:hint="Message"
+        android:hint="@string/chat_hint"
         android:layout_alignTop="@+id/btnSend"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/btnSend"
+        android:singleLine="true"
+        android:inputType="textShortMessage"
+        android:imeOptions="actionSend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

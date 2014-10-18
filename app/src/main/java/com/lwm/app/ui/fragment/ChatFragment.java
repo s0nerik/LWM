@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.lwm.app.App;
@@ -26,6 +28,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 public class ChatFragment extends Fragment {
 
@@ -79,6 +82,15 @@ public class ChatFragment extends Fragment {
     @Subscribe
     public void onNotifyMessageAdded(NotifyMessageAddedEvent event) {
         mRecyclerView.getAdapter().notifyItemInserted(messages.size() - 1);
+    }
+
+    @OnEditorAction(R.id.textField)
+    public boolean onEditorAction(int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEND) {
+            onSend();
+            return true;
+        }
+        return false;
     }
 
     @OnClick(R.id.btnSend)
