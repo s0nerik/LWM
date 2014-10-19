@@ -121,5 +121,6 @@
     <string name="pref_client_name_summary">This name will be shown to other users</string>
     <string name="pref_header_client">Client settings</string>
     <string name="chat_hint">Message</string>
+    <string name="chat_activity_label">Chat</string>
 
 </resources>
