@@ -29,5 +29,3 @@ build/
 *.ipr
 *~
 *.swp
-
-libs/android-stackblur
