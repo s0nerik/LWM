@@ -30,6 +30,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     private LocalPlayerService player;
 
     private boolean fromNotification = false;
+    private MenuItem chatButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +151,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         getMenuInflater().inflate(R.menu.local_playback, menu);
 
         broadcastButton = menu.findItem(R.id.action_broadcast);
+        chatButton = menu.findItem(R.id.action_chat);
 
         WifiApManager manager = new WifiApManager(this);
         setBroadcastButtonState(manager.isWifiApEnabled());
@@ -188,9 +190,12 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     private void setBroadcastButtonState(boolean broadcasting) {
         if (broadcastButton != null) if (broadcasting) {
             broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
+            chatButton.setVisible(true);
         } else {
             broadcastButton.setIcon(R.drawable.ic_action_broadcast);
+            chatButton.setVisible(false);
         }
+        supportInvalidateOptionsMenu();
     }
 
     @Subscribe
