@@ -1,0 +1,3 @@
+[submodule "libs/android-stackblur"]
+	path = libs/android-stackblur
+	url = git@github.com:s0nerik/android-stackblur.git
