@@ -25,6 +25,7 @@ import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.ui.Croutons;
 import com.squareup.otto.Subscribe;
 
 public class LocalPlaybackActivity extends PlaybackActivity {
@@ -198,6 +199,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        Croutons.messageReceived(this, event.getMessage(), R.id.offsetted_albumart).show();
         unreadMessagesCount += 1;
         newMessagesCounter.setVisibility(View.VISIBLE);
         newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10? unreadMessagesCount : "+"));

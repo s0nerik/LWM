@@ -126,4 +126,6 @@
     <string name="client_connected_format">%s connected</string>
     <string name="client_disconnected_format">%s disconnected</string>
 
+    <string name="crouton_chat_message_format">%1$s: %2$s</string>
+
 </resources>

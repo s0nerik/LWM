@@ -18,6 +18,7 @@ import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.StreamPlayerService;
+import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
 import com.squareup.otto.Subscribe;
 
@@ -108,6 +109,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        Croutons.messageReceived(this, event.getMessage(), R.id.offsetted_albumart).show();
         unreadMessagesCount += 1;
         newMessagesCounter.setVisibility(View.VISIBLE);
         newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));

@@ -26,6 +26,7 @@ import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
+import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.player.StartForegroundLocalPlayerEvent;
 import com.lwm.app.events.player.binding.BindLocalPlayerServiceEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
@@ -35,6 +36,7 @@ import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
+import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
@@ -278,6 +280,11 @@ public class LocalSongChooserActivity extends BasicActivity {
     @Subscribe
     public void onClientDisconnected(ClientDisconnectedEvent event) {
         onClientDisconnected(event.getClientInfo());
+    }
+
+    @Subscribe
+    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        Croutons.messageReceived(this, event.getMessage());
     }
 
     private void setBroadcastButtonState(boolean broadcasting) {
