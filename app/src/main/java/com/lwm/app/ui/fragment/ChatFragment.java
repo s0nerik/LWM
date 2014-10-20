@@ -60,6 +60,7 @@ public class ChatFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     @Override
@@ -89,6 +90,7 @@ public class ChatFragment extends Fragment {
     @Subscribe
     public void onNotifyMessageAdded(NotifyMessageAddedEvent event) {
         mRecyclerView.getAdapter().notifyItemInserted(messages.size() - 1);
+        mRecyclerView.scrollToPosition(messages.size() - 1);
     }
 
     @OnEditorAction(R.id.textField)
