@@ -30,24 +30,10 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
 import org.java_websocket.client.WebSocketClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-@ReportsCrashes(
-        formKey = "",
-        formUri = "https://sonerik.cloudant.com/acra-lwm/_design/acra-storage/_update/report",
-        reportType = org.acra.sender.HttpSender.Type.JSON,
-        httpMethod = org.acra.sender.HttpSender.Method.PUT,
-        formUriBasicAuthLogin="baboommellowasthessizedi",
-        formUriBasicAuthPassword="xGXD18c8AAuHq0jlopdtUNYJ",
-
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text
-)
 
 public class App extends Application {
 
@@ -90,9 +76,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-//        // Start ACRA
-//        ACRA.init(this);
 
         context = getApplicationContext();
 
