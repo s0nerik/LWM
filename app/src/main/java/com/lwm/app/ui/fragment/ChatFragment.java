@@ -18,6 +18,7 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.ChatAdapter;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
+import com.lwm.app.events.chat.ResetUnreadMessagesEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.model.chat.ChatMessage;
 import com.squareup.otto.Subscribe;
@@ -71,6 +72,12 @@ public class ChatFragment extends Fragment {
     public void onDestroy() {
         App.getBus().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        App.getBus().post(new ResetUnreadMessagesEvent());
     }
 
     @Subscribe

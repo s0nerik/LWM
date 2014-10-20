@@ -2,6 +2,7 @@ package com.lwm.app.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.events.chat.ChatMessageReceivedEvent;
+import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.server.StopWebSocketClientEvent;
@@ -28,6 +31,10 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     private String artist;
     private String album;
     private RemotePlaybackFragment playbackFragment;
+
+    private int unreadMessagesCount = 0;
+    private MenuItem chatButton;
+    private TextView newMessagesCounter;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -99,10 +106,41 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         playbackFragment.setPlayButton(false);
     }
 
+    @Subscribe
+    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        unreadMessagesCount += 1;
+        newMessagesCounter.setVisibility(View.VISIBLE);
+        newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));
+    }
+
+    @Subscribe
+    public void setUnreadMessagesCount(SetUnreadMessagesEvent event) {
+        unreadMessagesCount = event.getCount();
+        if (newMessagesCounter != null) {
+            if (unreadMessagesCount > 0) {
+                newMessagesCounter.setVisibility(View.VISIBLE);
+                newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));
+            } else {
+                newMessagesCounter.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.remote_playback, menu);
+
+        chatButton = menu.findItem(R.id.action_chat);
+        View v = MenuItemCompat.getActionView(chatButton);
+        newMessagesCounter = (TextView) v.findViewById(R.id.newMessagesCounter);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RemotePlaybackActivity.this, ChatActivity.class));
+            }
+        });
+
         return true;
     }
 

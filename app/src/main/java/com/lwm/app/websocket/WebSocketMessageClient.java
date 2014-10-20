@@ -7,7 +7,9 @@ import com.lwm.app.App;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
+import com.lwm.app.events.chat.ResetUnreadMessagesEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
+import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.client.ClientInfoReceivedEvent;
 import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
@@ -31,6 +33,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     private StreamPlayerService player;
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
+    private int unreadMessages = 0;
 
     public WebSocketMessageClient(URI serverURI) {
         super(serverURI);
@@ -176,14 +179,25 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        unreadMessages += 1;
         ChatMessage msg = event.getMessage();
         chatMessages.add(msg);
         App.getBus().post(new NotifyMessageAddedEvent(msg));
     }
 
+    @Subscribe
+    public void onResetUnreadMessages(ResetUnreadMessagesEvent event) {
+        unreadMessages = 0;
+    }
+
     @Produce
     public ChatMessagesAvailableEvent produceChatMessages() {
         return new ChatMessagesAvailableEvent(chatMessages);
+    }
+
+    @Produce
+    public SetUnreadMessagesEvent produceUnreadMessages() {
+        return new SetUnreadMessagesEvent(unreadMessages);
     }
 
 }

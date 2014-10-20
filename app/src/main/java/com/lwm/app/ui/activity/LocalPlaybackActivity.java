@@ -15,6 +15,8 @@ import com.lwm.app.R;
 import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.StopServerEvent;
+import com.lwm.app.events.chat.ChatMessageReceivedEvent;
+import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
@@ -31,6 +33,8 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
     private boolean fromNotification = false;
     private MenuItem chatButton;
+    private TextView newMessagesCounter;
+    private int unreadMessagesCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +131,6 @@ public class LocalPlaybackActivity extends PlaybackActivity {
                 WifiAP wifiAP = new WifiAP();
                 wifiAP.toggleWiFiAP(wm, this);
                 return true;
-            case R.id.action_chat:
-                startActivity(new Intent(this, ChatActivity.class));
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -152,6 +153,15 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
         broadcastButton = menu.findItem(R.id.action_broadcast);
         chatButton = menu.findItem(R.id.action_chat);
+
+        View v = MenuItemCompat.getActionView(chatButton);
+        newMessagesCounter = (TextView) v.findViewById(R.id.newMessagesCounter);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LocalPlaybackActivity.this, ChatActivity.class));
+            }
+        });
 
         WifiApManager manager = new WifiApManager(this);
         setBroadcastButtonState(manager.isWifiApEnabled());
@@ -186,6 +196,25 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         onClientDisconnected(event.getName());
     }
 
+    @Subscribe
+    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        unreadMessagesCount += 1;
+        newMessagesCounter.setVisibility(View.VISIBLE);
+        newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10? unreadMessagesCount : "+"));
+    }
+
+    @Subscribe
+    public void setUnreadMessagesCount(SetUnreadMessagesEvent event) {
+        unreadMessagesCount = event.getCount();
+        if (newMessagesCounter != null) {
+            if (unreadMessagesCount > 0) {
+                newMessagesCounter.setVisibility(View.VISIBLE);
+                newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));
+            } else {
+                newMessagesCounter.setVisibility(View.GONE);
+            }
+        }
+    }
 
     private void setBroadcastButtonState(boolean broadcasting) {
         if (broadcastButton != null) if (broadcasting) {

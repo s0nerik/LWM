@@ -10,7 +10,7 @@
         app:showAsAction="always" />
 
     <item
-        android:icon="@drawable/ic_action_mode_comment"
+        app:actionLayout="@layout/ab_item_chat"
         android:id="@+id/action_chat"
         android:title="@string/action_chat"
         app:showAsAction="ifRoom" />

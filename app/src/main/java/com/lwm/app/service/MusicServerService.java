@@ -9,7 +9,9 @@ import com.lwm.app.App;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
+import com.lwm.app.events.chat.ResetUnreadMessagesEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
+import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
@@ -35,6 +37,7 @@ public class MusicServerService extends Service {
     private LocalPlayerService player;
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
+    private int unreadMessages = 0;
 
     @Override
     public void onCreate() {
@@ -109,6 +112,7 @@ public class MusicServerService extends Service {
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        unreadMessages += 1;
         ChatMessage msg = event.getMessage();
         chatMessages.add(msg);
         sendAllExcept(SocketMessage.formatWithString(SocketMessage.MESSAGE, new Gson().toJson(msg)), event.getWebSocket());
@@ -116,8 +120,18 @@ public class MusicServerService extends Service {
     }
 
     @Subscribe
+    public void onResetUnreadMessages(ResetUnreadMessagesEvent event) {
+        unreadMessages = 0;
+    }
+
+    @Subscribe
     public void onSendChatMessage(SendChatMessageEvent event) {
         onChatMessageReceived(new ChatMessageReceivedEvent(event.getMessage(), null));
+    }
+
+    @Produce
+    public SetUnreadMessagesEvent produceUnreadMessages() {
+        return new SetUnreadMessagesEvent(unreadMessages);
     }
 
     private void sendAll(String message) {
