@@ -1,5 +1,9 @@
 package com.lwm.app.websocket;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -26,7 +30,6 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class WebSocketMessageClient extends WebSocketClient {
 
@@ -35,9 +38,13 @@ public class WebSocketMessageClient extends WebSocketClient {
     private List<ChatMessage> chatMessages = new ArrayList<>();
     private int unreadMessages = 0;
 
-    public WebSocketMessageClient(URI serverURI) {
+    private ClientInfo clientInfo;
+
+    public WebSocketMessageClient(Context context, URI serverURI) {
         super(serverURI);
         player = App.getStreamPlayerService();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        clientInfo = new ClientInfo(prefs.getString("client_name", Build.MODEL));
     }
 
     @Override
@@ -53,81 +60,54 @@ public class WebSocketMessageClient extends WebSocketClient {
     public void onMessage(String message) {
         Log.d(App.TAG, "WebSocketMessageClient: \"" + message + "\"");
 
-        try {
-            SocketMessage socketMessage = SocketMessage.valueOf(message);
+        SocketMessage socketMessage = SocketMessage.fromJson(message);
+        String body = socketMessage.getBody();
 
-            switch (socketMessage) {
+        if (socketMessage.getType() == SocketMessage.Type.GET) {
+            switch (socketMessage.getMessage()) {
                 case CURRENT_POSITION:
-                    int pos = player.getCurrentPosition();
-                    send(SocketMessage.formatWithInt(SocketMessage.CURRENT_POSITION, pos));
+                    String pos = String.valueOf(player.getCurrentPosition());
+                    send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CURRENT_POSITION, pos).toJson());
                     break;
+                case IS_PLAYING:
+                    String isPlaying = String.valueOf(player.isPlaying());
+                    send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.IS_PLAYING, isPlaying).toJson());
+                    break;
+                case CLIENT_INFO:
+                    String info = new Gson().toJson(clientInfo, ClientInfo.class);
+                    send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CLIENT_INFO, info).toJson());
+                    break;
+                default:
+                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
+            }
+        } else if (socketMessage.getType() == SocketMessage.Type.POST) {
+            switch (socketMessage.getMessage()) {
                 case START:
                     start();
-                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START));
                     break;
                 case PAUSE:
                     pause();
-                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PAUSE));
                     break;
                 case PREPARE:
                     prepare();
-                    send(SocketMessageUtils.getOkResponseMessage(SocketMessage.PREPARE));
                     break;
-                case IS_PLAYING:
-                    boolean isPlaying = player.isPlaying();
-                    send(SocketMessage.formatWithBoolean(SocketMessage.IS_PLAYING, isPlaying));
+                case SEEK_TO:
+                    seekTo(Integer.valueOf(body));
                     break;
+                case START_FROM:
+                    startFrom(Integer.valueOf(body));
+                    break;
+                case MESSAGE:
+                    ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
+                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
+                    break;
+                case CLIENT_INFO:
+                    ClientInfo clientInfo = new Gson().fromJson(body, ClientInfo.class);
+                    App.getBus().post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
+                    break;
+                default:
+                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
             }
-
-        } catch (IllegalArgumentException e) { // Message with multiple args
-            Scanner sc = new Scanner(message);
-            if (sc.hasNextLine()) {
-                String command = sc.nextLine();
-
-                if (sc.hasNextInt()) {
-                    int position = sc.nextInt();
-
-                    try {
-                        SocketMessage socketMessage = SocketMessage.valueOf(command);
-                        switch (socketMessage) {
-                            case SEEK_TO:
-                                seekTo(position);
-                                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
-                                break;
-                            case START_FROM:
-                                startFrom(position);
-                                send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
-                                break;
-                        }
-                    } catch (IllegalArgumentException e1) {
-                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-                    }
-                } else {
-                    if (sc.hasNextLine()) {
-                        try {
-                            SocketMessage socketMessage = SocketMessage.valueOf(command);
-                            String json = sc.nextLine();
-                            switch(socketMessage) {
-                                case MESSAGE:
-                                    ChatMessage chatMessage = new Gson().fromJson(json, ChatMessage.class);
-                                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
-                                    break;
-                                case CLIENT_INFO:
-                                    ClientInfo clientInfo = new Gson().fromJson(json, ClientInfo.class);
-                                    App.getBus().post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
-                                    break;
-                                default:
-                                    Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-                            }
-                        } catch (IllegalArgumentException e1) {
-                            Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-                        }
-                    }
-                }
-            } else {
-                Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-            }
-            sc.close();
         }
     }
 
@@ -166,13 +146,13 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Subscribe
     public void onSendReadyEvent(SendReadyEvent event) {
-        send(SocketMessage.getStringToSend(SocketMessage.READY));
+        send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.READY).toJson());
     }
 
     @Subscribe
     public void onSendChatMessage(SendChatMessageEvent event) {
         ChatMessage message = event.getMessage();
-        send(SocketMessage.formatWithString(SocketMessage.MESSAGE, new Gson().toJson(message)));
+        send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(message)).toJson());
         chatMessages.add(message);
         App.getBus().post(new NotifyMessageAddedEvent(message));
     }

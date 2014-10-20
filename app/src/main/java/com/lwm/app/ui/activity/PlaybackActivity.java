@@ -100,11 +100,11 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     }
 
     protected void onClientConnected(String name) {
-        Crouton.makeText(this, "Client connected", Style.CONFIRM, R.id.offsetted_albumart).show();
+        Crouton.makeText(this, name + " connected", Style.CONFIRM, R.id.offsetted_albumart).show();
     }
 
     protected void onClientDisconnected(String name) {
-        Crouton.makeText(this, "Client disconnected", Style.ALERT, R.id.offsetted_albumart).show();
+        Crouton.makeText(this, name + " disconnected", Style.ALERT, R.id.offsetted_albumart).show();
     }
 
     protected void initActionBar() {

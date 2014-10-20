@@ -272,7 +272,7 @@ public class LocalSongChooserActivity extends BasicActivity {
 
     @Subscribe
     public void onClientConnected(ClientConnectedEvent event) {
-        onClientConnected(event.getName());
+        onClientConnected(event.getClientInfo().getName());
     }
 
     @Subscribe

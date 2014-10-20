@@ -79,7 +79,7 @@ public class MusicServerService extends Service {
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (webSocketMessageServer.connections().size() != 0) {
-            sendAll(SocketMessage.getStringToSend(SocketMessage.PREPARE));
+            sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
         } else {
             App.getBus().post(new AllClientsReadyEvent());
         }
@@ -87,22 +87,24 @@ public class MusicServerService extends Service {
 
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
-        sendAll(SocketMessage.formatWithInt(SocketMessage.START_FROM, player.getCurrentPosition()));
+        String pos = String.valueOf(player.getCurrentPosition());
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START_FROM, pos).toJson());
     }
 
     @Subscribe
     public void startClients(StartClientsEvent event) {
-        sendAll(SocketMessage.getStringToSend(SocketMessage.START));
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START).toJson());
     }
 
     @Subscribe
     public void pauseClients(PauseClientsEvent event) {
-        sendAll(SocketMessage.getStringToSend(SocketMessage.PAUSE));
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PAUSE).toJson());
     }
 
     @Subscribe
     public void seekToClients(SeekToClientsEvent event) {
-        sendAll(SocketMessage.formatWithInt(SocketMessage.SEEK_TO, event.getPosition()));
+        String pos = String.valueOf(event.getPosition());
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.SEEK_TO, pos).toJson());
     }
 
     @Produce
@@ -115,7 +117,7 @@ public class MusicServerService extends Service {
         unreadMessages += 1;
         ChatMessage msg = event.getMessage();
         chatMessages.add(msg);
-        sendAllExcept(SocketMessage.formatWithString(SocketMessage.MESSAGE, new Gson().toJson(msg)), event.getWebSocket());
+        sendAllExcept(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(msg)).toJson(), event.getWebSocket());
         App.getBus().post(new NotifyMessageAddedEvent(msg));
     }
 

@@ -227,7 +227,7 @@ public class App extends Application {
     @Subscribe
     public void startWebSocketClient(StartWebSocketClientEvent event) {
         try {
-            webSocketClient = new WebSocketMessageClient(new URI(WebSocketMessageServer.URI));
+            webSocketClient = new WebSocketMessageClient(this, new URI(WebSocketMessageServer.URI));
             webSocketClient.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();

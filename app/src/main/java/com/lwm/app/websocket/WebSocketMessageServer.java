@@ -11,6 +11,7 @@ import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.server.ClientReadyEvent;
 import com.lwm.app.model.chat.ChatMessage;
 import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.websocket.entities.ClientInfo;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -19,7 +20,6 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
@@ -42,10 +42,7 @@ public class WebSocketMessageServer extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         Log.d(App.TAG, "WebSocketMessageServer: New connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
-        if (player.isPlaying()) {
-            conn.send(SocketMessage.getStringToSend(SocketMessage.PREPARE));
-        }
-        App.getBus().post(new ClientConnectedEvent(""));
+        conn.send(new SocketMessage(SocketMessage.Type.GET, SocketMessage.Message.CLIENT_INFO).toJson());
     }
 
     @Override
@@ -59,83 +56,40 @@ public class WebSocketMessageServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         Log.d(App.TAG, "WebSocket message: \"" + message + "\"");
 
-        try {
-            SocketMessage socketMessage = SocketMessage.valueOf(message);
+        SocketMessage socketMessage = SocketMessage.fromJson(message);
+        String body = socketMessage.getBody();
 
-            switch (socketMessage) {
+        if (socketMessage.getType() == SocketMessage.Type.GET) {
+            switch (socketMessage.getMessage()) {
                 case CURRENT_POSITION:
-                    int pos = player.getCurrentPosition();
-                    conn.send(SocketMessage.formatWithInt(SocketMessage.CURRENT_POSITION, pos));
+                    String pos = String.valueOf(player.getCurrentPosition());
+                    conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CURRENT_POSITION, pos).toJson());
                     break;
                 case IS_PLAYING:
-                    boolean isPlaying = player.isPlaying();
-                    conn.send(SocketMessage.formatWithBoolean(SocketMessage.IS_PLAYING, isPlaying));
+                    String isPlaying = String.valueOf(player.isPlaying());
+                    conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.IS_PLAYING, isPlaying).toJson());
                     break;
+                default:
+                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
+            }
+        } else if (socketMessage.getType() == SocketMessage.Type.POST) {
+            switch (socketMessage.getMessage()) {
                 case READY:
                     processReadiness(conn);
                     break;
-
-//  TODO: client playback manipulation
-//            case SocketMessage.START:
-//                // TODO: start
-//                break;
-//            case SocketMessage.PAUSE:
-//                // TODO: pause
-//                break;
-//            case SocketMessage.UNPAUSE:
-//                // TODO: unpause
-//                break;
-//            case SocketMessage.PREPARE:
-//                // TODO: prepare
-//                break;
-
-//            default:
-//                Scanner sc = new Scanner(message);
-//                if (sc.hasNext()) {
-//                    String command = sc.next();
-//                    if (sc.hasNextInt()) {
-//                        int position = sc.nextInt();
-//                        if (command.startsWith(SocketMessage.SEEK_TO)) {
-//                            playFrom(position);
-//                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.SEEK_TO));
-//                        } else if (command.startsWith(SocketMessage.START_FROM)) {
-//                            seekTo(position);
-//                            send(SocketMessageUtils.getOkResponseMessage(SocketMessage.START_FROM));
-//                        }
-//                    } else {
-//                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-//                    }
-//                } else {
-//                    Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-//                }
-//                sc.close();
+                case CLIENT_INFO:
+                    processClientInfo(conn, new Gson().fromJson(body, ClientInfo.class));
+                    break;
+                case MESSAGE:
+                    ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
+                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, conn));
+                    break;
+                default:
+                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
             }
-        } catch (IllegalArgumentException e) { // Message with space or newline
-            Scanner sc = new Scanner(message);
-            if (sc.hasNextLine()) {
-                String command = sc.nextLine();
-
-                if (sc.hasNextLine()) {
-                    try {
-                        SocketMessage socketMessage = SocketMessage.valueOf(command);
-                        if (socketMessage == SocketMessage.MESSAGE) {
-                            ChatMessage chatMessage = new Gson().fromJson(sc.nextLine(), ChatMessage.class);
-                            App.getBus().post(new ChatMessageReceivedEvent(chatMessage, conn));
-                        } else {
-                            Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-                        }
-                    } catch (IllegalArgumentException e1) {
-                        Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-                    }
-                }
-            } else {
-                Log.e(App.TAG, "Wrong WebSocket message:\n" + message);
-            }
-            sc.close();
         }
 
         lastMessageTime = System.currentTimeMillis();
-
     }
 
     @Override
@@ -155,6 +109,13 @@ public class WebSocketMessageServer extends WebSocketServer {
             App.getBus().post(new AllClientsReadyEvent());
             ready = null;
         }
+    }
+
+    private void processClientInfo(WebSocket conn, ClientInfo info) {
+        if (player.isPlaying()) {
+            conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
+        }
+        App.getBus().post(new ClientConnectedEvent(info));
     }
 
 }
