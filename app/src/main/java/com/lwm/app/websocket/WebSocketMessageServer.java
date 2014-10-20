@@ -19,7 +19,9 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
@@ -28,6 +30,8 @@ public class WebSocketMessageServer extends WebSocketServer {
     private static final int TIMEOUT = 10 * 1000; // 10 seconds
 
     private List<WebSocket> ready;
+
+    private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<>();
 
     private long lastMessageTime = -1;
 
@@ -49,7 +53,7 @@ public class WebSocketMessageServer extends WebSocketServer {
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageServer: Close connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
-        App.getBus().post(new ClientDisconnectedEvent(""));
+        App.getBus().post(new ClientDisconnectedEvent(clientInfoMap.get(conn)));
     }
 
     @Override
@@ -112,6 +116,7 @@ public class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void processClientInfo(WebSocket conn, ClientInfo info) {
+        clientInfoMap.put(conn, info);
         if (player.isPlaying()) {
             conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
         }

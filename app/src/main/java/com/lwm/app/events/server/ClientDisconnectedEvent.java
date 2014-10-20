@@ -1,14 +1,16 @@
 package com.lwm.app.events.server;
 
+import com.lwm.app.websocket.entities.ClientInfo;
+
 public class ClientDisconnectedEvent {
 
-    private String name;
+    private ClientInfo clientInfo;
 
-    public ClientDisconnectedEvent(String name) {
-        this.name = name;
+    public ClientDisconnectedEvent(ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
     }
 
-    public String getName() {
-        return name;
+    public ClientInfo getClientInfo() {
+        return clientInfo;
     }
 }

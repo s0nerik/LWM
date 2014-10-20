@@ -123,4 +123,7 @@
     <string name="chat_hint">Message</string>
     <string name="chat_activity_label">Chat</string>
 
+    <string name="client_connected_format">%s connected</string>
+    <string name="client_disconnected_format">%s disconnected</string>
+
 </resources>

@@ -16,11 +16,10 @@ import com.lwm.app.R;
 import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
 import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
+import com.lwm.app.websocket.entities.ClientInfo;
 
 public class BasicActivity extends ActionBarActivity {
 
@@ -86,12 +85,12 @@ public class BasicActivity extends ActionBarActivity {
 
     }
 
-    protected void onClientConnected(String name) {
-        Crouton.makeText(this, "Client connected", Style.CONFIRM).show();
+    protected void onClientConnected(ClientInfo info) {
+        Croutons.clientConnected(this, info).show();
     }
 
-    protected void onClientDisconnected(String name) {
-        Crouton.makeText(this, "Client disconnected", Style.ALERT).show();
+    protected void onClientDisconnected(ClientInfo info) {
+        Croutons.clientDisconnected(this, info).show();
     }
 
     public void showNowPlayingBar(boolean show){

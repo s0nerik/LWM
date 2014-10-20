@@ -19,13 +19,12 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
 import com.lwm.app.task.SeekBarUpdateTask;
+import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.PlaybackFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.lwm.app.websocket.entities.ClientInfo;
 
 import java.util.Timer;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 public abstract class PlaybackActivity extends ActionBarActivity {
 
@@ -99,12 +98,12 @@ public abstract class PlaybackActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void onClientConnected(String name) {
-        Crouton.makeText(this, name + " connected", Style.CONFIRM, R.id.offsetted_albumart).show();
+    protected void onClientConnected(ClientInfo info) {
+        Croutons.clientConnected(this, info, R.id.offsetted_albumart).show();
     }
 
-    protected void onClientDisconnected(String name) {
-        Crouton.makeText(this, name + " disconnected", Style.ALERT, R.id.offsetted_albumart).show();
+    protected void onClientDisconnected(ClientInfo info) {
+        Croutons.clientDisconnected(this, info, R.id.offsetted_albumart).show();
     }
 
     protected void initActionBar() {

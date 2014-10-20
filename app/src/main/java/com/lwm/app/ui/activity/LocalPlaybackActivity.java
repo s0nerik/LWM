@@ -188,12 +188,12 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Subscribe
     public void onClientConnected(ClientConnectedEvent event) {
-        onClientConnected(event.getClientInfo().getName());
+        onClientConnected(event.getClientInfo());
     }
 
     @Subscribe
     public void onClientDisconnected(ClientDisconnectedEvent event) {
-        onClientDisconnected(event.getName());
+        onClientDisconnected(event.getClientInfo());
     }
 
     @Subscribe
