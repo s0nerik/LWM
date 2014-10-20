@@ -10,7 +10,7 @@
 
     <ListView
         style="@style/ListOfCards"
-        android:id="@android:id/list"
+        android:id="@+id/listView"
         android:saveEnabled="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -19,7 +19,7 @@
 
     <ProgressBar
         style="?android:progressBarStyleLarge"
-        android:id="@android:id/progress"
+        android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -27,7 +27,7 @@
         tools:visibility="visible" />
 
     <LinearLayout
-        android:id="@android:id/empty"
+        android:id="@+id/emptyView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

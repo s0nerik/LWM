@@ -12,6 +12,7 @@ import com.lwm.app.events.chat.NotifyMessageAddedEvent;
 import com.lwm.app.events.chat.ResetUnreadMessagesEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
+import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
@@ -74,6 +75,11 @@ public class MusicServerService extends Service {
                 }
             }
         }).start();
+    }
+
+    @Subscribe
+    public void onLocalPlayerBound(LocalPlayerServiceBoundEvent event) {
+        player = event.getLocalPlayerService();
     }
 
     @Subscribe

@@ -1,9 +1,7 @@
 package com.lwm.app.ui.fragment;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -13,8 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.lwm.app.App;
@@ -31,54 +30,49 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SongsListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<List<Song>> {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemClick;
+
+public class SongsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Song>> {
+
+    @InjectView(R.id.listView)
+    ListView mListView;
+    @InjectView(R.id.progress)
+    ProgressBar mProgress;
+    @InjectView(R.id.emptyView)
+    LinearLayout mEmptyView;
 
     private List<Song> songs;
     private LocalPlayerService player;
-    private ListView listView;
     private int currentPosition = -1;
 
     private Loader<List<Song>> songsLoader;
 
-    private boolean isFirstClick = true;
-
     private final static int SMOOTH_SCROLL_MAX = 50;
+    private SongsListAdapter adapter;
 
     public SongsListFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_songs, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_list_songs, container, false);
+        ButterKnife.inject(this, v);
+        return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         Log.d(App.TAG, "onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
-        listView = (ListView) view.findViewById(android.R.id.list);
 
-        // KitKat fast-scroll workaround
-        if (Build.VERSION.SDK_INT >= 19) {
-            listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @SuppressWarnings("deprecation")
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onGlobalLayout() {
-                    listView.setFastScrollEnabled(true);
-                    if (Build.VERSION.SDK_INT >= 16) {
-                        listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                }
-            });
-        } else {
-            listView.setFastScrollEnabled(true);
-        }
-
-        if(App.isLocalPlayerServiceBound()) {
+        if (App.isLocalPlayerServiceBound()) {
             player = App.getLocalPlayerService();
             initAdapter();
         }
@@ -88,10 +82,9 @@ public class SongsListFragment extends ListFragment implements
     public void onResume() {
         super.onResume();
         App.getBus().register(this);
-        if(App.localPlayerActive()) {
+        if (App.localPlayerActive()) {
             player = App.getLocalPlayerService();
             highlightCurrentSong();
-//            player.registerListener(this);
         }
     }
 
@@ -114,49 +107,43 @@ public class SongsListFragment extends ListFragment implements
     }
 
     @Subscribe
-    public void onServiceBound(LocalPlayerServiceBoundEvent event){
+    public void onServiceBound(LocalPlayerServiceBoundEvent event) {
         player = event.getLocalPlayerService();
         initAdapter();
     }
 
-    public void highlightCurrentSong(){
+    public void highlightCurrentSong() {
         int pos = Utils.getCurrentSongPosition(songs);
         setSelection(pos);
-
-        // TODO: replace this workaround
-        listView.setSelection(pos - 1);
     }
 
-    @Override
-    public void setSelection(int position) {
-        super.setSelection(position);
-        listView.setItemChecked(position, true);
+    private void setSelection(int position) {
+        mListView.setItemChecked(position, true);
 
-        Log.d(App.TAG, "setSelection: "+currentPosition);
+        Log.d(App.TAG, "setSelection: " + currentPosition);
 
-        if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
-            listView.smoothScrollToPosition(position);
-        }else{
-            listView.setSelection(position);
+        if (Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX) {
+            mListView.smoothScrollToPosition(position);
+            mListView.setSelection(position);
+        } else {
+            mListView.setSelection(position);
         }
         currentPosition = position;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.d(App.TAG, "SongsListFragment: onListItemClick");
-
+    @OnItemClick(R.id.listView)
+    public void onItemClicked(int pos) {
         if (App.isLocalPlayerServiceBound()) {
             player.setQueue(songs);
-            player.play(position);
+            player.play(pos);
         }
     }
 
-    private void initAdapter(){
+    private void initAdapter() {
         Log.d(App.TAG, "initAdapter()");
         songs = new ArrayList<>();
-        SongsListAdapter adapter = new SongsListAdapter(getActivity(), songs);
-        setListAdapter(adapter);
+        adapter = new SongsListAdapter(getActivity(), songs);
+        mListView.setAdapter(adapter);
         songsLoader = new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
         getLoaderManager().initLoader(0, null, this);
         songsLoader.forceLoad();
@@ -165,39 +152,39 @@ public class SongsListFragment extends ListFragment implements
     @Override
     public Loader<List<Song>> onCreateLoader(int id, Bundle args) {
         Log.d(App.TAG, "onCreateLoader");
-        getActivity().findViewById(android.R.id.empty).setVisibility(View.GONE);
-        getActivity().findViewById(android.R.id.progress).setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+        mProgress.setVisibility(View.VISIBLE);
         return songsLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<Song>> loader, List<Song> data) {
         Log.d(App.TAG, "onLoadFinished()");
-        getActivity().findViewById(android.R.id.progress).setVisibility(View.GONE);
-        if(!data.isEmpty()) {
+        mProgress.setVisibility(View.GONE);
+        if (!data.isEmpty()) {
             songs.addAll(data);
-            ((SongsListAdapter) getListAdapter()).notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
             highlightCurrentSong();
-        }else{
-            getActivity().findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<List<Song>> loader) {
-        ((SongsListAdapter) getListAdapter()).notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_shuffle){
+        if (item.getItemId() == R.id.action_shuffle) {
             shuffleAll();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void shuffleAll(){
+    private void shuffleAll() {
         if (songs != null && !songs.isEmpty()) {
             List<Song> queue = new ArrayList<>(songs);
             player.setQueue(queue);

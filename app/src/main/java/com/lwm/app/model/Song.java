@@ -120,31 +120,14 @@ public class Song {
 
         Song song = (Song) o;
 
-        if (albumId != song.albumId) return false;
-        if (artistId != song.artistId) return false;
-        if (duration != song.duration) return false;
-        if (songId != song.songId) return false;
-        if (album != null ? !album.equals(song.album) : song.album != null) return false;
-        if (artist != null ? !artist.equals(song.artist) : song.artist != null) return false;
-        if (lyrics != null ? !lyrics.equals(song.lyrics) : song.lyrics != null) return false;
         if (!source.equals(song.source)) return false;
-        if (title != null ? !title.equals(song.title) : song.title != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (artist != null ? artist.hashCode() : 0);
-        result = 31 * result + (album != null ? album.hashCode() : 0);
-        result = 31 * result + (lyrics != null ? lyrics.hashCode() : 0);
-        result = 31 * result + source.hashCode();
-        result = 31 * result + (int) (songId ^ (songId >>> 32));
-        result = 31 * result + (int) (artistId ^ (artistId >>> 32));
-        result = 31 * result + (int) (albumId ^ (albumId >>> 32));
-        result = 31 * result + duration;
-        return result;
+        return source.hashCode();
     }
 
     //    @Override
