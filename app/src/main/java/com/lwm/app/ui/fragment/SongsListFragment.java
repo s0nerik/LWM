@@ -1,5 +1,6 @@
 package com.lwm.app.ui.fragment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -18,9 +19,10 @@ import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.Utils;
 import com.lwm.app.adapter.SongsListAdapter;
-import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
+import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
@@ -45,11 +47,10 @@ public class SongsListFragment extends Fragment implements LoaderManager.LoaderC
 
     private List<Song> songs;
     private LocalPlayerService player;
-    private int currentPosition = -1;
+    private Song currentSong;
 
     private Loader<List<Song>> songsLoader;
 
-    private final static int SMOOTH_SCROLL_MAX = 50;
     private SongsListAdapter adapter;
 
     public SongsListFragment() {}
@@ -68,24 +69,9 @@ public class SongsListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.d(App.TAG, "onViewCreated()");
-        super.onViewCreated(view, savedInstanceState);
-
-        if (App.isLocalPlayerServiceBound()) {
-            player = App.getLocalPlayerService();
-            initAdapter();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         App.getBus().register(this);
-        if (App.localPlayerActive()) {
-            player = App.getLocalPlayerService();
-            highlightCurrentSong();
-        }
     }
 
     @Override
@@ -107,36 +93,46 @@ public class SongsListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Subscribe
-    public void onServiceBound(LocalPlayerServiceBoundEvent event) {
-        player = event.getLocalPlayerService();
+    public void onLocalPlayerServiceAvailable(LocalPlayerServiceAvailableEvent event) {
+        player = event.getService();
         initAdapter();
     }
 
-    public void highlightCurrentSong() {
-        int pos = Utils.getCurrentSongPosition(songs);
-        setSelection(pos);
+    @Subscribe
+    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
+        currentSong = event.getSong();
+        setSelection(currentSong);
+    }
+
+    @Subscribe
+    public void onSongPlaybackStarted(PlaybackStartedEvent event) {
+        currentSong = event.getSong();
+        setSelection(currentSong);
+    }
+
+    private void setSelection(Song song) {
+        if (songs != null) {
+            int index = songs.indexOf(song);
+            setSelection(index);
+        }
     }
 
     private void setSelection(int position) {
         mListView.setItemChecked(position, true);
 
-        Log.d(App.TAG, "setSelection: " + currentPosition);
-
-        if (Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX) {
+        Rect scrollBounds = new Rect();
+        mListView.getHitRect(scrollBounds);
+        if (position < 0 || !getViewByPosition(songs.indexOf(currentSong)).getLocalVisibleRect(scrollBounds)) {
+            mListView.setSelection(position);
             mListView.smoothScrollToPosition(position);
-            mListView.setSelection(position);
-        } else {
-            mListView.setSelection(position);
         }
-        currentPosition = position;
+
     }
 
     @OnItemClick(R.id.listView)
     public void onItemClicked(int pos) {
-        if (App.isLocalPlayerServiceBound()) {
-            player.setQueue(songs);
-            player.play(pos);
-        }
+        player.setQueue(songs);
+        player.play(pos);
     }
 
     private void initAdapter() {
@@ -147,6 +143,18 @@ public class SongsListFragment extends Fragment implements LoaderManager.LoaderC
         songsLoader = new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
         getLoaderManager().initLoader(0, null, this);
         songsLoader.forceLoad();
+    }
+
+    public View getViewByPosition(int pos) {
+        final int firstListItemPosition = mListView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + mListView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return mListView.getAdapter().getView(pos, null, mListView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return mListView.getChildAt(childIndex);
+        }
     }
 
     @Override
@@ -164,7 +172,7 @@ public class SongsListFragment extends Fragment implements LoaderManager.LoaderC
         if (!data.isEmpty()) {
             songs.addAll(data);
             adapter.notifyDataSetChanged();
-            highlightCurrentSong();
+            setSelection(currentSong);
         } else {
             mEmptyView.setVisibility(View.VISIBLE);
         }
@@ -190,7 +198,6 @@ public class SongsListFragment extends Fragment implements LoaderManager.LoaderC
             player.setQueue(queue);
             player.shuffleQueue();
             player.play(0);
-            highlightCurrentSong();
         } else {
             Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show();
         }

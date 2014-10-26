@@ -10,11 +10,14 @@ import android.os.IBinder;
 import android.view.SurfaceHolder;
 
 import com.lwm.app.App;
+import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import java.io.FileDescriptor;
@@ -292,6 +295,16 @@ public class LocalPlayerService extends Service {
         public LocalPlayerService getService() {
             return LocalPlayerService.this;
         }
+    }
+
+    @Produce
+    public LocalPlayerServiceAvailableEvent produceLocalPlayer() {
+        return new LocalPlayerServiceAvailableEvent(this);
+    }
+
+    @Produce
+    public CurrentSongAvailableEvent produceCurrentSong() {
+        return new CurrentSongAvailableEvent(getCurrentSong());
     }
 
     @Subscribe
