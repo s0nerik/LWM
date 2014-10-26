@@ -17,4 +17,12 @@ public class SongAddedToQueueEvent {
         this.queue = queue;
         this.song = song;
     }
+
+    public Song getSong() {
+        return song;
+    }
+
+    public List<Song> getQueue() {
+        return queue;
+    }
 }

@@ -22,7 +22,6 @@ import com.squareup.otto.Subscribe;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -78,7 +77,7 @@ public class LocalPlayerService extends Service {
         player.shuffleQueueExceptPlayed();
     }
 
-    public void addToQueue(Collection<Song> songs) {
+    public void addToQueue(List<Song> songs) {
         player.addToQueue(songs);
     }
 

@@ -21,7 +21,6 @@ import com.lwm.app.model.Song;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 public class LocalPlayer extends BasePlayer {
@@ -86,9 +85,9 @@ public class LocalPlayer extends BasePlayer {
         App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
     }
 
-    public void addToQueue(Collection<Song> songs){
+    public void addToQueue(List<Song> songs){
         queue.addSongs(songs);
-        App.getBus().post(new PlaylistAddedToQueueEvent(queue.getQueue()));
+        App.getBus().post(new PlaylistAddedToQueueEvent(queue.getQueue(), songs));
     }
 
     public void addToQueue(Song song){

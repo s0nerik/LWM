@@ -1,103 +1,44 @@
 package com.lwm.app.ui.fragment;
 
-import android.os.Bundle;
-import android.support.v4.app.ListFragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.support.v4.content.Loader;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.adapter.SongsListAdapter;
+import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
+import com.lwm.app.events.player.QueueShuffledEvent;
 import com.lwm.app.events.player.SongAddedToQueueEvent;
+import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
+import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.ui.async.LocalQueueLoader;
 import com.squareup.otto.Subscribe;
 
-public class QueueFragment extends ListFragment {
+import java.util.List;
+
+import butterknife.OnItemClick;
+
+public class QueueFragment extends BaseSongsListFragment {
 
     private LocalPlayerService player;
-
-    private ListView listView;
-    private int currentPosition = -1;
-
-    private final static int SMOOTH_SCROLL_MAX = 50;
-
-    private ListAdapter adapter;
 
     public QueueFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        App.getBus().register(this);
+    protected int getViewId() {
+        return R.layout.fragment_list_queue;
     }
 
     @Override
-    public void onDestroy() {
-        App.getBus().unregister(this);
-        super.onDestroy();
+    protected int getMenuId() {
+        return R.menu.queue;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_queue, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        listView = (ListView) view.findViewById(android.R.id.list);
-        if (App.localPlayerActive() && !App.getLocalPlayerService().getQueue().isEmpty()) {
-            adapter = new SongsListAdapter(getActivity(), App.getLocalPlayerService().getQueue());
-            setListAdapter(adapter);
-        } else {
-//            view.findViewById(R.id.empty_queue_layout).setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if(App.localPlayerActive()){
-            int pos = App.getLocalPlayerService().getCurrentQueuePosition();
-            setSelection(pos);
-        }
-    }
-
-    @Override
-    public void setSelection(int position) {
-        super.setSelection(position);
-        listView.setItemChecked(position, true);
-
-        if(Math.abs(position - currentPosition) <= SMOOTH_SCROLL_MAX){
-            listView.smoothScrollToPosition(position-1);
-        }else{
-            listView.setSelection(position-1);
-        }
-        currentPosition = position;
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.d(App.TAG, "SongsListFragment: onListItemClick");
-        if(App.localPlayerActive()){
-            App.getLocalPlayerService().play(position);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.queue, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    protected Loader<List<Song>> getSongsLoader() {
+        return new LocalQueueLoader(getActivity(), player);
     }
 
     @Override
@@ -108,8 +49,6 @@ public class QueueFragment extends ListFragment {
                     player = App.getLocalPlayerService();
                     player.shuffleQueue();
                     player.play(0);
-                    ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
-                    setSelection(0);
                 }
                 return true;
             default:
@@ -117,9 +56,46 @@ public class QueueFragment extends ListFragment {
         }
     }
 
+    @OnItemClick(R.id.listView)
+    public void onItemClicked(int pos) {
+        player.play(pos);
+    }
+
     @Subscribe
     public void onSongAddedToQueueEvent(SongAddedToQueueEvent event) {
-        ((BaseAdapter) getListAdapter()).notifyDataSetChanged();
+        songs.add(event.getSong());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
+        songs.addAll(event.getAppendedSongs());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onLocalPlayerAvailable(LocalPlayerServiceAvailableEvent event) {
+        player = event.getService();
+        initAdapter();
+    }
+
+    @Subscribe
+    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
+        currentSong = event.getSong();
+        setSelection(currentSong);
+    }
+
+    @Subscribe
+    public void onSongPlaybackStarted(PlaybackStartedEvent event) {
+        currentSong = event.getSong();
+        setSelection(currentSong);
+    }
+
+    @Subscribe
+    public void onQueueShuffled(QueueShuffledEvent event) {
+        songs.clear();
+        songs.addAll(event.getQueue());
+        adapter.notifyDataSetChanged();
     }
 
 }
