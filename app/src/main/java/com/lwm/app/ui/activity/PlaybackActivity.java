@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
@@ -36,6 +37,8 @@ public abstract class PlaybackActivity extends ActionBarActivity {
 
     private BroadcastReceiver notificationBroadcastReceiver = new AbortingNotificationIntentReceiver();
 
+    protected Utils utils;
+
     protected long currentAlbumId;
 
     protected Timer seekBarUpdateTimer = new Timer();
@@ -47,6 +50,7 @@ public abstract class PlaybackActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        utils = new Utils(this);
 //        actionBar = getSupportActionBar();
 //        initActionBar();
     }

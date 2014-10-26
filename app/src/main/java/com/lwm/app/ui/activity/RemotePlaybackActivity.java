@@ -60,7 +60,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
             TextView title = (TextView) v.findViewById(R.id.title);
             TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
             title.setText(song.getTitle());
-            subtitle.setText(song.getArtist());
+            subtitle.setText(utils.getArtistName(song.getArtist()));
 
             durationString = song.getDurationString();
             playbackFragment.setDuration(durationString);

@@ -109,7 +109,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
 
         title.setText(song.getTitle());
-        subtitle.setText(song.getArtist());
+        subtitle.setText(utils.getArtistName(song.getArtist()));
 
         initSeekBarUpdater(player.getPlayer());
 

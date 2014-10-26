@@ -26,6 +26,8 @@ public class NowPlayingFragment extends Fragment
     private TextView artist;
     private TextView title;
 
+    private Utils utils;
+
     View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -43,6 +45,12 @@ public class NowPlayingFragment extends Fragment
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        utils = new Utils(getActivity());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,7 +96,7 @@ public class NowPlayingFragment extends Fragment
             if (player.hasCurrentSong()) {
                 Song song = player.getCurrentSong();
                 setAlbumArtFromUri(song.getAlbumArtUri());
-                artist.setText(song.getArtist());
+                artist.setText(utils.getArtistName(song.getArtist()));
                 title.setText(song.getTitle());
                 setPlayButton(true);
             }
