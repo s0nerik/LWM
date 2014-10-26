@@ -19,6 +19,8 @@ import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.StartForegroundLocalPlayerEvent;
+import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
@@ -88,12 +90,14 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         super.onResume();
         setSongInfo(player.getCurrentSong());
         App.getBus().register(this);
+        App.getBus().post(new StopForegroundLocalPlayerEvent());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         App.getBus().unregister(this);
+        App.getBus().post(new StartForegroundLocalPlayerEvent());
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.lwm.app.player;
 
+import android.util.Log;
+
+import com.lwm.app.App;
 import com.lwm.app.model.Song;
 
 import java.util.ArrayList;
@@ -110,6 +113,7 @@ public class Queue {
             currentIndex = position;
             return true;
         } catch (IndexOutOfBoundsException e) {
+            Log.e(App.TAG, "moveTo IndexOutOfBoundsException");
             currentSong = queue.get(currentIndex);
             return false;
         }
