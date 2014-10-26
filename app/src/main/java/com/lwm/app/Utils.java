@@ -1,17 +1,21 @@
 package com.lwm.app;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.lwm.app.model.Song;
 import com.lwm.app.service.LocalPlayerService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -74,6 +78,31 @@ public class Utils {
             }
         }
         return pos;
+    }
+
+    public static void setSongAsRingtone(Context context, Song song) {
+        File newRingtone = new File(song.getSource());
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DATA, newRingtone.getAbsolutePath());
+        values.put(MediaStore.MediaColumns.SIZE, newRingtone.length());
+        values.put(MediaStore.MediaColumns.TITLE, song.getTitle());
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
+        values.put(MediaStore.Audio.Media.DURATION, song.getDuration());
+        values.put(MediaStore.Audio.Media.ARTIST, song.getArtist());
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+        values.put(MediaStore.Audio.Media.IS_ALARM, false);
+        values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+
+        Uri uri = MediaStore.Audio.Media.getContentUriForPath(newRingtone.getAbsolutePath());
+        context.getContentResolver().delete(uri, MediaStore.MediaColumns.DATA + "=\"" + newRingtone.getAbsolutePath() + "\"", null);
+        Uri newUri = context.getContentResolver().insert(uri, values);
+
+        try {
+            RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
+            Toast.makeText(context, String.format(context.getString(R.string.format_ringtone), song.getTitle()), Toast.LENGTH_LONG).show();
+        } catch (Throwable t) {}
     }
 
 }

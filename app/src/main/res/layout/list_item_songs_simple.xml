@@ -10,8 +10,6 @@
     android:background="@drawable/selector_simple_songs_list_item_bg"
     android:orientation="horizontal" >
 
-    <!--android:visibility="gone"-->
-
     <com.lwm.app.ui.custom_view.CheckedImageView
         tools:visibility="visible"
         android:visibility="gone"
@@ -31,7 +29,7 @@
         android:textSize="16sp"
         android:gravity="center_vertical"
         android:layout_weight="1"
-
+        tools:text="Title title title title"
         android:singleLine="true"
 
         android:textColor="#000000"
@@ -41,7 +39,7 @@
         android:id="@+id/songs_list_item_duration"
         android:checkMark="@null"
         android:padding="6dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="-20dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textSize="14sp"
@@ -51,5 +49,14 @@
         android:textColor="@color/selector_simple_songs_list_item_duration_color"
 
         fontify:font="@string/FONT_ROBOTO_THIN" />
+
+    <ImageView
+        android:id="@+id/button_context_menu"
+        android:paddingLeft="20dp"
+        android:paddingRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:tint="#888"
+        android:src="@drawable/ic_core_overflow" />
 
 </com.lwm.app.ui.custom_view.CheckedLinearLayout>
