@@ -123,4 +123,7 @@ public class WebSocketMessageServer extends WebSocketServer {
         App.getBus().post(new ClientConnectedEvent(info));
     }
 
+    public void setPlayer(LocalPlayerService player) {
+        this.player = player;
+    }
 }

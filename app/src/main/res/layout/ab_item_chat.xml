@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:background="@color/actionbar_background"
     android:orientation="vertical"
-    android:layout_width="?actionBarSize"
-    android:layout_height="?actionBarSize">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:src="@drawable/ic_action_mode_comment"
-        android:layout_centerInParent="true"
-        android:layout_width="32dp"
-        android:layout_height="32dp" />
+        android:layout_gravity="center"
+        android:padding="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
 
     <com.danh32.fontify.TextView
         tools:text="2"
@@ -22,10 +23,10 @@
         android:textColor="#fff"
         android:textSize="12sp"
         android:layout_margin="4dp"
+        android:layout_gravity="right"
         android:gravity="center"
         android:background="@drawable/background_circle"
-        android:layout_alignParentRight="true"
         android:layout_width="18dp"
         android:layout_height="18dp" />
 
-</RelativeLayout>
+</FrameLayout>
