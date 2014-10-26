@@ -27,7 +27,7 @@
             android:id="@+id/offsetted_albumart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="?android:actionBarSize"
+            android:layout_marginTop="@dimen/abc_action_bar_default_height"
             android:layout_above="@+id/bottom_bar">
 
             <com.lwm.app.ui.custom_view.SquareWidthImageView

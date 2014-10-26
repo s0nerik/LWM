@@ -3,7 +3,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!--<item name="android:dropDownListViewStyle">@style/SpinnerCompatStyle</item>-->
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">
@@ -45,7 +44,7 @@
         <item name="android:displayOptions">homeAsUp|showCustom</item>
     </style>
 
-    <style name="TitleTextStyle" parent="android:TextAppearance.DeviceDefault.Large">
+    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Title">
         <item name="android:textColor">@color/title_text_color</item>
         <!--<item name="android:textStyle">bold</item>-->
         <item name="android:shadowColor">@color/title_shadow_color</item>
@@ -54,7 +53,7 @@
         <item name="android:shadowRadius">3</item>
     </style>
 
-    <style name="SubtitleTextStyle" parent="android:TextAppearance.DeviceDefault.Medium">
+    <style name="SubtitleTextStyle" parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle">
         <item name="android:textColor">@color/subtitle_text_color</item>
         <!--<item name="android:textStyle">bold</item>-->
         <item name="android:shadowColor">@color/subtitle_shadow_color</item>

@@ -10,6 +10,7 @@
         app:showAsAction="always" />
 
     <item
+        android:actionLayout="@layout/ab_item_chat"
         app:actionLayout="@layout/ab_item_chat"
         android:id="@+id/action_chat"
         android:title="@string/action_chat"
