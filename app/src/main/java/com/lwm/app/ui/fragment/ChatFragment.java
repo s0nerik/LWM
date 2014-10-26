@@ -105,9 +105,12 @@ public class ChatFragment extends Fragment {
     @OnClick(R.id.btnSend)
     public void onSend() {
         String name = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("client_name", android.os.Build.MODEL);
-        ChatMessage msg = new ChatMessage(name, mTextField.getText().toString());
-        App.getBus().post(new SendChatMessageEvent(msg));
-        mTextField.setText("");
+        String text = mTextField.getText().toString();
+        if (!text.isEmpty()) {
+            ChatMessage msg = new ChatMessage(name, mTextField.getText().toString());
+            App.getBus().post(new SendChatMessageEvent(msg));
+            mTextField.setText("");
+        }
     }
 
 }
