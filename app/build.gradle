@@ -18,36 +18,20 @@ android {
     defaultConfig {
         minSdkVersion MIN_SDK
         targetSdkVersion TARGET_SDK
-        versionCode 3
-        versionName '0.3'
+        versionCode 4
+        versionName '0.7'
 
         // 9-patch bug workaround
         android.aaptOptions.useAaptPngCruncher = true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    signingConfigs {
-        release {
-            storeFile file('/mnt/Media/Dropbox/Dev/keystores/lwm/KEYSTORE.keystore')
-            storePassword 'q1w2e3r4t5y6u7i8o9p0'
-            keyAlias 'IDontKnow'
-            keyPassword 'q1w2e3r4t5y6u7i8o9p0'
-        }
-    }
-    buildTypes {
-        release {
-            runProguard true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.release
-            proguardFile '/home/sonerik/IDE/android-studio/sdk/tools/proguard/proguard-android-optimize.txt'
-        }
-    }
+
     lintOptions {
         abortOnError false
-    }
-    productFlavors {
     }
 }
 
