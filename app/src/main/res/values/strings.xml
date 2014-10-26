@@ -9,6 +9,7 @@
     <string name="action_connect">Connect to the stream</string>
     <string name="action_broadcast">Broadcast</string>
     <string name="action_add_to_queue">Add to playback queue</string>
+    <string name="action_remove_from_queue">Remove from playback queue</string>
     <string name="action_shuffle">Shuffle all</string>
 
     <string name="btn_broadcast">Broadcast</string>
@@ -70,6 +71,7 @@
     <string name="year_unknown">UNKNOWN</string>
     <string name="album_added_to_queue">Album added to the queue</string>
     <string name="song_added_to_queue">Song added to the queue</string>
+    <string name="song_removed_from_queue">Song removed from queue</string>
 
     // Font names
     <string name="FONT_ROBOTO_REGULAR">fonts/Roboto-Regular.ttf</string>

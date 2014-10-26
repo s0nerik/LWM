@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.view.SurfaceHolder;
 
 import com.lwm.app.App;
+import com.lwm.app.events.player.PlaylistRemovedFromQueueEvent;
+import com.lwm.app.events.player.SongRemovedFromQueueEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
@@ -259,6 +261,20 @@ public class LocalPlayerService extends Service {
 
     public void setAuxEffectSendLevel(float v) {
         player.setAuxEffectSendLevel(v);
+    }
+
+    public boolean isSongInQueue(Song song) {
+        return player.isSongInQueue(song);
+    }
+
+    public void removeFromQueue(Song song) {
+        player.removeFromQueue(song);
+        App.getBus().post(new SongRemovedFromQueueEvent(getQueue(), song));
+    }
+
+    public void removeFromQueue(List<Song> songs) {
+        player.removeFromQueue(songs);
+        App.getBus().post(new PlaylistRemovedFromQueueEvent(getQueue(), songs));
     }
 
     public void setOnPreparedListener(MediaPlayer.OnPreparedListener listener) {

@@ -43,7 +43,13 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         @Override
         public void onClick(View view) {
             PopupMenu menu = new PopupMenu(context, view);
-            menu.inflate(R.menu.songs_popup);
+
+            if (App.getLocalPlayerService().isSongInQueue(list.get(position))) {
+                menu.inflate(R.menu.songs_popup_in_queue);
+            } else {
+                menu.inflate(R.menu.songs_popup);
+            }
+
             menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(position));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -73,11 +79,19 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
-                case R.id.action_add_to_queue:
-                    LocalPlayerService player = App.getLocalPlayerService();
-                    player.addToQueue(list.get(position));
-                    Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
-                    toast.show();
+                case R.id.action_remove_from_queue: {
+                        LocalPlayerService player = App.getLocalPlayerService();
+                        player.removeFromQueue(list.get(position));
+                        Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    return true;
+                case R.id.action_add_to_queue: {
+                        LocalPlayerService player = App.getLocalPlayerService();
+                        player.addToQueue(list.get(position));
+                        Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                     return true;
                 case R.id.set_as_ringtone:
                     setSongAsRingtone(position);

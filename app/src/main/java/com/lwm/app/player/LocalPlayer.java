@@ -11,8 +11,10 @@ import com.lwm.app.App;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
+import com.lwm.app.events.player.PlaylistRemovedFromQueueEvent;
 import com.lwm.app.events.player.QueueShuffledEvent;
 import com.lwm.app.events.player.SongAddedToQueueEvent;
+import com.lwm.app.events.player.SongRemovedFromQueueEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
@@ -93,6 +95,16 @@ public class LocalPlayer extends BasePlayer {
     public void addToQueue(Song song){
         queue.addSong(song);
         App.getBus().post(new SongAddedToQueueEvent(queue.getQueue(), song));
+    }
+
+    public void removeFromQueue(Song song){
+        queue.removeSong(song);
+        App.getBus().post(new SongRemovedFromQueueEvent(queue.getQueue(), song));
+    }
+
+    public void removeFromQueue(List<Song> songs){
+        queue.removeSongs(songs);
+        App.getBus().post(new PlaylistRemovedFromQueueEvent(queue.getQueue(), songs));
     }
 
     public Song getCurrentSong(){
@@ -231,6 +243,10 @@ public class LocalPlayer extends BasePlayer {
 
     public int getQueueSize() {
         return queue.getSize();
+    }
+
+    public boolean isSongInQueue(Song song) {
+        return queue.contains(song);
     }
 
 }

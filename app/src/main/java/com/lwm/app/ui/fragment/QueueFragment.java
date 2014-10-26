@@ -9,6 +9,7 @@ import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
 import com.lwm.app.events.player.QueueShuffledEvent;
 import com.lwm.app.events.player.SongAddedToQueueEvent;
+import com.lwm.app.events.player.SongRemovedFromQueueEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.model.Song;
@@ -95,6 +96,18 @@ public class QueueFragment extends BaseSongsListFragment {
     public void onQueueShuffled(QueueShuffledEvent event) {
         songs.clear();
         songs.addAll(event.getQueue());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onSongAddedToQueue(SongAddedToQueueEvent event) {
+        songs.add(event.getSong());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onSongRemovedFromQueue(SongRemovedFromQueueEvent event) {
+        songs.remove(event.getSong());
         adapter.notifyDataSetChanged();
     }
 

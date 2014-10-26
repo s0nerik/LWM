@@ -47,6 +47,14 @@ public class Queue {
         queue.addAll(pos, songs);
     }
 
+    public void removeSong(Song song) {
+        queue.remove(song);
+    }
+
+    public void removeSongs(List<Song> songs) {
+        queue.removeAll(songs);
+    }
+
     /**
      * Removes played list from queue list, shuffles queue list and
      * then adds played list to the beginning of queue list.
@@ -137,5 +145,9 @@ public class Queue {
 
     public boolean isShuffled() {
         return shuffled;
+    }
+
+    public boolean contains(Song song) {
+        return queue.contains(song);
     }
 }
