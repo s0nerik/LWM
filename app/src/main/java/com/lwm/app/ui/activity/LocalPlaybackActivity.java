@@ -39,8 +39,6 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     private TextView newMessagesCounter;
     private int unreadMessagesCount = 0;
 
-    private boolean isBroadcastButtonInitialized = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,9 +170,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
 
         WifiApManager manager = new WifiApManager(this);
 
-        if (!isBroadcastButtonInitialized) {
-            setBroadcastButtonState(manager.isWifiApEnabled());
-        }
+        setBroadcastButtonState(manager.isWifiApEnabled());
 
         return true;
     }
@@ -235,8 +231,6 @@ public class LocalPlaybackActivity extends PlaybackActivity {
             broadcastButton.setIcon(R.drawable.ic_action_broadcast);
             chatButton.setVisible(false);
         }
-        isBroadcastButtonInitialized = true;
-        supportInvalidateOptionsMenu();
     }
 
     @Subscribe
