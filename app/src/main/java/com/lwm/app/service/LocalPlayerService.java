@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.view.SurfaceHolder;
 
 import com.lwm.app.App;
+import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.player.PlaylistRemovedFromQueueEvent;
 import com.lwm.app.events.player.SongRemovedFromQueueEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
@@ -48,6 +49,7 @@ public class LocalPlayerService extends Service {
     public void onDestroy() {
         player.release();
         player = null;
+        App.getBus().post(new StopServerEvent());
         App.getBus().unregister(this);
         super.onDestroy();
     }

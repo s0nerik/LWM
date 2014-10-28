@@ -13,6 +13,7 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
+import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.player.PlaybackPausedEvent;
 import com.lwm.app.events.player.PlaybackStartedEvent;
 import com.lwm.app.events.server.StopWebSocketClientEvent;
@@ -21,6 +22,8 @@ import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
 import com.squareup.otto.Subscribe;
+
+import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class RemotePlaybackActivity extends PlaybackActivity {
 
@@ -126,6 +129,23 @@ public class RemotePlaybackActivity extends PlaybackActivity {
                 newMessagesCounter.setVisibility(View.GONE);
             }
         }
+    }
+
+    @Subscribe
+    public void onSocketClosed(SocketClosedEvent event) {
+        String title = "Station stopped broadcasting";
+        CustomDialog.Builder builder = new CustomDialog.Builder(this, title, "Ok");
+        builder.build().setClickListener(new CustomDialog.ClickListener() {
+            @Override
+            public void onConfirmClick() {
+                finish();
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        }).show();
     }
 
     @Override
