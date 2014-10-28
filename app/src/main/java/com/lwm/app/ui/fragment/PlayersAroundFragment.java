@@ -25,6 +25,7 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
 import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.events.server.StartWebSocketClientEvent;
+import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
@@ -114,9 +115,10 @@ public class PlayersAroundFragment extends Fragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void setScanResults(List<ScanResult> results) {
+    @Subscribe
+    public void onScanResultsAvailable(WifiScanResultsAvailableEvent event) {
         Log.d(App.TAG, "setScanResults()");
-        scanResults = results;
+        scanResults = event.getScanResults();
         stationsAdapter = new StationsAdapter(getActivity(), scanResults);
 
         if (isRefreshing) {

@@ -9,6 +9,7 @@
     tools:context="com.lwm.app.ui.activity.StationChooserActivity">
 
     <fragment
+        tools:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.lwm.app.ui.fragment.PlayersAroundFragment"
@@ -20,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:clickable="true"
         android:layout_centerInParent="true"
         android:orientation="vertical"
         tools:visibility="visible" >
@@ -27,7 +29,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_alerts_and_states_error"
+            android:src="@drawable/ic_wifi_disabled"
             />
 
         <TextView
