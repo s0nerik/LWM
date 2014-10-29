@@ -3,18 +3,22 @@ package com.lwm.app.ui.async;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
+import com.lwm.app.Injector;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LocalQueueLoader extends AsyncTaskLoader<List<Song>> {
 
-    private LocalPlayerService player;
+    @Inject
+    LocalPlayer player;
 
-    public LocalQueueLoader(Context context, LocalPlayerService player) {
+    public LocalQueueLoader(Context context) {
         super(context);
-        this.player = player;
+        Injector.inject(this);
     }
 
     @Override

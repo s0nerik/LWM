@@ -1,28 +1,23 @@
-package com.lwm.app.service;
-
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
+package com.lwm.app.server;
 
 import com.google.gson.Gson;
-import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
 import com.lwm.app.events.chat.ResetUnreadMessagesEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
-import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
-import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.chat.ChatMessage;
-import com.lwm.app.server.StreamServer;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.websocket.SocketMessage;
 import com.lwm.app.websocket.WebSocketMessageServer;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
@@ -33,19 +28,28 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MusicServerService extends Service {
+import javax.inject.Inject;
+
+public class MusicServer {
 
     private WebSocketMessageServer webSocketMessageServer;
-    private LocalPlayerService player;
+
+    @Inject
+    LocalPlayer player;
+
+    @Inject
+    Bus bus;
+
+    public MusicServer() {
+        Injector.inject(this);
+    }
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
     private int unreadMessages = 0;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public void start() {
         try {
-            new StreamServer(this).start();
+            new StreamServer().start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,14 +60,11 @@ public class MusicServerService extends Service {
                 webSocketMessageServer.start();
             }
         }).start();
-        player = App.getLocalPlayerService();
-        App.getBus().register(this);
+        bus.register(this);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        App.getBus().unregister(this);
+    public void stop() {
+        bus.unregister(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -79,22 +80,11 @@ public class MusicServerService extends Service {
     }
 
     @Subscribe
-    public void onLocalPlayerBound(LocalPlayerServiceBoundEvent event) {
-        player = event.getLocalPlayerService();
-        webSocketMessageServer.setPlayer(player);
-    }
-
-    @Subscribe
-    public void onLocalPlayerAvailable(LocalPlayerServiceAvailableEvent event) {
-        player = event.getService();
-    }
-
-    @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (webSocketMessageServer.connections().size() != 0) {
             sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
         } else {
-            App.getBus().post(new AllClientsReadyEvent());
+            bus.post(new AllClientsReadyEvent());
         }
     }
 
@@ -131,7 +121,7 @@ public class MusicServerService extends Service {
         ChatMessage msg = event.getMessage();
         chatMessages.add(msg);
         sendAllExcept(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(msg)).toJson(), event.getWebSocket());
-        App.getBus().post(new NotifyMessageAddedEvent(msg));
+        bus.post(new NotifyMessageAddedEvent(msg));
     }
 
     @Subscribe
@@ -161,8 +151,4 @@ public class MusicServerService extends Service {
         }
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 }

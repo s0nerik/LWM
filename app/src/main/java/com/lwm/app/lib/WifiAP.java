@@ -8,13 +8,15 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.lwm.app.App;
 import com.lwm.app.Utils;
 import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.StopServerEvent;
+import com.squareup.otto.Bus;
 
 import java.lang.reflect.Method;
+
+import javax.inject.Inject;
 
 public class WifiAP {
     private static int constant = 0;
@@ -44,6 +46,9 @@ public class WifiAP {
     private int stateWifiWasIn = -1;
 
     private boolean alwaysEnableWifi = true; //set to false if you want to try and set wifi state back to what it was before wifi ap enabling, true will result in the wifi always being enabled after wifi ap is disabled
+
+    @Inject
+    Bus bus;
 
     public void toggleWiFiAP(WifiManager wifihandler, Context context) {
         if (wifi==null){
@@ -192,7 +197,7 @@ public class WifiAP {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            App.getBus().post(new AccessPointStateChangingEvent());
+            bus.post(new AccessPointStateChangingEvent());
 
         }
 
@@ -201,9 +206,9 @@ public class WifiAP {
             super.onPostExecute(aVoid);
 
             if (mMode) {
-                App.getBus().post(new StartServerEvent());
+                bus.post(new StartServerEvent());
             } else {
-                App.getBus().post(new StopServerEvent());
+                bus.post(new StopServerEvent());
             }
 
         }

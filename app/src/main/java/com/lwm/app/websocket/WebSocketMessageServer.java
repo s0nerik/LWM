@@ -10,8 +10,9 @@ import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.server.ClientReadyEvent;
 import com.lwm.app.model.chat.ChatMessage;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.websocket.entities.ClientInfo;
+import com.squareup.otto.Bus;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
@@ -35,11 +38,14 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private long lastMessageTime = -1;
 
-    private LocalPlayerService player;
+    @Inject
+    LocalPlayer player;
+
+    @Inject
+    Bus bus;
 
     public WebSocketMessageServer(InetSocketAddress address) {
         super(address);
-        player = App.getLocalPlayerService();
     }
 
     @Override
@@ -53,7 +59,7 @@ public class WebSocketMessageServer extends WebSocketServer {
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageServer: Close connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
-        App.getBus().post(new ClientDisconnectedEvent(clientInfoMap.get(conn)));
+        bus.post(new ClientDisconnectedEvent(clientInfoMap.get(conn)));
     }
 
     @Override
@@ -86,7 +92,7 @@ public class WebSocketMessageServer extends WebSocketServer {
                     break;
                 case MESSAGE:
                     ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
-                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, conn));
+                    bus.post(new ChatMessageReceivedEvent(chatMessage, conn));
                     break;
                 default:
                     Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
@@ -107,10 +113,10 @@ public class WebSocketMessageServer extends WebSocketServer {
         }
         ready.add(conn);
 
-        App.getBus().post(new ClientReadyEvent(conn));
+        bus.post(new ClientReadyEvent(conn));
 
         if(ready.size() == connections().size()) {
-            App.getBus().post(new AllClientsReadyEvent());
+            bus.post(new AllClientsReadyEvent());
             ready = null;
         }
     }
@@ -120,10 +126,7 @@ public class WebSocketMessageServer extends WebSocketServer {
         if (player.isPlaying()) {
             conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
         }
-        App.getBus().post(new ClientConnectedEvent(info));
+        bus.post(new ClientConnectedEvent(info));
     }
 
-    public void setPlayer(LocalPlayerService player) {
-        this.player = player;
-    }
 }

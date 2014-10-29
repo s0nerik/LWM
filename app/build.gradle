@@ -33,6 +33,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -53,6 +57,14 @@ dependencies {
     compile 'com.jakewharton:butterknife:+'
     compile 'com.squareup:otto:+'
     compile 'com.squareup.okio:okio:+'
+
+    compile ('com.fizz-buzz:fb-android-dagger:1.0.3'){
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
+
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.2'
+
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.squareup.okhttp:okhttp:+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:+'

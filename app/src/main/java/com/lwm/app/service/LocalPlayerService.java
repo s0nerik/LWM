@@ -1,306 +1,68 @@
 package com.lwm.app.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.view.SurfaceHolder;
 
-import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.access_point.StopServerEvent;
-import com.lwm.app.events.player.PlaylistRemovedFromQueueEvent;
-import com.lwm.app.events.player.SongRemovedFromQueueEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
+import com.lwm.app.events.player.service.SetLocalPlayerServiceForegroundEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
-import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.server.MusicServer;
+import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.util.List;
+import javax.inject.Inject;
 
-/**
- *
- * Created by sonerik on 7/19/14.
- */
 public class LocalPlayerService extends Service {
 
-    private final LocalPlayerServiceBinder binder = new LocalPlayerServiceBinder();
-    private LocalPlayer player;
+    @Inject
+    Bus bus;
 
-    private boolean isSeeking = false;
+    @Inject
+    LocalPlayer player;
+
+    private MusicServer server;
+
+    private final LocalPlayerServiceBinder binder = new LocalPlayerServiceBinder();
 
     @Override
     public void onCreate() {
         super.onCreate();
-        player = new LocalPlayer(this);
-        App.getBus().register(this);
+        Injector.inject(this);
+
+        server = new MusicServer();
+        server.start();
+
+        bus.register(this);
     }
 
     @Override
     public void onDestroy() {
+        server.stop();
+
         player.release();
         player = null;
-        App.getBus().post(new StopServerEvent());
-        App.getBus().unregister(this);
+        bus.post(new StopServerEvent());
+        bus.unregister(this);
         super.onDestroy();
     }
 
-    public void setPlayer(LocalPlayer player) {
-        if (player != null) {
-            player.release();
+    @Subscribe
+    public void onChangeServiceForeground(SetLocalPlayerServiceForegroundEvent event) {
+        if (event.isForeground()) {
+            startForeground(NowPlayingNotification.NOTIFICATION_ID,
+                    new NowPlayingNotification().create(this, player.getCurrentSong()));
+        } else {
+            stopForeground(true);
         }
-        this.player = player;
-    }
-
-    public LocalPlayer getPlayer() {
-        return player;
-    }
-
-    public List<Song> getQueue() {
-        return player.getQueue();
-    }
-
-    public void setQueue(List<Song> queue) {
-        player.setQueue(queue);
-    }
-
-    public void shuffleQueue() {
-        player.shuffleQueue();
-    }
-
-    public void shuffleQueueExceptPlayed() {
-        player.shuffleQueueExceptPlayed();
-    }
-
-    public void addToQueue(List<Song> songs) {
-        player.addToQueue(songs);
-    }
-
-    public void addToQueue(Song song) {
-        player.addToQueue(song);
-    }
-
-    public Song getCurrentSong() {
-        return player.getCurrentSong();
-    }
-
-    public void stop() throws IllegalStateException {
-        player.stop();
-    }
-
-    public void play(int position) {
-        player.play(position);
-    }
-
-    public boolean hasCurrentSong() {
-        return player.hasCurrentSong();
-    }
-
-    public void nextSong() {
-        player.nextSong();
-    }
-
-    public boolean isShuffle() {
-        return player.isShuffle();
-    }
-
-    public boolean isRepeat() {
-        return player.isRepeat();
-    }
-
-    public void setRepeat(boolean flag) {
-        player.setRepeat(flag);
-    }
-
-    public void prevSong() {
-        player.prevSong();
-    }
-
-    public void pause() throws IllegalStateException {
-        player.pause();
-    }
-
-    public void start() throws IllegalStateException {
-        player.start();
-    }
-
-    public void togglePause() {
-        player.togglePause();
-    }
-
-    public int getCurrentQueuePosition() {
-        return player.getCurrentQueuePosition();
-    }
-
-    public int getQueueSize() {
-        return player.getQueueSize();
-    }
-
-    public String getCurrentDurationInMinutes() {
-        return player.getCurrentDurationInMinutes();
-    }
-
-    public String getCurrentPositionInMinutes() {
-        return player.getCurrentPositionInMinutes();
-    }
-
-    public void setDisplay(SurfaceHolder sh) {
-        player.setDisplay(sh);
-    }
-
-    public static MediaPlayer create(Context context, Uri uri) {
-        return MediaPlayer.create(context, uri);
-    }
-
-    public static MediaPlayer create(Context context, Uri uri, SurfaceHolder holder) {
-        return MediaPlayer.create(context, uri, holder);
-    }
-
-    public static MediaPlayer create(Context context, int resid) {
-        return MediaPlayer.create(context, resid);
-    }
-
-    public void setDataSource(Context context, Uri uri) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-        player.setDataSource(context, uri);
-    }
-
-    public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-        player.setDataSource(path);
-    }
-
-    public void setDataSource(FileDescriptor fd) throws IOException, IllegalArgumentException, IllegalStateException {
-        player.setDataSource(fd);
-    }
-
-    public void setDataSource(FileDescriptor fd, long offset, long length) throws IOException, IllegalArgumentException, IllegalStateException {
-        player.setDataSource(fd, offset, length);
-    }
-
-    public void prepare() throws IOException, IllegalStateException {
-        player.prepare();
-    }
-
-    public void prepareAsync() throws IllegalStateException {
-        player.prepareAsync();
-    }
-
-    public void setWakeMode(Context context, int mode) {
-        player.setWakeMode(context, mode);
-    }
-
-    public void setScreenOnWhilePlaying(boolean screenOn) {
-        player.setScreenOnWhilePlaying(screenOn);
-    }
-
-    public int getVideoWidth() {
-        return player.getVideoWidth();
-    }
-
-    public int getVideoHeight() {
-        return player.getVideoHeight();
-    }
-
-    public boolean isPlaying() {
-        return player.isPlaying();
-    }
-
-    public void seekTo(int i) throws IllegalStateException {
-        player.seekTo(i);
-    }
-
-    public int getCurrentPosition() {
-        return player.getCurrentPosition();
-    }
-
-    public int getDuration() {
-        return player.getDuration();
-    }
-
-    public void release() {
-        player.release();
-    }
-
-    public void reset() {
-        player.reset();
-    }
-
-    public void setAudioStreamType(int i) {
-        player.setAudioStreamType(i);
-    }
-
-    public void setLooping(boolean b) {
-        player.setLooping(b);
-    }
-
-    public boolean isLooping() {
-        return player.isLooping();
-    }
-
-    public void setVolume(float v, float v2) {
-        player.setVolume(v, v2);
-    }
-
-    public void setAudioSessionId(int i) throws IllegalArgumentException, IllegalStateException {
-        player.setAudioSessionId(i);
-    }
-
-    public int getAudioSessionId() {
-        return player.getAudioSessionId();
-    }
-
-    public void attachAuxEffect(int i) {
-        player.attachAuxEffect(i);
-    }
-
-    public void setAuxEffectSendLevel(float v) {
-        player.setAuxEffectSendLevel(v);
-    }
-
-    public boolean isSongInQueue(Song song) {
-        return player.isSongInQueue(song);
-    }
-
-    public void removeFromQueue(Song song) {
-        player.removeFromQueue(song);
-        App.getBus().post(new SongRemovedFromQueueEvent(getQueue(), song));
-    }
-
-    public void removeFromQueue(List<Song> songs) {
-        player.removeFromQueue(songs);
-        App.getBus().post(new PlaylistRemovedFromQueueEvent(getQueue(), songs));
-    }
-
-    public void setOnPreparedListener(MediaPlayer.OnPreparedListener listener) {
-        player.setOnPreparedListener(listener);
-    }
-
-    public void setOnCompletionListener(MediaPlayer.OnCompletionListener listener) {
-        player.setOnCompletionListener(listener);
-    }
-
-    public void setOnBufferingUpdateListener(MediaPlayer.OnBufferingUpdateListener listener) {
-        player.setOnBufferingUpdateListener(listener);
-    }
-
-    public void setOnSeekCompleteListener(MediaPlayer.OnSeekCompleteListener listener) {
-        player.setOnSeekCompleteListener(listener);
-    }
-
-    public void setOnErrorListener(MediaPlayer.OnErrorListener listener) {
-        player.setOnErrorListener(listener);
-    }
-
-    public void setOnInfoListener(MediaPlayer.OnInfoListener listener) {
-        player.setOnInfoListener(listener);
     }
 
     @Override
@@ -312,31 +74,30 @@ public class LocalPlayerService extends Service {
         public LocalPlayerService getService() {
             return LocalPlayerService.this;
         }
-    }
 
-    @Produce
-    public LocalPlayerServiceAvailableEvent produceLocalPlayer() {
-        return new LocalPlayerServiceAvailableEvent(this);
+        public LocalPlayer getPlayer() {
+            return player;
+        }
     }
 
     @Produce
     public CurrentSongAvailableEvent produceCurrentSong() {
-        return new CurrentSongAvailableEvent(getCurrentSong());
+        return new CurrentSongAvailableEvent(player.getCurrentSong());
     }
 
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
-        start();
+        player.start();
     }
 
     @Subscribe
     public void onStartClients(StartClientsEvent event) {
-        start();
+        player.start();
     }
 
     @Subscribe
     public void onPauseClients(PauseClientsEvent event) {
-        pause();
+        player.pause();
     }
 
 }

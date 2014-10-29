@@ -1,4 +1,4 @@
-package com.lwm.app.events.player;
+package com.lwm.app.events.player.playback;
 
 /**
  *

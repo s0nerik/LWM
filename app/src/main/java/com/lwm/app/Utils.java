@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,14 +68,11 @@ public class Utils {
         return String.format("#%06X", 0xFFFFFF & getRandomColor());
     }
 
-    public static int getCurrentSongPosition(List<Song> songList) {
+    public static int getCurrentSongPosition(LocalPlayer player, List<Song> songList) {
         int pos = -1;
-        if(App.localPlayerActive()) {
-            LocalPlayerService player = App.getLocalPlayerService();
-            if (player.hasCurrentSong()) {
-                Song song = player.getCurrentSong();
-                pos = songList.indexOf(song);
-            }
+        if (player.hasCurrentSong()) {
+            Song song = player.getCurrentSong();
+            pos = songList.indexOf(song);
         }
         return pos;
     }

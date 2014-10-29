@@ -6,16 +6,21 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
-import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.helper.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class ArtistInfoActivity extends BasicActivity {
+import javax.inject.Inject;
+
+public class ArtistInfoActivity extends BaseLocalActivity {
+
+    @Inject
+    Bus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +69,13 @@ public class ArtistInfoActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Subscribe

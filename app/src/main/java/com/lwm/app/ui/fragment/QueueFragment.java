@@ -3,17 +3,14 @@ package com.lwm.app.ui.fragment;
 import android.support.v4.content.Loader;
 import android.view.MenuItem;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
-import com.lwm.app.events.player.QueueShuffledEvent;
-import com.lwm.app.events.player.SongAddedToQueueEvent;
-import com.lwm.app.events.player.SongRemovedFromQueueEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.queue.PlaylistAddedToQueueEvent;
+import com.lwm.app.events.player.queue.QueueShuffledEvent;
+import com.lwm.app.events.player.queue.SongAddedToQueueEvent;
+import com.lwm.app.events.player.queue.SongRemovedFromQueueEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.async.LocalQueueLoader;
 import com.squareup.otto.Subscribe;
 
@@ -22,8 +19,6 @@ import java.util.List;
 import butterknife.OnItemClick;
 
 public class QueueFragment extends BaseSongsListFragment {
-
-    private LocalPlayerService player;
 
     public QueueFragment() {}
 
@@ -39,22 +34,25 @@ public class QueueFragment extends BaseSongsListFragment {
 
     @Override
     protected Loader<List<Song>> getSongsLoader() {
-        return new LocalQueueLoader(getActivity(), player);
+        return new LocalQueueLoader(getActivity());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_shuffle:
-                if(App.localPlayerActive()) {
-                    player = App.getLocalPlayerService();
-                    player.shuffleQueue();
-                    player.play(0);
-                }
+                player.shuffleQueue();
+                player.play(0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initAdapter();
     }
 
     @OnItemClick(R.id.listView)
@@ -72,12 +70,6 @@ public class QueueFragment extends BaseSongsListFragment {
     public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
         songs.addAll(event.getAppendedSongs());
         adapter.notifyDataSetChanged();
-    }
-
-    @Subscribe
-    public void onLocalPlayerAvailable(LocalPlayerServiceAvailableEvent event) {
-        player = event.getService();
-        initAdapter();
     }
 
     @Subscribe

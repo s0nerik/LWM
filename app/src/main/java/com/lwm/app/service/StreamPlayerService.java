@@ -27,7 +27,7 @@ public class StreamPlayerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        player = new StreamPlayer(this);
+        player = new StreamPlayer();
     }
 
     @Override

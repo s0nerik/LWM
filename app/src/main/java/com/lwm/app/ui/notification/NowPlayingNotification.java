@@ -14,21 +14,21 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
-import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.model.Song;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.receiver.PendingIntentReceiver;
-import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import javax.inject.Inject;
+
 public class NowPlayingNotification {
 
     public static final int NOTIFICATION_ID = 505173; // LOL
-
-    public static final String ACTION_SHOW = "com.lwm.app.notification.now_playing.SHOW";
 
     public static final String ACTION_CLOSE = "com.lwm.app.player.close";
     public static final String ACTION_PLAY_PAUSE = "com.lwm.app.player.play_pause";
@@ -37,22 +37,29 @@ public class NowPlayingNotification {
 
     public static final int ALBUM_ART_SIZE = 120;
 
-    public static Notification create(Context context){
+    @Inject
+    LocalPlayer player;
+
+    @Inject
+    ContentResolver contentResolver;
+
+    @Inject
+    Resources resources;
+
+    public NowPlayingNotification() {
+        Injector.inject(this);
+    }
+
+    public Notification create(Context context, Song song){
 
         boolean isPlaying;
-        Song currentSong;
 
-        LocalPlayerService player = App.getLocalPlayerService();
-        currentSong = player.getCurrentSong();
         isPlaying = player.isPlaying();
-
-        ContentResolver contentResolver = context.getContentResolver();
-        Resources resources = context.getResources();
 
         // Get album art bitmap, if not exists, use default resource
         Bitmap cover;
         try {
-            InputStream is = contentResolver.openInputStream(currentSong.getAlbumArtUri());
+            InputStream is = contentResolver.openInputStream(song.getAlbumArtUri());
             cover = BitmapFactory.decodeStream(is);
         } catch (FileNotFoundException e) {
             cover = BitmapFactory.decodeResource(resources, R.drawable.no_cover);
@@ -64,12 +71,12 @@ public class NowPlayingNotification {
         // Default content view
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_now_playing);
         contentView.setImageViewBitmap(R.id.album_art, cover);
-        contentView.setTextViewText(R.id.title, currentSong.getTitle());
-        contentView.setTextViewText(R.id.artist, currentSong.getArtist());
+        contentView.setTextViewText(R.id.title, song.getTitle());
+        contentView.setTextViewText(R.id.artist, song.getArtist());
 
         // Build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setTicker(currentSong.getArtist() + " - " + currentSong.getTitle())
+                .setTicker(song.getArtist() + " - " + song.getTitle())
                 .setOngoing(true);
 
         if(isPlaying)
@@ -104,8 +111,8 @@ public class NowPlayingNotification {
             contentView.setOnClickPendingIntent(R.id.btn_next, nextIntent);
 
             RemoteViews bigContentView = new RemoteViews(context.getPackageName(), R.layout.notification_now_playing_big);
-            bigContentView.setTextViewText(R.id.title, currentSong.getTitle());
-            bigContentView.setTextViewText(R.id.artist, currentSong.getArtist());
+            bigContentView.setTextViewText(R.id.title, song.getTitle());
+            bigContentView.setTextViewText(R.id.artist, song.getArtist());
             bigContentView.setImageViewBitmap(R.id.album_art, cover);
 
             bigContentView.setOnClickPendingIntent(R.id.btn_close, closeIntent);
@@ -128,13 +135,13 @@ public class NowPlayingNotification {
         return notification;
     }
 
-    private static Intent createIntent(Context context, String action) {
+    private Intent createIntent(Context context, String action) {
         Intent intent = new Intent(context, PendingIntentReceiver.class);
         intent.setAction(action);
         return intent;
     }
 
-    private static Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Resources res) {
+    private Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Resources res) {
 
         final float densityMultiplier = res.getDisplayMetrics().density;
 

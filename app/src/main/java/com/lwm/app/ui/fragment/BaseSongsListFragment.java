@@ -2,7 +2,6 @@ package com.lwm.app.ui.fragment;
 
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -19,15 +18,20 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.model.Song;
+import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.ui.base.DaggerFragment;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-public abstract class BaseSongsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Song>> {
+public abstract class BaseSongsListFragment extends DaggerFragment implements LoaderManager.LoaderCallbacks<List<Song>> {
 
     @InjectView(R.id.listView)
     ListView mListView;
@@ -35,6 +39,12 @@ public abstract class BaseSongsListFragment extends Fragment implements LoaderMa
     ProgressBar mProgress;
     @InjectView(R.id.emptyView)
     LinearLayout mEmptyView;
+
+    @Inject
+    Bus bus;
+
+    @Inject
+    protected LocalPlayer player;
 
     protected List<Song> songs;
     protected Song currentSong;
@@ -65,13 +75,13 @@ public abstract class BaseSongsListFragment extends Fragment implements LoaderMa
     @Override
     public void onResume() {
         super.onResume();
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Override
@@ -108,7 +118,7 @@ public abstract class BaseSongsListFragment extends Fragment implements LoaderMa
     protected void initAdapter() {
         Log.d(App.TAG, "initAdapter()");
         songs = new ArrayList<>();
-        adapter = new SongsListAdapter(getActivity(), songs);
+        adapter = new SongsListAdapter(getActivity(), player, songs);
         mListView.setAdapter(adapter);
         songsLoader = getSongsLoader();
         getLoaderManager().initLoader(0, null, this);

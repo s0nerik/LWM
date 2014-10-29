@@ -1,42 +1,41 @@
 package com.lwm.app.ui.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.os.Handler;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
-import com.lwm.app.receiver.AbortingNotificationIntentReceiver;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.Croutons;
+import com.lwm.app.ui.base.DaggerActivity;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
-import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.lwm.app.websocket.entities.ClientInfo;
+import com.squareup.otto.Bus;
 
-public class BasicActivity extends ActionBarActivity {
+import javax.inject.Inject;
 
-    protected LocalPlayerService player;
+public abstract class BaseLocalActivity extends DaggerActivity {
 
-    private BroadcastReceiver notificationIntentReceiver = new AbortingNotificationIntentReceiver();
+    @Inject
+    protected LocalPlayer player;
+
+    @Inject
+    protected Bus bus;
+
+    @Inject
+    AudioManager audioManager;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                         AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                         AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
                 return true;
             default:
@@ -45,7 +44,7 @@ public class BasicActivity extends ActionBarActivity {
     }
 
     private void toggleNowPlayingBar(){
-        if (App.localPlayerActive() && App.getLocalPlayerService().hasCurrentSong()) {
+        if (player != null && player.hasCurrentSong()) {
             showNowPlayingBar(true);
         } else {
             showNowPlayingBar(false);
@@ -53,36 +52,10 @@ public class BasicActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (App.localPlayerActive()) {
-            player = App.getLocalPlayerService();
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
-        registerReceiver(notificationIntentReceiver, new IntentFilter(NowPlayingNotification.ACTION_SHOW));
-
         toggleNowPlayingBar();
-
-        App.getBus().post(new StopForegroundLocalPlayerEvent());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(notificationIntentReceiver);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
-            }
-        }, 1000);
-
     }
 
     protected void onClientConnected(ClientInfo info) {

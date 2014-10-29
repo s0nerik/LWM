@@ -14,20 +14,21 @@ import com.lwm.app.R;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
-import com.lwm.app.events.player.PlaybackPausedEvent;
-import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
 
 import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class RemotePlaybackActivity extends PlaybackActivity {
-
-    private StreamPlayerService player;
 
     private int duration;
     private String durationString;
@@ -40,13 +41,17 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     private MenuItem chatButton;
     private TextView newMessagesCounter;
 
+    @Inject
+    Bus bus;
+
+    @Inject
+    StreamPlayerService player;
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
         playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
-
-        player = App.getStreamPlayerService();
     }
 
     @Override
@@ -85,8 +90,8 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        App.getBus().register(this);
-        Song song = App.getStreamPlayerService().getCurrentSong();
+        bus.register(this);
+        Song song = player.getCurrentSong();
         if (song != null) {
             setSongInfo(song);
         }
@@ -95,7 +100,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Subscribe
@@ -185,7 +190,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         if(player.isPlaying()) {
             player.stop();
         }
-        App.getBus().post(new StopWebSocketClientEvent());
+        bus.post(new StopWebSocketClientEvent());
         super.onDestroy();
     }
 }

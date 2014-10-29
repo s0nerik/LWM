@@ -27,12 +27,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.NotificationIntentReceiver" >
-            <intent-filter android:priority="0" >
-                <action android:name="com.lwm.app.notification.now_playing.SHOW" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name=".receiver.PendingIntentReceiver" >
             <intent-filter>
                 <action android:name="com.lwm.app.player.close" />
@@ -80,10 +74,6 @@
             android:name=".ui.activity.LocalPlaybackActivity"
             android:parentActivityName=".ui.activity.LocalSongChooserActivity"
             android:theme="@style/AppTheme.PlaybackActivityStyle" >
-
-            <intent-filter android:priority="1" >
-                <action android:name="com.lwm.app.notification.now_playing.SHOW" />
-            </intent-filter>
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

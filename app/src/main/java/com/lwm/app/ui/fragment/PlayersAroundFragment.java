@@ -10,7 +10,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +28,8 @@ import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.lib.Connectivity;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
+import com.lwm.app.ui.base.DaggerFragment;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.apache.http.client.HttpClient;
@@ -38,12 +39,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class PlayersAroundFragment extends Fragment {
+public class PlayersAroundFragment extends DaggerFragment {
 
     @InjectView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -53,6 +56,9 @@ public class PlayersAroundFragment extends Fragment {
     ListView mListView;
     @InjectView(R.id.refreshLayout)
     SwipeRefreshLayout mRefreshLayout;
+
+    @Inject
+    Bus bus;
 
     private List<ScanResult> scanResults;
     private StationsAdapter stationsAdapter;
@@ -206,7 +212,7 @@ public class PlayersAroundFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            App.getBus().post(new StartWebSocketClientEvent());
+            bus.post(new StartWebSocketClientEvent());
 //            startStreamActivity();
         }
     }
@@ -214,13 +220,13 @@ public class PlayersAroundFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Subscribe

@@ -2,32 +2,32 @@ package com.lwm.app.player;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
-import com.lwm.app.events.player.PlaybackPausedEvent;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
-import com.lwm.app.events.player.PlaylistRemovedFromQueueEvent;
-import com.lwm.app.events.player.QueueShuffledEvent;
-import com.lwm.app.events.player.SongAddedToQueueEvent;
-import com.lwm.app.events.player.SongRemovedFromQueueEvent;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.queue.PlaylistAddedToQueueEvent;
+import com.lwm.app.events.player.queue.PlaylistRemovedFromQueueEvent;
+import com.lwm.app.events.player.queue.QueueShuffledEvent;
+import com.lwm.app.events.player.queue.SongAddedToQueueEvent;
+import com.lwm.app.events.player.queue.SongRemovedFromQueueEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.squareup.otto.Bus;
 
 import java.io.IOException;
 import java.util.List;
 
-public class LocalPlayer extends BasePlayer {
+import javax.inject.Inject;
 
-    private Context context;
+public class LocalPlayer extends BasePlayer {
 
     private boolean repeat = false;
 
@@ -35,7 +35,11 @@ public class LocalPlayer extends BasePlayer {
 
     private Queue queue = new Queue();
 
-    private NotificationManager notificationManager;
+    @Inject Bus bus;
+
+    @Inject Context context;
+
+    @Inject NotificationManager notificationManager;
 
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
@@ -59,14 +63,11 @@ public class LocalPlayer extends BasePlayer {
         }
     };
 
-    public LocalPlayer(Context context){
-        super(context);
-        this.context = context;
+    public LocalPlayer(){
+        super();
 
         setOnCompletionListener(onCompletionListener);
         setOnSeekCompleteListener(onSeekCompleteListener);
-
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public List<Song> getQueue(){
@@ -79,32 +80,32 @@ public class LocalPlayer extends BasePlayer {
 
     public void shuffleQueue(){
         queue.shuffle();
-        App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
+        bus.post(new QueueShuffledEvent(getQueue()));
     }
 
     public void shuffleQueueExceptPlayed(){
         queue.shuffleExceptPlayed();
-        App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
+        bus.post(new QueueShuffledEvent(getQueue()));
     }
 
     public void addToQueue(List<Song> songs){
         queue.addSongs(songs);
-        App.getBus().post(new PlaylistAddedToQueueEvent(queue.getQueue(), songs));
+        bus.post(new PlaylistAddedToQueueEvent(getQueue(), songs));
     }
 
     public void addToQueue(Song song){
         queue.addSong(song);
-        App.getBus().post(new SongAddedToQueueEvent(queue.getQueue(), song));
+        bus.post(new SongAddedToQueueEvent(getQueue(), song));
     }
 
     public void removeFromQueue(Song song){
         queue.removeSong(song);
-        App.getBus().post(new SongRemovedFromQueueEvent(queue.getQueue(), song));
+        bus.post(new SongRemovedFromQueueEvent(getQueue(), song));
     }
 
     public void removeFromQueue(List<Song> songs){
         queue.removeSongs(songs);
-        App.getBus().post(new PlaylistRemovedFromQueueEvent(queue.getQueue(), songs));
+        bus.post(new PlaylistRemovedFromQueueEvent(getQueue(), songs));
     }
 
     public Song getCurrentSong(){
@@ -132,7 +133,7 @@ public class LocalPlayer extends BasePlayer {
             active = true;
 
             if (App.isServerStarted()) {
-                App.getBus().post(new PrepareClientsEvent());
+                bus.post(new PrepareClientsEvent());
             } else {
                 start();
             }
@@ -162,7 +163,7 @@ public class LocalPlayer extends BasePlayer {
     public void seekTo(int msec) throws IllegalStateException {
         Log.d(App.TAG, "LocalPlayer: seekTo("+msec+")");
         if (App.isServerStarted()) {
-            App.getBus().post(new SeekToClientsEvent(msec));
+            bus.post(new SeekToClientsEvent(msec));
         }
         super.seekTo(msec);
     }
@@ -197,9 +198,7 @@ public class LocalPlayer extends BasePlayer {
 
         updateNotificationIfForeground();
 
-        App.getBus().post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
-
-        context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
+        bus.post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
     }
 
     @Override
@@ -208,22 +207,20 @@ public class LocalPlayer extends BasePlayer {
 
         updateNotificationIfForeground();
 
-        App.getBus().post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
-
-        context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
+        bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
     }
 
     @Override
     public void togglePause(){
         if (isPlaying()){
             if(App.isServerStarted()) {
-                App.getBus().post(new PauseClientsEvent());
+                bus.post(new PauseClientsEvent());
             } else {
                 pause();
             }
         } else {
             if(App.isServerStarted()) {
-                App.getBus().post(new StartClientsEvent());
+                bus.post(new StartClientsEvent());
             } else {
                 start();
             }
@@ -231,10 +228,9 @@ public class LocalPlayer extends BasePlayer {
     }
 
     private void updateNotificationIfForeground() {
-        if (App.isLocalPlayerServiceInForeground())
-            notificationManager.notify(
-                    NowPlayingNotification.NOTIFICATION_ID,
-                    NowPlayingNotification.create(context));
+        notificationManager.notify(
+                NowPlayingNotification.NOTIFICATION_ID,
+                new NowPlayingNotification().create(context, getCurrentSong()));
     }
 
     public int getCurrentQueuePosition() {

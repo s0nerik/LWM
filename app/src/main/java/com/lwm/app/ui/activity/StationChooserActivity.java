@@ -17,12 +17,14 @@ import android.view.View;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
-import com.lwm.app.events.player.binding.BindStreamPlayerServiceEvent;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.events.wifi.WifiStateChangedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,6 +33,9 @@ public class StationChooserActivity extends ActionBarActivity {
 
     private FragmentManager fragmentManager;
 
+    @Inject
+    Bus bus;
+
     private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent i) {
@@ -38,11 +43,11 @@ public class StationChooserActivity extends ActionBarActivity {
             switch (i.getAction()) {
                 case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
                     Log.d(App.TAG, "SCAN_RESULTS_AVAILABLE_ACTION");
-                    App.getBus().post(new WifiScanResultsAvailableEvent(wm.getScanResults()));
+                    bus.post(new WifiScanResultsAvailableEvent(wm.getScanResults()));
                     break;
                 case WifiManager.WIFI_STATE_CHANGED_ACTION:
                     Log.d(App.TAG, "WIFI_STATE_CHANGED_ACTION");
-                    App.getBus().post(new WifiStateChangedEvent(wm));
+                    bus.post(new WifiStateChangedEvent(wm));
                     break;
             }
         }
@@ -56,7 +61,7 @@ public class StationChooserActivity extends ActionBarActivity {
         registerReceiver(onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
         toggleNoWifiFrame((WifiManager) getSystemService(WIFI_SERVICE));
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Subscribe
@@ -88,7 +93,7 @@ public class StationChooserActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(onBroadcast);
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Override
@@ -96,7 +101,6 @@ public class StationChooserActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_chooser);
         ButterKnife.inject(this);
-        App.getBus().post(new BindStreamPlayerServiceEvent());
     }
 
     @OnClick(R.id.no_wifi_frame)

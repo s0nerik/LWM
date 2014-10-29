@@ -1,22 +1,25 @@
 package com.lwm.app.player;
 
-import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.Injector;
+
+import javax.inject.Inject;
 
 public abstract class BasePlayer extends MediaPlayer {
 
-    private AudioManager audioManager;
+    @Inject
+    AudioManager audioManager;
 
     public abstract void nextSong();
     public abstract void prevSong();
     public abstract void togglePause();
 
-    protected BasePlayer(Context context) {
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+    public BasePlayer() {
+        Injector.inject(this);
     }
 
     public String getCurrentDurationInMinutes(){

@@ -3,7 +3,6 @@ package com.lwm.app.ui.fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.ChatAdapter;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
@@ -21,22 +19,29 @@ import com.lwm.app.events.chat.NotifyMessageAddedEvent;
 import com.lwm.app.events.chat.ResetUnreadMessagesEvent;
 import com.lwm.app.events.chat.SendChatMessageEvent;
 import com.lwm.app.model.chat.ChatMessage;
+import com.lwm.app.ui.base.DaggerFragment;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends DaggerFragment {
 
     @InjectView(R.id.recyclerView)
     RecyclerView mRecyclerView;
     @InjectView(R.id.textField)
     EditText mTextField;
+
+    @Inject
+    Bus bus;
 
     private RecyclerView.Adapter adapter;
 
@@ -45,7 +50,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
@@ -71,14 +76,14 @@ public class ChatFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        App.getBus().unregister(this);
+        bus.unregister(this);
         super.onDestroy();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        App.getBus().post(new ResetUnreadMessagesEvent());
+        bus.post(new ResetUnreadMessagesEvent());
     }
 
     @Subscribe
@@ -108,7 +113,7 @@ public class ChatFragment extends Fragment {
         String text = mTextField.getText().toString();
         if (!text.isEmpty()) {
             ChatMessage msg = new ChatMessage(name, mTextField.getText().toString());
-            App.getBus().post(new SendChatMessageEvent(msg));
+            bus.post(new SendChatMessageEvent(msg));
             mTextField.setText("");
         }
     }

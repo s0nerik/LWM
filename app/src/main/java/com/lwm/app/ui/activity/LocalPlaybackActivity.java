@@ -1,10 +1,14 @@
 package com.lwm.app.ui.activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,44 +21,74 @@ import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
-import com.lwm.app.events.player.PlaybackPausedEvent;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.events.player.StartForegroundLocalPlayerEvent;
-import com.lwm.app.events.player.StopForegroundLocalPlayerEvent;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.service.LocalPlayerServiceConnectedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.model.Song;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.Croutons;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
 
 public class LocalPlaybackActivity extends PlaybackActivity {
 
-    private LocalPlayerService player;
+    @Inject
+    Bus bus;
+
+    @Inject
+    LocalPlayer player;
 
     private boolean fromNotification = false;
     private MenuItem chatButton;
     private TextView newMessagesCounter;
     private int unreadMessagesCount = 0;
 
+    private Intent serviceIntent;
+
+    private ServiceConnection localPlayerServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d(App.TAG, "LocalPlaybackActivity: onServiceConnected");
+            LocalPlayerService.LocalPlayerServiceBinder binder = (LocalPlayerService.LocalPlayerServiceBinder) service;
+            player = binder.getPlayer();
+            bus.post(new LocalPlayerServiceConnectedEvent(player));
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.d(App.TAG, "LocalPlaybackActivity: onServiceDisconnected");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_playback);
         fromNotification = getIntent().getBooleanExtra("from_notification", false);
+
+//        serviceIntent = new Intent(this, LocalPlayerService.class);
+//        bindService(serviceIntent, localPlayerServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+//        unbindService(localPlayerServiceConnection);
+        super.onDestroy();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(App.localPlayerActive()) {
-            player = App.getLocalPlayerService();
-            playbackFragment.setPlayButton(player.isPlaying());
-            playbackFragment.setShuffleButton(player.isShuffle());
-            playbackFragment.setRepeatButton(player.isRepeat());
-        }
+        playbackFragment.setPlayButton(player.isPlaying());
+        playbackFragment.setShuffleButton(player.isShuffle());
+        playbackFragment.setRepeatButton(player.isRepeat());
     }
 
     @Override
@@ -89,15 +123,13 @@ public class LocalPlaybackActivity extends PlaybackActivity {
     protected void onResume() {
         super.onResume();
         setSongInfo(player.getCurrentSong());
-        App.getBus().register(this);
-        App.getBus().post(new StopForegroundLocalPlayerEvent());
+        bus.register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getBus().unregister(this);
-        App.getBus().post(new StartForegroundLocalPlayerEvent());
+        bus.unregister(this);
     }
 
     @Override
@@ -109,7 +141,7 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         title.setText(song.getTitle());
         subtitle.setText(utils.getArtistName(song.getArtist()));
 
-        initSeekBarUpdater(player.getPlayer());
+        initSeekBarUpdater(player);
 
         // Now playing fragment changes
         playbackFragment.setDuration(song.getDurationString());

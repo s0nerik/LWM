@@ -1,4 +1,4 @@
-package com.lwm.app.events.player;
+package com.lwm.app.events.player.queue;
 
 import com.lwm.app.model.Song;
 
@@ -8,12 +8,12 @@ import java.util.List;
  *
  * Created by sonerik on 7/12/14.
  */
-public class SongRemovedFromQueueEvent {
+public class SongAddedToQueueEvent {
 
     private Song song;
     private List<Song> queue;
 
-    public SongRemovedFromQueueEvent(List<Song> queue, Song song) {
+    public SongAddedToQueueEvent(List<Song> queue, Song song) {
         this.queue = queue;
         this.song = song;
     }

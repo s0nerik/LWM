@@ -4,18 +4,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.service.StreamPlayerService;
 
+import javax.inject.Inject;
+
 public class RemotePlaybackFragment extends PlaybackFragment {
 
-    private StreamPlayerService player;
+    @Inject
+    StreamPlayerService player;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        player = App.getStreamPlayerService();
         playbackControls.setVisibility(View.GONE);
         seekBar.setEnabled(false);
         seekBar.setBackgroundResource(R.drawable.background_seekbar_no_controls);

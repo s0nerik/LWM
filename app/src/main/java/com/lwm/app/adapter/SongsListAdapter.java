@@ -14,11 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 
 import java.util.List;
 
@@ -27,6 +26,8 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
     private final Context context;
     private List<Song> list;
     private Utils utils;
+
+    private LocalPlayer player;
 
     private class OnContextButtonClickListener implements View.OnClickListener {
         private int position;
@@ -39,7 +40,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         public void onClick(View view) {
             PopupMenu menu = new PopupMenu(context, view);
 
-            if (App.getLocalPlayerService().isSongInQueue(list.get(position))) {
+            if (player.isSongInQueue(list.get(position))) {
                 menu.inflate(R.menu.songs_popup_in_queue);
             } else {
                 menu.inflate(R.menu.songs_popup);
@@ -75,14 +76,12 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
                 case R.id.action_remove_from_queue: {
-                        LocalPlayerService player = App.getLocalPlayerService();
                         player.removeFromQueue(list.get(position));
                         Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
                         toast.show();
                     }
                     return true;
                 case R.id.action_add_to_queue: {
-                        LocalPlayerService player = App.getLocalPlayerService();
                         player.addToQueue(list.get(position));
                         Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                         toast.show();
@@ -97,10 +96,11 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
         }
     }
 
-    public SongsListAdapter(Context context, List<Song> list) {
+    public SongsListAdapter(Context context, LocalPlayer player, List<Song> list) {
         super(context, R.layout.list_item_songs, list);
         this.context = context;
         this.list = list;
+        this.player = player;
         utils = new Utils(context);
     }
 

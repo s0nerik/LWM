@@ -3,23 +3,25 @@ package com.lwm.app.ui.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.player.service.LocalPlayerServiceConnectedEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
+import com.lwm.app.ui.base.DaggerFragment;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-public class NowPlayingFragment extends Fragment
-//        implements PlayerListener
-{
+import javax.inject.Inject;
+
+public class NowPlayingFragment extends DaggerFragment {
 
     private ImageView albumArt;
     private ImageView playPauseButton;
@@ -28,10 +30,15 @@ public class NowPlayingFragment extends Fragment
 
     private Utils utils;
 
+    @Inject
+    Bus bus;
+
+    @Inject
+    LocalPlayer player;
+
     View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            LocalPlayerService player = App.getLocalPlayerService();
             player.togglePause();
             setPlayButton(player.isPlaying());
         }
@@ -45,6 +52,18 @@ public class NowPlayingFragment extends Fragment
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        bus.unregister(this);
+        super.onPause();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,37 +88,13 @@ public class NowPlayingFragment extends Fragment
         title.setSelected(true);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(App.localPlayerActive()){
-            LocalPlayerService player = App.getLocalPlayerService();
-//            player.registerListener(this);
-            if(player.hasCurrentSong()){
-                setCurrentSongInfo();
-                setPlayButton(App.getLocalPlayerService().isPlaying());
-            }
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-//        if(App.localPlayerActive()){
-//            App.getLocalPlayer().unregisterListener(this);
-//        }
-    }
-
     public void setCurrentSongInfo(){
-        if(App.localPlayerActive()) {
-            LocalPlayerService player = App.getLocalPlayerService();
-            if (player.hasCurrentSong()) {
-                Song song = player.getCurrentSong();
-                setAlbumArtFromUri(song.getAlbumArtUri());
-                artist.setText(utils.getArtistName(song.getArtist()));
-                title.setText(song.getTitle());
-                setPlayButton(true);
-            }
+        if (player.hasCurrentSong()) {
+            Song song = player.getCurrentSong();
+            setAlbumArtFromUri(song.getAlbumArtUri());
+            artist.setText(utils.getArtistName(song.getArtist()));
+            title.setText(song.getTitle());
+            setPlayButton(true);
         }
     }
 
@@ -111,18 +106,13 @@ public class NowPlayingFragment extends Fragment
         playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
     }
 
-//    @Override
-//    public void onSongChanged(Song song) {
-//        setCurrentSongInfo();
-//    }
-//
-//    @Override
-//    public void onPlaybackPaused() {
-//        setPlayButton(false);
-//    }
-//
-//    @Override
-//    public void onPlaybackStarted() {
-//        setPlayButton(true);
-//    }
+    @Subscribe
+    public void onPlayerServiceConnected(LocalPlayerServiceConnectedEvent event) {
+        player = event.getPlayer();
+        if (player.hasCurrentSong()) {
+            setCurrentSongInfo();
+            setPlayButton(player.isPlaying());
+        }
+    }
+
 }

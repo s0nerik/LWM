@@ -10,7 +10,6 @@ import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,10 +23,14 @@ import com.lwm.app.R;
 import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.Utils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
+import com.lwm.app.ui.base.DaggerFragment;
+import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
-public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+import javax.inject.Inject;
+
+public abstract class PlaybackFragment extends DaggerFragment implements SeekBar.OnSeekBarChangeListener {
 
     public static final int SEEK_BAR_MAX = 100;
     public static final int SEEK_BAR_UPDATE_INTERVAL = 1000;
@@ -52,12 +55,19 @@ public abstract class PlaybackFragment extends Fragment implements SeekBar.OnSee
 
     protected View waitingForStation;
 
-    private int screenWidth;
+    @Inject
+    Bus bus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        bus.register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        bus.unregister(this);
+        super.onDestroy();
     }
 
     @Override

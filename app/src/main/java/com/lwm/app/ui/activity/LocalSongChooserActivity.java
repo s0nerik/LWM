@@ -20,21 +20,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
 import com.lwm.app.events.access_point.StartServerEvent;
 import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.events.player.binding.BindLocalPlayerServiceEvent;
-import com.lwm.app.events.player.binding.LocalPlayerServiceBoundEvent;
-import com.lwm.app.events.player.binding.UnbindLocalPlayerServiceEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
+import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
@@ -42,7 +39,7 @@ import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 import com.squareup.otto.Subscribe;
 
-public class LocalSongChooserActivity extends BasicActivity {
+public class LocalSongChooserActivity extends BaseLocalActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
@@ -58,13 +55,23 @@ public class LocalSongChooserActivity extends BasicActivity {
 
     private SharedPreferences sharedPreferences;
 
+    private Intent playerServiceIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        playerServiceIntent = new Intent(this, LocalPlayerService.class);
+        startService(playerServiceIntent);
+
         sharedPreferences = getPreferences(MODE_PRIVATE);
         setContentView(R.layout.activity_local_song_chooser);
+    }
 
-        App.getBus().post(new BindLocalPlayerServiceEvent());
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(playerServiceIntent);
     }
 
     @Override
@@ -189,13 +196,13 @@ public class LocalSongChooserActivity extends BasicActivity {
     protected void onResume() {
         super.onResume();
         updateActionBarTitle();
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
     @Override
@@ -208,7 +215,7 @@ public class LocalSongChooserActivity extends BasicActivity {
         WifiApManager manager = new WifiApManager(this);
         if (manager.isWifiApEnabled()) {
             setBroadcastButtonState(true);
-            App.getBus().post(new StartServerEvent());
+            bus.post(new StartServerEvent());
         } else {
             setBroadcastButtonState(false);
         }
@@ -267,11 +274,6 @@ public class LocalSongChooserActivity extends BasicActivity {
     }
 
     @Subscribe
-    public void onLocalPlayerServiceBound(LocalPlayerServiceBoundEvent event) {
-        player = event.getLocalPlayerService();
-    }
-
-    @Subscribe
     public void onClientConnected(ClientConnectedEvent event) {
         onClientConnected(event.getClientInfo());
     }
@@ -296,9 +298,6 @@ public class LocalSongChooserActivity extends BasicActivity {
 
     @Override
     public void onBackPressed() {
-        if (!player.hasCurrentSong()) {
-            App.getBus().post(new UnbindLocalPlayerServiceEvent());
-        }
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }

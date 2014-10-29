@@ -9,29 +9,34 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.client.SendReadyEvent;
-import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.StreamServer;
+import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 public class StreamPlayer extends BasePlayer {
 
-    private Context context;
+    @Inject Context context;
+
     private static boolean active = false;
     private Song currentSong;
 
     private Handler handler;
 
-//    private File tempFile;
+    @Inject Bus bus;
 
     public static final String STREAM_PATH = StreamServer.Url.STREAM;
     private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mediaPlayer) {
             Log.d("LWM", "StreamPlayer: onPrepared");
-            App.getBus().post(new SendReadyEvent());
+            bus.post(new SendReadyEvent());
         }
     };
 
@@ -50,9 +55,9 @@ public class StreamPlayer extends BasePlayer {
         }
     };
 
-    public StreamPlayer(Context context) {
-        super(context);
-        this.context = context;
+    public StreamPlayer() {
+        super();
+        Injector.inject(this);
         handler = new Handler(context.getMainLooper());
         setOnSeekCompleteListener(onSeekCompleteListener);
         setOnPreparedListener(onPreparedListener);
@@ -102,7 +107,7 @@ public class StreamPlayer extends BasePlayer {
     }
 
     private void updateSongInfo() {
-        Ion.with(App.getContext())
+        Ion.with(context)
                 .load(StreamServer.Url.CURRENT_INFO)
                 .as(Song.class)
                 .withResponse()
@@ -111,7 +116,7 @@ public class StreamPlayer extends BasePlayer {
                     public void onCompleted(Exception e, Response<Song> result) {
                         if (e == null) {
                             setCurrentSong(result.getResult());
-                            App.getBus().post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
+                            bus.post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
                         } else {
                             Log.e(App.TAG, "Error getting song info", e);
                         }

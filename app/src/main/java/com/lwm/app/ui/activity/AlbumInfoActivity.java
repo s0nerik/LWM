@@ -17,24 +17,30 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
-import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.helper.AlbumsCursorGetter;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Playlist;
 import com.lwm.app.model.Song;
 import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnItemClickListener {
+import javax.inject.Inject;
+
+public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.OnItemClickListener {
 
     private List<Song> playlist;
     private ListView listView;
 
     private SimpleSongsListAdapter adapter;
     private int screenWidth;
+
+    @Inject
+    Bus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
         long albumId = getIntent().getIntExtra("album_id", -1);
         assert albumId != -1 : "albumId == -1";
         playlist = Playlist.fromCursor(new SongsCursorGetter(this).getSongsCursor(albumId));
-        adapter = new SimpleSongsListAdapter(this, playlist);
+        adapter = new SimpleSongsListAdapter(this, player, playlist);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(this);
@@ -64,7 +70,7 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
 
         initHeader(album);
 
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     private void initHeader(Album album){
@@ -147,12 +153,12 @@ public class AlbumInfoActivity extends BasicActivity implements AdapterView.OnIt
 
     @Override
     protected void onDestroy() {
-        App.getBus().unregister(this);
+        bus.unregister(this);
         super.onDestroy();
     }
 
     public void highlightCurrentSong(){
-        int pos = Utils.getCurrentSongPosition(playlist);
+        int pos = Utils.getCurrentSongPosition(player, playlist);
         setSelection(pos);
     }
 

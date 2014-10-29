@@ -8,12 +8,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.lwm.app.R;
-import com.lwm.app.events.player.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.async.SongsListLoader;
 import com.squareup.otto.Subscribe;
 
@@ -32,7 +30,6 @@ public class SongsListFragment extends BaseSongsListFragment {
     @InjectView(R.id.emptyView)
     LinearLayout mEmptyView;
 
-    private LocalPlayerService player;
 
     public SongsListFragment() {}
 
@@ -51,9 +48,16 @@ public class SongsListFragment extends BaseSongsListFragment {
         return new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
     }
 
-    @Subscribe
-    public void onLocalPlayerServiceAvailable(LocalPlayerServiceAvailableEvent event) {
-        player = event.getService();
+//    @Subscribe
+//    public void onLocalPlayerServiceAvailable(LocalPlayerServiceAvailableEvent event) {
+//        player = event.getService();
+//        initAdapter();
+//    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initAdapter();
     }
 
