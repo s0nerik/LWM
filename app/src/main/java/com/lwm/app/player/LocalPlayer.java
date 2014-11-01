@@ -19,7 +19,7 @@ import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.lwm.app.service.LocalPlayerService;
 import com.squareup.otto.Bus;
 
 import java.io.IOException;
@@ -28,6 +28,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class LocalPlayer extends BasePlayer {
+
+    private LocalPlayerService service;
 
     private boolean repeat = false;
 
@@ -63,8 +65,9 @@ public class LocalPlayer extends BasePlayer {
         }
     };
 
-    public LocalPlayer(){
+    public LocalPlayer(LocalPlayerService service){
         super();
+        this.service = service;
 
         setOnCompletionListener(onCompletionListener);
         setOnSeekCompleteListener(onSeekCompleteListener);
@@ -132,7 +135,7 @@ public class LocalPlayer extends BasePlayer {
 
             active = true;
 
-            if (App.isServerStarted()) {
+            if (service.isServerStarted()) {
                 bus.post(new PrepareClientsEvent());
             } else {
                 start();
@@ -162,7 +165,7 @@ public class LocalPlayer extends BasePlayer {
     @Override
     public void seekTo(int msec) throws IllegalStateException {
         Log.d(App.TAG, "LocalPlayer: seekTo("+msec+")");
-        if (App.isServerStarted()) {
+        if (service.isServerStarted()) {
             bus.post(new SeekToClientsEvent(msec));
         }
         super.seekTo(msec);
@@ -196,8 +199,6 @@ public class LocalPlayer extends BasePlayer {
     public void pause() throws IllegalStateException {
         super.pause();
 
-        updateNotificationIfForeground();
-
         bus.post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
     }
 
@@ -205,32 +206,24 @@ public class LocalPlayer extends BasePlayer {
     public void start() throws IllegalStateException {
         super.start();
 
-        updateNotificationIfForeground();
-
         bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
     }
 
     @Override
     public void togglePause(){
         if (isPlaying()){
-            if(App.isServerStarted()) {
+            if(service.isServerStarted()) {
                 bus.post(new PauseClientsEvent());
             } else {
                 pause();
             }
         } else {
-            if(App.isServerStarted()) {
+            if(service.isServerStarted()) {
                 bus.post(new StartClientsEvent());
             } else {
                 start();
             }
         }
-    }
-
-    private void updateNotificationIfForeground() {
-        notificationManager.notify(
-                NowPlayingNotification.NOTIFICATION_ID,
-                new NowPlayingNotification().create(context, getCurrentSong()));
     }
 
     public int getCurrentQueuePosition() {

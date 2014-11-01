@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">
@@ -15,14 +15,14 @@
         <item name="android:windowBackground">@color/card_list_background</item>
     </style>
 
-    <style name="AppTheme.PlaybackActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.PlaybackActivityStyle" parent="AppTheme">
         <item name="actionBarStyle">@style/ActionBar</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowTitleSize">0dp</item>
@@ -30,7 +30,7 @@
 
     <style name="Widget" />
 
-    <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.Base.ActionBar" />
+    <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.ActionBar" />
 
     <style name="Widget.ActionBar.Custom" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="displayOptions">showCustom</item>
@@ -38,13 +38,13 @@
         <item name="android:icon">@android:color/transparent</item>
     </style>
 
-    <style name="Widget.ActionBar.Transparent" parent="Widget.AppCompat.ActionBar">
+    <style name="Widget.ActionBar.Transparent" parent="@style/Widget.AppCompat.ActionBar">
         <item name="android:background">@android:color/transparent</item>
         <item name="displayOptions">homeAsUp|showCustom</item>
         <item name="android:displayOptions">homeAsUp|showCustom</item>
     </style>
 
-    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Title">
+    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionMode.Title">
         <item name="android:textColor">@color/title_text_color</item>
         <!--<item name="android:textStyle">bold</item>-->
         <item name="android:shadowColor">@color/title_shadow_color</item>
@@ -53,7 +53,7 @@
         <item name="android:shadowRadius">3</item>
     </style>
 
-    <style name="SubtitleTextStyle" parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle">
+    <style name="SubtitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionMode.Subtitle">
         <item name="android:textColor">@color/subtitle_text_color</item>
         <!--<item name="android:textStyle">bold</item>-->
         <item name="android:shadowColor">@color/subtitle_shadow_color</item>
@@ -66,7 +66,7 @@
         <item name="android:background">@drawable/actionbar_gradient</item>
     </style>
 
-    <style name="ActionBar" parent="Widget.AppCompat.Base.ActionBar.Solid">
+    <style name="ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="background">@color/actionbar_semi_transparent</item>
         <item name="android:background">@color/actionbar_semi_transparent</item>
         <item name="displayOptions">showCustom|showHome</item>
@@ -89,15 +89,12 @@
         <item name="android:shadowRadius">2</item>
     </style>
 
-    <style name="SeekBar" parent="android:Widget.SeekBar">
+    <style name="SeekBar">
         <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
         <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
         <item name="android:minHeight">13dip</item>
         <item name="android:maxHeight">13dip</item>
-        <item name="android:thumb">@drawable/apptheme_scrubber_control_selector_holo_light</item>
-        <item name="android:thumbOffset">16dip</item>
-        <item name="android:paddingLeft">16dip</item>
-        <item name="android:paddingRight">16dip</item>
+        <item name="android:thumb">@drawable/dummy_32dp</item>
     </style>
 
     <style name="Card">

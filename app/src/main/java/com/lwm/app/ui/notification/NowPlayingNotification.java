@@ -50,7 +50,7 @@ public class NowPlayingNotification {
         Injector.inject(this);
     }
 
-    public Notification create(Context context, Song song){
+    public Notification create(Context context, Song song, boolean hideIcon){
 
         boolean isPlaying;
 
@@ -77,6 +77,7 @@ public class NowPlayingNotification {
         // Build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setTicker(song.getArtist() + " - " + song.getTitle())
+                .setPriority(hideIcon? NotificationCompat.PRIORITY_MIN : NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true);
 
         if(isPlaying)

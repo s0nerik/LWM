@@ -11,13 +11,11 @@ import android.widget.TextView;
 
 import com.lwm.app.R;
 import com.lwm.app.Utils;
-import com.lwm.app.events.player.service.LocalPlayerServiceConnectedEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -106,13 +104,13 @@ public class NowPlayingFragment extends DaggerFragment {
         playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
     }
 
-    @Subscribe
-    public void onPlayerServiceConnected(LocalPlayerServiceConnectedEvent event) {
-        player = event.getPlayer();
-        if (player.hasCurrentSong()) {
-            setCurrentSongInfo();
-            setPlayButton(player.isPlaying());
-        }
-    }
+//    @Subscribe
+//    public void onPlayerServiceConnected(LocalPlayerServiceConnectedEvent event) {
+//        player = event.getPlayer();
+//        if (player.hasCurrentSong()) {
+//            setCurrentSongInfo();
+//            setPlayButton(player.isPlaying());
+//        }
+//    }
 
 }

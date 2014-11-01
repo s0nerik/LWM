@@ -39,11 +39,11 @@ public class StreamServer extends NanoHTTPD {
     @Inject
     ContentResolver contentResolver;
 
-    @Inject
-    LocalPlayer player;
+    private LocalPlayer player;
 
-    public StreamServer() {
+    public StreamServer(LocalPlayer player) {
         super(8888);
+        this.player = player;
         Injector.inject(this);
     }
 

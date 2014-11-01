@@ -38,14 +38,14 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private long lastMessageTime = -1;
 
-    @Inject
-    LocalPlayer player;
+    private LocalPlayer player;
 
     @Inject
     Bus bus;
 
-    public WebSocketMessageServer(InetSocketAddress address) {
+    public WebSocketMessageServer(InetSocketAddress address, LocalPlayer player) {
         super(address);
+        this.player = player;
     }
 
     @Override

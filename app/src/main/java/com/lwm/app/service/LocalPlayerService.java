@@ -4,17 +4,17 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
+import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.events.player.service.SetLocalPlayerServiceForegroundEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.server.MusicServer;
-import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
@@ -26,8 +26,7 @@ public class LocalPlayerService extends Service {
     @Inject
     Bus bus;
 
-    @Inject
-    LocalPlayer player;
+    private LocalPlayer player;
 
     private MusicServer server;
 
@@ -36,33 +35,26 @@ public class LocalPlayerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(App.TAG, "LocalPlayerService: onCreate");
+
         Injector.inject(this);
 
-        server = new MusicServer();
-        server.start();
+        player = new LocalPlayer(this);
 
         bus.register(this);
     }
 
     @Override
     public void onDestroy() {
-        server.stop();
+        Log.d(App.TAG, "LocalPlayerService: onDestroy");
 
-        player.release();
-        player = null;
+        if (isServerStarted()) {
+            stopServer();
+        }
+
         bus.post(new StopServerEvent());
         bus.unregister(this);
         super.onDestroy();
-    }
-
-    @Subscribe
-    public void onChangeServiceForeground(SetLocalPlayerServiceForegroundEvent event) {
-        if (event.isForeground()) {
-            startForeground(NowPlayingNotification.NOTIFICATION_ID,
-                    new NowPlayingNotification().create(this, player.getCurrentSong()));
-        } else {
-            stopForeground(true);
-        }
     }
 
     @Override
@@ -78,6 +70,20 @@ public class LocalPlayerService extends Service {
         public LocalPlayer getPlayer() {
             return player;
         }
+    }
+
+    public boolean isServerStarted() {
+        return server != null;
+    }
+
+    public void startServer() {
+        server = new MusicServer(player);
+        server.start();
+    }
+
+    public void stopServer() {
+        server.stop();
+        server = null;
     }
 
     @Produce

@@ -7,13 +7,12 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/fragment_playback_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/fragment_playback_background"
+            android:id="@+id/background"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:adjustViewBounds="true"
@@ -24,16 +23,16 @@
 
         <FrameLayout
             tools:background="#fff"
-            android:id="@+id/offsetted_albumart"
+            android:id="@+id/albumArtLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/abc_action_bar_default_height"
-            android:layout_above="@+id/bottom_bar">
+            android:layout_marginTop="@dimen/abc_action_bar_default_height_material"
+            android:layout_above="@+id/bottomBar">
 
             <com.lwm.app.ui.custom_view.SquareWidthImageView
-                android:background="@drawable/abc_menu_dropdown_panel_holo_light"
+                android:background="@drawable/abc_popup_background_mtrl_mult"
                 android:src="@drawable/no_cover"
-                android:id="@+id/fragment_playback_cover"
+                android:id="@+id/cover"
                 android:layout_margin="48dp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -42,10 +41,10 @@
         </FrameLayout>
 
         <com.danh32.fontify.TextView
-            android:id="@+id/fragment_playback_now_position"
+            android:id="@+id/currentTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_bar"
+            android:layout_above="@+id/bottomBar"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
 
@@ -63,10 +62,10 @@
             fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
         <com.danh32.fontify.TextView
-            android:id="@+id/fragment_playback_last_position"
+            android:id="@+id/endTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_bar"
+            android:layout_above="@+id/bottomBar"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="5dp"
 
@@ -84,14 +83,14 @@
             fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
         <LinearLayout
-            android:id="@+id/bottom_bar"
+            android:id="@+id/bottomBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
             <SeekBar
-                android:id="@+id/fragment_playback_seekBar"
+                android:id="@+id/seekBar"
                 style="@style/SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,13 +99,13 @@
 
             <LinearLayout
                 tools:visibility="visible"
-                android:id="@+id/fragment_playback_controls"
+                android:id="@+id/controls"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#55000000">
 
                 <ImageView
-                    android:id="@+id/fragment_playback_shuffle_button"
+                    android:id="@+id/btnShuffle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -118,7 +117,7 @@
                     android:src="@drawable/ic_shuffle_active" />
 
                 <ImageView
-                    android:id="@+id/fragment_playback_prev"
+                    android:id="@+id/btnPrev"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -130,7 +129,7 @@
                     android:src="@drawable/ic_prev" />
 
                 <ImageView
-                    android:id="@+id/fragment_playback_play_pause"
+                    android:id="@+id/btnPlayPause"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -142,7 +141,7 @@
                     android:src="@drawable/ic_pause" />
 
                 <ImageView
-                    android:id="@+id/fragment_playback_next"
+                    android:id="@+id/btnNext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -154,7 +153,7 @@
                     android:src="@drawable/ic_next" />
 
                 <ImageView
-                    android:id="@+id/fragment_playback_repeat_button"
+                    android:id="@+id/btnRepeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -171,7 +170,7 @@
     </RelativeLayout>
 
     <ProgressBar
-        android:id="@+id/waiting_for_station"
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -179,19 +178,5 @@
 
         android:visibility="gone"
         tools:visibility="visible" />
-
-    <!--<VideoView-->
-        <!--android:id="@+id/waiting_for_station"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentBottom="true"-->
-
-        <!--android:gravity="center"-->
-        <!--android:visibility="gone"-->
-        <!--tools:visibility="visible" />-->
 
 </RelativeLayout>

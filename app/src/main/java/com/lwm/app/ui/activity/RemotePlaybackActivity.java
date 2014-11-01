@@ -54,31 +54,26 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
     }
 
-    @Override
-    public void onControlButtonClicked(View v) {
-
-    }
-
-    @Override
-    protected void setSongInfo(Song song) {
-        if(song != null) {
-            playbackFragment.showWaitingFrame(false);
-
-            View v = actionBar.getCustomView();
-            TextView title = (TextView) v.findViewById(R.id.title);
-            TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
-            title.setText(song.getTitle());
-            subtitle.setText(utils.getArtistName(song.getArtist()));
-
-            durationString = song.getDurationString();
-            playbackFragment.setDuration(durationString);
-            duration = song.getDuration();
-            initSeekBarUpdater(player.getPlayer(), duration);
-            playbackFragment.setRemoteAlbumArt();
-        }else{
-            playbackFragment.showWaitingFrame(true);
-        }
-    }
+//    @Override
+//    protected void setSongInfo(Song song) {
+//        if(song != null) {
+//            playbackFragment.showWaitingFrame(false);
+//
+//            View v = actionBar.getCustomView();
+//            TextView title = (TextView) v.findViewById(R.id.title);
+//            TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
+//            title.setText(song.getTitle());
+//            subtitle.setText(utils.getArtistName(song.getArtist()));
+//
+//            durationString = song.getDurationString();
+//            playbackFragment.setDuration(durationString);
+//            duration = song.getDuration();
+////            initSeekBarUpdater(player.getPlayer(), duration);
+//            playbackFragment.setRemoteAlbumArt();
+//        }else{
+//            playbackFragment.showWaitingFrame(true);
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +88,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         bus.register(this);
         Song song = player.getCurrentSong();
         if (song != null) {
-            setSongInfo(song);
+//            setSongInfo(song);
         }
     }
 
@@ -106,18 +101,18 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Subscribe
     public void onPlaybackStarted(PlaybackStartedEvent event) {
         Log.d(App.TAG, "Playback started (RemotePlaybackActivity)");
-        setSongInfo(event.getSong());
-        playbackFragment.setPlayButton(true);
+//        setSongInfo(event.getSong());
+//        playbackFragment.setPlayButton(true);
     }
 
     @Subscribe
     public void onPlaybackPaused(PlaybackPausedEvent event) {
-        playbackFragment.setPlayButton(false);
+//        playbackFragment.setPlayButton(false);
     }
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
-        Croutons.messageReceived(this, event.getMessage(), R.id.offsetted_albumart).show();
+        Croutons.messageReceived(this, event.getMessage(), R.id.albumArtLayout).show();
         unreadMessagesCount += 1;
         newMessagesCounter.setVisibility(View.VISIBLE);
         newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));

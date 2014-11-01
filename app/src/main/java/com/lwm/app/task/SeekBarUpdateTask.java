@@ -24,13 +24,13 @@ public class SeekBarUpdateTask extends TimerTask {
     int progress;
     @Override
     public void run() {
-        progress = (int) (player.getCurrentPosition()/(float) duration * PlaybackFragment.SEEK_BAR_MAX);
-        parentActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                playbackFragment.setSeekBarPosition(progress);
-                playbackFragment.setCurrentTime(player.getCurrentPositionInMinutes());
-            }
-        });
+//        progress = (int) (player.getCurrentPosition()/(float) duration * PlaybackFragment.SEEK_BAR_MAX);
+//        parentActivity.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                playbackFragment.setSeekBarPosition(progress);
+//                playbackFragment.setCurrentTime(player.getCurrentPositionInMinutes());
+//            }
+//        });
     }
 }

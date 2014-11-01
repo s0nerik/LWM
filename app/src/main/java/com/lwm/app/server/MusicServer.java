@@ -1,7 +1,6 @@
 package com.lwm.app.server;
 
 import com.google.gson.Gson;
-import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
@@ -34,14 +33,13 @@ public class MusicServer {
 
     private WebSocketMessageServer webSocketMessageServer;
 
-    @Inject
-    LocalPlayer player;
+    private LocalPlayer player;
 
     @Inject
     Bus bus;
 
-    public MusicServer() {
-        Injector.inject(this);
+    public MusicServer(LocalPlayer player) {
+        this.player = player;
     }
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
@@ -49,14 +47,14 @@ public class MusicServer {
 
     public void start() {
         try {
-            new StreamServer().start();
+            new StreamServer(player).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                webSocketMessageServer = new WebSocketMessageServer(new InetSocketAddress(8080));
+                webSocketMessageServer = new WebSocketMessageServer(new InetSocketAddress(8080), player);
                 webSocketMessageServer.start();
             }
         }).start();

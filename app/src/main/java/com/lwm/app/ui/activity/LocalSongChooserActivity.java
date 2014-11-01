@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
@@ -71,7 +73,10 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService(playerServiceIntent);
+        if (!player.isPlaying()) {
+            Log.d(App.TAG, "stopService");
+            stopService(playerServiceIntent);
+        }
     }
 
     @Override
@@ -91,7 +96,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     protected void initActionBar() {
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
     }

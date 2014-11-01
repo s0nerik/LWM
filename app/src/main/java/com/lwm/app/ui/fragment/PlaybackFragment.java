@@ -2,11 +2,11 @@ package com.lwm.app.ui.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,46 +14,67 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
+import com.danh32.fontify.TextView;
 import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.Utils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 import com.lwm.app.ui.base.DaggerFragment;
+import com.lwm.app.ui.custom_view.SquareWidthImageView;
 import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnTouch;
+
 public abstract class PlaybackFragment extends DaggerFragment implements SeekBar.OnSeekBarChangeListener {
 
-    public static final int SEEK_BAR_MAX = 100;
-    public static final int SEEK_BAR_UPDATE_INTERVAL = 1000;
+    @InjectView(R.id.background)
+    ImageView mBackground;
+    @InjectView(R.id.cover)
+    SquareWidthImageView mCover;
+    @InjectView(R.id.albumArtLayout)
+    FrameLayout mAlbumArtLayout;
+    @InjectView(R.id.currentTime)
+    TextView mCurrentTime;
+    @InjectView(R.id.endTime)
+    TextView mEndTime;
+    @InjectView(R.id.seekBar)
+    SeekBar mSeekBar;
+    @InjectView(R.id.btnShuffle)
+    ImageView mBtnShuffle;
+    @InjectView(R.id.btnPrev)
+    ImageView mBtnPrev;
+    @InjectView(R.id.btnPlayPause)
+    ImageView mBtnPlayPause;
+    @InjectView(R.id.btnNext)
+    ImageView mBtnNext;
+    @InjectView(R.id.btnRepeat)
+    ImageView mBtnRepeat;
+    @InjectView(R.id.controls)
+    LinearLayout mControls;
+    @InjectView(R.id.bottomBar)
+    LinearLayout mBottomBar;
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
+
     public static final int BLUR_RADIUS = 50;
-    private static Bitmap noCover;
-
-    private TextView currentTime;
-    private TextView duration;
-    protected SeekBar seekBar;
-    private ImageView albumArt;
-    private ImageView background;
-
-    protected View playbackControls;
-
-    // Playback control buttons
-    private ImageView playPauseButton;
-    private ImageView shuffleButton;
-    private ImageView repeatButton;
 
     private Drawable[] drawables;
     private TransitionDrawable transitionDrawable;
 
-    protected View waitingForStation;
+    protected MediaPlayer player;
 
     @Inject
     Bus bus;
@@ -72,108 +93,63 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_playback, container, false);
+        View v = inflater.inflate(R.layout.fragment_playback, container, false);
+        ButterKnife.inject(this, v);
+        return v;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        duration = (TextView) view.findViewById(R.id.fragment_playback_last_position);
-        currentTime = (TextView) view.findViewById(R.id.fragment_playback_now_position);
-        seekBar = (SeekBar) view.findViewById(R.id.fragment_playback_seekBar);
-        albumArt = (ImageView) view.findViewById(R.id.fragment_playback_cover);
 
-        playbackControls = view.findViewById(R.id.fragment_playback_controls);
-
-        playPauseButton = (ImageView) view.findViewById(R.id.fragment_playback_play_pause);
-        ImageView nextButton = (ImageView) view.findViewById(R.id.fragment_playback_next);
-        ImageView prevButton = (ImageView) view.findViewById(R.id.fragment_playback_prev);
-        shuffleButton = (ImageView) view.findViewById(R.id.fragment_playback_shuffle_button);
-        repeatButton = (ImageView) view.findViewById(R.id.fragment_playback_repeat_button);
-
-        background = (ImageView) view.findViewById(R.id.fragment_playback_background);
-
-        waitingForStation = view.findViewById(R.id.waiting_for_station);
-
-        noCover = BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.no_cover);
-
-        playPauseButton.setOnTouchListener(onControlButtonTouchListener);
-        nextButton.setOnTouchListener(onControlButtonTouchListener);
-        prevButton.setOnTouchListener(onControlButtonTouchListener);
-        shuffleButton.setOnTouchListener(onControlButtonTouchListener);
-        repeatButton.setOnTouchListener(onControlButtonTouchListener);
-
-        drawables = new Drawable[]{background.getDrawable(), background.getDrawable()};
+        drawables = new Drawable[]{mBackground.getDrawable(), mBackground.getDrawable()};
         transitionDrawable = new TransitionDrawable(drawables);
         transitionDrawable.setCrossFadeEnabled(true);
 
-        seekBar.setMax(SEEK_BAR_MAX);
-        seekBar.setOnSeekBarChangeListener(this);
+//        seekBar.setMax(SEEK_BAR_MAX);
+//        seekBar.setOnSeekBarChangeListener(this);
     }
 
     public void setCurrentTime(String currentTime) {
-        this.currentTime.setText(currentTime);
+        mCurrentTime.setText(currentTime);
     }
 
     public void setDuration(String duration) {
-        this.duration.setText(duration);
+        mEndTime.setText(duration);
     }
 
     public void setSeekBarPosition(int percents) {
-        this.seekBar.setProgress(percents);
+        mSeekBar.setProgress(percents);
     }
 
-    public void setAlbumArtFromUri(Uri uri){
-        Utils.setAlbumArtFromUri(getActivity(), albumArt, uri);
+    public void setAlbumArtFromUri(Uri uri) {
+        Utils.setAlbumArtFromUri(getActivity(), mCover, uri);
     }
 
-    public void setRemoteAlbumArt(){
-        RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(getActivity(), albumArt, background);
+    public void setRemoteAlbumArt() {
+        RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(getActivity(), mCover, mBackground);
         remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
     }
 
-    public void setBackgroundImageUri(Uri uri){
-        BackgroundChanger backgroundChanger = new BackgroundChanger(getActivity(), background);
+    public void setBackgroundImageUri(Uri uri) {
+        BackgroundChanger backgroundChanger = new BackgroundChanger(getActivity(), mBackground);
         backgroundChanger.executeWithThreadPoolExecutor(uri);
     }
 
-    public void setPlayButton(boolean playing){
-        if(playing){
-            playPauseButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
-        }else{
-            playPauseButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
-        }
-    }
-
-    public void setShuffleButton(boolean enabled){
-        if(enabled){
-            shuffleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle_active));
-        }else{
-            shuffleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle));
-        }
-    }
-
-    public void setRepeatButton(boolean enabled){
-        if(enabled){
-            repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_active));
-        }else{
-            repeatButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat));
-        }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 
     private class BackgroundChanger extends SupportAsyncTask<Uri, Void, Drawable> {
         private Context context;
         private ImageView bg;
         private Bitmap bitmap;
 
-        public BackgroundChanger(Context context, ImageView bg){
+        public BackgroundChanger(Context context, ImageView bg) {
             this.context = context;
             this.bg = bg;
         }
@@ -186,24 +162,24 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
                 if (bitmap != null) {
                     bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
                 } else {
-                    bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
+                    bitmap = ((BitmapDrawable) bg.getDrawable()).getBitmap();
                 }
             } catch (IOException e) {
-                bitmap = new StackBlurManager(noCover).processNatively(BLUR_RADIUS);
+                bitmap = ((BitmapDrawable) bg.getDrawable()).getBitmap();
             }
             try {
                 return new BitmapDrawable(getResources(), bitmap);
-            } catch (IllegalStateException ignored){
+            } catch (IllegalStateException ignored) {
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(Drawable newDrawable) {
-            if(newDrawable != null){
+            if (newDrawable != null) {
                 Drawable oldDrawable = bg.getDrawable();
 
-                if(oldDrawable instanceof TransitionDrawable){
+                if (oldDrawable instanceof TransitionDrawable) {
                     oldDrawable = ((TransitionDrawable) oldDrawable).getDrawable(1);
                 }
 
@@ -217,19 +193,17 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
         }
     }
 
-    View.OnTouchListener onControlButtonTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                //Button Pressed
-                view.setBackgroundColor(Color.parseColor("#33ffffff"));
-            }
-            if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-                //finger was lifted
-                view.setBackgroundColor(Color.TRANSPARENT);
-            }
-            return false;
+    @OnTouch({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
+    public boolean onTouchControls(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            //Button Pressed
+            view.setBackgroundColor(Color.parseColor("#33ffffff"));
         }
-    };
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            //finger was lifted
+            view.setBackgroundColor(Color.TRANSPARENT);
+        }
+        return false;
+    }
 
 }
