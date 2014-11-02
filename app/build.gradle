@@ -69,6 +69,9 @@ dependencies {
 
     compile 'com.android.support:recyclerview-v7:21.+'
     compile 'org.projectlombok:lombok:1.14.8'
+
+    compile 'com.github.traex.rippleeffect:library:1.2.2'
+
 //
 //    androidTestCompile 'junit:junit:4.11'
 //    androidTestCompile 'org.robolectric:robolectric:2.3'

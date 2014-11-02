@@ -169,4 +169,20 @@
         <item name="android:layout_alignParentRight">true</item>
     </style>
 
+    <style name="PlaybackControlButton">
+        <item name="rv_type">doubleRipple</item>
+        <item name="rv_rippleDuration">200</item>
+        <item name="rv_ripplePadding">8dp</item>
+        <item name="rv_centered">true</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="PlaybackControlButtonIcon">
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

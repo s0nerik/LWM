@@ -91,74 +91,8 @@
             android:background="@drawable/background_seekbar"
             tools:progress="50" />
 
-        <LinearLayout
-            tools:visibility="visible"
-            android:id="@+id/controls"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#55000000">
+        <include layout="@layout/part_playback_control_buttons" />
 
-            <ImageView
-                android:id="@+id/btnShuffle"
-                android:onClick="onControlButtonClicked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingBottom="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/ic_shuffle_active" />
-
-            <ImageView
-                android:id="@+id/btnPrev"
-                android:onClick="onControlButtonClicked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingBottom="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/ic_prev" />
-
-            <ImageView
-                android:id="@+id/btnPlayPause"
-                android:onClick="onControlButtonClicked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingBottom="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/ic_pause" />
-
-            <ImageView
-                android:id="@+id/btnNext"
-                android:onClick="onControlButtonClicked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingBottom="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/ic_next" />
-
-            <ImageView
-                android:id="@+id/btnRepeat"
-                android:onClick="onControlButtonClicked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingBottom="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/ic_repeat" />
-
-        </LinearLayout>
     </LinearLayout>
 
     <ProgressBar

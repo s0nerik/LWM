@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/controls"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:background="#55000000"
+    android:weightSum="5"
+    tools:visibility="visible">
+
+    <com.andexert.library.RippleView
+        android:id="@+id/btnShuffle"
+        style="@style/PlaybackControlButton">
+
+        <ImageView
+            android:id="@+id/btnShuffleIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_shuffle_active" />
+
+    </com.andexert.library.RippleView>
+
+    <com.andexert.library.RippleView
+        android:id="@+id/btnPrev"
+        style="@style/PlaybackControlButton">
+
+        <ImageView
+            android:id="@+id/btnPrevIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_prev" />
+
+    </com.andexert.library.RippleView>
+
+    <com.andexert.library.RippleView
+        android:id="@+id/btnPlayPause"
+        style="@style/PlaybackControlButton">
+
+        <ImageView
+            android:id="@+id/btnPlayPauseIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_pause" />
+    </com.andexert.library.RippleView>
+
+    <com.andexert.library.RippleView
+        android:id="@+id/btnNext"
+        style="@style/PlaybackControlButton">
+
+        <ImageView
+            android:id="@+id/btnNextIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_next" />
+    </com.andexert.library.RippleView>
+
+    <com.andexert.library.RippleView
+        android:id="@+id/btnRepeat"
+        style="@style/PlaybackControlButton">
+
+        <ImageView
+            android:id="@+id/btnRepeatIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_repeat" />
+    </com.andexert.library.RippleView>
+
+</LinearLayout>

@@ -1,12 +1,10 @@
 package com.lwm.app.ui.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -15,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
+import com.andexert.library.RippleView;
 import com.danh32.fontify.TextView;
 import com.enrique.stackblur.StackBlurManager;
 import com.koushikdutta.ion.Ion;
@@ -33,7 +32,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnTouch;
 
 public abstract class PlaybackFragment extends DaggerOttoFragment {
 
@@ -42,8 +40,6 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
     @Inject
     LocalPlayer player;
 
-    @InjectView(R.id.toolbar)
-    Toolbar mToolbar;
     @InjectView(R.id.background)
     ImageView mBackground;
     @InjectView(R.id.cover)
@@ -56,22 +52,34 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
     TextView mEndTime;
     @InjectView(R.id.seekBar)
     SeekBar mSeekBar;
+    @InjectView(R.id.btnShuffleIcon)
+    ImageView mBtnShuffleIcon;
     @InjectView(R.id.btnShuffle)
-    ImageView mBtnShuffle;
+    RippleView mBtnShuffle;
+    @InjectView(R.id.btnPrevIcon)
+    ImageView mBtnPrevIcon;
     @InjectView(R.id.btnPrev)
-    ImageView mBtnPrev;
+    RippleView mBtnPrev;
+    @InjectView(R.id.btnPlayPauseIcon)
+    ImageView mBtnPlayPauseIcon;
     @InjectView(R.id.btnPlayPause)
-    ImageView mBtnPlayPause;
+    RippleView mBtnPlayPause;
+    @InjectView(R.id.btnNextIcon)
+    ImageView mBtnNextIcon;
     @InjectView(R.id.btnNext)
-    ImageView mBtnNext;
+    RippleView mBtnNext;
+    @InjectView(R.id.btnRepeatIcon)
+    ImageView mBtnRepeatIcon;
     @InjectView(R.id.btnRepeat)
-    ImageView mBtnRepeat;
+    RippleView mBtnRepeat;
     @InjectView(R.id.controls)
     LinearLayout mControls;
     @InjectView(R.id.bottomBar)
     LinearLayout mBottomBar;
     @InjectView(R.id.progressBar)
     ProgressBar mProgressBar;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -131,18 +139,18 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
         remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
     }
 
-    @OnTouch({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
-    public boolean onTouchControls(View view, MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            //Button Pressed
-            view.setBackgroundColor(Color.parseColor("#33ffffff"));
-        }
-        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            //finger was lifted
-            view.setBackgroundColor(Color.TRANSPARENT);
-        }
-        return true;
-    }
+//    @OnClick({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
+//    public boolean onClickControls(View view, MotionEvent motionEvent) {
+//        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//            //Button Pressed
+//            view.setBackgroundColor(Color.parseColor("#33ffffff"));
+//        }
+//        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//            //finger was lifted
+//            view.setBackgroundColor(Color.TRANSPARENT);
+//        }
+//        return true;
+//    }
 
     protected class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
 
@@ -154,10 +162,12 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
         }
 
         @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {}
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
 
         @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {}
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
     }
 
 }
