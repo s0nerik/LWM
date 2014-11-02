@@ -185,4 +185,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="PlaybackFragmentToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorControlNormal">#fff</item>
+        <item name="colorControlHighlight">#3fff</item>
+    </style>
+
 </resources>

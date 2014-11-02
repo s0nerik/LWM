@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fontify="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/background"
@@ -16,8 +16,18 @@
         android:x="0dp"
         android:y="0dp" />
 
+    <View
+        android:background="@drawable/shadow_playback_fragment_top"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <View
+        android:background="@drawable/shadow_playback_fragment_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
     <FrameLayout
-        tools:background="#111111"
         android:id="@+id/albumArtLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,7 +63,7 @@
         android:text="0:00"
         android:textColor="@android:color/white"
 
-        fontify:font="@string/FONT_ROBOTO_REGULAR" />
+        app:font="@string/FONT_ROBOTO_REGULAR" />
 
     <com.danh32.fontify.TextView
         android:id="@+id/endTime"
@@ -74,7 +84,7 @@
         android:text="3:00"
         android:textColor="@android:color/white"
 
-        fontify:font="@string/FONT_ROBOTO_REGULAR" />
+        app:font="@string/FONT_ROBOTO_REGULAR" />
 
     <LinearLayout
         android:id="@+id/bottomBar"
@@ -88,7 +98,6 @@
             style="@style/SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_seekbar"
             tools:progress="50" />
 
         <include layout="@layout/part_playback_control_buttons" />
@@ -107,6 +116,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        app:theme="@style/PlaybackFragmentToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
