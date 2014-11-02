@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public abstract class PlaybackFragment extends DaggerOttoFragment {
 
@@ -139,18 +140,53 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
         remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
     }
 
-//    @OnClick({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
-//    public boolean onClickControls(View view, MotionEvent motionEvent) {
-//        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-//            //Button Pressed
-//            view.setBackgroundColor(Color.parseColor("#33ffffff"));
-//        }
-//        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-//            //finger was lifted
-//            view.setBackgroundColor(Color.TRANSPARENT);
-//        }
-//        return true;
-//    }
+    @OnClick({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
+    public void onClickControls(View btn) {
+        switch (btn.getId()) {
+            case R.id.btnNext:
+                player.nextSong();
+                break;
+            case R.id.btnPrev:
+                player.prevSong();
+                break;
+            case R.id.btnPlayPause:
+                player.togglePause();
+                setPlayButton(player.isPlaying());
+                break;
+            case R.id.btnShuffle:
+                player.shuffleQueueExceptPlayed();
+                setShuffleButton(player.isShuffle());
+                break;
+            case R.id.btnRepeat:
+                player.setRepeat(!player.isRepeat());
+                setRepeatButton(player.isRepeat());
+                break;
+        }
+    }
+
+    private void setPlayButton(boolean playing) {
+        if (playing) {
+            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+        } else {
+            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+        }
+    }
+
+    private void setShuffleButton(boolean enabled) {
+        if (enabled) {
+            mBtnShuffleIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle_active));
+        } else {
+            mBtnShuffleIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle));
+        }
+    }
+
+    private void setRepeatButton(boolean enabled) {
+        if (enabled) {
+            mBtnRepeatIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_active));
+        } else {
+            mBtnRepeatIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat));
+        }
+    }
 
     protected class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
 
