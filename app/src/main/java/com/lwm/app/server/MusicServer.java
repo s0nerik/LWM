@@ -33,21 +33,23 @@ public class MusicServer {
 
     private WebSocketMessageServer webSocketMessageServer;
 
-    private LocalPlayer player;
+    private StreamServer streamServer;
+
+    @Inject
+    LocalPlayer player;
 
     @Inject
     Bus bus;
 
-    public MusicServer(LocalPlayer player) {
-        this.player = player;
-    }
-
     private List<ChatMessage> chatMessages = new ArrayList<>();
     private int unreadMessages = 0;
 
+    private boolean started = false;
+
     public void start() {
+        streamServer = new StreamServer(player);
         try {
-            new StreamServer(player).start();
+            streamServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,11 +60,13 @@ public class MusicServer {
                 webSocketMessageServer.start();
             }
         }).start();
+        started = true;
         bus.register(this);
     }
 
     public void stop() {
         bus.unregister(this);
+        streamServer.stop();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -75,6 +79,11 @@ public class MusicServer {
                 }
             }
         }).start();
+        started = false;
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     @Subscribe

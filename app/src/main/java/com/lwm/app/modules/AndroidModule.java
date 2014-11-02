@@ -10,6 +10,15 @@ import android.view.LayoutInflater;
 
 import com.lwm.app.App;
 import com.lwm.app.events.MainThreadBus;
+import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.server.MusicServer;
+import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.ui.activity.LocalPlaybackActivity;
+import com.lwm.app.ui.activity.LocalSongChooserActivity;
+import com.lwm.app.ui.fragment.LocalPlaybackFragment;
+import com.lwm.app.ui.fragment.NowPlayingFragment;
+import com.lwm.app.ui.fragment.SongsListFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -22,7 +31,19 @@ import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.WIFI_SERVICE;
 
-@Module(library = true)
+@Module(injects = {
+        LocalPlayer.class,
+
+        LocalPlayerService.class,
+
+        NowPlayingFragment.class,
+        SongsListFragment.class,
+        LocalPlaybackFragment.class,
+
+        LocalSongChooserActivity.class,
+        LocalPlaybackActivity.class
+        },
+        library = true)
 public class AndroidModule {
     private final App application;
 
@@ -76,6 +97,24 @@ public class AndroidModule {
     @Singleton
     Bus provideBus() {
         return new MainThreadBus(ThreadEnforcer.ANY);
+    }
+
+    @Provides
+    @Singleton
+    LocalPlayer provideLocalPlayer() {
+        return new LocalPlayer();
+    }
+
+    @Provides
+    @Singleton
+    StreamPlayer provideStreamPlayer() {
+        return new StreamPlayer();
+    }
+
+    @Provides
+    @Singleton
+    MusicServer provideMusicServer() {
+        return new MusicServer();
     }
 
 }

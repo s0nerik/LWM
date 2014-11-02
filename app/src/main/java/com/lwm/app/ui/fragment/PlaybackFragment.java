@@ -203,7 +203,7 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
             //finger was lifted
             view.setBackgroundColor(Color.TRANSPARENT);
         }
-        return false;
+        return true;
     }
 
 }

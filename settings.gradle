@@ -1,6 +1,5 @@
 include ':app'
-//include ':test'
-
+//include ':app-test'
 include ':libs:UnifiedPreference'
 include ':libs:android-stackblur'
 include ':libs:Fontify'

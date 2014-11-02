@@ -19,7 +19,7 @@ import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.server.MusicServer;
 import com.squareup.otto.Bus;
 
 import java.io.IOException;
@@ -29,29 +29,33 @@ import javax.inject.Inject;
 
 public class LocalPlayer extends BasePlayer {
 
-    private LocalPlayerService service;
-
     private boolean repeat = false;
 
     private boolean active = false;
 
     private Queue queue = new Queue();
 
-    @Inject Bus bus;
+    @Inject
+    Bus bus;
 
-    @Inject Context context;
+    @Inject
+    Context context;
 
-    @Inject NotificationManager notificationManager;
+    @Inject
+    NotificationManager notificationManager;
+
+    @Inject
+    MusicServer server;
 
     private OnCompletionListener onCompletionListener = new OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             Log.d("LWM", "LocalPlayer: onCompletion");
 
-            if(getCurrentPosition() > getDuration()-1000){
-                if(isRepeat()){
+            if (getCurrentPosition() > getDuration() - 1000) {
+                if (isRepeat()) {
                     play();
-                }else{
+                } else {
                     nextSong();
                 }
             }
@@ -65,9 +69,8 @@ public class LocalPlayer extends BasePlayer {
         }
     };
 
-    public LocalPlayer(LocalPlayerService service){
+    public LocalPlayer(){
         super();
-        this.service = service;
 
         setOnCompletionListener(onCompletionListener);
         setOnSeekCompleteListener(onSeekCompleteListener);
@@ -135,7 +138,7 @@ public class LocalPlayer extends BasePlayer {
 
             active = true;
 
-            if (service.isServerStarted()) {
+            if (server.isStarted()) {
                 bus.post(new PrepareClientsEvent());
             } else {
                 start();
@@ -165,7 +168,7 @@ public class LocalPlayer extends BasePlayer {
     @Override
     public void seekTo(int msec) throws IllegalStateException {
         Log.d(App.TAG, "LocalPlayer: seekTo("+msec+")");
-        if (service.isServerStarted()) {
+        if (server.isStarted()) {
             bus.post(new SeekToClientsEvent(msec));
         }
         super.seekTo(msec);
@@ -212,18 +215,30 @@ public class LocalPlayer extends BasePlayer {
     @Override
     public void togglePause(){
         if (isPlaying()){
-            if(service.isServerStarted()) {
+            if(server.isStarted()) {
                 bus.post(new PauseClientsEvent());
             } else {
                 pause();
             }
         } else {
-            if(service.isServerStarted()) {
+            if(server.isStarted()) {
                 bus.post(new StartClientsEvent());
             } else {
                 start();
             }
         }
+    }
+
+    public void startServer() {
+        server.start();
+    }
+
+    public void stopServer() {
+        server.stop();
+    }
+
+    public MusicServer getServer() {
+        return server;
     }
 
     public int getCurrentQueuePosition() {

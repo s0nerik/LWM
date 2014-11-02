@@ -14,7 +14,6 @@ import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.server.MusicServer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
@@ -26,9 +25,8 @@ public class LocalPlayerService extends Service {
     @Inject
     Bus bus;
 
-    private LocalPlayer player;
-
-    private MusicServer server;
+    @Inject
+    LocalPlayer player;
 
     private final LocalPlayerServiceBinder binder = new LocalPlayerServiceBinder();
 
@@ -39,8 +37,6 @@ public class LocalPlayerService extends Service {
 
         Injector.inject(this);
 
-        player = new LocalPlayer(this);
-
         bus.register(this);
     }
 
@@ -48,8 +44,8 @@ public class LocalPlayerService extends Service {
     public void onDestroy() {
         Log.d(App.TAG, "LocalPlayerService: onDestroy");
 
-        if (isServerStarted()) {
-            stopServer();
+        if (player.getServer().isStarted()) {
+            player.stopServer();
         }
 
         bus.post(new StopServerEvent());
@@ -70,20 +66,6 @@ public class LocalPlayerService extends Service {
         public LocalPlayer getPlayer() {
             return player;
         }
-    }
-
-    public boolean isServerStarted() {
-        return server != null;
-    }
-
-    public void startServer() {
-        server = new MusicServer(player);
-        server.start();
-    }
-
-    public void stopServer() {
-        server.stop();
-        server = null;
     }
 
     @Produce
