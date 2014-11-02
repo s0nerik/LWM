@@ -15,13 +15,6 @@
         <item name="android:windowBackground">@color/card_list_background</item>
     </style>
 
-    <style name="AppTheme.PlaybackActivityStyle" parent="AppTheme">
-        <item name="actionBarStyle">@style/ActionBar</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:actionBarStyle">@style/ActionBar</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
-
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBar">false</item>

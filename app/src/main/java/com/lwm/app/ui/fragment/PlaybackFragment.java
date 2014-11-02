@@ -1,15 +1,10 @@
 package com.lwm.app.ui.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,15 +17,17 @@ import android.widget.SeekBar;
 
 import com.danh32.fontify.TextView;
 import com.enrique.stackblur.StackBlurManager;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.R;
-import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.Utils;
+import com.lwm.app.events.player.playback.SongPlayingEvent;
+import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.model.Song;
+import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
-import com.lwm.app.ui.base.DaggerFragment;
 import com.lwm.app.ui.custom_view.SquareWidthImageView;
-import com.squareup.otto.Bus;
-
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -38,8 +35,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnTouch;
 
-public abstract class PlaybackFragment extends DaggerFragment implements SeekBar.OnSeekBarChangeListener {
+public abstract class PlaybackFragment extends DaggerOttoFragment {
 
+    public static final int BLUR_RADIUS = 50;
+
+    @Inject
+    LocalPlayer player;
+
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
     @InjectView(R.id.background)
     ImageView mBackground;
     @InjectView(R.id.cover)
@@ -69,28 +73,6 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
     @InjectView(R.id.progressBar)
     ProgressBar mProgressBar;
 
-    public static final int BLUR_RADIUS = 50;
-
-    private Drawable[] drawables;
-    private TransitionDrawable transitionDrawable;
-
-    protected MediaPlayer player;
-
-    @Inject
-    Bus bus;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        bus.register(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        bus.unregister(this);
-        super.onDestroy();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_playback, container, false);
@@ -98,99 +80,55 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
         return v;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        drawables = new Drawable[]{mBackground.getDrawable(), mBackground.getDrawable()};
-        transitionDrawable = new TransitionDrawable(drawables);
-        transitionDrawable.setCrossFadeEnabled(true);
-
-//        seekBar.setMax(SEEK_BAR_MAX);
-//        seekBar.setOnSeekBarChangeListener(this);
+    protected void onSongPlaying(SongPlayingEvent event) {
+        mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(event.getProgress()));
+        mCurrentTime.setText(player.getCurrentPositionInMinutes());
     }
 
-    public void setCurrentTime(String currentTime) {
-        mCurrentTime.setText(currentTime);
+    protected void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
+        setSongInfo(event.getSong());
     }
 
-    public void setDuration(String duration) {
-        mEndTime.setText(duration);
+    protected void setSongInfo(final Song song) {
+        mToolbar.setTitle(song.getTitle());
+        mToolbar.setSubtitle(song.getArtist());
+
+        mSeekBar.setMax(PlayerUtils.calculateProgressForSeekBar(song.getDuration()));
+        mEndTime.setText(song.getDurationString());
+
+        Ion.with(mCover)
+                .crossfade()
+                .placeholder(R.drawable.no_cover)
+                .error(R.drawable.no_cover)
+                .smartSize(true)
+                .load(song.getAlbumArtUri().toString());
+
+        Ion.with(mBackground)
+                .placeholder(R.drawable.no_cover_blurred)
+                .error(R.drawable.no_cover_blurred)
+                .crossfade()
+                .smartSize(true)
+                .transform(new Transform() {
+                    @Override
+                    public Bitmap transform(Bitmap b) {
+                        return new StackBlurManager(b).processNatively(BLUR_RADIUS);
+                    }
+
+                    @Override
+                    public String key() {
+                        return song.getAlbumArtUri().toString();
+                    }
+                })
+                .load(song.getAlbumArtUri().toString());
     }
 
-    public void setSeekBarPosition(int percents) {
-        mSeekBar.setProgress(percents);
-    }
-
-    public void setAlbumArtFromUri(Uri uri) {
+    protected void setAlbumArtFromUri(Uri uri) {
         Utils.setAlbumArtFromUri(getActivity(), mCover, uri);
     }
 
     public void setRemoteAlbumArt() {
         RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(getActivity(), mCover, mBackground);
         remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
-    }
-
-    public void setBackgroundImageUri(Uri uri) {
-        BackgroundChanger backgroundChanger = new BackgroundChanger(getActivity(), mBackground);
-        backgroundChanger.executeWithThreadPoolExecutor(uri);
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-    }
-
-    private class BackgroundChanger extends SupportAsyncTask<Uri, Void, Drawable> {
-        private Context context;
-        private ImageView bg;
-        private Bitmap bitmap;
-
-        public BackgroundChanger(Context context, ImageView bg) {
-            this.context = context;
-            this.bg = bg;
-        }
-
-        @Override
-        protected Drawable doInBackground(Uri... uri) {
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri[0]);
-//                assert bitmap != null : "bitmap == null";
-                if (bitmap != null) {
-                    bitmap = new StackBlurManager(bitmap).processNatively(BLUR_RADIUS);
-                } else {
-                    bitmap = ((BitmapDrawable) bg.getDrawable()).getBitmap();
-                }
-            } catch (IOException e) {
-                bitmap = ((BitmapDrawable) bg.getDrawable()).getBitmap();
-            }
-            try {
-                return new BitmapDrawable(getResources(), bitmap);
-            } catch (IllegalStateException ignored) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Drawable newDrawable) {
-            if (newDrawable != null) {
-                Drawable oldDrawable = bg.getDrawable();
-
-                if (oldDrawable instanceof TransitionDrawable) {
-                    oldDrawable = ((TransitionDrawable) oldDrawable).getDrawable(1);
-                }
-
-                drawables[0] = oldDrawable;
-                drawables[1] = newDrawable;
-                transitionDrawable = new TransitionDrawable(drawables);
-
-                bg.setImageDrawable(transitionDrawable);
-                transitionDrawable.startTransition(1000);
-            }
-        }
     }
 
     @OnTouch({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
@@ -204,6 +142,22 @@ public abstract class PlaybackFragment extends DaggerFragment implements SeekBar
             view.setBackgroundColor(Color.TRANSPARENT);
         }
         return true;
+    }
+
+    protected class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser) {
+                player.seekTo(PlayerUtils.convertSeekBarToProgress(progress));
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {}
     }
 
 }

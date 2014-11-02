@@ -18,7 +18,7 @@ import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.StreamPlayerService;
+import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.RemotePlaybackFragment;
 import com.squareup.otto.Bus;
@@ -45,7 +45,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     Bus bus;
 
     @Inject
-    StreamPlayerService player;
+    StreamPlayer player;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -53,27 +53,6 @@ public class RemotePlaybackActivity extends PlaybackActivity {
 
         playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
     }
-
-//    @Override
-//    protected void setSongInfo(Song song) {
-//        if(song != null) {
-//            playbackFragment.showWaitingFrame(false);
-//
-//            View v = actionBar.getCustomView();
-//            TextView title = (TextView) v.findViewById(R.id.title);
-//            TextView subtitle = (TextView) v.findViewById(R.id.subtitle);
-//            title.setText(song.getTitle());
-//            subtitle.setText(utils.getArtistName(song.getArtist()));
-//
-//            durationString = song.getDurationString();
-//            playbackFragment.setDuration(durationString);
-//            duration = song.getDuration();
-////            initSeekBarUpdater(player.getPlayer(), duration);
-//            playbackFragment.setRemoteAlbumArt();
-//        }else{
-//            playbackFragment.showWaitingFrame(true);
-//        }
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
