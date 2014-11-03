@@ -20,6 +20,7 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.model.Song;
@@ -95,6 +96,10 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
     }
 
     protected void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
+        setSongInfo(event.getSong());
+    }
+
+    protected void onPlaybackStarted(PlaybackStartedEvent event) {
         setSongInfo(event.getSong());
     }
 

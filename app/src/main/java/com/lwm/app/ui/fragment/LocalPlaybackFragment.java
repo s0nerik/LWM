@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.squareup.otto.Subscribe;
@@ -14,6 +15,12 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSeekBar.setOnSeekBarChangeListener(new PlayerProgressOnSeekBarChangeListener());
+    }
+
+    @Override
+    @Subscribe
+    public void onPlaybackStarted(PlaybackStartedEvent event) {
+        super.onPlaybackStarted(event);
     }
 
     @Override
