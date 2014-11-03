@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.lwm.app.Injector;
-import com.lwm.app.events.access_point.StopServerEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
@@ -38,7 +37,6 @@ public class LocalPlayerService extends Service {
             player.stopServer();
         }
 
-        bus.post(new StopServerEvent());
         bus.unregister(this);
         super.onDestroy();
     }

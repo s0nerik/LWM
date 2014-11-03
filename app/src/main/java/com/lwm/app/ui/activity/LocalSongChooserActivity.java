@@ -1,11 +1,9 @@
 package com.lwm.app.ui.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -24,9 +22,7 @@ import android.widget.ListView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
-import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
-import com.lwm.app.events.access_point.StartServerEvent;
-import com.lwm.app.events.access_point.StopServerEvent;
+import com.lwm.app.events.access_point.AccessPointStateEvent;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
@@ -219,7 +215,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         WifiApManager manager = new WifiApManager(this);
         if (manager.isWifiApEnabled()) {
             setBroadcastButtonState(true);
-            bus.post(new StartServerEvent());
+            bus.post(new AccessPointStateEvent(AccessPointStateEvent.State.ENABLED));
         } else {
             setBroadcastButtonState(false);
         }
@@ -252,29 +248,27 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
                 startActivity(new Intent(this, PreferenceActivity.class));
                 return true;
             case R.id.action_broadcast:
-                WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                WifiAP wifiAP = new WifiAP();
-                wifiAP.toggleWiFiAP(wm, this);
+                new WifiAP().toggleWiFiAP();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Subscribe
-    public void accessPointStateChanging(AccessPointStateChangingEvent event) {
-        setMenuProgressIndicator(true);
-    }
-
-    @Subscribe
-    public void accessPointEnabled(StartServerEvent event) {
-        setMenuProgressIndicator(false);
-        setBroadcastButtonState(true);
-    }
-
-    @Subscribe
-    public void accessPointDisabled(StopServerEvent event) {
-        setMenuProgressIndicator(false);
-        setBroadcastButtonState(false);
+    public void onAccessPointState(AccessPointStateEvent event) {
+        switch (event.getState()) {
+            case CHANGING:
+                setMenuProgressIndicator(true);
+                break;
+            case DISABLED:
+                setMenuProgressIndicator(false);
+                setBroadcastButtonState(true);
+                break;
+            case ENABLED:
+                setMenuProgressIndicator(false);
+                setBroadcastButtonState(false);
+                break;
+        }
     }
 
     @Subscribe

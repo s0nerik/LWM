@@ -109,7 +109,7 @@ public class StationChooserActivity extends ActionBarActivity {
         WifiApManager manager = new WifiApManager(this);
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (manager.isWifiApEnabled()) {
-            wifiAP.toggleWiFiAP(wifiManager, this);
+            wifiAP.toggleWiFiAP();
         } else {
             wifiManager.setWifiEnabled(true);
         }

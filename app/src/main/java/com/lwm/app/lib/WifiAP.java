@@ -1,17 +1,15 @@
 package com.lwm.app.lib;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.lwm.app.Injector;
 import com.lwm.app.Utils;
-import com.lwm.app.events.access_point.AccessPointStateChangingEvent;
-import com.lwm.app.events.access_point.StartServerEvent;
-import com.lwm.app.events.access_point.StopServerEvent;
+import com.lwm.app.events.access_point.AccessPointStateEvent;
 import com.squareup.otto.Bus;
 
 import java.lang.reflect.Method;
@@ -50,22 +48,27 @@ public class WifiAP {
     @Inject
     Bus bus;
 
-    public void toggleWiFiAP(WifiManager wifihandler, Context context) {
+    @Inject
+    WifiManager wifiManager;
+
+    @Inject
+    SharedPreferences preferences;
+
+    public WifiAP() {
+        Injector.inject(this);
+    }
+
+    public void toggleWiFiAP() {
         if (wifi==null){
-            wifi = wifihandler;
+            wifi = wifiManager;
         }
 
-        AP_NAME = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString("ap_name", android.os.Build.MODEL);
-
-        AP_COLOR = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString("ap_color", Utils.getRandomColorString());
-
-        AP_PASSWORD = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString("ap_password", "12345678");
+        AP_NAME = preferences.getString("ap_name", android.os.Build.MODEL);
+        AP_COLOR = preferences.getString("ap_color", Utils.getRandomColorString());
+        AP_PASSWORD = preferences.getString("ap_password", "12345678");
 
         boolean wifiApIsOn = getWifiAPState()==WIFI_AP_STATE_ENABLED || getWifiAPState()==WIFI_AP_STATE_ENABLING;
-        new SetWifiAPTask(!wifiApIsOn, false, context).execute();
+        new SetWifiAPTask(!wifiApIsOn, false).execute();
     }
 
     private int setWifiApEnabled(boolean enabled) {
@@ -185,19 +188,17 @@ public class WifiAP {
     class SetWifiAPTask extends AsyncTask<Void, Void, Void> {
         boolean mMode; //enable or disable wifi AP
         boolean mFinish; //finalize or not (e.g. on exit)
-        Context context;
 
-        public SetWifiAPTask(boolean mode, boolean finish, Context context) {
+        public SetWifiAPTask(boolean mode, boolean finish) {
             mMode = mode;
             mFinish = finish;
-            this.context = context;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            bus.post(new AccessPointStateChangingEvent());
+            bus.post(new AccessPointStateEvent(AccessPointStateEvent.State.CHANGING));
 
         }
 
@@ -206,9 +207,9 @@ public class WifiAP {
             super.onPostExecute(aVoid);
 
             if (mMode) {
-                bus.post(new StartServerEvent());
+                bus.post(new AccessPointStateEvent(AccessPointStateEvent.State.ENABLED));
             } else {
-                bus.post(new StopServerEvent());
+                bus.post(new AccessPointStateEvent(AccessPointStateEvent.State.DISABLED));
             }
 
         }

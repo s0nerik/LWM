@@ -3,6 +3,7 @@ package com.lwm.app.modules;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 
 import com.lwm.app.App;
 import com.lwm.app.events.MainThreadBus;
+import com.lwm.app.lib.WifiAP;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.MusicServer;
@@ -29,9 +31,12 @@ import dagger.Provides;
 
 import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
+        WifiAP.class,
+
         LocalPlayer.class,
 
         LocalPlayerService.class,
@@ -91,6 +96,12 @@ public class AndroidModule {
     @Singleton
     ContentResolver provideContentResolver() {
         return application.getContentResolver();
+    }
+
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPreferences() {
+        return application.getSharedPreferences("", MODE_PRIVATE);
     }
 
     @Provides
