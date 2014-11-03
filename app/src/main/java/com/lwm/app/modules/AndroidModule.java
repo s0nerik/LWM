@@ -18,8 +18,10 @@ import com.lwm.app.server.MusicServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.activity.LocalSongChooserActivity;
+import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.fragment.LocalPlaybackFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
+import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
@@ -45,8 +47,13 @@ import static android.content.Context.WIFI_SERVICE;
         SongsListFragment.class,
         LocalPlaybackFragment.class,
 
+        PlayersAroundFragment.class,
+
         LocalSongChooserActivity.class,
-        LocalPlaybackActivity.class
+        LocalPlaybackActivity.class,
+
+        StationChooserActivity.class
+
         },
         library = true)
 public class AndroidModule {

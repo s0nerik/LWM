@@ -37,7 +37,12 @@ import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 public class LocalSongChooserActivity extends BaseLocalActivity {
+
+    @Inject
+    Resources resources;
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
@@ -215,7 +220,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         WifiApManager manager = new WifiApManager(this);
         if (manager.isWifiApEnabled()) {
             setBroadcastButtonState(true);
-            bus.post(new AccessPointStateEvent(AccessPointStateEvent.State.ENABLED));
         } else {
             setBroadcastButtonState(false);
         }

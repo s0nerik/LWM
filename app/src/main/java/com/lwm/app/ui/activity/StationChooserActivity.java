@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +20,7 @@ import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.events.wifi.WifiStateChangedEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.lib.WifiApManager;
+import com.lwm.app.ui.base.DaggerActivity;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class StationChooserActivity extends ActionBarActivity {
+public class StationChooserActivity extends DaggerActivity {
 
     private FragmentManager fragmentManager;
 
