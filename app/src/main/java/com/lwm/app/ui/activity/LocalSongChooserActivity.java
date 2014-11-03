@@ -7,16 +7,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.lwm.app.App;
@@ -45,6 +44,9 @@ import butterknife.InjectView;
 public class LocalSongChooserActivity extends BaseLocalActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
+
+    private View broadcastProgress;
+    private ImageView broadcastIcon;
 
     @Inject
     Resources resources;
@@ -79,7 +81,8 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
         setContentView(R.layout.activity_local_song_chooser);
         ButterKnife.inject(this);
-        setSupportActionBar(mToolbar);
+
+        initToolbar();
         initNavigationDrawer();
     }
 
@@ -118,7 +121,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         return null;
     }
 
-    protected void updateActionBarTitle() {
+    protected void updateToolbarBarTitle() {
         Resources resources = getResources();
         String title;
         Drawable icon;
@@ -182,12 +185,41 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
     }
 
+    private void initToolbar() {
+        mToolbar.inflateMenu(R.menu.broadcast);
+        View broadcastButton = mToolbar.findViewById(R.id.action_broadcast);
+        broadcastButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new WifiAP().toggleWiFiAP();
+            }
+        });
+
+        broadcastProgress = broadcastButton.findViewById(R.id.progress);
+        broadcastIcon = (ImageView) broadcastButton.findViewById(R.id.icon);
+
+        if (new WifiApManager(this).getWifiApState() == WifiApManager.WIFI_AP_STATE.WIFI_AP_STATE_ENABLED) {
+            setBroadcastButtonEnabled(true);
+        } else {
+            setBroadcastButtonEnabled(false);
+        }
+    }
+
+    private void showBroadcastProgressBar(boolean show) {
+        broadcastProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+        broadcastIcon.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+    private void setBroadcastButtonEnabled(boolean enabled) {
+        broadcastIcon.setColorFilter(getResources().getColor(enabled? R.color.orange_main : android.R.color.white));
+    }
+
     protected void showSelectedFragment(DrawerItem i) {
         fragmentManager.beginTransaction()
                 .replace(R.id.container, getFragmentFromDrawer(i))
                 .commit();
         activeFragment = i;
-        updateActionBarTitle();
+        updateToolbarBarTitle();
     }
 
     @Subscribe
@@ -198,8 +230,16 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateActionBarTitle();
+        updateToolbarBarTitle();
         bus.register(this);
+
+        WifiApManager manager = new WifiApManager(this);
+        if (manager.isWifiApEnabled()) {
+            setBroadcastButtonEnabled(true);
+        } else {
+            setBroadcastButtonEnabled(false);
+        }
+
     }
 
     @Override
@@ -208,67 +248,19 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         bus.unregister(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.broadcast, menu);
-
-        broadcastButton = menu.findItem(R.id.action_broadcast);
-
-        WifiApManager manager = new WifiApManager(this);
-        if (manager.isWifiApEnabled()) {
-            setBroadcastButtonState(true);
-        } else {
-            setBroadcastButtonState(false);
-        }
-
-        return true;
-    }
-
-    public void setMenuProgressIndicator(boolean show) {
-
-        if (broadcastButton == null) return;
-
-        if (show)
-            MenuItemCompat.setActionView(broadcastButton, R.layout.progress_actionbar_broadcast);
-        else
-            MenuItemCompat.setActionView(broadcastButton, null);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        switch (id) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, PreferenceActivity.class));
-                return true;
-            case R.id.action_broadcast:
-                new WifiAP().toggleWiFiAP();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Subscribe
-    public void onAccessPointState(AccessPointStateEvent event) {
+    public void onAccessPointStateChange(AccessPointStateEvent event) {
         switch (event.getState()) {
             case CHANGING:
-                setMenuProgressIndicator(true);
+                showBroadcastProgressBar(true);
                 break;
             case DISABLED:
-                setMenuProgressIndicator(false);
-                setBroadcastButtonState(true);
+                showBroadcastProgressBar(false);
+                setBroadcastButtonEnabled(false);
                 break;
             case ENABLED:
-                setMenuProgressIndicator(false);
-                setBroadcastButtonState(false);
+                showBroadcastProgressBar(false);
+                setBroadcastButtonEnabled(true);
                 break;
         }
     }
@@ -286,14 +278,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
         Croutons.messageReceived(this, event.getMessage());
-    }
-
-    private void setBroadcastButtonState(boolean broadcasting) {
-        if (broadcasting) {
-            broadcastButton.setIcon(R.drawable.ic_action_broadcast_active);
-        } else {
-            broadcastButton.setIcon(R.drawable.ic_action_broadcast);
-        }
     }
 
     @Override
