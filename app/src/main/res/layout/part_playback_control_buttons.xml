@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/btnShuffleIcon"
             style="@style/PlaybackControlButtonIcon"
-            android:src="@drawable/ic_shuffle_active" />
+            android:src="@drawable/ic_av_shuffle" />
 
     </com.andexert.library.RippleView>
 
@@ -26,7 +26,7 @@
         <ImageView
             android:id="@+id/btnPrevIcon"
             style="@style/PlaybackControlButtonIcon"
-            android:src="@drawable/ic_prev" />
+            android:src="@drawable/ic_av_skip_previous" />
 
     </com.andexert.library.RippleView>
 
@@ -37,7 +37,7 @@
         <ImageView
             android:id="@+id/btnPlayPauseIcon"
             style="@style/PlaybackControlButtonIcon"
-            android:src="@drawable/ic_pause" />
+            android:src="@drawable/ic_av_pause" />
     </com.andexert.library.RippleView>
 
     <com.andexert.library.RippleView
@@ -47,7 +47,7 @@
         <ImageView
             android:id="@+id/btnNextIcon"
             style="@style/PlaybackControlButtonIcon"
-            android:src="@drawable/ic_next" />
+            android:src="@drawable/ic_av_skip_next" />
     </com.andexert.library.RippleView>
 
     <com.andexert.library.RippleView
@@ -57,7 +57,7 @@
         <ImageView
             android:id="@+id/btnRepeatIcon"
             style="@style/PlaybackControlButtonIcon"
-            android:src="@drawable/ic_repeat" />
+            android:src="@drawable/ic_av_repeat" />
     </com.andexert.library.RippleView>
 
 </LinearLayout>

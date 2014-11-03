@@ -1,5 +1,6 @@
 package com.lwm.app.ui.fragment;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,9 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
 
     @Inject
     LocalPlayer player;
+
+    @Inject
+    Resources resources;
 
     @InjectView(R.id.background)
     ImageView mBackground;
@@ -193,26 +197,18 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
 
     private void setPlayButton(boolean playing) {
         if (playing) {
-            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_av_pause));
         } else {
-            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_av_play_arrow));
         }
     }
 
     private void setShuffleButton(boolean enabled) {
-        if (enabled) {
-            mBtnShuffleIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle_active));
-        } else {
-            mBtnShuffleIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_shuffle));
-        }
+        mBtnShuffleIcon.setColorFilter(resources.getColor(enabled? R.color.orange_main : android.R.color.white));
     }
 
     private void setRepeatButton(boolean enabled) {
-        if (enabled) {
-            mBtnRepeatIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_active));
-        } else {
-            mBtnRepeatIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat));
-        }
+        mBtnRepeatIcon.setColorFilter(resources.getColor(enabled? R.color.orange_main : android.R.color.white));
     }
 
     protected class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
