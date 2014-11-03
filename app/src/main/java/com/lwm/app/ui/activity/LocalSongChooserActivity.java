@@ -5,12 +5,12 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -39,24 +39,34 @@ import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class LocalSongChooserActivity extends BaseLocalActivity {
+
+    public static final String DRAWER_SELECTION = "drawer_selection";
 
     @Inject
     Resources resources;
 
-    public static final String DRAWER_SELECTION = "drawer_selection";
+    @Inject
+    SharedPreferences sharedPreferences;
+
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
+    @InjectView(R.id.drawer)
+    ListView mDrawer;
+    @InjectView(R.id.drawerLayout)
+    DrawerLayout mDrawerLayout;
 
     private enum DrawerItem {SONGS, ARTISTS, ALBUMS, QUEUE}
 
     private MenuItem broadcastButton;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private ActionBar actionBar;
     private ActionBarDrawerToggle drawerToggle;
 
     private DrawerItem activeFragment;
-
-    private SharedPreferences sharedPreferences;
 
     private Intent playerServiceIntent;
 
@@ -67,8 +77,10 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         playerServiceIntent = new Intent(this, LocalPlayerService.class);
         startService(playerServiceIntent);
 
-        sharedPreferences = getPreferences(MODE_PRIVATE);
         setContentView(R.layout.activity_local_song_chooser);
+        ButterKnife.inject(this);
+        setSupportActionBar(mToolbar);
+        initNavigationDrawer();
     }
 
     @Override
@@ -84,21 +96,12 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        initActionBar();
-        initNavigationDrawer();
+        drawerToggle.syncState();
 
         if (savedInstanceState == null) {
             showSelectedFragment(activeFragment);
         }
 
-        drawerToggle.syncState();
-    }
-
-    protected void initActionBar() {
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
     }
 
     protected Fragment getFragmentFromDrawer(DrawerItem i) {
@@ -141,27 +144,22 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
                 icon = resources.getDrawable(R.drawable.ic_launcher);
                 break;
         }
-        actionBar.setTitle(title);
-        actionBar.setIcon(icon);
+        mToolbar.setTitle(title);
     }
 
     protected void initNavigationDrawer() {
-        final ListView drawerList = (ListView) findViewById(R.id.left_drawer);
-
         // Set the adapter for the list view
-        drawerList.setAdapter(new NavigationDrawerListAdapter(this,
+        mDrawer.setAdapter(new NavigationDrawerListAdapter(this,
                 getResources().getStringArray(R.array.drawer_items),
                 getResources().obtainTypedArray(R.array.drawer_icons)));
 
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         // Set the list's click listener
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showSelectedFragment(DrawerItem.values()[i]);
                 sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
-                drawerLayout.closeDrawer(drawerList);
+                mDrawerLayout.closeDrawer(mDrawer);
             }
         });
 
@@ -171,17 +169,17 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
             activeFragment = DrawerItem.SONGS;
         }
 
-        drawerList.setItemChecked(activeFragment.ordinal(), true);
+        mDrawer.setItemChecked(activeFragment.ordinal(), true);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
-                drawerLayout,
-                R.drawable.ic_drawer,
+                mDrawerLayout,
+                mToolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
         );
-        drawerLayout.setDrawerListener(drawerToggle);
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
+        mDrawerLayout.setDrawerListener(drawerToggle);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
     }
 
     protected void showSelectedFragment(DrawerItem i) {
@@ -244,7 +242,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if(drawerToggle.onOptionsItemSelected(item)){
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         switch (id) {

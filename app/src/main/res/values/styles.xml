@@ -2,7 +2,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/actionbar_background</item>
+
+        <!--<item name="colorPrimaryDark">@color/actionbar_background_dark</item>-->
+
+        <!--<item name="colorAccent">@color/accent</item>-->
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">
@@ -11,7 +16,7 @@
         <item name="android:windowBackground">@drawable/background_main_activity</item>
     </style>
 
-    <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme">
+    <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@color/card_list_background</item>
     </style>
 

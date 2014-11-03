@@ -9,7 +9,7 @@
         app:showAsAction="never" />
 
     <item
-        android:icon="@drawable/ic_action_broadcast"
+        app:actionLayout="@layout/ab_item_broadcast"
         android:id="@+id/action_broadcast"
         android:title="@string/action_broadcast"
         app:showAsAction="always" />
