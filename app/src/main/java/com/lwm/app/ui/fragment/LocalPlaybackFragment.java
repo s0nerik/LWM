@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.lwm.app.events.player.RepeatStateChangedEvent;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
+import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.squareup.otto.Subscribe;
 
@@ -17,21 +21,45 @@ public class LocalPlaybackFragment extends PlaybackFragment {
         mSeekBar.setOnSeekBarChangeListener(new PlayerProgressOnSeekBarChangeListener());
     }
 
-    @Override
     @Subscribe
+    @Override
+    public void onSongChanged(SongChangedEvent event) {
+        super.onSongChanged(event);
+    }
+
+    @Subscribe
+    @Override
     public void onPlaybackStarted(PlaybackStartedEvent event) {
         super.onPlaybackStarted(event);
     }
 
-    @Override
     @Subscribe
+    @Override
+    public void onPlaybackPaused(PlaybackPausedEvent event) {
+        super.onPlaybackPaused(event);
+    }
+
+    @Subscribe
+    @Override
     public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
         super.onCurrentSongAvailable(event);
     }
 
-    @Override
     @Subscribe
+    @Override
     public void onSongPlaying(SongPlayingEvent event) {
         super.onSongPlaying(event);
+    }
+
+    @Subscribe
+    @Override
+    public void onQueueShuffled(QueueShuffledEvent event) {
+        super.onQueueShuffled(event);
+    }
+
+    @Subscribe
+    @Override
+    public void onRepeatStateChanged(RepeatStateChangedEvent event) {
+        super.onRepeatStateChanged(event);
     }
 }

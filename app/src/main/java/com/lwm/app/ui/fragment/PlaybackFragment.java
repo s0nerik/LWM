@@ -20,8 +20,12 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.player.RepeatStateChangedEvent;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
+import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
@@ -97,10 +101,31 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
 
     protected void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
         setSongInfo(event.getSong());
+        mCurrentTime.setText(player.getCurrentPositionInMinutes());
+        mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(player.getCurrentPosition()));
+        setPlayButton(player.isPlaying());
+        setShuffleButton(player.isShuffle());
+        setRepeatButton(player.isRepeat());
+    }
+
+    protected void onSongChanged(SongChangedEvent event) {
+        setSongInfo(event.getSong());
     }
 
     protected void onPlaybackStarted(PlaybackStartedEvent event) {
-        setSongInfo(event.getSong());
+        setPlayButton(player.isPlaying());
+    }
+
+    protected void onPlaybackPaused(PlaybackPausedEvent event) {
+        setPlayButton(player.isPlaying());
+    }
+
+    protected void onQueueShuffled(QueueShuffledEvent event) {
+        setShuffleButton(player.isShuffle());
+    }
+
+    protected void onRepeatStateChanged(RepeatStateChangedEvent event) {
+        setRepeatButton(player.isRepeat());
     }
 
     protected void setSongInfo(final Song song) {
@@ -156,15 +181,12 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
                 break;
             case R.id.btnPlayPause:
                 player.togglePause();
-                setPlayButton(player.isPlaying());
                 break;
             case R.id.btnShuffle:
                 player.shuffleQueueExceptPlayed();
-                setShuffleButton(player.isShuffle());
                 break;
             case R.id.btnRepeat:
                 player.setRepeat(!player.isRepeat());
-                setRepeatButton(player.isRepeat());
                 break;
         }
     }

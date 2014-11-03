@@ -7,8 +7,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
+import com.lwm.app.events.player.RepeatStateChangedEvent;
 import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.PlaylistAddedToQueueEvent;
 import com.lwm.app.events.player.queue.PlaylistRemovedFromQueueEvent;
@@ -127,6 +129,8 @@ public class LocalPlayer extends BasePlayer {
 
             active = true;
 
+            bus.post(new SongChangedEvent(getCurrentSong()));
+
             if (server.isStarted()) {
                 bus.post(new PrepareClientsEvent());
             } else {
@@ -221,6 +225,7 @@ public class LocalPlayer extends BasePlayer {
 
     public void setRepeat(boolean flag) {
         repeat = flag;
+        bus.post(new RepeatStateChangedEvent(flag));
     }
 
     public void startServer() {
