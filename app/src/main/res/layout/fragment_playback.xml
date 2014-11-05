@@ -31,13 +31,14 @@
         android:id="@+id/albumArtLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
         android:layout_above="@+id/bottomBar">
 
         <com.lwm.app.ui.custom_view.SquareWidthImageView
             android:background="@drawable/abc_popup_background_mtrl_mult"
             android:src="@drawable/no_cover"
             android:id="@+id/cover"
-            android:layout_margin="48dp"
+            android:layout_margin="24dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
