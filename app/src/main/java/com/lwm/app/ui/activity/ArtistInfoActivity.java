@@ -2,7 +2,7 @@ package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
@@ -17,6 +17,9 @@ import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class ArtistInfoActivity extends BaseLocalActivity {
 
     @Inject
@@ -25,21 +28,24 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     @Inject
     Utils utils;
 
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_artist_info);
+        ButterKnife.inject(this);
 
         long artistId = getIntent().getLongExtra("artist_id", -1);
         assert artistId != -1 : "artistId == -1";
         Artist artist = new ArtistsCursorGetter(this).getArtistById(artistId);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(utils.getArtistName(artist.getName()));
-        actionBar.setSubtitle("ALBUMS: "+artist.getNumberOfAlbums());
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(android.R.color.transparent);
+        mToolbar.setTitle(utils.getArtistName(artist.getName()));
+        mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Fragment albumsListFragment = new AlbumsListFragment();
         Bundle args = new Bundle();

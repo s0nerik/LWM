@@ -13,11 +13,17 @@ import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.lib.WifiAP;
 import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
 
 import static com.lwm.app.events.access_point.AccessPointStateEvent.State.ENABLED;
 
 public class LocalPlaybackFragment extends PlaybackFragment {
+
+    @Inject
+    WifiAP wifiAP;
 
     private View chatButton;
 
@@ -31,11 +37,16 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     private void initToolbar() {
         mToolbar.inflateMenu(R.menu.playback_local);
         chatButton = mToolbar.findViewById(R.id.action_chat);
+        setChatButtonVisibility(wifiAP.isEnabled());
+    }
+
+    private void setChatButtonVisibility(boolean show) {
+        chatButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Subscribe
     public void onAccessPointStateChanged(AccessPointStateEvent event) {
-        chatButton.setVisibility(event.getState() == ENABLED? View.VISIBLE : View.GONE);
+        setChatButtonVisibility(event.getState() == ENABLED);
     }
 
     @Subscribe
