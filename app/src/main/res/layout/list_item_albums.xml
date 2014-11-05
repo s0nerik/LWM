@@ -29,7 +29,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <CheckedTextView
+        <com.lwm.app.ui.custom_view.CheckedTextView
             android:id="@+id/albums_list_item_album"
             android:checkMark="@null"
             android:padding="6dp"
@@ -45,7 +45,7 @@
 
             android:gravity="center_vertical" />
 
-        <CheckedTextView
+        <com.lwm.app.ui.custom_view.CheckedTextView
             android:id="@+id/albums_list_item_artist"
             android:checkMark="@null"
             android:paddingLeft="6dp"
