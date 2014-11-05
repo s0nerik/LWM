@@ -1,6 +1,6 @@
 package com.lwm.app.ui.fragment;
 
-import android.support.v4.content.Loader;
+import android.content.Loader;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<com.lwm.app.ui.custom_view.SlidingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fontify="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,84 +13,72 @@
         android:layout_width="match_parent"
         android:layout_height="2dp" />
     
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="@dimen/now_playing_bar_height"
         android:background="#0F0A06"
-        android:id="@+id/fragment_now_playing"
-        android:layout_height="wrap_content">
+        android:id="@+id/global_layout" >
 
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:scaleType="fitXY"
-            android:id="@+id/now_playing_cover" />
+            android:layout_width="@dimen/now_playing_bar_height"
+            android:layout_height="@dimen/now_playing_bar_height"
+            android:scaleType="centerCrop"
+            android:id="@+id/cover" />
+
+        <SeekBar
+            android:id="@+id/seek_bar"
+            style="@style/SeekBarNowPlaying"
+            android:max="100"
+            android:progress="1"
+            android:layout_toRightOf="@+id/cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
-            android:id="@+id/now_playing_bar_layout"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:orientation="vertical">
+            android:id="@+id/layout"
+            android:layout_toRightOf="@+id/cover"
+            android:layout_toLeftOf="@+id/btn_play_pause"
+            android:paddingLeft="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.danh32.fontify.TextView
+                style="@style/SongTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/title"
+
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+
+                fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
             <com.danh32.fontify.TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="6pt"
-                android:text="@string/now_playing_bar_header"
-                android:textColor="#ffcccccc"
+                android:id="@+id/artist"
 
-                fontify:font="@string/FONT_ROBOTO_THIN_ITALIC" />
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:textColor="#cccccc"
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ff555555"/>
+                fontify:font="@string/FONT_ROBOTO_THIN" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.danh32.fontify.TextView
-                    style="@style/SongTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/now_playing_bar_title"
-
-                    android:textSize="20sp"
-                    android:textColor="#FFFFFF"
-
-                    fontify:font="@string/FONT_ROBOTO_REGULAR" />
-
-                <com.danh32.fontify.TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/now_playing_bar_artist"
-
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textSize="16sp"
-                    android:textColor="#cccccc"
-
-                    fontify:font="@string/FONT_ROBOTO_THIN" />
-
-            </LinearLayout>
         </LinearLayout>
 
         <ImageView
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingRight="15dp"
-            android:paddingLeft="15dp"
-            android:layout_gravity="center"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
 
-            android:id="@+id/now_playing_bar_play_pause_button"
+            android:id="@+id/btn_play_pause"
 
             android:src="@drawable/ic_pause" />
 
-    </LinearLayout>
-</LinearLayout>
+    </RelativeLayout>
+</com.lwm.app.ui.custom_view.SlidingLinearLayout>

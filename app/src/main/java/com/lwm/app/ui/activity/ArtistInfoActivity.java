@@ -1,7 +1,7 @@
 package com.lwm.app.ui.activity;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -52,7 +52,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
         args.putString("artist", new Gson().toJson(artist));
         albumsListFragment.setArguments(args);
 
-        getSupportFragmentManager().beginTransaction()
+        getFragmentManager().beginTransaction()
                 .replace(R.id.container, albumsListFragment)
                 .commit();
     }

@@ -59,7 +59,6 @@
         android:layout_toLeftOf="@+id/btn_close">
 
         <TextView
-            style="@style/NotificationTitle"
             android:id="@+id/title"
             android:singleLine="true"
             android:layout_width="match_parent"
@@ -75,7 +74,6 @@
         </TextView>
 
         <TextView
-            style="@style/NotificationText"
             android:id="@+id/artist"
             android:singleLine="true"
             android:layout_width="match_parent"

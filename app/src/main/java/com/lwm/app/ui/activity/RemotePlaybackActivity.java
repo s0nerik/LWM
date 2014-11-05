@@ -51,7 +51,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+        playbackFragment = (RemotePlaybackFragment) getFragmentManager().findFragmentById(R.id.fragment_playback);
     }
 
     @Override

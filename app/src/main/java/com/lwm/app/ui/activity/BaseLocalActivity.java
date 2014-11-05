@@ -1,11 +1,9 @@
 package com.lwm.app.ui.activity;
 
+import android.app.FragmentManager;
 import android.media.AudioManager;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.KeyEvent;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.Croutons;
@@ -44,7 +42,7 @@ public abstract class BaseLocalActivity extends DaggerActivity {
     }
 
     private void toggleNowPlayingBar(){
-        if (player != null && player.hasCurrentSong()) {
+        if (player.hasCurrentSong()) {
             showNowPlayingBar(true);
         } else {
             showNowPlayingBar(false);
@@ -67,19 +65,15 @@ public abstract class BaseLocalActivity extends DaggerActivity {
     }
 
     public void showNowPlayingBar(boolean show){
-
-        Log.d(App.TAG, "showNowPlayingBar()");
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
 
-        if(show) {
+        if (show && !nowPlaying.isVisible()) {
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.now_playing_enter_anim, 0)
                     .show(nowPlaying)
                     .commitAllowingStateLoss();
-
-            nowPlaying.setCurrentSongInfo();
-        } else {
+        } else if (!show) {
             fragmentManager.beginTransaction()
                     .hide(nowPlaying)
                     .commitAllowingStateLoss();

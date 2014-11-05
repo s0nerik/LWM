@@ -69,4 +69,8 @@ dependencies {
     compile 'org.projectlombok:lombok:1.14.8'
 
     compile 'com.github.traex.rippleeffect:library:1.2.2'
+
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.0@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.2@aar'
 }

@@ -1,6 +1,6 @@
 package com.lwm.app.ui.fragment;
 
-import android.support.v4.content.Loader;
+import android.content.Loader;
 
 import com.lwm.app.R;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;

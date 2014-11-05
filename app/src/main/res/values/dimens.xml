@@ -6,6 +6,7 @@
     <dimen name="start_screen_portrait_button_size">150dp</dimen>
     <dimen name="actionbar_primary_text_size">18sp</dimen>
     <dimen name="actionbar_secondary_text_size">16sp</dimen>
+    <dimen name="now_playing_bar_height">64dp</dimen>
 
     <bool name="in_landscape">false</bool>
 

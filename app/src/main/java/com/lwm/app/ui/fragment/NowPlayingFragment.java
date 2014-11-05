@@ -1,61 +1,72 @@
 package com.lwm.app.ui.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
+import com.danh32.fontify.TextView;
+import com.koushikdutta.ion.Ion;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.SongChangedEvent;
+import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
-public class NowPlayingFragment extends DaggerFragment {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
-    private ImageView albumArt;
-    private ImageView playPauseButton;
-    private TextView artist;
-    private TextView title;
+public class NowPlayingFragment extends DaggerFragment {
 
     @Inject
     Utils utils;
-
     @Inject
     Bus bus;
-
     @Inject
     LocalPlayer player;
 
-    View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            player.togglePause();
-            setPlayButton(player.isPlaying());
-        }
-    };
-
-    View.OnClickListener onNowPlayingBarClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
-            startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
-        }
-    };
+    @InjectView(R.id.cover)
+    ImageView mCover;
+    @InjectView(R.id.title)
+    TextView mTitle;
+    @InjectView(R.id.artist)
+    TextView mArtist;
+    @InjectView(R.id.layout)
+    View mLayout;
+    @InjectView(R.id.btn_play_pause)
+    ImageView mBtnPlayPause;
+    @InjectView(R.id.global_layout)
+    RelativeLayout mGlobalLayout;
+    @InjectView(R.id.seek_bar)
+    SeekBar mSeekBar;
 
     @Override
     public void onResume() {
         super.onResume();
         bus.register(this);
+        Song song = player.getCurrentSong();
+        if (song != null) {
+            setSongInfo(player.getCurrentSong());
+        }
+
+//        YoYo.with(Techniques.SlideInDown)
+//                .duration(4000)
+//                .playOn(mGlobalLayout);
     }
 
     @Override
@@ -65,52 +76,67 @@ public class NowPlayingFragment extends DaggerFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_now_playing, container, false);
+        View v = inflater.inflate(R.layout.fragment_now_playing, container, false);
+        ButterKnife.inject(this, v);
+        return v;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        albumArt = (ImageView) view.findViewById(R.id.now_playing_cover);
-        artist = (TextView) view.findViewById(R.id.now_playing_bar_artist);
-        title = (TextView) view.findViewById(R.id.now_playing_bar_title);
-        playPauseButton = (ImageView) view.findViewById(R.id.now_playing_bar_play_pause_button);
-        playPauseButton.setOnClickListener(onPlayPauseClicked);
-        view.findViewById(R.id.now_playing_bar_layout).setOnClickListener(onNowPlayingBarClicked);
-        title.setSelected(true);
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
-    public void setCurrentSongInfo(){
-        if (player.hasCurrentSong()) {
-            Song song = player.getCurrentSong();
-            setAlbumArtFromUri(song.getAlbumArtUri());
-            artist.setText(utils.getArtistName(song.getArtist()));
-            title.setText(song.getTitle());
-            setPlayButton(true);
-        }
+    public void setSongInfo(Song song) {
+        Ion.with(mCover)
+                .smartSize(true)
+                .placeholder(R.drawable.no_cover)
+                .error(R.drawable.no_cover)
+                .load(song.getAlbumArtUri().toString());
+
+        mArtist.setText(utils.getArtistName(song.getArtist()));
+        mTitle.setText(song.getTitle());
+        setPlayButton(player.isPlaying());
+
+        mSeekBar.setMax(PlayerUtils.calculateProgressForSeekBar(song.getDuration()));
     }
 
-    public void setAlbumArtFromUri(Uri uri){
-        Utils.setAlbumArtFromUri(getActivity(), albumArt, uri);
+    public void setPlayButton(boolean playing) {
+        mBtnPlayPause.setImageResource(playing ? R.drawable.ic_pause : R.drawable.ic_play);
     }
 
-    public void setPlayButton(boolean playing){
-        playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
+    @OnClick(R.id.btn_play_pause)
+    public void onPlayPauseClicked() {
+        player.togglePause();
+        setPlayButton(player.isPlaying());
     }
 
-//    @Subscribe
-//    public void onPlayerServiceConnected(LocalPlayerServiceConnectedEvent event) {
-//        player = event.getPlayer();
-//        if (player.hasCurrentSong()) {
-//            setCurrentSongInfo();
-//            setPlayButton(player.isPlaying());
-//        }
-//    }
+    @OnClick({R.id.layout, R.id.cover})
+    public void onLayoutClicked() {
+        Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
+    }
+
+    @Subscribe
+    public void onSongChanged(SongChangedEvent event) {
+        setSongInfo(event.getSong());
+    }
+
+    @Subscribe
+    public void onPlaybackStarted(PlaybackStartedEvent event) {
+        setPlayButton(true);
+    }
+
+    @Subscribe
+    public void onPlaybackPaused(PlaybackPausedEvent event) {
+        setPlayButton(false);
+    }
+
+    @Subscribe
+    public void onPlaying(SongPlayingEvent event) {
+        mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(event.getProgress()));
+    }
 
 }
