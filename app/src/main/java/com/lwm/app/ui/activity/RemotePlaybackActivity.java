@@ -130,7 +130,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.remote_playback, menu);
+        getMenuInflater().inflate(R.menu.playback_remote, menu);
 
         chatButton = menu.findItem(R.id.action_chat);
         View v = MenuItemCompat.getActionView(chatButton);

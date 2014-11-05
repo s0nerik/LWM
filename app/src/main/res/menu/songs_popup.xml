@@ -7,6 +7,10 @@
         android:title="@string/action_add_to_queue"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/play_next"
+          android:title="@string/play_next"
+          app:showAsAction="never"/>
+
     <item android:id="@+id/set_as_ringtone"
         android:title="@string/set_as_ringtone"
         app:showAsAction="never"/>

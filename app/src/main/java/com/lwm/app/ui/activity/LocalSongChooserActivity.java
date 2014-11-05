@@ -3,7 +3,6 @@ package com.lwm.app.ui.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -63,12 +61,10 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
     private enum DrawerItem {SONGS, ARTISTS, ALBUMS, QUEUE}
 
-    private MenuItem broadcastButton;
-
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private ActionBarDrawerToggle drawerToggle;
 
-    private DrawerItem activeFragment;
+    private DrawerItem activeFragment = DrawerItem.SONGS;
 
     private Intent playerServiceIntent;
 
@@ -121,30 +117,25 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         return null;
     }
 
-    protected void updateToolbarBarTitle() {
-        Resources resources = getResources();
+    protected void updateToolbarAdditionalInfo() {
         String title;
-        Drawable icon;
         switch (activeFragment) {
             case SONGS:
                 title = resources.getString(R.string.actionbar_title_songs);
-                icon = resources.getDrawable(R.drawable.ic_drawer_songs_active);
+                mToolbar.inflateMenu(R.menu.item_shuffle);
                 break;
             case ALBUMS:
                 title = resources.getString(R.string.actionbar_title_albums);
-                icon = resources.getDrawable(R.drawable.ic_drawer_albums_active);
                 break;
             case ARTISTS:
                 title = resources.getString(R.string.actionbar_title_artists);
-                icon = resources.getDrawable(R.drawable.ic_drawer_artists_active);
                 break;
             case QUEUE:
                 title = resources.getString(R.string.actionbar_title_queue);
-                icon = resources.getDrawable(R.drawable.ic_drawer_queue_active);
+                mToolbar.inflateMenu(R.menu.item_shuffle);
                 break;
             default:
                 title = "Listen With Me!";
-                icon = resources.getDrawable(R.drawable.ic_launcher);
                 break;
         }
         mToolbar.setTitle(title);
@@ -161,8 +152,8 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showSelectedFragment(DrawerItem.values()[i]);
-                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
                 mDrawerLayout.closeDrawer(mDrawer);
+                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
             }
         });
 
@@ -186,7 +177,9 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     }
 
     private void initToolbar() {
-        mToolbar.inflateMenu(R.menu.broadcast);
+        mToolbar.getMenu().clear();
+        updateToolbarAdditionalInfo();
+        mToolbar.inflateMenu(R.menu.item_broadcast);
         View broadcastButton = mToolbar.findViewById(R.id.action_broadcast);
         broadcastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +212,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
                 .replace(R.id.container, getFragmentFromDrawer(i))
                 .commit();
         activeFragment = i;
-        updateToolbarBarTitle();
+        initToolbar();
     }
 
     @Subscribe
@@ -230,7 +223,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateToolbarBarTitle();
+        initToolbar();
         bus.register(this);
 
         WifiApManager manager = new WifiApManager(this);

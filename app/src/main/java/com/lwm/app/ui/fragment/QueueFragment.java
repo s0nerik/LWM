@@ -1,7 +1,6 @@
 package com.lwm.app.ui.fragment;
 
 import android.support.v4.content.Loader;
-import android.view.MenuItem;
 
 import com.lwm.app.R;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
@@ -28,25 +27,8 @@ public class QueueFragment extends BaseSongsListFragment {
     }
 
     @Override
-    protected int getMenuId() {
-        return R.menu.queue;
-    }
-
-    @Override
     protected Loader<List<Song>> getSongsLoader() {
         return new LocalQueueLoader(getActivity());
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_shuffle:
-                player.shuffleQueue();
-                player.play(0);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

@@ -6,8 +6,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -56,7 +54,6 @@ public abstract class BaseSongsListFragment extends DaggerFragment implements Lo
     public BaseSongsListFragment() {}
 
     protected abstract int getViewId();
-    protected abstract int getMenuId();
     protected abstract Loader<List<Song>> getSongsLoader();
 
     @Override
@@ -82,12 +79,6 @@ public abstract class BaseSongsListFragment extends DaggerFragment implements Lo
     public void onPause() {
         super.onPause();
         bus.unregister(this);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(getMenuId(), menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

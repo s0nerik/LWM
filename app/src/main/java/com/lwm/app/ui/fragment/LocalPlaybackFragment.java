@@ -32,7 +32,7 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     }
 
     private void initToolbar() {
-        mToolbar.inflateMenu(R.menu.local_playback);
+        mToolbar.inflateMenu(R.menu.playback_local);
 
         View broadcastButton = mToolbar.findViewById(R.id.action_broadcast);
         broadcastButton.setOnClickListener(new View.OnClickListener() {

@@ -1,7 +1,6 @@
 package com.lwm.app.ui.fragment;
 
 import android.support.v4.content.Loader;
-import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -39,11 +38,6 @@ public class SongsListFragment extends BaseSongsListFragment {
     }
 
     @Override
-    protected int getMenuId() {
-        return R.menu.songs_list;
-    }
-
-    @Override
     protected Loader<List<Song>> getSongsLoader() {
         return new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
     }
@@ -77,15 +71,6 @@ public class SongsListFragment extends BaseSongsListFragment {
     public void onItemClicked(int pos) {
         player.setQueue(songs);
         player.play(pos);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_shuffle) {
-            shuffleAll();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void shuffleAll() {

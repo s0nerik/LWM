@@ -3,6 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath CLASSPATH
         classpath 'se.centril.robospock:gradle-plugin-robospock:0.2.1'
     }
 }
@@ -10,5 +11,5 @@ buildscript {
 apply plugin: 'robospock'
 
 robospock {
-    android = ':app'
+    android = project(':app')
 }
