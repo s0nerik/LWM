@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.lwm.app.Injector;
+import com.lwm.app.events.player.playback.control.ChangeSongEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
@@ -49,6 +50,21 @@ public class LocalPlayerService extends Service {
     @Produce
     public CurrentSongAvailableEvent produceCurrentSong() {
         return new CurrentSongAvailableEvent(player.getCurrentSong());
+    }
+
+    @Subscribe
+    public void onChangeSongEvent(ChangeSongEvent event) {
+        switch (event.getType()) {
+            case NEXT:
+                player.nextSong();
+                break;
+            case PREV:
+                player.prevSong();
+                break;
+            case TOGGLE_PAUSE:
+                player.togglePause();
+                break;
+        }
     }
 
     @Subscribe

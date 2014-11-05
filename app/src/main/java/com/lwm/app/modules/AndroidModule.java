@@ -18,6 +18,7 @@ import com.lwm.app.events.MainThreadBus;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
+import com.lwm.app.receiver.MediaButtonIntentReceiver;
 import com.lwm.app.server.MusicServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
@@ -46,6 +47,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
+        MediaButtonIntentReceiver.class,
+
         Utils.class,
 
         WifiAP.class,
