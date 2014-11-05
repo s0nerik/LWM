@@ -22,6 +22,9 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     @Inject
     Bus bus;
 
+    @Inject
+    Utils utils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +36,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
         Artist artist = new ArtistsCursorGetter(this).getArtistById(artistId);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(new Utils(this).getArtistName(artist.getName()));
+        actionBar.setTitle(utils.getArtistName(artist.getName()));
         actionBar.setSubtitle("ALBUMS: "+artist.getNumberOfAlbums());
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setIcon(android.R.color.transparent);

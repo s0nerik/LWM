@@ -11,21 +11,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
-import com.lwm.app.events.access_point.AccessPointStateEvent;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.lib.WifiAP;
-import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
@@ -38,19 +33,20 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
 public class LocalSongChooserActivity extends BaseLocalActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
-
-    private View broadcastProgress;
-    private ImageView broadcastIcon;
 
     @Inject
     Resources resources;
 
     @Inject
     SharedPreferences sharedPreferences;
+
+    @Inject
+    WifiAP wifiAP;
 
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
@@ -78,7 +74,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         setContentView(R.layout.activity_local_song_chooser);
         ButterKnife.inject(this);
 
-        initToolbar();
         initNavigationDrawer();
     }
 
@@ -117,28 +112,35 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         return null;
     }
 
-    protected void updateToolbarAdditionalInfo() {
+    protected void initToolbar() {
         String title;
+        int menuId;
         switch (activeFragment) {
             case SONGS:
                 title = resources.getString(R.string.actionbar_title_songs);
-                mToolbar.inflateMenu(R.menu.item_shuffle);
+                menuId = R.menu.local_broadcast_shuffle;
                 break;
             case ALBUMS:
                 title = resources.getString(R.string.actionbar_title_albums);
+                menuId = R.menu.local_broadcast;
                 break;
             case ARTISTS:
                 title = resources.getString(R.string.actionbar_title_artists);
+                menuId = R.menu.local_broadcast;
                 break;
             case QUEUE:
                 title = resources.getString(R.string.actionbar_title_queue);
-                mToolbar.inflateMenu(R.menu.item_shuffle);
+                menuId = R.menu.local_broadcast_shuffle;
                 break;
             default:
                 title = "Listen With Me!";
+                menuId = 0;
                 break;
         }
         mToolbar.setTitle(title);
+
+        mToolbar.getMenu().clear();
+        mToolbar.inflateMenu(menuId);
     }
 
     protected void initNavigationDrawer() {
@@ -146,16 +148,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         mDrawer.setAdapter(new NavigationDrawerListAdapter(this,
                 getResources().getStringArray(R.array.drawer_items),
                 getResources().obtainTypedArray(R.array.drawer_icons)));
-
-        // Set the list's click listener
-        mDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showSelectedFragment(DrawerItem.values()[i]);
-                mDrawerLayout.closeDrawer(mDrawer);
-                sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
-            }
-        });
 
         activeFragment = DrawerItem.values()[sharedPreferences.getInt(DRAWER_SELECTION, 0)];
 
@@ -176,37 +168,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
     }
 
-    private void initToolbar() {
-        mToolbar.getMenu().clear();
-        updateToolbarAdditionalInfo();
-        mToolbar.inflateMenu(R.menu.item_broadcast);
-        View broadcastButton = mToolbar.findViewById(R.id.action_broadcast);
-        broadcastButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new WifiAP().toggleWiFiAP();
-            }
-        });
-
-        broadcastProgress = broadcastButton.findViewById(R.id.progress);
-        broadcastIcon = (ImageView) broadcastButton.findViewById(R.id.icon);
-
-        if (new WifiApManager(this).getWifiApState() == WifiApManager.WIFI_AP_STATE.WIFI_AP_STATE_ENABLED) {
-            setBroadcastButtonEnabled(true);
-        } else {
-            setBroadcastButtonEnabled(false);
-        }
-    }
-
-    private void showBroadcastProgressBar(boolean show) {
-        broadcastProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-        broadcastIcon.setVisibility(show ? View.GONE : View.VISIBLE);
-    }
-
-    private void setBroadcastButtonEnabled(boolean enabled) {
-        broadcastIcon.setColorFilter(getResources().getColor(enabled? R.color.orange_main : android.R.color.white));
-    }
-
     protected void showSelectedFragment(DrawerItem i) {
         fragmentManager.beginTransaction()
                 .replace(R.id.container, getFragmentFromDrawer(i))
@@ -215,24 +176,11 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         initToolbar();
     }
 
-    @Subscribe
-    public void playbackStarted(PlaybackStartedEvent event) {
-        showNowPlayingBar(true);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         initToolbar();
         bus.register(this);
-
-        WifiApManager manager = new WifiApManager(this);
-        if (manager.isWifiApEnabled()) {
-            setBroadcastButtonEnabled(true);
-        } else {
-            setBroadcastButtonEnabled(false);
-        }
-
     }
 
     @Override
@@ -241,21 +189,16 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         bus.unregister(this);
     }
 
+    @OnItemClick(R.id.drawer)
+    public void onDrawerItemClicked(int i) {
+        showSelectedFragment(DrawerItem.values()[i]);
+        mDrawerLayout.closeDrawer(mDrawer);
+        sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
+    }
+
     @Subscribe
-    public void onAccessPointStateChange(AccessPointStateEvent event) {
-        switch (event.getState()) {
-            case CHANGING:
-                showBroadcastProgressBar(true);
-                break;
-            case DISABLED:
-                showBroadcastProgressBar(false);
-                setBroadcastButtonEnabled(false);
-                break;
-            case ENABLED:
-                showBroadcastProgressBar(false);
-                setBroadcastButtonEnabled(true);
-                break;
-        }
+    public void playbackStarted(PlaybackStartedEvent event) {
+        showNowPlayingBar(true);
     }
 
     @Subscribe

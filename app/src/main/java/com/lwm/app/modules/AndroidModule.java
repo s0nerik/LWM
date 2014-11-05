@@ -10,6 +10,10 @@ import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 
 import com.lwm.app.App;
+import com.lwm.app.Utils;
+import com.lwm.app.adapter.AlbumsAdapter;
+import com.lwm.app.adapter.ArtistsAdapter;
+import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.events.MainThreadBus;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.player.LocalPlayer;
@@ -17,10 +21,12 @@ import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.MusicServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
+import com.lwm.app.ui.activity.ArtistInfoActivity;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.activity.LocalSongChooserActivity;
 import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.async.LocalQueueLoader;
+import com.lwm.app.ui.custom_view.BroadcastButton;
 import com.lwm.app.ui.fragment.LocalPlaybackFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
@@ -40,29 +46,36 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
+        Utils.class,
+
         WifiAP.class,
 
         LocalPlayer.class,
 
         LocalPlayerService.class,
 
-        NowPlayingFragment.class,
-        SongsListFragment.class,
-
-        LocalPlaybackFragment.class,
-
-        QueueFragment.class,
         LocalQueueLoader.class,
 
+        BroadcastButton.class,
+
+        // Adapters
+        SongsListAdapter.class,
+        AlbumsAdapter.class,
+        ArtistsAdapter.class,
+
+        // Fragments
+        QueueFragment.class,
+        NowPlayingFragment.class,
+        SongsListFragment.class,
+        LocalPlaybackFragment.class,
         PlayersAroundFragment.class,
 
+        // Activities
         LocalSongChooserActivity.class,
-
         AlbumInfoActivity.class,
-
         LocalPlaybackActivity.class,
-
-        StationChooserActivity.class
+        StationChooserActivity.class,
+        ArtistInfoActivity.class,
 
         },
         library = true)
@@ -143,6 +156,18 @@ public class AndroidModule {
     @Singleton
     MusicServer provideMusicServer() {
         return new MusicServer();
+    }
+
+    @Provides
+    @Singleton
+    WifiAP provideWifiAP() {
+        return new WifiAP();
+    }
+
+    @Provides
+    @Singleton
+    Utils provideUtils() {
+        return new Utils();
     }
 
 }

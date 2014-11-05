@@ -8,14 +8,16 @@ import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.base.DaggerActivity;
 import com.lwm.app.websocket.entities.ClientInfo;
 
+import javax.inject.Inject;
+
 public abstract class PlaybackActivity extends DaggerActivity {
 
+    @Inject
     protected Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utils = new Utils(this);
     }
 
     protected void onClientConnected(ClientInfo info) {

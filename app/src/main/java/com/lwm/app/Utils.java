@@ -20,14 +20,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import javax.inject.Inject;
+
 public class Utils {
 
-    private Context context;
-    private Resources resources;
+    @Inject
+    Resources resources;
 
-    public Utils(Context context) {
-        this.context = context;
-        resources = context.getResources();
+    public Utils() {
+        Injector.inject(this);
     }
 
     public String getArtistName(String name) {

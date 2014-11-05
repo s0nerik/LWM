@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
@@ -21,11 +22,15 @@ import com.lwm.app.player.LocalPlayer;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SongsListAdapter extends ArrayAdapter<Song> {
 
     private final Context context;
     private List<Song> list;
-    private Utils utils;
+
+    @Inject
+    Utils utils;
 
     private LocalPlayer player;
 
@@ -98,10 +103,10 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
 
     public SongsListAdapter(Context context, LocalPlayer player, List<Song> list) {
         super(context, R.layout.list_item_songs, list);
+        Injector.inject(this);
         this.context = context;
         this.list = list;
         this.player = player;
-        utils = new Utils(context);
     }
 
     static class ViewHolder {

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koushikdutta.ion.Ion;
+import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Album;
@@ -17,19 +18,23 @@ import com.lwm.app.model.AlbumsList;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private final Context context;
     private Resources resources;
     private List<Album> albumsList;
-    private Utils utils;
+
+    @Inject
+    Utils utils;
 
     public AlbumsAdapter(final Context context, AlbumsList albums) {
         super(context, R.layout.list_item_songs, albums.getAlbums());
+        Injector.inject(this);
         this.context = context;
         resources = context.getResources();
         albumsList = albums.getAlbums();
-        utils = new Utils(context);
     }
 
     static class ViewHolder {

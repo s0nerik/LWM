@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Artist;
@@ -14,17 +15,21 @@ import com.lwm.app.model.ArtistsList;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ArtistsAdapter extends ArrayAdapter<Artist> {
 
     private final Context context;
     private List<Artist> artistsList;
-    private Utils utils;
+
+    @Inject
+    Utils utils;
 
     public ArtistsAdapter(final Context context, ArtistsList artists) {
         super(context, R.layout.list_item_songs, artists.getArtists());
+        Injector.inject(this);
         this.context = context;
         artistsList = artists.getArtists();
-        utils = new Utils(context);
     }
 
     static class ViewHolder {

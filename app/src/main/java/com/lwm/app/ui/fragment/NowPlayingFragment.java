@@ -26,7 +26,8 @@ public class NowPlayingFragment extends DaggerFragment {
     private TextView artist;
     private TextView title;
 
-    private Utils utils;
+    @Inject
+    Utils utils;
 
     @Inject
     Bus bus;
@@ -66,7 +67,6 @@ public class NowPlayingFragment extends DaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utils = new Utils(getActivity());
     }
 
     @Override

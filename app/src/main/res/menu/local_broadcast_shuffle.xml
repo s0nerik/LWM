@@ -8,4 +8,10 @@
         android:title="@string/action_shuffle"
         app:showAsAction="ifRoom" />
 
+    <item
+        app:actionLayout="@layout/ab_item_broadcast"
+        android:id="@+id/action_broadcast"
+        android:title="@string/action_broadcast"
+        app:showAsAction="always" />
+
 </menu>

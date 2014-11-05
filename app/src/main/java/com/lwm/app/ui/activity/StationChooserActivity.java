@@ -18,7 +18,6 @@ import com.lwm.app.R;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.events.wifi.WifiStateChangedEvent;
 import com.lwm.app.lib.WifiAP;
-import com.lwm.app.lib.WifiApManager;
 import com.lwm.app.ui.base.DaggerActivity;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -34,6 +33,12 @@ public class StationChooserActivity extends DaggerActivity {
 
     @Inject
     Bus bus;
+
+    @Inject
+    WifiAP wifiAP;
+
+    @Inject
+    WifiManager wifiManager;
 
     private BroadcastReceiver onBroadcast = new BroadcastReceiver() {
         @Override
@@ -104,10 +109,7 @@ public class StationChooserActivity extends DaggerActivity {
 
     @OnClick(R.id.no_wifi_frame)
     public void onNoWifiClicked() {
-        WifiAP wifiAP = new WifiAP();
-        WifiApManager manager = new WifiApManager(this);
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if (manager.isWifiApEnabled()) {
+        if (wifiAP.isEnabled()) {
             wifiAP.toggleWiFiAP();
         } else {
             wifiManager.setWifiEnabled(true);
