@@ -45,5 +45,6 @@
     <color name="pull_to_refresh_4">#FBB917</color>
 
     <color name="playback_fragment_toolbar_bg">#55000000</color>
+    <color name="now_playing_bg">#262626</color>
     
 </resources>

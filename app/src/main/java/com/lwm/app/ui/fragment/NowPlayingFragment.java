@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 
 import com.danh32.fontify.TextView;
 import com.koushikdutta.ion.Ion;
@@ -19,9 +18,9 @@ import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
+import com.lwm.app.ui.custom_view.ProgressWheel;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -52,8 +51,10 @@ public class NowPlayingFragment extends DaggerFragment {
     ImageView mBtnPlayPause;
     @InjectView(R.id.global_layout)
     RelativeLayout mGlobalLayout;
-    @InjectView(R.id.seek_bar)
-    SeekBar mSeekBar;
+//    @InjectView(R.id.seek_bar)
+//    SeekBar mSeekBar;
+    @InjectView(R.id.progress_wheel)
+    ProgressWheel mProgressWheel;
 
     @Override
     public void onResume() {
@@ -99,11 +100,10 @@ public class NowPlayingFragment extends DaggerFragment {
         mTitle.setText(song.getTitle());
         setPlayButton(player.isPlaying());
 
-        mSeekBar.setMax(PlayerUtils.calculateProgressForSeekBar(song.getDuration()));
     }
 
     public void setPlayButton(boolean playing) {
-        mBtnPlayPause.setImageResource(playing ? R.drawable.ic_pause : R.drawable.ic_play);
+        mBtnPlayPause.setImageResource(playing ? R.drawable.ic_av_pause : R.drawable.ic_av_play_arrow);
     }
 
     @OnClick(R.id.btn_play_pause)
@@ -136,7 +136,7 @@ public class NowPlayingFragment extends DaggerFragment {
 
     @Subscribe
     public void onPlaying(SongPlayingEvent event) {
-        mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(event.getProgress()));
+        mProgressWheel.setProgress((int) (360 * (event.getProgress() / (float) event.getDuration())));
     }
 
 }

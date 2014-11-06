@@ -56,6 +56,7 @@ public class LocalPlayer extends BasePlayer {
 
         setOnCompletionListener(new NextSongOnCompletionListener());
         setOnSeekCompleteListener(new StartingOnSeekCompleteListener());
+        setOnPreparedListener(new SongPreparedListener());
     }
 
     public void shuffleQueue() {
@@ -125,18 +126,7 @@ public class LocalPlayer extends BasePlayer {
         try {
             assert queue != null : "queue == null";
             setDataSource(queue.getSong().getSource());
-            prepare();
-
-            active = true;
-
-            bus.post(new SongChangedEvent(getCurrentSong()));
-
-            if (server.isStarted()) {
-                bus.post(new PrepareClientsEvent());
-            } else {
-                start();
-            }
-
+            prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -256,7 +246,7 @@ public class LocalPlayer extends BasePlayer {
 
         @Override
         public void run() {
-            bus.post(new SongPlayingEvent(getCurrentPosition()));
+            bus.post(new SongPlayingEvent(getCurrentPosition(), getDuration()));
         }
     }
 
@@ -280,6 +270,22 @@ public class LocalPlayer extends BasePlayer {
                 } else {
                     nextSong();
                 }
+            }
+        }
+    }
+
+    private class SongPreparedListener implements OnPreparedListener {
+
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            active = true;
+
+            bus.post(new SongChangedEvent(getCurrentSong()));
+
+            if (server.isStarted()) {
+                bus.post(new PrepareClientsEvent());
+            } else {
+                start();
             }
         }
     }

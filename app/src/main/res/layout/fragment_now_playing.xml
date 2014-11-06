@@ -2,11 +2,11 @@
 
 <com.lwm.app.ui.custom_view.SlidingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fontify="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="-5dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <View
         android:background="@drawable/horizontal_shadow"
@@ -16,7 +16,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/now_playing_bar_height"
-        android:background="#0F0A06"
+        android:background="@color/now_playing_bg"
         android:id="@+id/global_layout" >
 
         <ImageView
@@ -24,15 +24,6 @@
             android:layout_height="@dimen/now_playing_bar_height"
             android:scaleType="centerCrop"
             android:id="@+id/cover" />
-
-        <SeekBar
-            android:id="@+id/seek_bar"
-            style="@style/SeekBarNowPlaying"
-            android:max="100"
-            android:progress="1"
-            android:layout_toRightOf="@+id/cover"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:id="@+id/layout"
@@ -53,7 +44,7 @@
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"
 
-                fontify:font="@string/FONT_ROBOTO_REGULAR" />
+                app:font="@string/FONT_ROBOTO_REGULAR" />
 
             <com.danh32.fontify.TextView
                 android:layout_width="match_parent"
@@ -65,20 +56,39 @@
                 android:textSize="16sp"
                 android:textColor="#cccccc"
 
-                fontify:font="@string/FONT_ROBOTO_THIN" />
+                app:font="@string/FONT_ROBOTO_THIN" />
 
         </LinearLayout>
 
-        <ImageView
+        <com.lwm.app.ui.custom_view.ProgressWheel
+            android:id="@+id/progress_wheel"
             android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"
+            android:layout_height="@dimen/now_playing_bar_height"
+            android:layout_width="@dimen/now_playing_bar_height"
+            android:layout_margin="4dp"
 
-            android:id="@+id/btn_play_pause"
+            app:rimColor="#000"
+            app:barColor="#fff"
+            app:rimWidth="2dp"
+            app:barWidth="2dp"
+            />
 
-            android:src="@drawable/ic_pause" />
+        <com.andexert.library.RippleView
+            app:rv_centered="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/now_playing_bar_height"
+            android:layout_height="@dimen/now_playing_bar_height"
+            >
+
+            <ImageView
+                android:padding="24dp"
+
+                android:id="@+id/btn_play_pause"
+
+                android:src="@drawable/ic_av_pause"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.andexert.library.RippleView>
 
     </RelativeLayout>
 </com.lwm.app.ui.custom_view.SlidingLinearLayout>

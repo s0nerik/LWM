@@ -103,4 +103,9 @@ public class Utils {
         } catch (Throwable t) {}
     }
 
+    public int dpToPixels(int dp) {
+        float density = resources.getDisplayMetrics().density;
+        return (int) (dp * density);
+    }
+
 }

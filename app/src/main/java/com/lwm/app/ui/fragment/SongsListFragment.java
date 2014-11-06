@@ -7,6 +7,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.helper.SongsCursorGetter;
@@ -17,10 +18,15 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 
 public class SongsListFragment extends BaseSongsListFragment {
+
+    @Inject
+    Utils utils;
 
     @InjectView(R.id.listView)
     ListView mListView;
@@ -41,13 +47,6 @@ public class SongsListFragment extends BaseSongsListFragment {
     protected Loader<List<Song>> getSongsLoader() {
         return new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
     }
-
-//    @Subscribe
-//    public void onLocalPlayerServiceAvailable(LocalPlayerServiceAvailableEvent event) {
-//        player = event.getService();
-//        initAdapter();
-//    }
-
 
     @Override
     public void onResume() {
