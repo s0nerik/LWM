@@ -98,7 +98,6 @@ public class LocalPlayer extends BasePlayer {
     }
 
     public Song getCurrentSong() {
-        Log.d(App.TAG, "getCurrentSong");
         return queue.getSong();
     }
 
