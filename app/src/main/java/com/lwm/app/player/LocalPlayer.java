@@ -246,7 +246,7 @@ public class LocalPlayer extends BasePlayer {
 
         @Override
         public void run() {
-            bus.post(new SongPlayingEvent(getCurrentPosition(), getDuration()));
+            bus.post(new SongPlayingEvent(getCurrentPosition(), getCurrentSong().getDuration()));
         }
     }
 
