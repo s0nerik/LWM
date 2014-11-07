@@ -19,6 +19,7 @@ import com.lwm.app.lib.WifiAP;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.receiver.MediaButtonIntentReceiver;
+import com.lwm.app.receiver.PendingIntentReceiver;
 import com.lwm.app.server.MusicServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
@@ -33,6 +34,7 @@ import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -47,7 +49,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
-        MediaButtonIntentReceiver.class,
+        NowPlayingNotification.class,
 
         Utils.class,
 
@@ -60,6 +62,10 @@ import static android.content.Context.WIFI_SERVICE;
         LocalQueueLoader.class,
 
         BroadcastButton.class,
+
+        // Intent receivers
+        PendingIntentReceiver.class,
+        MediaButtonIntentReceiver.class,
 
         // Adapters
         SongsListAdapter.class,

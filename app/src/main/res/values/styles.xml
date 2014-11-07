@@ -205,4 +205,13 @@
         <item name="colorControlHighlight">#3fff</item>
     </style>
 
+    <style name="NotificationControlBtn">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/selector_notification_button_bg</item>
+    </style>
+
 </resources>

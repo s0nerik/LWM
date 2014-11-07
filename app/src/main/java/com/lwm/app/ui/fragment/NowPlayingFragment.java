@@ -51,8 +51,6 @@ public class NowPlayingFragment extends DaggerFragment {
     ImageView mBtnPlayPause;
     @InjectView(R.id.global_layout)
     RelativeLayout mGlobalLayout;
-//    @InjectView(R.id.seek_bar)
-//    SeekBar mSeekBar;
     @InjectView(R.id.progress_wheel)
     ProgressWheel mProgressWheel;
 
@@ -64,10 +62,6 @@ public class NowPlayingFragment extends DaggerFragment {
         if (song != null) {
             setSongInfo(player.getCurrentSong());
         }
-
-//        YoYo.with(Techniques.SlideInDown)
-//                .duration(4000)
-//                .playOn(mGlobalLayout);
     }
 
     @Override

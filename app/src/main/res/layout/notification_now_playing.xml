@@ -4,84 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="64dp"
     android:clickable="true"
-    tools:background="@android:color/black" >
+    android:background="@drawable/notification_bg" >
 
     <ImageView
         android:id="@+id/album_art"
         android:scaleType="centerCrop"
         android:layout_alignParentLeft="true"
         android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginRight="5dp" />
-
-    <LinearLayout
-        android:id="@+id/header"
-        android:layout_toRightOf="@id/album_art"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/btn_close">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#888888"
-            android:textSize="12sp"
-            android:gravity="center_vertical"
-            android:text="NOW PLAYING" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#888888" />
-
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/btn_close"
-        android:clickable="true"
-        android:background="@drawable/selector_notification_button_bg"
-        android:padding="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_notification_close" />
+        android:layout_height="64dp" />
 
     <LinearLayout
         android:layout_toRightOf="@id/album_art"
-        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/buttons"
         android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
-        android:layout_toLeftOf="@+id/buttons">
+        android:layout_height="match_parent" >
 
         <TextView
+            style = "@android:style/TextAppearance.Medium"
             android:id="@+id/title"
             android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:textSize="18sp"
-            android:text="Test"
+            android:ellipsize="end"
+            tools:text="Test"
             android:focusable="true"
             android:focusableInTouchMode="true" >
             <requestFocus/>
         </TextView>
 
         <TextView
+            style = "@android:style/TextAppearance.Small"
             android:id="@+id/artist"
             android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:ellipsize="marquee"
-            android:textSize="14sp"
-            android:text="Test" />
+            android:ellipsize="end"
+            tools:text="Test" />
+
+        <TextView
+            style = "@android:style/TextAppearance.Small"
+            android:id="@+id/album"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:ellipsize="end"
+            tools:text="Test" />
 
     </LinearLayout>
 
@@ -89,7 +63,8 @@
         android:clickable="true"
         android:id="@+id/buttons"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true" >
@@ -98,19 +73,19 @@
             android:id="@+id/btn_play_pause"
             android:clickable="true"
             android:background="@drawable/selector_notification_button_bg"
-            android:padding="6dp"
+            android:padding="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_notification_pause" />
+            android:src="@drawable/ic_av_pause" />
 
         <ImageButton
             android:id="@+id/btn_next"
             android:clickable="true"
             android:background="@drawable/selector_notification_button_bg"
-            android:padding="6dp"
+            android:padding="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_notification_next" />
+            android:src="@drawable/ic_av_skip_next" />
 
     </LinearLayout>
 

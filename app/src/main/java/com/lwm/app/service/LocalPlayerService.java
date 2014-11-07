@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.lwm.app.Injector;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.control.ChangeSongEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
@@ -65,6 +68,20 @@ public class LocalPlayerService extends Service {
                 player.togglePause();
                 break;
         }
+    }
+
+    @Subscribe
+    public void onPlaybackStarted(PlaybackStartedEvent event) {
+        startForeground(1337,
+                new NowPlayingNotification(player.getCurrentSong()).create(true, false)
+        );
+    }
+
+    @Subscribe
+    public void onPlaybackPaused(PlaybackPausedEvent event) {
+        startForeground(1337,
+                new NowPlayingNotification(player.getCurrentSong()).create(false, false)
+        );
     }
 
     @Subscribe

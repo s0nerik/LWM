@@ -46,5 +46,8 @@
 
     <color name="playback_fragment_toolbar_bg">#55000000</color>
     <color name="now_playing_bg">#262626</color>
-    
+
+    <color name="card_shadow_1">#161616</color>
+    <color name="card_shadow_2">#101010</color>
+
 </resources>
