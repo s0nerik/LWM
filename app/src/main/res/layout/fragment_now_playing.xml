@@ -28,7 +28,7 @@
         <LinearLayout
             android:id="@+id/layout"
             android:layout_toRightOf="@+id/cover"
-            android:layout_toLeftOf="@+id/ripple_view"
+            android:layout_toLeftOf="@+id/play_pause_layout"
             android:paddingLeft="8dp"
             android:orientation="vertical"
             android:gravity="center"
@@ -60,36 +60,38 @@
 
         </LinearLayout>
 
-        <com.lwm.app.ui.custom_view.ProgressWheel
-            android:id="@+id/progress_wheel"
-            android:layout_alignParentRight="true"
-            android:layout_height="@dimen/now_playing_bar_height"
-            android:layout_width="@dimen/now_playing_bar_height"
-            android:layout_margin="4dp"
-
-            app:rimColor="#000"
-            app:barColor="#fff"
-            app:rimWidth="2dp"
-            app:barWidth="2dp"
-            />
-
-        <com.andexert.library.RippleView
-            app:rv_centered="true"
-            android:id="@+id/ripple_view"
+        <FrameLayout
+            android:id="@+id/play_pause_layout"
             android:layout_alignParentRight="true"
             android:layout_width="@dimen/now_playing_bar_height"
-            android:layout_height="@dimen/now_playing_bar_height"
-            >
+            android:layout_height="@dimen/now_playing_bar_height">
 
-            <ImageView
-                android:padding="24dp"
+            <com.lwm.app.ui.custom_view.ProgressWheel
+                android:id="@+id/progress_wheel"
+                android:layout_gravity="center"
+                android:layout_height="@dimen/now_playing_bar_progress_circle_height"
+                android:layout_width="@dimen/now_playing_bar_progress_circle_height"
 
-                android:id="@+id/btn_play_pause"
+                app:rimColor="#000"
+                app:barColor="#fff"
+                app:rimWidth="2dp"
+                app:barWidth="2dp" />
 
-                android:src="@drawable/ic_av_pause"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.andexert.library.RippleView>
+            <com.andexert.library.RippleView
+                app:rv_centered="true"
+                android:layout_width="@dimen/now_playing_bar_height"
+                android:layout_height="@dimen/now_playing_bar_height" >
+
+                <ImageView
+                    android:padding="24dp"
+
+                    android:id="@+id/btn_play_pause"
+
+                    android:src="@drawable/ic_av_pause"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.andexert.library.RippleView>
+        </FrameLayout>
 
     </RelativeLayout>
 </com.lwm.app.ui.custom_view.SlidingLinearLayout>
