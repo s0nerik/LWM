@@ -54,6 +54,20 @@ public class LocalPlayerService extends Service {
         return null;
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (player.getCurrentSong() != null) {
+            makeForeground(player.isPlaying());
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void makeForeground(boolean isPlaying) {
+        startForeground(1337,
+                new NowPlayingNotification(player.getCurrentSong()).create(isPlaying)
+        );
+    }
+
     @Produce
     public CurrentSongAvailableEvent produceCurrentSong() {
         return new CurrentSongAvailableEvent(player.getCurrentSong());
@@ -76,16 +90,12 @@ public class LocalPlayerService extends Service {
 
     @Subscribe
     public void onPlaybackStarted(PlaybackStartedEvent event) {
-        startForeground(1337,
-                new NowPlayingNotification(player.getCurrentSong()).create(true)
-        );
+        makeForeground(true);
     }
 
     @Subscribe
     public void onPlaybackPaused(PlaybackPausedEvent event) {
-        startForeground(1337,
-                new NowPlayingNotification(player.getCurrentSong()).create(false)
-        );
+        makeForeground(false);
     }
 
     @Subscribe

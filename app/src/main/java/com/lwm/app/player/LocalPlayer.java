@@ -2,6 +2,7 @@ package com.lwm.app.player;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.server.MusicServer;
+import com.lwm.app.service.LocalPlayerService;
 import com.squareup.otto.Bus;
 
 import java.io.IOException;
@@ -195,6 +197,7 @@ public class LocalPlayer extends BasePlayer {
         startNotifyingPlaybackProgress();
 
         bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
+        context.startService(new Intent(context, LocalPlayerService.class));
     }
 
     private void stopNotifyingPlaybackProgress() {
