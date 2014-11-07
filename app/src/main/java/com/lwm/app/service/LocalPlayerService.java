@@ -1,5 +1,6 @@
 package com.lwm.app.service;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -27,6 +28,9 @@ public class LocalPlayerService extends Service {
 
     @Inject
     LocalPlayer player;
+
+    @Inject
+    NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
@@ -73,14 +77,14 @@ public class LocalPlayerService extends Service {
     @Subscribe
     public void onPlaybackStarted(PlaybackStartedEvent event) {
         startForeground(1337,
-                new NowPlayingNotification(player.getCurrentSong()).create(true, false)
+                new NowPlayingNotification(player.getCurrentSong()).create(true)
         );
     }
 
     @Subscribe
     public void onPlaybackPaused(PlaybackPausedEvent event) {
         startForeground(1337,
-                new NowPlayingNotification(player.getCurrentSong()).create(false, false)
+                new NowPlayingNotification(player.getCurrentSong()).create(false)
         );
     }
 

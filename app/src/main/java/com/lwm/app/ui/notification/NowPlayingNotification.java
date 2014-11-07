@@ -70,11 +70,11 @@ public class NowPlayingNotification {
         this.song = song;
     }
 
-    public Notification create(boolean isPlaying, boolean hideIcon){
+    public Notification create(boolean isPlaying){
 
         // Build notification
         Notification.Builder builder = new Notification.Builder(context)
-                .setPriority(hideIcon? NotificationCompat.PRIORITY_MIN : NotificationCompat.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true);
 
         if (isPlaying) {
@@ -115,6 +115,7 @@ public class NowPlayingNotification {
         bigContentView.setOnClickPendingIntent(R.id.btn_play_pause, playPauseIntent);
         bigContentView.setOnClickPendingIntent(R.id.btn_next, nextIntent);
         bigContentView.setOnClickPendingIntent(R.id.btn_prev, prevIntent);
+        bigContentView.setOnClickPendingIntent(R.id.btn_close, closeIntent);
 
         return bigContentView;
     }
@@ -130,6 +131,7 @@ public class NowPlayingNotification {
 
         contentView.setOnClickPendingIntent(R.id.btn_play_pause, playPauseIntent);
         contentView.setOnClickPendingIntent(R.id.btn_next, nextIntent);
+        contentView.setOnClickPendingIntent(R.id.btn_close, closeIntent);
 
         return contentView;
     }
