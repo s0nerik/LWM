@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.lwm.app.App;
@@ -20,6 +21,7 @@ import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
+import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
 import com.lwm.app.lib.WifiAP;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.Croutons;
@@ -141,6 +143,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
         mToolbar.getMenu().clear();
         mToolbar.inflateMenu(menuId);
+        mToolbar.setOnMenuItemClickListener(new OnSongChooserMenuItemClickListener());
     }
 
     protected void initNavigationDrawer() {
@@ -220,5 +223,18 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
+    }
+
+    private class OnSongChooserMenuItemClickListener implements Toolbar.OnMenuItemClickListener {
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_shuffle:
+                    bus.post(new ShouldShuffleSongsEvent());
+                    break;
+            }
+            return true;
+        }
     }
 }

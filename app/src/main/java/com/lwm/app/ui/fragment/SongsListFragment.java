@@ -10,6 +10,7 @@ import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
 import com.lwm.app.helper.SongsCursorGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.ui.async.SongsListLoader;
@@ -64,6 +65,11 @@ public class SongsListFragment extends BaseSongsListFragment {
     public void onSongPlaybackStarted(PlaybackStartedEvent event) {
         currentSong = event.getSong();
         setSelection(currentSong);
+    }
+
+    @Subscribe
+    public void onShuffleSongs(ShouldShuffleSongsEvent event) {
+        shuffleAll();
     }
 
     @OnItemClick(R.id.listView)
