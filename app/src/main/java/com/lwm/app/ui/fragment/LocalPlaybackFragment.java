@@ -12,7 +12,6 @@ import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
-import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.lib.WifiAP;
 import com.squareup.otto.Subscribe;
 
@@ -65,12 +64,6 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     public void onPlaybackPaused(PlaybackPausedEvent event) {
         super.onPlaybackPaused(event);
-    }
-
-    @Subscribe
-    @Override
-    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-        super.onCurrentSongAvailable(event);
     }
 
     @Subscribe

@@ -27,7 +27,6 @@ import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
-import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.PlayerUtils;
@@ -98,18 +97,15 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initView();
+    }
+
     protected void onSongPlaying(SongPlayingEvent event) {
         mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(event.getProgress()));
         mCurrentTime.setText(player.getCurrentPositionInMinutes());
-    }
-
-    protected void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-        setSongInfo(event.getSong());
-        mCurrentTime.setText(player.getCurrentPositionInMinutes());
-        mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(player.getCurrentPosition()));
-        setPlayButton(player.isPlaying());
-        setShuffleButton(player.isShuffle());
-        setRepeatButton(player.isRepeat());
     }
 
     protected void onSongChanged(SongChangedEvent event) {
@@ -209,6 +205,15 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
 
     private void setRepeatButton(boolean enabled) {
         mBtnRepeatIcon.setColorFilter(resources.getColor(enabled? R.color.orange_main : android.R.color.white));
+    }
+
+    private void initView() {
+        setSongInfo(player.getCurrentSong());
+        mCurrentTime.setText(player.getCurrentPositionInMinutes());
+        mSeekBar.setProgress(PlayerUtils.calculateProgressForSeekBar(player.getCurrentPosition()));
+        setPlayButton(player.isPlaying());
+        setShuffleButton(player.isShuffle());
+        setRepeatButton(player.isRepeat());
     }
 
     protected class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
