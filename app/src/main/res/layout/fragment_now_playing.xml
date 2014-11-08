@@ -72,8 +72,9 @@
                 android:layout_height="@dimen/now_playing_bar_progress_circle_height"
                 android:layout_width="@dimen/now_playing_bar_progress_circle_height"
 
-                app:rimColor="#000"
-                app:barColor="#fff"
+                app:contourColor="#0fff"
+                app:rimColor="#3fff"
+                app:barColor="#ffff"
                 app:rimWidth="2dp"
                 app:barWidth="2dp" />
 
