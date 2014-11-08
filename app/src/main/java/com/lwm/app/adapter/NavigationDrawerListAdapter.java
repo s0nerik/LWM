@@ -39,8 +39,8 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = LayoutInflater.from(context);
             rowView = inflater.inflate(R.layout.list_item_drawer, null, true);
             holder = new NavigationDrawerListAdapter.ViewHolder();
-            holder.title = (TextView) rowView.findViewById(R.id.drawer_item_text);
-            holder.icon = (ImageView) rowView.findViewById(R.id.drawer_item_icon);
+            holder.title = (TextView) rowView.findViewById(R.id.text);
+            holder.icon = (ImageView) rowView.findViewById(R.id.icon);
             rowView.setTag(holder);
         } else {
             holder = (NavigationDrawerListAdapter.ViewHolder) rowView.getTag();

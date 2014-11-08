@@ -84,7 +84,7 @@
 
     // Navigation Drawer titles
     <string-array name="drawer_items">
-        <item>All songs</item>
+        <item>Songs</item>
         <item>Artists</item>
         <item>Albums</item>
         <item>Queue</item>
@@ -92,10 +92,10 @@
 
     // Navigation Drawer icons
     <string-array name="drawer_icons">
-        <item>@drawable/selector_ic_drawer_songs</item>
-        <item>@drawable/selector_ic_drawer_artists</item>
-        <item>@drawable/selector_ic_drawer_albums</item>
-        <item>@drawable/selector_ic_drawer_playlists</item>
+        <item>@drawable/ic_drawer_songs</item>
+        <item>@drawable/ic_drawer_artists</item>
+        <item>@drawable/ic_drawer_albums</item>
+        <item>@drawable/ic_drawer_queue</item>
     </string-array>
 
     // Navigation Drawer titles
@@ -130,5 +130,7 @@
 
     <string name="crouton_chat_message_format">%1$s: %2$s</string>
     <string name="play_next">Play next</string>
+    <string name="donate">Donate</string>
+    <string name="send_feedback">Send feedback</string>
 
 </resources>

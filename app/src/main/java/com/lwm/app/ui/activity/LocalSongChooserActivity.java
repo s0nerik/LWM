@@ -52,9 +52,9 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
-    @InjectView(R.id.drawer)
-    ListView mDrawer;
-    @InjectView(R.id.drawerLayout)
+    @InjectView(R.id.drawer_list)
+    ListView mDrawerList;
+    @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
     private enum DrawerItem {SONGS, ARTISTS, ALBUMS, QUEUE}
@@ -148,7 +148,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
     protected void initNavigationDrawer() {
         // Set the adapter for the list view
-        mDrawer.setAdapter(new NavigationDrawerListAdapter(this,
+        mDrawerList.setAdapter(new NavigationDrawerListAdapter(this,
                 getResources().getStringArray(R.array.drawer_items),
                 getResources().obtainTypedArray(R.array.drawer_icons)));
 
@@ -158,7 +158,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
             activeFragment = DrawerItem.SONGS;
         }
 
-        mDrawer.setItemChecked(activeFragment.ordinal(), true);
+        mDrawerList.setItemChecked(activeFragment.ordinal(), true);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -192,10 +192,10 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         bus.unregister(this);
     }
 
-    @OnItemClick(R.id.drawer)
+    @OnItemClick(R.id.drawer_list)
     public void onDrawerItemClicked(int i) {
         showSelectedFragment(DrawerItem.values()[i]);
-        mDrawerLayout.closeDrawer(mDrawer);
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
         sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
     }
 
