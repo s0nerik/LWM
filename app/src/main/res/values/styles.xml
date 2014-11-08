@@ -105,13 +105,44 @@
     </style>
 
     <style name="Card">
-        <item name="android:background">@drawable/background_list_item_checkable</item>
+        <item name="android:background">@drawable/background_card_checkable</item>
         <item name="android:checkMark">@null</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
 
+    <style name="SongItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">72dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/background_list_item_checkable</item>
+    </style>
+
+    <style name="ListItemText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:checkMark">@null</item>
+    </style>
+
+    <style name="ListItemText.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/selector_songs_list_item_title</item>
+        <item name="font">@string/FONT_ROBOTO_REGULAR</item>
+    </style>
+
+    <style name="ListItemText.Subtitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/selector_songs_list_item_artist</item>
+        <item name="font">@string/FONT_ROBOTO_THIN</item>
+    </style>
+
     <style name="Card.NonCheckable" parent="Card">
-        <item name="android:background">@drawable/background_list_item</item>
+        <item name="android:background">@drawable/background_card</item>
         <item name="android:checkable">false</item>
     </style>
 
@@ -121,7 +152,7 @@
     </style>
 
     <style name="CardWithImage.NonCheckable" parent="CardWithImage">
-        <item name="android:background">@drawable/background_list_item</item>
+        <item name="android:background">@drawable/background_card</item>
         <item name="android:checkable">false</item>
     </style>
 
@@ -137,6 +168,21 @@
         <item name="android:fadingEdge">none</item>
         <item name="android:requiresFadingEdge">none</item>
     </style>
+
+    <style name="ListOfSongs">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:listSelector">@android:color/transparent</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:choiceMode">singleChoice</item>
+        <item name="android:fastScrollEnabled">true</item>
+        <item name="android:cacheColorHint">#00000000</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:requiresFadingEdge">none</item>
+    </style>
+
 
     <style name="StartScreenCircleButton">
 

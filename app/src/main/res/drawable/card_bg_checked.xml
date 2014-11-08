@@ -43,7 +43,7 @@
         <shape android:shape="rectangle"
             android:dither="true">
 
-            <solid android:color="@color/card_checked" />
+            <solid android:color="@color/checked" />
 
         </shape>
     </item>
