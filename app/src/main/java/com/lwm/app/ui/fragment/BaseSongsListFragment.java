@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.lwm.app.App;
 import com.lwm.app.R;
@@ -125,6 +126,17 @@ public abstract class BaseSongsListFragment extends DaggerFragment implements Lo
         } else {
             final int childIndex = pos - firstListItemPosition;
             return mListView.getChildAt(childIndex);
+        }
+    }
+
+    protected void shuffleAll() {
+        if (songs != null && !songs.isEmpty()) {
+            List<Song> queue = new ArrayList<>(songs);
+            player.setQueue(queue);
+            player.shuffleQueue();
+            player.play(0);
+        } else {
+            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show();
         }
     }
 

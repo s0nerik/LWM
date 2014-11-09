@@ -4,7 +4,6 @@ import android.content.Loader;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.lwm.app.R;
 import com.lwm.app.Utils;
@@ -16,7 +15,6 @@ import com.lwm.app.model.Song;
 import com.lwm.app.ui.async.SongsListLoader;
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -76,17 +74,6 @@ public class SongsListFragment extends BaseSongsListFragment {
     public void onItemClicked(int pos) {
         player.setQueue(songs);
         player.play(pos);
-    }
-
-    private void shuffleAll() {
-        if (songs != null && !songs.isEmpty()) {
-            List<Song> queue = new ArrayList<>(songs);
-            player.setQueue(queue);
-            player.shuffleQueue();
-            player.play(0);
-        } else {
-            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show();
-        }
     }
 
 }

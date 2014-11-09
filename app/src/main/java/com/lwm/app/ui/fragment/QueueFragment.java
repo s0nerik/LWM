@@ -9,6 +9,7 @@ import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.events.player.queue.SongAddedToQueueEvent;
 import com.lwm.app.events.player.queue.SongRemovedFromQueueEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
+import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.ui.async.LocalQueueLoader;
 import com.squareup.otto.Subscribe;
@@ -40,6 +41,11 @@ public class QueueFragment extends BaseSongsListFragment {
     @OnItemClick(R.id.listView)
     public void onItemClicked(int pos) {
         player.play(pos);
+    }
+
+    @Subscribe
+    public void onShuffleSongs(ShouldShuffleSongsEvent event) {
+        shuffleAll();
     }
 
     @Subscribe
