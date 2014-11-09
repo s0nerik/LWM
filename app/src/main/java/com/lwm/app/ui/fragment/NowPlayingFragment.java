@@ -50,7 +50,7 @@ public class NowPlayingFragment extends DaggerFragment {
     View mLayout;
     @InjectView(R.id.btn_play_pause)
     ImageView mBtnPlayPause;
-    @InjectView(R.id.global_layout)
+    @InjectView(R.id.now_playing_layout)
     RelativeLayout mGlobalLayout;
     @InjectView(R.id.progress_wheel)
     ProgressWheel mProgressWheel;

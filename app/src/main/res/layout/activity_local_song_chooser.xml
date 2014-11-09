@@ -1,6 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -19,29 +20,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
             <FrameLayout
+                android:layout_above="@+id/fragment_now_playing"
                 android:background="@android:color/transparent"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:id="@+id/container" />
 
+            <View
+                android:layout_alignBottom="@+id/container"
+                android:background="@drawable/horizontal_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/now_playing_shadow_size" />
+
             <fragment
+                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginTop="-2dp"
                 android:id="@+id/fragment_now_playing"
                 android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
                 tools:layout="@layout/fragment_now_playing" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <include layout="@layout/drawer" />
 
