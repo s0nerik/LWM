@@ -41,7 +41,7 @@
 
         tools:text="Artist"/>
 
-    <ImageView
+    <com.lwm.app.ui.custom_view.CheckedImageView
         android:id="@+id/button_context_menu"
         android:paddingLeft="20dp"
         android:paddingBottom="30dp"
@@ -50,7 +50,7 @@
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="#888"
+        app:tint="@color/selector_songs_list_item_artist"
         android:src="@drawable/ic_core_overflow" />
 
 </com.lwm.app.ui.custom_view.CheckedRelativeLayout>
