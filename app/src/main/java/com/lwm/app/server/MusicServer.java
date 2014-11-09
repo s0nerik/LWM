@@ -1,6 +1,7 @@
 package com.lwm.app.server;
 
 import com.google.gson.Gson;
+import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
@@ -35,11 +36,15 @@ public class MusicServer {
 
     private StreamServer streamServer;
 
-    @Inject
-    LocalPlayer player;
+    private LocalPlayer player;
 
     @Inject
     Bus bus;
+
+    public MusicServer(LocalPlayer player) {
+        this.player = player;
+        Injector.inject(this);
+    }
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
     private int unreadMessages = 0;

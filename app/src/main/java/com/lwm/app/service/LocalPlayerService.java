@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.lwm.app.Injector;
+import com.lwm.app.events.access_point.AccessPointStateEvent;
 import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.control.ChangeSongEvent;
@@ -13,6 +14,7 @@ import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
+import com.lwm.app.lib.WifiAP;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Bus;
@@ -30,21 +32,26 @@ public class LocalPlayerService extends Service {
     LocalPlayer player;
 
     @Inject
+    WifiAP wifiAP;
+
+    @Inject
     NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Injector.inject(this);
+
+        if (wifiAP.isEnabled()) {
+            startServer();
+        }
+
         bus.register(this);
     }
 
     @Override
     public void onDestroy() {
-        if (player.getServer().isStarted()) {
-            player.stopServer();
-        }
-
+        stopServer();
         bus.unregister(this);
         super.onDestroy();
     }
@@ -68,6 +75,16 @@ public class LocalPlayerService extends Service {
         );
     }
 
+    private void stopServer() {
+        if (player.getServer().isStarted()) {
+            player.stopServer();
+        }
+    }
+
+    private void startServer() {
+        player.startServer();
+    }
+
     @Produce
     public CurrentSongAvailableEvent produceCurrentSong() {
         return new CurrentSongAvailableEvent(player.getCurrentSong());
@@ -84,6 +101,18 @@ public class LocalPlayerService extends Service {
                 break;
             case TOGGLE_PAUSE:
                 player.togglePause();
+                break;
+        }
+    }
+
+    @Subscribe
+    public void onApStateChanged(AccessPointStateEvent event) {
+        switch (event.getState()) {
+            case DISABLED:
+                stopServer();
+                break;
+            case ENABLED:
+                startServer();
                 break;
         }
     }

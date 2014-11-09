@@ -21,6 +21,7 @@ import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.receiver.MediaButtonIntentReceiver;
 import com.lwm.app.receiver.PendingIntentReceiver;
 import com.lwm.app.server.MusicServer;
+import com.lwm.app.server.StreamServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.BitmapInfoCallback;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
@@ -57,6 +58,9 @@ import static android.content.Context.WIFI_SERVICE;
         Utils.class,
 
         WifiAP.class,
+
+        StreamServer.class,
+        MusicServer.class,
 
         LocalPlayer.class,
 
@@ -162,12 +166,6 @@ public class AndroidModule {
     @Singleton
     StreamPlayer provideStreamPlayer() {
         return new StreamPlayer();
-    }
-
-    @Provides
-    @Singleton
-    MusicServer provideMusicServer() {
-        return new MusicServer();
     }
 
     @Provides

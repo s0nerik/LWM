@@ -44,17 +44,19 @@ public class LocalPlayer extends BasePlayer {
     Context context;
     @Inject
     NotificationManager notificationManager;
-    @Inject
-    MusicServer server;
 
     private boolean repeat = false;
     private boolean active = false;
     private Queue queue = new Queue();
 
+    private MusicServer server;
+
     private Timer playbackProgressNotifierTimer;
 
     public LocalPlayer() {
         super();
+
+        server = new MusicServer(this);
 
         setOnCompletionListener(new NextSongOnCompletionListener());
         setOnSeekCompleteListener(new StartingOnSeekCompleteListener());
