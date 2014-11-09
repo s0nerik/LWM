@@ -14,7 +14,7 @@ import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
-import com.lwm.app.lib.WifiAP;
+import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Bus;

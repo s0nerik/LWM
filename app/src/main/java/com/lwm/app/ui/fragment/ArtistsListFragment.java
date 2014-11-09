@@ -12,7 +12,7 @@ import android.widget.ListView;
 
 import com.lwm.app.R;
 import com.lwm.app.adapter.ArtistsAdapter;
-import com.lwm.app.helper.ArtistsCursorGetter;
+import com.lwm.app.helper.db.ArtistsCursorGetter;
 import com.lwm.app.model.ArtistsList;
 import com.lwm.app.ui.activity.ArtistInfoActivity;
 //import com.lwm.app.player.LocalPlayer;

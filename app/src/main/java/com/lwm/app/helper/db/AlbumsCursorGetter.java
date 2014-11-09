@@ -1,4 +1,4 @@
-package com.lwm.app.helper;
+package com.lwm.app.helper.db;
 
 import android.content.Context;
 import android.database.Cursor;

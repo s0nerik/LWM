@@ -1,4 +1,4 @@
-package com.lwm.app.lib;
+package com.lwm.app.helper.wifi;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

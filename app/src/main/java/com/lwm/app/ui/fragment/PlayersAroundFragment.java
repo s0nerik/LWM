@@ -23,10 +23,11 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
 import com.lwm.app.events.client.SocketOpenedEvent;
-import com.lwm.app.events.server.StartWebSocketClientEvent;
+import com.lwm.app.events.server.ShouldStartWebSocketClientEvent;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
-import com.lwm.app.lib.Connectivity;
+import com.lwm.app.helper.wifi.WifiUtils;
 import com.lwm.app.server.StreamServer;
+import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
@@ -60,6 +61,9 @@ public class PlayersAroundFragment extends DaggerFragment {
     @Inject
     Bus bus;
 
+    @Inject
+    WifiUtils wifiUtils;
+
     private List<ScanResult> scanResults;
     private StationsAdapter stationsAdapter;
     private WifiManager wifiManager;
@@ -77,7 +81,7 @@ public class PlayersAroundFragment extends DaggerFragment {
         View v = inflater.inflate(R.layout.fragment_players_around, container, false);
         ButterKnife.inject(this, v);
 
-        mRefreshLayout.setColorScheme(
+        mRefreshLayout.setColorSchemeResources(
                 R.color.pull_to_refresh_1,
                 R.color.pull_to_refresh_2,
                 R.color.pull_to_refresh_3,
@@ -183,7 +187,7 @@ public class PlayersAroundFragment extends DaggerFragment {
                 WifiInfo info = wifiManager.getConnectionInfo();
                 if (info == null || !ap.equals(info.getSSID())) {
                     // Device is connected to different AP or not connected at all
-                    Connectivity.connectToStation(getActivity(), ap);
+                    wifiUtils.connectToStation(ap);
                     while (!isWifiNetworkAvailable()) {
                         try {
                             Thread.sleep(1000);
@@ -212,8 +216,8 @@ public class PlayersAroundFragment extends DaggerFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            bus.post(new StartWebSocketClientEvent());
-//            startStreamActivity();
+            getActivity().startService(new Intent(getActivity(), StreamPlayerService.class));
+            bus.post(new ShouldStartWebSocketClientEvent());
         }
     }
 

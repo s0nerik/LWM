@@ -12,7 +12,7 @@ import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
-import com.lwm.app.lib.WifiAP;
+import com.lwm.app.helper.wifi.WifiAP;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;

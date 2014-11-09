@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 
@@ -15,7 +16,8 @@ import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.adapter.ArtistsAdapter;
 import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.events.MainThreadBus;
-import com.lwm.app.lib.WifiAP;
+import com.lwm.app.helper.wifi.WifiAP;
+import com.lwm.app.helper.wifi.WifiUtils;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.receiver.MediaButtonIntentReceiver;
@@ -23,11 +25,13 @@ import com.lwm.app.receiver.PendingIntentReceiver;
 import com.lwm.app.server.MusicServer;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.BitmapInfoCallback;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.activity.ArtistInfoActivity;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.activity.LocalSongChooserActivity;
+import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.async.LocalQueueLoader;
 import com.lwm.app.ui.custom_view.BroadcastButton;
@@ -35,8 +39,10 @@ import com.lwm.app.ui.fragment.LocalPlaybackFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
+import com.lwm.app.ui.fragment.RemotePlaybackFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.lwm.app.websocket.WebSocketMessageClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -51,24 +57,32 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
+        WebSocketMessageClient.class,
+
         BitmapInfoCallback.class,
 
         NowPlayingNotification.class,
 
-        Utils.class,
-
-        WifiAP.class,
-
-        StreamServer.class,
-        MusicServer.class,
-
-        LocalPlayer.class,
-
-        LocalPlayerService.class,
-
         LocalQueueLoader.class,
 
         BroadcastButton.class,
+
+        // Utils
+        Utils.class,
+        WifiUtils.class,
+        WifiAP.class,
+
+        // Players
+        LocalPlayer.class,
+        StreamPlayer.class,
+
+        // Servers
+        StreamServer.class,
+        MusicServer.class,
+
+        // Playback services
+        LocalPlayerService.class,
+        StreamPlayerService.class,
 
         // Intent receivers
         PendingIntentReceiver.class,
@@ -84,12 +98,14 @@ import static android.content.Context.WIFI_SERVICE;
         NowPlayingFragment.class,
         SongsListFragment.class,
         LocalPlaybackFragment.class,
+        RemotePlaybackFragment.class,
         PlayersAroundFragment.class,
 
         // Activities
         LocalSongChooserActivity.class,
         AlbumInfoActivity.class,
         LocalPlaybackActivity.class,
+        RemotePlaybackActivity.class,
         StationChooserActivity.class,
         ArtistInfoActivity.class,
 
@@ -178,6 +194,18 @@ public class AndroidModule {
     @Singleton
     Utils provideUtils() {
         return new Utils();
+    }
+
+    @Provides
+    @Singleton
+    WifiUtils provideWifiUtils() {
+        return new WifiUtils();
+    }
+
+    @Provides
+    @Singleton
+    ConnectivityManager provideConnectivityManager() {
+        return (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
 }

@@ -22,7 +22,7 @@ import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
-import com.lwm.app.lib.WifiAP;
+import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.AlbumsListFragment;

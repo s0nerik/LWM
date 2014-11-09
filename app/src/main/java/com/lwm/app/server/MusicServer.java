@@ -52,6 +52,7 @@ public class MusicServer {
     private boolean started = false;
 
     public void start() {
+        bus.register(this);
         streamServer = new StreamServer(player);
         try {
             streamServer.start();
@@ -66,7 +67,6 @@ public class MusicServer {
             }
         }).start();
         started = true;
-        bus.register(this);
     }
 
     public void stop() {

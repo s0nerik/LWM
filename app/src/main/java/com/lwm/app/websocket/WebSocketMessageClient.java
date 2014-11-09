@@ -1,13 +1,12 @@
 package com.lwm.app.websocket;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
@@ -19,7 +18,7 @@ import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.model.chat.ChatMessage;
-import com.lwm.app.service.StreamPlayerService;
+import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.websocket.entities.ClientInfo;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
@@ -37,20 +36,21 @@ import javax.inject.Inject;
 public class WebSocketMessageClient extends WebSocketClient {
 
     @Inject
-    StreamPlayerService player;
+    StreamPlayer player;
+    @Inject
+    Bus bus;
+    @Inject
+    SharedPreferences sharedPreferences;
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
     private int unreadMessages = 0;
 
     private ClientInfo clientInfo;
 
-    @Inject
-    Bus bus;
-
-    public WebSocketMessageClient(Context context, URI serverURI) {
+    public WebSocketMessageClient(URI serverURI) {
         super(serverURI);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        clientInfo = new ClientInfo(prefs.getString("client_name", Build.MODEL));
+        Injector.inject(this);
+        clientInfo = new ClientInfo(sharedPreferences.getString("client_name", Build.MODEL));
     }
 
     @Override

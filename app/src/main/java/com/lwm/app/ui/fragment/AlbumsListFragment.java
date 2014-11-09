@@ -14,7 +14,7 @@ import android.widget.ListAdapter;
 import com.google.gson.Gson;
 import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
-import com.lwm.app.helper.AlbumsCursorGetter;
+import com.lwm.app.helper.db.AlbumsCursorGetter;
 import com.lwm.app.model.AlbumsList;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.activity.AlbumInfoActivity;

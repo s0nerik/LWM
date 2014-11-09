@@ -10,7 +10,7 @@ import com.lwm.app.Utils;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
-import com.lwm.app.helper.SongsCursorGetter;
+import com.lwm.app.helper.db.SongsCursorGetter;
 import com.lwm.app.model.Song;
 import com.lwm.app.ui.async.SongsListLoader;
 import com.squareup.otto.Subscribe;

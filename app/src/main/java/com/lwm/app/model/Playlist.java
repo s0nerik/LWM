@@ -2,7 +2,7 @@ package com.lwm.app.model;
 
 import android.database.Cursor;
 
-import com.lwm.app.helper.SongsCursorGetter;
+import com.lwm.app.helper.db.SongsCursorGetter;
 
 import java.util.ArrayList;
 import java.util.List;

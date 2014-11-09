@@ -12,7 +12,7 @@ import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.events.access_point.AccessPointStateEvent;
-import com.lwm.app.lib.WifiAP;
+import com.lwm.app.helper.wifi.WifiAP;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 

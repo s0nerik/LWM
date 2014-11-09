@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
-import com.lwm.app.helper.ArtistsCursorGetter;
+import com.lwm.app.helper.db.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.squareup.otto.Bus;

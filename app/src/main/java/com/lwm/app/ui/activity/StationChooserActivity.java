@@ -17,7 +17,7 @@ import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.events.wifi.WifiStateChangedEvent;
-import com.lwm.app.lib.WifiAP;
+import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.ui.base.DaggerActivity;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
