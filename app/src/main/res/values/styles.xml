@@ -141,6 +141,28 @@
         <item name="font">@string/FONT_ROBOTO_THIN</item>
     </style>
 
+    <style name="GridItemDescription" parent="SongItem">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:minHeight">68dp</item>
+        <item name="android:maxHeight">68dp</item>
+        <item name="android:background">@color/now_playing_bg</item>
+    </style>
+
+    <style name="GridItemText" parent="ListItemText" />
+
+    <style name="GridItemText.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="font">@string/FONT_ROBOTO_REGULAR</item>
+    </style>
+
+    <style name="GridItemText.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#ddd</item>
+        <item name="font">@string/FONT_ROBOTO_THIN</item>
+    </style>
+
     <style name="Card.NonCheckable" parent="Card">
         <item name="android:background">@drawable/background_card</item>
         <item name="android:checkable">false</item>
