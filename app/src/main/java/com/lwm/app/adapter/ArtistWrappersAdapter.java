@@ -26,7 +26,7 @@ import butterknife.InjectView;
 
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
 
-    private List<ArtistWrapper> artistsList;
+    private List<ArtistWrapper> artistWrapperList;
 
     @Inject
     Utils utils;
@@ -39,7 +39,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
     public ArtistWrappersAdapter(ArtistWrapperList artists) {
         Injector.inject(this);
-        artistsList = artists.getArtistWrappers();
+        artistWrapperList = artists.getArtistWrappers();
     }
 
     @Override
@@ -49,11 +49,12 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int i) {
-        Artist artist = artistsList.get(i).getArtist();
+        ArtistWrapper artistWrapper = artistWrapperList.get(i);
+        Artist artist = artistWrapper.getArtist();
         holder.mTitle.setText(utils.getArtistName(artist.getName()));
         holder.mSubtitle.setText("Albums: " + artist.getNumberOfAlbums());
 
-        List<Album> albums = artist.getAlbums();
+        List<Album> albums = artistWrapper.getAlbums();
 
         List<Album> blacklist = new ArrayList<>();
         for (Album a : albums) {
@@ -72,7 +73,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
     @Override
     public int getItemCount() {
-        return artistsList.size();
+        return artistWrapperList.size();
     }
 
     /**
