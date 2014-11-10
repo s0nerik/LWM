@@ -5,62 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="2dp"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/covers"
-        android:orientation="horizontal"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
-
-        <ImageView
-            android:id="@+id/image"
-            android:src="@drawable/no_cover"
-            android:layout_height="match_parent"
-            android:layout_width="200dp"
-            style="@style/artist_item_cover_bg_image"/>
-
-        <FrameLayout
-            android:id="@+id/bg_layout1"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            style="@style/artist_item_cover_bg_layout">
-            <ImageView
-                android:id="@+id/bg_image1"
-                android:src="@drawable/no_cover"
-                style="@style/artist_item_cover_bg_image"/>
-            <View
-                style="@style/artist_item_cover_shadow"/>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/bg_layout2"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            style="@style/artist_item_cover_bg_layout">
-            <ImageView
-                android:id="@+id/bg_image2"
-                android:src="@drawable/no_cover"
-                style="@style/artist_item_cover_bg_image"/>
-            <View
-                style="@style/artist_item_cover_shadow"/>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/bg_layout3"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            style="@style/artist_item_cover_bg_layout">
-            <ImageView
-                android:id="@+id/bg_image3"
-                android:src="@drawable/no_cover"
-                style="@style/artist_item_cover_bg_image"/>
-            <View
-                style="@style/artist_item_cover_shadow"/>
-        </FrameLayout>
-
-    </LinearLayout>
+        android:layout_height="@dimen/item_covers_size" />
 
     <LinearLayout
         android:id="@+id/description"

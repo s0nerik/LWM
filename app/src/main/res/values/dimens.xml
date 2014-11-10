@@ -12,5 +12,7 @@
 
     <bool name="in_landscape">false</bool>
 
+    <dimen name="item_covers_size">192dp</dimen>
+
 
 </resources>

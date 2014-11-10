@@ -13,6 +13,7 @@ import android.view.WindowManager;
 
 import com.lwm.app.App;
 import com.lwm.app.Utils;
+import com.lwm.app.adapter.AlbumCoversAdapter;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.adapter.ArtistWrappersAdapter;
 import com.lwm.app.adapter.SongsListAdapter;
@@ -99,6 +100,7 @@ import static android.content.Context.WIFI_SERVICE;
         SongsListAdapter.class,
         AlbumsAdapter.class,
         ArtistWrappersAdapter.class,
+        AlbumCoversAdapter.class,
 
         // Fragments
         QueueFragment.class,
