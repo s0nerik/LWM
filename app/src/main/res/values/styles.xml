@@ -291,4 +291,23 @@
         <item name="font">@string/FONT_ROBOTO_LIGHT</item>
     </style>
 
+    <style name="artist_item_cover_shadow">
+        <item name="android:background">@drawable/shadow_playback_fragment_left</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="artist_item_cover_bg_layout">
+        <!--<item name="android:visibility">gone</item>-->
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">16dp</item>
+    </style>
+
+    <style name="artist_item_cover_bg_image">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:adjustViewBounds">false</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
 </resources>

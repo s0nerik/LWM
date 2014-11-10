@@ -1,16 +1,21 @@
 package com.lwm.app.helper.db;
 
-import android.content.Context;
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import com.lwm.app.Injector;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
+
+import javax.inject.Inject;
 
 public class AlbumsCursorGetter {
 
     private String artist;
-    private Context caller;
+
+    @Inject
+    ContentResolver contentResolver;
 
     private final String[] projection = {
             MediaStore.Audio.Albums._ID,
@@ -35,13 +40,13 @@ public class AlbumsCursorGetter {
 //    public static final int ALBUM_KEY    = 4;
 //    public static final int ALBUM_ID     = 4;
 
-    public AlbumsCursorGetter(Context caller) {
-        this.caller = caller;
+    public AlbumsCursorGetter() {
+        Injector.inject(this);
     }
 
-    public AlbumsCursorGetter(Context caller, String artist) {
-        this.caller = caller;
+    public AlbumsCursorGetter(String artist) {
         this.artist = artist;
+        Injector.inject(this);
     }
 
     public Cursor getAlbumsCursor(){
@@ -51,7 +56,7 @@ public class AlbumsCursorGetter {
             selectionArgs = new String[]{artist};
         }
 
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
@@ -64,7 +69,7 @@ public class AlbumsCursorGetter {
     public Album getAlbumById(long id){
         String selection = MediaStore.Audio.Albums._ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
-        Cursor cursor = caller.getContentResolver().query(
+        Cursor cursor = contentResolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
@@ -84,7 +89,7 @@ public class AlbumsCursorGetter {
         String selection = MediaStore.Audio.Albums.ARTIST + " = ?";
         String[] selectionArgs = {artist.getName()};
 
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,

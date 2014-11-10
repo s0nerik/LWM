@@ -4,8 +4,8 @@ repositories {
     flatDir {
         dirs '../libs'
     }
-    maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 android {

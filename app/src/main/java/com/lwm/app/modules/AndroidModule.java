@@ -9,13 +9,16 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 
 import com.lwm.app.App;
 import com.lwm.app.Utils;
 import com.lwm.app.adapter.AlbumsAdapter;
-import com.lwm.app.adapter.ArtistsAdapter;
+import com.lwm.app.adapter.ArtistWrappersAdapter;
 import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.events.MainThreadBus;
+import com.lwm.app.helper.bitmap.ArtistAlbumsBitmapHelper;
+import com.lwm.app.helper.db.AlbumsCursorGetter;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.helper.wifi.WifiUtils;
 import com.lwm.app.player.LocalPlayer;
@@ -35,6 +38,7 @@ import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.async.LocalQueueLoader;
 import com.lwm.app.ui.custom_view.BroadcastButton;
+import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.LocalPlaybackFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
@@ -57,6 +61,9 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
+        ArtistAlbumsBitmapHelper.class,
+        AlbumsCursorGetter.class,
+
         WebSocketMessageClient.class,
 
         BitmapInfoCallback.class,
@@ -91,12 +98,13 @@ import static android.content.Context.WIFI_SERVICE;
         // Adapters
         SongsListAdapter.class,
         AlbumsAdapter.class,
-        ArtistsAdapter.class,
+        ArtistWrappersAdapter.class,
 
         // Fragments
         QueueFragment.class,
         NowPlayingFragment.class,
         SongsListFragment.class,
+        ArtistsListFragment.class,
         LocalPlaybackFragment.class,
         RemotePlaybackFragment.class,
         PlayersAroundFragment.class,
@@ -206,6 +214,12 @@ public class AndroidModule {
     @Singleton
     ConnectivityManager provideConnectivityManager() {
         return (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    WindowManager provideWindowManager() {
+        return (WindowManager) application.getSystemService(Context.WINDOW_SERVICE);
     }
 
 }

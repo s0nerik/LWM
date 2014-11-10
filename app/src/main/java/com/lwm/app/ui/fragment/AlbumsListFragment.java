@@ -54,7 +54,7 @@ public class AlbumsListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter(getActivity());
+        AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter();
         Cursor albums;
 
         if (artist == null) {

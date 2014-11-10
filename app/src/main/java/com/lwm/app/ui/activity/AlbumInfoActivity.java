@@ -64,7 +64,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
         listView.setOnItemClickListener(this);
 
-        Album album = new AlbumsCursorGetter(this).getAlbumById(albumId);
+        Album album = new AlbumsCursorGetter().getAlbumById(albumId);
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
 
