@@ -22,6 +22,7 @@ import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
+import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.Croutons;
@@ -217,6 +218,14 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
         Croutons.messageReceived(this, event.getMessage());
+    }
+
+    @Subscribe
+    public void onStartArtistInfoActivity(ShouldStartArtistInfoActivity event) {
+        Intent intent = new Intent(this, ArtistInfoActivity.class);
+        intent.putExtra("artist_id", event.getArtist().getId());
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
     }
 
     @Override

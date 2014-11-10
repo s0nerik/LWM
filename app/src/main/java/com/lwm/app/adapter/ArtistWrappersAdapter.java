@@ -13,10 +13,12 @@ import com.danh32.fontify.TextView;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
 import com.lwm.app.model.ArtistWrapper;
 import com.lwm.app.model.ArtistWrapperList;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,9 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
     private static final int MAX_SIZE = 8;
 
     private List<ArtistWrapper> artistWrapperList;
+
+    @Inject
+    Bus bus;
 
     @Inject
     Utils utils;
@@ -107,7 +112,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
      *
      * @author ButterKnifeZelezny, plugin for Android Studio by Inmite Developers (http://inmite.github.io)
      */
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.recyclerView)
         RecyclerView mRecyclerView;
         @InjectView(R.id.text_layout)
@@ -120,6 +125,12 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
         ViewHolder(View view) {
             super(view);
             ButterKnife.inject(this, view);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            bus.post(new ShouldStartArtistInfoActivity(artistWrapperList.get(getPosition()).getArtist()));
         }
     }
 }
