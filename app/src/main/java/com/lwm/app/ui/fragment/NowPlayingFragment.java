@@ -18,7 +18,7 @@ import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
-import com.lwm.app.ui.BitmapInfoCallback;
+import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
 import com.lwm.app.ui.custom_view.ProgressWheel;
@@ -91,7 +91,7 @@ public class NowPlayingFragment extends DaggerFragment {
                 .error(R.drawable.no_cover)
                 .load(song.getAlbumArtUri().toString())
                 .withBitmapInfo()
-                .setCallback(new BitmapInfoCallback(mGlobalLayout, mTitle, mArtist));
+                .setCallback(new SingleBitmapPaletteInfoCallback(mGlobalLayout, mTitle, mArtist));
 
         mArtist.setText(utils.getArtistName(song.getArtist()));
         mTitle.setText(song.getTitle());

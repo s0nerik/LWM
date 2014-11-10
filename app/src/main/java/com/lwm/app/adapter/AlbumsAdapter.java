@@ -13,7 +13,7 @@ import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
-import com.lwm.app.ui.BitmapInfoCallback;
+import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.custom_view.SquareWidthImageView;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
                 .error(R.drawable.no_cover)
                 .load("file://" + album.getAlbumArtPath())
                 .withBitmapInfo()
-                .setCallback(new BitmapInfoCallback(holder.mBottomBar, holder.mTitle, holder.mSubtitle));
+                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.mTitle, holder.mSubtitle));
 
         return rowView;
     }

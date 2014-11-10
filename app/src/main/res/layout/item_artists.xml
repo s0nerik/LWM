@@ -3,6 +3,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
@@ -10,10 +11,11 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
+        android:isScrollContainer="false"
         android:layout_height="@dimen/item_covers_size" />
 
     <LinearLayout
-        android:id="@+id/description"
+        android:id="@+id/text_layout"
         android:layout_below="@+id/covers"
         style="@style/GridItemDescription"
         android:orientation="vertical">

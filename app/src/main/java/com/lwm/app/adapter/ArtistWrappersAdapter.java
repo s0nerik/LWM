@@ -3,9 +3,11 @@ package com.lwm.app.adapter;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.danh32.fontify.TextView;
 import com.lwm.app.Injector;
@@ -26,6 +28,8 @@ import butterknife.InjectView;
 
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
 
+    private static final int MAX_SIZE = 8;
+
     private List<ArtistWrapper> artistWrapperList;
 
     @Inject
@@ -37,9 +41,17 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
     @Inject
     Context context;
 
+    @Inject
+    WindowManager windowManager;
+
+    private int displayWidth;
+
     public ArtistWrappersAdapter(ArtistWrapperList artists) {
         Injector.inject(this);
         artistWrapperList = artists.getArtistWrappers();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        displayWidth = displayMetrics.widthPixels;
     }
 
     @Override
@@ -64,10 +76,23 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
         }
         albums.removeAll(blacklist);
 
-        holder.mRecyclerView.setHasFixedSize(true);
+        if (albums.size() == 0) {
+            albums.add(new Album(null));
+        } else if (albums.size() > MAX_SIZE) {
+            albums = albums.subList(albums.size() - MAX_SIZE, albums.size());
+        }
+
         holder.mRecyclerView.setLayoutManager(
                 new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        holder.mRecyclerView.setAdapter(new AlbumCoversAdapter(albums));
+        holder.mRecyclerView.setAdapter(
+                new AlbumCoversAdapter(
+                        albums,
+                        displayWidth / albums.size(),
+                        holder.mTextLayout,
+                        holder.mTitle,
+                        holder.mSubtitle
+                )
+        );
 
     }
 
@@ -85,6 +110,8 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
     static class ViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.recyclerView)
         RecyclerView mRecyclerView;
+        @InjectView(R.id.text_layout)
+        View mTextLayout;
         @InjectView(R.id.title)
         TextView mTitle;
         @InjectView(R.id.subtitle)

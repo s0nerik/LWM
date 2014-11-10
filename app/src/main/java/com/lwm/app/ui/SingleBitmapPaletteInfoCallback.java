@@ -14,7 +14,7 @@ import com.lwm.app.R;
 
 import javax.inject.Inject;
 
-public class BitmapInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
+public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
 
     @Inject
     Resources resources;
@@ -23,7 +23,7 @@ public class BitmapInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
     private TextView mTitle;
     private TextView mSubtitle;
 
-    public BitmapInfoCallback(View layout, TextView title, TextView subtitle) {
+    public SingleBitmapPaletteInfoCallback(View layout, TextView title, TextView subtitle) {
         mLayout = layout;
         mTitle = title;
         mSubtitle = subtitle;
