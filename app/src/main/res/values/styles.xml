@@ -30,6 +30,10 @@
         <item name="android:windowTitleSize">0dp</item>
     </style>
 
+    <style name="AppTheme.PlaybackActivity" parent="AppTheme.NoActionBar">
+        <item name="colorPrimaryDark">#000</item>
+    </style>
+
     <style name="Widget" />
 
     <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.ActionBar" />

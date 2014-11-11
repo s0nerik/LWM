@@ -70,7 +70,7 @@
             android:screenOrientation="portrait"
             android:name=".ui.activity.LocalPlaybackActivity"
             android:parentActivityName=".ui.activity.LocalSongChooserActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.PlaybackActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -81,7 +81,7 @@
             android:screenOrientation="portrait"
             android:name=".ui.activity.RemotePlaybackActivity"
             android:parentActivityName=".ui.activity.StationChooserActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.PlaybackActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
