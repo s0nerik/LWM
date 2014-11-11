@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="primary">#673ab7</color>
+    <color name="primaryDark">#512da8</color>
+
     // Card colors
     <color name="card_shadow">#ccc</color>
     <color name="checked">#2d2d2d</color>

@@ -3,11 +3,15 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/actionbar_background</item>
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">@color/primary</item>
 
-        <!--<item name="colorPrimaryDark">@color/actionbar_background_dark</item>-->
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/primaryDark</item>
 
-        <!--<item name="colorAccent">@color/accent</item>-->
+        <!-- colorAccent is used as the default value for colorControlActivated,
+             which is used to tint widgets -->
+        <item name="colorAccent">#fff</item>
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">

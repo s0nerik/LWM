@@ -4,8 +4,8 @@
     android:enterFadeDuration="@android:integer/config_shortAnimTime"
     android:exitFadeDuration="@android:integer/config_mediumAnimTime">
 
-    <item android:state_checked="true" android:drawable="@color/orange_main" />
-    <item android:state_pressed="true" android:drawable="@color/pressed" />
+    <item android:state_checked="true" android:drawable="@color/primaryDark" />
+    <item android:state_pressed="true" android:drawable="@color/primary" />
     <item android:drawable="@android:color/transparent" />
 
 </selector>
