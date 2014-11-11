@@ -1,13 +1,12 @@
 package com.lwm.app.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.danh32.fontify.TextView;
 import com.lwm.app.Injector;
@@ -27,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
 
@@ -47,16 +47,14 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
     Context context;
 
     @Inject
-    WindowManager windowManager;
+    Resources resources;
 
     private int displayWidth;
 
     public ArtistWrappersAdapter(ArtistWrapperList artists) {
         Injector.inject(this);
         artistWrapperList = artists.getArtistWrappers();
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        displayWidth = displayMetrics.widthPixels;
+        displayWidth = utils.getScreenWidth();
     }
 
     @Override
@@ -112,7 +110,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
      *
      * @author ButterKnifeZelezny, plugin for Android Studio by Inmite Developers (http://inmite.github.io)
      */
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.recyclerView)
         RecyclerView mRecyclerView;
         @InjectView(R.id.text_layout)
@@ -125,11 +123,10 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
         ViewHolder(View view) {
             super(view);
             ButterKnife.inject(this, view);
-            view.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
+        @OnClick(R.id.touch_area)
+        public void onClick() {
             bus.post(new ShouldStartArtistInfoActivity(artistWrapperList.get(getPosition()).getArtist()));
         }
     }

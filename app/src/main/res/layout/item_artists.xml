@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="2dp"
+    android:padding="@dimen/padding_artists_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
@@ -11,18 +11,21 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:isScrollContainer="false"
         android:layout_height="@dimen/item_covers_size" />
 
     <LinearLayout
         android:id="@+id/text_layout"
+        android:background="#a000"
         android:layout_below="@+id/covers"
         style="@style/GridItemDescription"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
 
         <com.danh32.fontify.TextView
             style="@style/GridItemText.Title"
             android:id="@+id/title"
+            android:shadowRadius="4"
+            android:shadowColor="#000"
             tools:text="Test" />
 
         <com.danh32.fontify.TextView
@@ -32,4 +35,9 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <View
+        android:id="@+id/touch_area"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_covers_size" />
+
+</FrameLayout>

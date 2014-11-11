@@ -8,7 +8,9 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,6 +28,9 @@ public class Utils {
 
     @Inject
     Resources resources;
+
+    @Inject
+    WindowManager windowManager;
 
     public Utils() {
         Injector.inject(this);
@@ -106,6 +111,12 @@ public class Utils {
     public int dpToPixels(int dp) {
         float density = resources.getDisplayMetrics().density;
         return (int) (dp * density);
+    }
+
+    public int getScreenWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
 }

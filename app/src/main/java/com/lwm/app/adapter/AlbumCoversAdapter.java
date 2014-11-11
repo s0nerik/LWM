@@ -60,7 +60,6 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
 
     @Override
     public void onBindViewHolder(final AlbumCoversAdapter.ViewHolder viewHolder, final int i) {
-        viewHolder.mLayout.getLayoutParams().width = width;
         viewHolder.mImage.setMaxWidth(width);
         viewHolder.mImage.setMinimumWidth(width);
         Ion.with(viewHolder.mImage)
@@ -130,7 +129,7 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
             if (i < albums.size() - 1) {
                 holder.mShadow.setVisibility(View.VISIBLE);
             } else {
-                super.onCompleted(e, result);
+//                super.onCompleted(e, result);
             }
         }
     }
