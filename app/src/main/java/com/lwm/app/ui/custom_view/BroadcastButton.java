@@ -1,6 +1,7 @@
 package com.lwm.app.ui.custom_view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,9 @@ public class BroadcastButton extends RelativeLayout {
 
     @Inject
     WifiAP wifiAP;
+
+    @Inject
+    Resources resources;
 
     @InjectView(R.id.icon)
     ImageView mIcon;
@@ -68,7 +72,7 @@ public class BroadcastButton extends RelativeLayout {
     }
 
     private void setBroadcastState(boolean isBroadcasting) {
-        mIcon.setColorFilter(getResources().getColor(isBroadcasting ? R.color.orange_main : android.R.color.white));
+        mIcon.setImageResource(isBroadcasting ? R.drawable.ic_ap_on : R.drawable.ic_ap_off);
     }
 
     @Override

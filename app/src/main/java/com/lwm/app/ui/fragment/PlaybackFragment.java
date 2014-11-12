@@ -200,11 +200,11 @@ public abstract class PlaybackFragment extends DaggerOttoFragment {
     }
 
     private void setShuffleButton(boolean enabled) {
-        mBtnShuffleIcon.setColorFilter(resources.getColor(enabled? R.color.orange_main : android.R.color.white));
+        mBtnShuffleIcon.setColorFilter(resources.getColor(enabled? R.color.primary : android.R.color.white));
     }
 
     private void setRepeatButton(boolean enabled) {
-        mBtnRepeatIcon.setColorFilter(resources.getColor(enabled? R.color.orange_main : android.R.color.white));
+        mBtnRepeatIcon.setColorFilter(resources.getColor(enabled? R.color.primary : android.R.color.white));
     }
 
     private void initView() {
