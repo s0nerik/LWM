@@ -251,7 +251,7 @@
         // Needed for "smoothness" hack to work
         <item name="android:visibility">invisible</item>
 
-        <item name="android:background">#333</item>
+        <item name="android:background">@color/primary</item>
         <item name="android:layout_width">70dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginTop">35dp</item>
