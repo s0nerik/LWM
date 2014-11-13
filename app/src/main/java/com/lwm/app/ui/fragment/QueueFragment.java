@@ -42,8 +42,10 @@ public class QueueFragment extends BaseSongsListFragment {
                 break;
             case LOADED:
                 mProgress.setVisibility(View.GONE);
+                songs = event.getList();
                 if (!event.getList().isEmpty()) {
                     initAdapter(event.getList());
+                    setSelection(currentSong);
                 } else {
                     mEmptyView.setVisibility(View.VISIBLE);
                 }
