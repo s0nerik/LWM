@@ -1,6 +1,5 @@
 package com.lwm.app.ui.fragment;
 
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -82,31 +81,12 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
 
     private void setSelection(int position) {
         mListView.setItemChecked(position, true);
-
-        Rect scrollBounds = new Rect();
-        mListView.getHitRect(scrollBounds);
-        if (position < 0 || !getViewByPosition(songs.indexOf(currentSong)).getLocalVisibleRect(scrollBounds)) {
-            mListView.setSelection(position);
-            mListView.smoothScrollToPosition(position);
-        }
-
+        mListView.setSelection(position);
     }
 
     protected void initAdapter(List<Song> songs) {
         adapter = new SongsListAdapter(getActivity(), player, songs);
         mListView.setAdapter(adapter);
-    }
-
-    protected View getViewByPosition(int pos) {
-        final int firstListItemPosition = mListView.getFirstVisiblePosition();
-        final int lastListItemPosition = firstListItemPosition + mListView.getChildCount() - 1;
-
-        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
-            return mListView.getAdapter().getView(pos, null, mListView);
-        } else {
-            final int childIndex = pos - firstListItemPosition;
-            return mListView.getChildAt(childIndex);
-        }
     }
 
     protected void shuffleAll() {

@@ -3,6 +3,9 @@ package com.lwm.app.model;
 import android.content.ContentUris;
 import android.net.Uri;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class Song {
 
     private static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
@@ -113,30 +116,4 @@ public class Song {
         return ContentUris.withAppendedId(artworkUri, albumId);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Song song = (Song) o;
-
-        if (!source.equals(song.source)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return source.hashCode();
-    }
-
-    //    @Override
-//    public int hashCode() {
-//        return (int)(songId-(songId >>> 32));
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        return o.hashCode() == hashCode();
-//    }
 }
