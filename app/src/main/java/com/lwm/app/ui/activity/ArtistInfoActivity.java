@@ -40,7 +40,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
 
         long artistId = getIntent().getLongExtra("artist_id", -1);
         assert artistId != -1 : "artistId == -1";
-        Artist artist = new ArtistsCursorGetter(this).getArtistById(artistId);
+        Artist artist = new ArtistsCursorGetter().getArtistById(artistId);
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
         mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());

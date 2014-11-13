@@ -16,7 +16,7 @@
         android:clipToPadding="false" />
 
     <LinearLayout
-        android:id="@android:id/empty"
+        android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -39,8 +39,9 @@
     </LinearLayout>
 
     <ProgressBar
-        style="?android:progressBarStyleLarge"
+        style="?android:attr/progressBarStyleLarge"
         android:id="@+id/progress"
+        android:indeterminate="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

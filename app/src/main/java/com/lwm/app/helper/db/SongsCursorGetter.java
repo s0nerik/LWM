@@ -1,16 +1,20 @@
 package com.lwm.app.helper.db;
 
-import android.content.Context;
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.Daggered;
 import com.lwm.app.lib.QuickAdapter;
 
-public class SongsCursorGetter implements QuickAdapter.DataSource{
+import javax.inject.Inject;
 
-    private Context caller;
+public class SongsCursorGetter extends Daggered implements QuickAdapter.DataSource {
+
+    @Inject
+    ContentResolver contentResolver;
 
     private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
     private String[] projection = {
@@ -43,13 +47,9 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
 //    public static final int ALBUM_KEY    = 11;
 //    public static final int ALBUM_KEY    = 10;
 
-    public SongsCursorGetter(Context caller){
-        this.caller = caller;
-    }
-
     public Cursor getSongsCursor(){
 
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
@@ -67,7 +67,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
         String selection = this.selection+" AND "+ MediaStore.Audio.AudioColumns.ALBUM_ID+" = ?";
         String[] selectionArgs = {String.valueOf(albumId)};
 
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
@@ -81,7 +81,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
 
     public Cursor getSongsRandomOrder(){
 
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
@@ -93,7 +93,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
 
     @Override
     public Cursor getRowIds() {
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Audio.Media._ID},
                 selection,
@@ -107,7 +107,7 @@ public class SongsCursorGetter implements QuickAdapter.DataSource{
 
     @Override
     public Cursor getRowById(long rowId) {
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 MediaStore.Audio.Media._ID+" = "+rowId,

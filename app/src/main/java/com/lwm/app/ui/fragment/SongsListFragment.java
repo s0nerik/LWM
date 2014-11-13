@@ -1,41 +1,19 @@
 package com.lwm.app.ui.fragment;
 
-import android.content.Loader;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.os.AsyncTask;
+import android.view.View;
 
 import com.lwm.app.R;
-import com.lwm.app.Utils;
-import com.lwm.app.events.player.playback.PlaybackStartedEvent;
-import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
-import com.lwm.app.helper.db.SongsCursorGetter;
+import com.lwm.app.events.ui.SongsListLoadingEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.ui.async.SongsListLoader;
+import com.lwm.app.ui.async.SongsLoaderTask;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.InjectView;
 import butterknife.OnItemClick;
 
 public class SongsListFragment extends BaseSongsListFragment {
-
-    @Inject
-    Utils utils;
-
-    @InjectView(R.id.listView)
-    ListView mListView;
-    @InjectView(R.id.progress)
-    ProgressBar mProgress;
-    @InjectView(R.id.emptyView)
-    LinearLayout mEmptyView;
-
-
-    public SongsListFragment() {}
 
     @Override
     protected int getViewId() {
@@ -43,37 +21,33 @@ public class SongsListFragment extends BaseSongsListFragment {
     }
 
     @Override
-    protected Loader<List<Song>> getSongsLoader() {
-        return new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initAdapter();
-    }
-
-    @Subscribe
-    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-        currentSong = event.getSong();
-        setSelection(currentSong);
-    }
-
-    @Subscribe
-    public void onSongPlaybackStarted(PlaybackStartedEvent event) {
-        currentSong = event.getSong();
-        setSelection(currentSong);
-    }
-
-    @Subscribe
-    public void onShuffleSongs(ShouldShuffleSongsEvent event) {
-        shuffleAll();
+    protected AsyncTask<Void, Void, List<Song>> getSongsLoaderTask() {
+        return new SongsLoaderTask();
     }
 
     @OnItemClick(R.id.listView)
     public void onItemClicked(int pos) {
         player.setQueue(songs);
         player.play(pos);
+    }
+
+    @Subscribe
+    public void onSongsLoadingEvent(SongsListLoadingEvent event) {
+        switch (event.getState()) {
+            case LOADING:
+                mProgress.setVisibility(View.VISIBLE);
+                break;
+            case LOADED:
+                mProgress.setVisibility(View.GONE);
+                songs = event.getList();
+                if (!event.getList().isEmpty()) {
+                    initAdapter(songs);
+                    setSelection(currentSong);
+                } else {
+                    mEmptyView.setVisibility(View.VISIBLE);
+                }
+                break;
+        }
     }
 
 }

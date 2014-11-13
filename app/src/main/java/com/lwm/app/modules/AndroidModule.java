@@ -20,6 +20,8 @@ import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.events.MainThreadBus;
 import com.lwm.app.helper.bitmap.ArtistAlbumsBitmapHelper;
 import com.lwm.app.helper.db.AlbumsCursorGetter;
+import com.lwm.app.helper.db.ArtistsCursorGetter;
+import com.lwm.app.helper.db.SongsCursorGetter;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.helper.wifi.WifiUtils;
 import com.lwm.app.player.LocalPlayer;
@@ -37,7 +39,9 @@ import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.activity.LocalSongChooserActivity;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.activity.StationChooserActivity;
-import com.lwm.app.ui.async.LocalQueueLoader;
+import com.lwm.app.ui.async.ArtistsLoaderTask;
+import com.lwm.app.ui.async.QueueLoaderTask;
+import com.lwm.app.ui.async.SongsLoaderTask;
 import com.lwm.app.ui.custom_view.BroadcastButton;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.LocalPlaybackFragment;
@@ -63,7 +67,6 @@ import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
         ArtistAlbumsBitmapHelper.class,
-        AlbumsCursorGetter.class,
 
         WebSocketMessageClient.class,
 
@@ -72,9 +75,17 @@ import static android.content.Context.WIFI_SERVICE;
 
         NowPlayingNotification.class,
 
-        LocalQueueLoader.class,
-
         BroadcastButton.class,
+
+        // DB Helpers
+        AlbumsCursorGetter.class,
+        SongsCursorGetter.class,
+        ArtistsCursorGetter.class,
+
+        // AsyncTasks
+        SongsLoaderTask.class,
+        QueueLoaderTask.class,
+        ArtistsLoaderTask.class,
 
         // Utils
         Utils.class,

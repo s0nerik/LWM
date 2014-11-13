@@ -4,13 +4,13 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
-import com.lwm.app.Injector;
+import com.lwm.app.Daggered;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
 
 import javax.inject.Inject;
 
-public class AlbumsCursorGetter {
+public class AlbumsCursorGetter extends Daggered {
 
     private String artist;
 
@@ -40,13 +40,14 @@ public class AlbumsCursorGetter {
 //    public static final int ALBUM_KEY    = 4;
 //    public static final int ALBUM_ID     = 4;
 
+
     public AlbumsCursorGetter() {
-        Injector.inject(this);
+        super();
     }
 
     public AlbumsCursorGetter(String artist) {
+        super();
         this.artist = artist;
-        Injector.inject(this);
     }
 
     public Cursor getAlbumsCursor(){

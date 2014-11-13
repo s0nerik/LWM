@@ -1,8 +1,5 @@
 package com.lwm.app.ui.fragment;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,25 +12,22 @@ import android.widget.ProgressBar;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.adapter.ArtistWrappersAdapter;
-import com.lwm.app.events.ui.ArtistsListLoadedEvent;
-import com.lwm.app.helper.db.ArtistsCursorGetter;
+import com.lwm.app.events.ui.ArtistsListLoadingEvent;
 import com.lwm.app.model.ArtistWrapperList;
+import com.lwm.app.ui.async.ArtistsLoaderTask;
 import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ArtistsListFragment extends DaggerOttoFragment {
+public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
-    @InjectView(android.R.id.empty)
+    @InjectView(R.id.empty)
     LinearLayout mEmpty;
     @InjectView(R.id.grid)
     RecyclerView mGrid;
     @InjectView(R.id.progress)
     ProgressBar mProgress;
-
-    private ArtistWrapperList artistsList;
-    private ArtistsCursorGetter artistsCursorGetter;
 
     public ArtistsListFragment() {
         Injector.inject(this);
@@ -53,7 +47,7 @@ public class ArtistsListFragment extends DaggerOttoFragment {
         super.onViewCreated(view, savedInstanceState);
         mGrid.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        new LoadAlbumsTask().execute(getActivity());
+        new ArtistsLoaderTask().execute();
     }
 
     @Override
@@ -63,12 +57,19 @@ public class ArtistsListFragment extends DaggerOttoFragment {
     }
 
     @Subscribe
-    public void onArtistsLoaded(ArtistsListLoadedEvent event) {
-        mProgress.setVisibility(View.GONE);
-        if (!event.getList().getArtistWrappers().isEmpty()) {
-            initAdapter(event.getList());
-        } else {
-            mEmpty.setVisibility(View.VISIBLE);
+    public void onArtistsLoadingEvent(ArtistsListLoadingEvent event) {
+        switch (event.getState()) {
+            case LOADING:
+                mProgress.setVisibility(View.VISIBLE);
+                break;
+            case LOADED:
+                mProgress.setVisibility(View.GONE);
+                if (!event.getList().getArtistWrappers().isEmpty()) {
+                    initAdapter(event.getList());
+                } else {
+                    mEmpty.setVisibility(View.VISIBLE);
+                }
+                break;
         }
     }
 
@@ -78,23 +79,5 @@ public class ArtistsListFragment extends DaggerOttoFragment {
         mGrid.setHasFixedSize(true);
     }
 
-    private class LoadAlbumsTask extends AsyncTask<Context, Void, ArtistWrapperList> {
 
-        @Override
-        protected void onPreExecute() {
-            mProgress.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArtistWrapperList doInBackground(Context... params) {
-            artistsCursorGetter = new ArtistsCursorGetter(params[0]);
-            Cursor artists = artistsCursorGetter.getArtistsCursor();
-            return new ArtistWrapperList(artists);
-        }
-
-        @Override
-        protected void onPostExecute(ArtistWrapperList artistWrapperList) {
-            bus.post(new ArtistsListLoadedEvent(artistWrapperList));
-        }
-    }
 }

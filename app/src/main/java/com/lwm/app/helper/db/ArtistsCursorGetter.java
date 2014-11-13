@@ -1,14 +1,18 @@
 package com.lwm.app.helper.db;
 
-import android.content.Context;
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import com.lwm.app.Daggered;
 import com.lwm.app.model.Artist;
 
-public class ArtistsCursorGetter {
+import javax.inject.Inject;
 
-    private Context caller;
+public class ArtistsCursorGetter extends Daggered {
+
+    @Inject
+    ContentResolver contentResolver;
 
     private final String[] projection = {
             MediaStore.Audio.Artists._ID,
@@ -22,10 +26,6 @@ public class ArtistsCursorGetter {
     public static final int NUMBER_OF_ALBUMS = 2;
     public static final int NUMBER_OF_TRACKS = 3;
 
-    public ArtistsCursorGetter(Context caller) {
-        this.caller = caller;
-    }
-
     public Cursor getArtistsCursor(){
 
 //        String[] projection = {
@@ -35,7 +35,7 @@ public class ArtistsCursorGetter {
 //                MediaStore.Audio.Artists.NUMBER_OF_TRACKS
 //        };
 
-        return caller.getContentResolver().query(
+        return contentResolver.query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,
                 null,
@@ -47,7 +47,7 @@ public class ArtistsCursorGetter {
     public Artist getArtistById(long id){
         String selection = MediaStore.Audio.Artists._ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
-        Cursor cursor = caller.getContentResolver().query(
+        Cursor cursor = contentResolver.query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,

@@ -58,7 +58,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
         long albumId = getIntent().getIntExtra("album_id", -1);
         assert albumId != -1 : "albumId == -1";
-        playlist = Playlist.fromCursor(new SongsCursorGetter(this).getSongsCursor(albumId));
+        playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(albumId));
         adapter = new SimpleSongsListAdapter(this, player, playlist);
         listView.setAdapter(adapter);
 

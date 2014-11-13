@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class PlaybackFragment extends DaggerOttoFragment {
+public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     public static final int BLUR_RADIUS = 50;
 
