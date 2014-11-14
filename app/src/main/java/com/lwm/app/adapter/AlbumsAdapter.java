@@ -12,7 +12,6 @@ import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Album;
-import com.lwm.app.model.AlbumsList;
 import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.custom_view.SquareWidthImageView;
 
@@ -31,11 +30,11 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     @Inject
     Utils utils;
 
-    public AlbumsAdapter(final Context context, AlbumsList albums) {
-        super(context, R.layout.list_item_songs, albums.getAlbums());
+    public AlbumsAdapter(final Context context, List<Album> albums) {
+        super(context, R.layout.list_item_songs, albums);
         Injector.inject(this);
         this.context = context;
-        albumsList = albums.getAlbums();
+        albumsList = albums;
     }
 
 
