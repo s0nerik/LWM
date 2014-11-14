@@ -7,9 +7,9 @@
 
     <GridView
         android:id="@+id/grid"
-        android:verticalSpacing="4dp"
-        android:horizontalSpacing="4dp"
-        android:padding="4dp"
+        android:verticalSpacing="@dimen/padding_grid"
+        android:horizontalSpacing="@dimen/padding_grid"
+        android:padding="@dimen/padding_grid"
         android:clipToPadding="false"
         android:stretchMode="columnWidth"
         android:numColumns="2"

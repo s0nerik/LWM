@@ -13,6 +13,6 @@
     <bool name="in_landscape">false</bool>
 
     <dimen name="item_covers_size">160dp</dimen>
-    <dimen name="padding_artists_list">2dp</dimen>
+    <dimen name="padding_grid">1dp</dimen>
 
 </resources>

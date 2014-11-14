@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#000"
+    android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$ArtistsListFragment">
@@ -11,7 +11,9 @@
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="2dp"
+        android:paddingTop="@dimen/padding_grid"
+        android:paddingLeft="@dimen/padding_grid"
+        android:paddingRight="@dimen/padding_grid"
 
         android:clipToPadding="false" />
 
