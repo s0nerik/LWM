@@ -12,7 +12,7 @@ import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.server.StreamServer;
-import com.lwm.app.ui.fragment.PlaybackFragment;
+import com.lwm.app.ui.fragment.playback.PlaybackFragment;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

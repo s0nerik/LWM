@@ -20,7 +20,7 @@ import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.ui.Croutons;
-import com.lwm.app.ui.fragment.RemotePlaybackFragment;
+import com.lwm.app.ui.fragment.playback.RemotePlaybackFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 

@@ -1,4 +1,4 @@
-package com.lwm.app.ui.fragment;
+package com.lwm.app.ui.fragment.playback;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -28,23 +28,22 @@ import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 import com.lwm.app.ui.custom_view.SquareWidthImageView;
+import com.lwm.app.ui.fragment.DaggerOttoOnResumeFragment;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     public static final int BLUR_RADIUS = 50;
 
-    @Inject
-    LocalPlayer player;
+    private BasePlayer player;
 
     @Inject
     Resources resources;
@@ -90,6 +89,14 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
 
+    protected abstract BasePlayer getPlayer();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        player = getPlayer();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_playback, container, false);
@@ -129,6 +136,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     }
 
     protected void setSongInfo(final Song song) {
+        if (song == null) return;
         mToolbar.setTitle(song.getTitle());
         mToolbar.setSubtitle(song.getArtist());
 
@@ -170,26 +178,6 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
         remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
     }
 
-    @OnClick({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
-    public void onClickControls(View btn) {
-        switch (btn.getId()) {
-            case R.id.btnNext:
-                player.nextSong();
-                break;
-            case R.id.btnPrev:
-                player.prevSong();
-                break;
-            case R.id.btnPlayPause:
-                player.togglePause();
-                break;
-            case R.id.btnShuffle:
-                player.shuffleQueueExceptPlayed();
-                break;
-            case R.id.btnRepeat:
-                player.setRepeat(!player.isRepeat());
-                break;
-        }
-    }
 
     private void setPlayButton(boolean playing) {
         if (playing) {

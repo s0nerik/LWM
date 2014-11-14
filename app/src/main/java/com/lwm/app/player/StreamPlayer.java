@@ -96,6 +96,18 @@ public class StreamPlayer extends BasePlayer {
     }
 
     @Override
+    public boolean isShuffle() {
+        // TODO: return shuffle
+        return false;
+    }
+
+    @Override
+    public boolean isRepeat() {
+        // TODO: return repeat
+        return false;
+    }
+
+    @Override
     public void pause() throws IllegalStateException {
         super.pause();
     }

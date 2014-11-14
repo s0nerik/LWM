@@ -1,4 +1,4 @@
-package com.lwm.app.ui.fragment;
+package com.lwm.app.ui.fragment.playback;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,13 +13,20 @@ import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.helper.wifi.WifiAP;
+import com.lwm.app.player.BasePlayer;
+import com.lwm.app.player.LocalPlayer;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
+import butterknife.OnClick;
+
 import static com.lwm.app.events.access_point.AccessPointStateEvent.State.ENABLED;
 
 public class LocalPlaybackFragment extends PlaybackFragment {
+
+    @Inject
+    LocalPlayer player;
 
     @Inject
     WifiAP wifiAP;
@@ -41,6 +48,32 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 
     private void setChatButtonVisibility(boolean show) {
         chatButton.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
+    public void onClickControls(View btn) {
+        switch (btn.getId()) {
+            case R.id.btnNext:
+                player.nextSong();
+                break;
+            case R.id.btnPrev:
+                player.prevSong();
+                break;
+            case R.id.btnPlayPause:
+                player.togglePause();
+                break;
+            case R.id.btnShuffle:
+                player.shuffleQueueExceptPlayed();
+                break;
+            case R.id.btnRepeat:
+                player.setRepeat(!player.isRepeat());
+                break;
+        }
+    }
+
+    @Override
+    protected BasePlayer getPlayer() {
+        return player;
     }
 
     @Subscribe

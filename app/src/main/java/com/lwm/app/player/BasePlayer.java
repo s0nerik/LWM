@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.Injector;
+import com.lwm.app.model.Song;
 
 import javax.inject.Inject;
 
@@ -17,6 +18,9 @@ public abstract class BasePlayer extends MediaPlayer {
     public abstract void nextSong();
     public abstract void prevSong();
     public abstract void togglePause();
+    public abstract boolean isShuffle();
+    public abstract boolean isRepeat();
+    public abstract Song getCurrentSong();
 
     public BasePlayer() {
         Injector.inject(this);
