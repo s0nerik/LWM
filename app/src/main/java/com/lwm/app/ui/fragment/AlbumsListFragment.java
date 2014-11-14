@@ -15,12 +15,12 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.events.ui.AlbumsListLoadingEvent;
 import com.lwm.app.model.Album;
-import com.lwm.app.model.AlbumsList;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.async.AlbumsLoaderTask;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -36,7 +36,7 @@ public class AlbumsListFragment extends DaggerOttoOnCreateFragment {
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
-    private AlbumsList albumsList;
+    private List<Album> albums = new ArrayList<>();
     private Artist artist;
 
     @Override
@@ -68,7 +68,8 @@ public class AlbumsListFragment extends DaggerOttoOnCreateFragment {
                 break;
             case LOADED:
                 mProgress.setVisibility(View.GONE);
-                initAdapter(event.getList());
+                albums = event.getList();
+                initAdapter(albums);
                 break;
         }
     }
@@ -76,7 +77,7 @@ public class AlbumsListFragment extends DaggerOttoOnCreateFragment {
     @OnItemClick(R.id.grid)
     public void onItemClick(int position) {
         Intent intent = new Intent(getActivity(), AlbumInfoActivity.class);
-        intent.putExtra("album_id", albumsList.getAlbums().get(position).getId());
+        intent.putExtra("album_id", albums.get(position).getId());
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
     }
