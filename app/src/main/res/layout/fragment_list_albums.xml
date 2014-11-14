@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
+    android:background="#fff"
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$AlbumsListFragment">
 
     <GridView
@@ -24,7 +24,7 @@
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible" >
+        tools:visibility="gone" >
 
         <ImageView
             android:layout_width="wrap_content"

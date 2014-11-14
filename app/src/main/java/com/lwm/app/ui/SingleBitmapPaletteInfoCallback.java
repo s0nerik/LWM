@@ -55,7 +55,7 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
     }
 
     private void applyDefaultStyle() {
-        applyStyle(resources.getColor(R.color.now_playing_bg), Color.WHITE, Color.WHITE);
+        applyStyle(resources.getColor(R.color.grid_item_default_bg), Color.WHITE, Color.WHITE);
     }
 
     private void applyStyle(int bgColor, int titleColor, int subtitleColor) {

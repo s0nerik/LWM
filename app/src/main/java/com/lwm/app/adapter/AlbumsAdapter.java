@@ -37,8 +37,6 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         albumsList = albums;
     }
 
-
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -60,7 +58,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
 
         Ion.with(holder.mCover)
                 .smartSize(true)
-                .placeholder(R.drawable.no_cover)
+                .placeholder(R.color.grid_item_default_bg)
                 .error(R.drawable.no_cover)
                 .load("file://" + album.getAlbumArtPath())
                 .withBitmapInfo()

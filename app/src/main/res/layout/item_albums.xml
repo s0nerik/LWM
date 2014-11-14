@@ -14,14 +14,14 @@
         android:layout_gravity="left"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@color/now_playing_bg"
-        tools:src="@drawable/diagmonds" />
+        android:src="@color/grid_item_default_bg" />
 
     <LinearLayout
         style="@style/GridItemDescription"
         android:id="@+id/bottom_bar"
         android:layout_below="@+id/cover"
         android:orientation="vertical"
+        android:background="@color/grid_item_default_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
