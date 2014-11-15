@@ -51,7 +51,7 @@ public class StreamPlayer extends BasePlayer {
     private OnBufferingUpdateListener onBufferingUpdateListener = new OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            Log.d(App.TAG, "Buffered: "+percent);
+//            Log.d(App.TAG, "Buffered: "+percent);
         }
     };
 

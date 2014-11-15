@@ -6,6 +6,7 @@ import android.os.IBinder;
 
 import com.lwm.app.Injector;
 import com.lwm.app.events.server.ShouldStartWebSocketClientEvent;
+import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.helper.wifi.WifiUtils;
 import com.lwm.app.websocket.WebSocketMessageClient;
 import com.lwm.app.websocket.WebSocketMessageServer;
@@ -35,7 +36,7 @@ public class StreamPlayerService extends Service {
 
     @Override
     public void onDestroy() {
-        stopWebSocketClient();
+        stopWebSocketClient(null);
         bus.unregister(this);
         super.onDestroy();
     }
@@ -46,9 +47,11 @@ public class StreamPlayerService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void stopWebSocketClient() {
+    @Subscribe
+    public void stopWebSocketClient(StopWebSocketClientEvent event) {
         if (webSocketMessageClient != null) {
             webSocketMessageClient.close();
+            webSocketMessageClient = null;
         }
     }
 
