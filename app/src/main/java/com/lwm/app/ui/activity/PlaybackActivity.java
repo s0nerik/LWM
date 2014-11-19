@@ -2,11 +2,11 @@ package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
 
-import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.server.ClientConnectedEvent;
+import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.base.DaggerActivity;
-import com.lwm.app.websocket.entities.ClientInfo;
 
 import javax.inject.Inject;
 
@@ -20,12 +20,12 @@ public abstract class PlaybackActivity extends DaggerActivity {
         super.onCreate(savedInstanceState);
     }
 
-    protected void onClientConnected(ClientInfo info) {
-        Croutons.clientConnected(this, info, R.id.albumArtLayout).show();
+    protected void onClientConnected(ClientConnectedEvent event) {
+        Croutons.clientConnected(this, event.getClientInfo()).show();
     }
 
-    protected void onClientDisconnected(ClientInfo info) {
-        Croutons.clientDisconnected(this, info, R.id.albumArtLayout).show();
+    protected void onClientDisconnected(ClientDisconnectedEvent event) {
+        Croutons.clientDisconnected(this, event.getClientInfo()).show();
     }
 
 }

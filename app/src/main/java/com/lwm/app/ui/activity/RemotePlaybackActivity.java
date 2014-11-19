@@ -11,8 +11,6 @@ import com.lwm.app.R;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
-import com.lwm.app.events.player.playback.PlaybackPausedEvent;
-import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.StopWebSocketClientEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.StreamPlayer;
@@ -72,18 +70,6 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     protected void onPause() {
         super.onPause();
         bus.unregister(this);
-    }
-
-    @Subscribe
-    public void onPlaybackStarted(PlaybackStartedEvent event) {
-        Log.d(App.TAG, "Playback started (RemotePlaybackActivity)");
-//        setSongInfo(event.getSong());
-//        playbackFragment.setPlayButton(true);
-    }
-
-    @Subscribe
-    public void onPlaybackPaused(PlaybackPausedEvent event) {
-//        playbackFragment.setPlayButton(false);
     }
 
     @Subscribe

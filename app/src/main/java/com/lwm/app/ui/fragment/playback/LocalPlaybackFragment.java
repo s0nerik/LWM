@@ -13,6 +13,7 @@ import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.helper.wifi.WifiAP;
+import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.LocalPlayer;
 import com.squareup.otto.Subscribe;
@@ -74,6 +75,11 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     protected BasePlayer getPlayer() {
         return player;
+    }
+
+    @Override
+    protected String getCoverUrl(Song song) {
+        return song.getAlbumArtUri().toString();
     }
 
     @Subscribe

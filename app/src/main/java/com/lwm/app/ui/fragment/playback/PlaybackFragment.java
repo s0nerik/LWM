@@ -90,6 +90,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     Toolbar mToolbar;
 
     protected abstract BasePlayer getPlayer();
+    protected abstract String getCoverUrl(final Song song);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,7 +149,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
                 .placeholder(R.drawable.no_cover)
                 .error(R.drawable.no_cover)
                 .smartSize(true)
-                .load(song.getAlbumArtUri().toString());
+                .load(getCoverUrl(song));
 
         Ion.with(mBackground)
                 .placeholder(R.drawable.no_cover_blurred)
@@ -166,7 +167,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
                         return song.getAlbumArtUri().toString();
                     }
                 })
-                .load(song.getAlbumArtUri().toString());
+                .load(getCoverUrl(song));
     }
 
     protected void setAlbumArtFromUri(Uri uri) {
