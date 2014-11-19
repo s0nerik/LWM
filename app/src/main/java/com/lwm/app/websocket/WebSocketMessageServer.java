@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
@@ -19,10 +20,10 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private static final int TIMEOUT = 10 * 1000; // 10 seconds
 
-    private List<WebSocket> ready;
+    private Set<WebSocket> ready;
 
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<>();
 
@@ -46,6 +47,7 @@ public class WebSocketMessageServer extends WebSocketServer {
     public WebSocketMessageServer(InetSocketAddress address, LocalPlayer player) {
         super(address);
         this.player = player;
+        Injector.inject(this);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private void processReadiness(WebSocket conn) {
         if (ready == null) {
-            ready = new ArrayList<>();
+            ready = new HashSet<>();
         }
         ready.add(conn);
 

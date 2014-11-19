@@ -46,14 +46,15 @@ import com.lwm.app.ui.async.SongsLoaderTask;
 import com.lwm.app.ui.custom_view.BroadcastButton;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
-import com.lwm.app.ui.fragment.playback.LocalPlaybackFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
 import com.lwm.app.ui.fragment.PlayersAroundFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
-import com.lwm.app.ui.fragment.playback.RemotePlaybackFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
+import com.lwm.app.ui.fragment.playback.LocalPlaybackFragment;
+import com.lwm.app.ui.fragment.playback.RemotePlaybackFragment;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.lwm.app.websocket.WebSocketMessageClient;
+import com.lwm.app.websocket.WebSocketMessageServer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -70,6 +71,7 @@ import static android.content.Context.WIFI_SERVICE;
 @Module(injects = {
         ArtistAlbumsBitmapHelper.class,
 
+        WebSocketMessageServer.class,
         WebSocketMessageClient.class,
 
         SingleBitmapPaletteInfoCallback.class,
