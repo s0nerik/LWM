@@ -12,7 +12,6 @@ import com.lwm.app.events.player.RepeatStateChangedEvent;
 import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongChangedEvent;
-import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.events.player.queue.PlaylistAddedToQueueEvent;
 import com.lwm.app.events.player.queue.PlaylistRemovedFromQueueEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
@@ -29,14 +28,10 @@ import com.squareup.otto.Bus;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 public class LocalPlayer extends BasePlayer {
-
-    public static final int NOTIFY_INTERVAL = 1000;
 
     @Inject
     Bus bus;
@@ -50,8 +45,6 @@ public class LocalPlayer extends BasePlayer {
     private Queue queue = new Queue();
 
     private MusicServer server;
-
-    private Timer playbackProgressNotifierTimer;
 
     public LocalPlayer() {
         super();
@@ -135,11 +128,6 @@ public class LocalPlayer extends BasePlayer {
         }
     }
 
-    private void startNotifyingPlaybackProgress() {
-        playbackProgressNotifierTimer = new Timer();
-        playbackProgressNotifierTimer.schedule(new PlaybackProgressNotifierTask(), 0, NOTIFY_INTERVAL);
-    }
-
     public boolean hasCurrentSong() {
         return active;
     }
@@ -202,12 +190,6 @@ public class LocalPlayer extends BasePlayer {
         context.startService(new Intent(context, LocalPlayerService.class));
     }
 
-    private void stopNotifyingPlaybackProgress() {
-        if (playbackProgressNotifierTimer != null) {
-            playbackProgressNotifierTimer.cancel();
-            playbackProgressNotifierTimer = null;
-        }
-    }
 
     public boolean isShuffle() {
         return queue.isShuffled();
@@ -244,14 +226,6 @@ public class LocalPlayer extends BasePlayer {
 
     public boolean isSongInQueue(Song song) {
         return queue.contains(song);
-    }
-
-    private class PlaybackProgressNotifierTask extends TimerTask {
-
-        @Override
-        public void run() {
-            bus.post(new SongPlayingEvent(getCurrentPosition(), getCurrentSong().getDuration()));
-        }
     }
 
     private class StartingOnSeekCompleteListener implements OnSeekCompleteListener {

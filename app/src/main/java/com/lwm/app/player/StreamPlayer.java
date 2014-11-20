@@ -110,6 +110,7 @@ public class StreamPlayer extends BasePlayer {
     @Override
     public void pause() throws IllegalStateException {
         super.pause();
+        stopNotifyingPlaybackProgress();
     }
 
     @Override
@@ -129,6 +130,7 @@ public class StreamPlayer extends BasePlayer {
                         if (e == null) {
                             setCurrentSong(result.getResult());
                             bus.post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
+                            startNotifyingPlaybackProgress();
                         } else {
                             Log.e(App.TAG, "Error getting song info", e);
                         }

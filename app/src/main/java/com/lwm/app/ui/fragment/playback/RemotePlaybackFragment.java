@@ -84,20 +84,20 @@ public class RemotePlaybackFragment extends PlaybackFragment {
     @Subscribe
     @Override
     public void onPlaybackStarted(PlaybackStartedEvent event) {
+        setSongInfo(event.getSong());
         Log.d(App.TAG, "RemotePlaybackFragment: onPlaybackStarted");
     }
 
     @Subscribe
     @Override
     public void onPlaybackPaused(PlaybackPausedEvent event) {
-
         Log.d(App.TAG, "RemotePlaybackFragment: onPlaybackPaused");
     }
 
     @Subscribe
     @Override
     public void onSongPlaying(SongPlayingEvent event) {
-        Log.d(App.TAG, "RemotePlaybackFragment: onSongPlaying");
+        super.onSongPlaying(event);
     }
 
     @Subscribe
