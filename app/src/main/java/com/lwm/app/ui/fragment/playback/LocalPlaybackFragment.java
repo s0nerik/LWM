@@ -1,9 +1,13 @@
 package com.lwm.app.ui.fragment.playback;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.enrique.stackblur.StackBlurManager;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.R;
 import com.lwm.app.events.access_point.AccessPointStateEvent;
 import com.lwm.app.events.player.RepeatStateChangedEvent;
@@ -78,8 +82,34 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     }
 
     @Override
-    protected String getCoverUrl(Song song) {
-        return song.getAlbumArtUri().toString();
+    protected void setCover(Song song) {
+        Ion.with(mCover)
+                .crossfade()
+                .placeholder(R.drawable.no_cover)
+                .error(R.drawable.no_cover)
+                .smartSize(true)
+                .load(song.getAlbumArtUri().toString());
+    }
+
+    @Override
+    protected void setBackground(final Song song) {
+        Ion.with(mBackground)
+                .placeholder(R.drawable.no_cover_blurred)
+                .error(R.drawable.no_cover_blurred)
+                .crossfade()
+                .smartSize(true)
+                .transform(new Transform() {
+                    @Override
+                    public Bitmap transform(Bitmap b) {
+                        return new StackBlurManager(b).processNatively(BLUR_RADIUS);
+                    }
+
+                    @Override
+                    public String key() {
+                        return song.getAlbumArtUri().toString();
+                    }
+                })
+                .load(song.getAlbumArtUri().toString());
     }
 
     @Subscribe

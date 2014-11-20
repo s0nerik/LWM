@@ -1,9 +1,13 @@
 package com.lwm.app.ui.fragment.playback;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.enrique.stackblur.StackBlurManager;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.events.player.RepeatStateChangedEvent;
@@ -17,6 +21,8 @@ import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.StreamServer;
 import com.squareup.otto.Subscribe;
+
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -39,8 +45,34 @@ public class RemotePlaybackFragment extends PlaybackFragment {
     }
 
     @Override
-    protected String getCoverUrl(Song song) {
-        return StreamServer.Url.CURRENT_ALBUMART;
+    protected void setCover(Song song) {
+        Ion.with(mCover)
+                .crossfade()
+                .placeholder(R.drawable.no_cover)
+                .error(R.drawable.no_cover)
+                .smartSize(true)
+                .load(StreamServer.Url.CURRENT_ALBUMART + "?" + UUID.randomUUID());
+    }
+
+    @Override
+    protected void setBackground(final Song song) {
+        Ion.with(mBackground)
+                .placeholder(R.drawable.no_cover_blurred)
+                .error(R.drawable.no_cover_blurred)
+                .crossfade()
+                .smartSize(true)
+                .transform(new Transform() {
+                    @Override
+                    public Bitmap transform(Bitmap b) {
+                        return new StackBlurManager(b).processNatively(BLUR_RADIUS);
+                    }
+
+                    @Override
+                    public String key() {
+                        return song.getTitle();
+                    }
+                })
+                .load(StreamServer.Url.CURRENT_ALBUMART);
     }
 
     @Subscribe

@@ -1,7 +1,6 @@
 package com.lwm.app.ui.fragment.playback;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,9 +15,6 @@ import android.widget.SeekBar;
 
 import com.andexert.library.RippleView;
 import com.danh32.fontify.TextView;
-import com.enrique.stackblur.StackBlurManager;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.events.player.RepeatStateChangedEvent;
@@ -90,7 +86,8 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     Toolbar mToolbar;
 
     protected abstract BasePlayer getPlayer();
-    protected abstract String getCoverUrl(final Song song);
+    protected abstract void setCover(final Song song);
+    protected abstract void setBackground(final Song song);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,30 +141,8 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
         mSeekBar.setMax(PlayerUtils.calculateProgressForSeekBar(song.getDuration()));
         mEndTime.setText(song.getDurationString());
 
-        Ion.with(mCover)
-                .crossfade()
-                .placeholder(R.drawable.no_cover)
-                .error(R.drawable.no_cover)
-                .smartSize(true)
-                .load(getCoverUrl(song));
-
-        Ion.with(mBackground)
-                .placeholder(R.drawable.no_cover_blurred)
-                .error(R.drawable.no_cover_blurred)
-                .crossfade()
-                .smartSize(true)
-                .transform(new Transform() {
-                    @Override
-                    public Bitmap transform(Bitmap b) {
-                        return new StackBlurManager(b).processNatively(BLUR_RADIUS);
-                    }
-
-                    @Override
-                    public String key() {
-                        return song.getAlbumArtUri().toString();
-                    }
-                })
-                .load(getCoverUrl(song));
+        setCover(song);
+        setBackground(song);
     }
 
     protected void setAlbumArtFromUri(Uri uri) {
