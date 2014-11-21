@@ -1,5 +1,8 @@
 package com.lwm.app.model;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class Album {
     private int id;
     private String title;

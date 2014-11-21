@@ -30,7 +30,7 @@ import butterknife.OnClick;
 
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
 
-    private static final int MAX_SIZE = 8;
+    private static final int MAX_SIZE = 6;
 
     private List<ArtistWrapper> artistWrapperList;
 
@@ -87,6 +87,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
         holder.mRecyclerView.setLayoutManager(
                 new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        holder.mRecyclerView.setHasFixedSize(true);
         holder.mRecyclerView.setAdapter(
                 new AlbumCoversAdapter(
                         albums,

@@ -64,7 +64,7 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
         viewHolder.mImage.setMinimumWidth(width);
         Ion.with(viewHolder.mImage)
                 .error(R.drawable.no_cover)
-                .placeholder(R.color.now_playing_bg)
+                .placeholder(R.color.grid_item_default_bg)
                 .transform(new CropTransform())
                 .load("file://" + albums.get(i).getAlbumArtPath())
                 .withBitmapInfo()
@@ -102,7 +102,12 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
             Bitmap thumb = ThumbnailUtils.extractThumbnail(
                     b, coverSize, coverSize, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 
-            Bitmap x = android.graphics.Bitmap.createBitmap(thumb, 0, 0, width, coverSize);
+            Bitmap x;
+            if (width <= coverSize) {
+                x = android.graphics.Bitmap.createBitmap(thumb, 0, 0, width, coverSize);
+            } else {
+                x = android.graphics.Bitmap.createBitmap(thumb, 0, 0, coverSize, coverSize);
+            }
             thumb.recycle();
             return x;
         }
