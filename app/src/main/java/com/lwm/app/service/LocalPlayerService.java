@@ -51,6 +51,10 @@ public class LocalPlayerService extends Service {
 
     @Override
     public void onDestroy() {
+        if (player.isPlaying()) {
+            player.pause();
+        }
+        player.reset();
         stopServer();
         bus.unregister(this);
         super.onDestroy();

@@ -18,6 +18,7 @@ import com.lwm.app.R;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
 import com.lwm.app.events.wifi.WifiStateChangedEvent;
 import com.lwm.app.helper.wifi.WifiAP;
+import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.ui.base.DaggerActivity;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -105,6 +106,8 @@ public class StationChooserActivity extends DaggerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_chooser);
         ButterKnife.inject(this);
+
+        stopService(new Intent(this, LocalPlayerService.class));
     }
 
     @OnClick(R.id.no_wifi_frame)

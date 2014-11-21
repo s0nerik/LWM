@@ -25,6 +25,7 @@ import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
 import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
@@ -65,14 +66,18 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
     private DrawerItem activeFragment = DrawerItem.SONGS;
 
-    private Intent playerServiceIntent;
+    private Intent localPlayerServiceIntent;
+    private Intent streamPlayerServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        playerServiceIntent = new Intent(this, LocalPlayerService.class);
-        startService(playerServiceIntent);
+        localPlayerServiceIntent = new Intent(this, LocalPlayerService.class);
+        startService(localPlayerServiceIntent);
+
+        streamPlayerServiceIntent = new Intent(this, StreamPlayerService.class);
+        stopService(streamPlayerServiceIntent);
 
         setContentView(R.layout.activity_local_song_chooser);
         ButterKnife.inject(this);
@@ -85,7 +90,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         super.onDestroy();
         if (!player.isPlaying()) {
             Log.d(App.TAG, "stopService");
-            stopService(playerServiceIntent);
+            stopService(localPlayerServiceIntent);
         }
     }
 
