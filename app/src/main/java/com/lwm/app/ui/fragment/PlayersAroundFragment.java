@@ -25,6 +25,7 @@ import com.lwm.app.adapter.StationsAdapter;
 import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.events.server.ShouldStartWebSocketClientEvent;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
+import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.helper.wifi.WifiUtils;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.service.StreamPlayerService;
@@ -38,6 +39,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -144,6 +147,23 @@ public class PlayersAroundFragment extends DaggerFragment {
             mListView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
         }
+    }
+
+    // For debug only
+    private ScanResult createFakeScanResult() {
+        try {
+            Constructor<ScanResult> ctor = ScanResult.class.getDeclaredConstructor(null);
+            ctor.setAccessible(true);
+            ScanResult sr = ctor.newInstance(null);
+            sr.BSSID = "foo";
+            sr.SSID = String.format(WifiAP.AP_NAME_FORMAT, "Ololo", "#000000");
+            sr.level = 3;
+            return sr;
+        } catch (SecurityException | InvocationTargetException | NoSuchMethodException | java.lang.InstantiationException | IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected void startStreamActivity() {

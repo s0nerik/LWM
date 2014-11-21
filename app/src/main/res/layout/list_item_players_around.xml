@@ -3,28 +3,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card"
-    tools:layout_margin="6dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp">
+    style="@style/MaterialItem" >
 
     <com.danh32.fontify.TextView
+        style="@style/ListItemText.Title"
         android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        tools:text="Listen With Me!"
-        app:font="@string/FONT_ROBOTO_REGULAR" />
+        tools:text="Listen With Me!" />
 
     <com.danh32.fontify.TextView
+        style="@style/ListItemText.Subtitle"
         android:id="@+id/signal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4sp"
-        android:textSize="16sp"
         android:layout_below="@+id/name"
-        tools:text="Signal: good"
-        app:font="@string/FONT_ROBOTO_LIGHT" />
+        tools:text="Signal: good" />
 
 </RelativeLayout>

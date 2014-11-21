@@ -118,13 +118,16 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
-    <style name="SongItem">
+    <style name="MaterialItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">72dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="SongItem" parent="MaterialItem">
         <item name="android:background">@drawable/background_list_item_checkable</item>
     </style>
 
@@ -186,17 +189,23 @@
         <item name="android:checkable">false</item>
     </style>
 
-    <style name="ListOfCards">
-        <item name="android:padding">6dp</item>
+    <style name="MaterialList">
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
         <item name="android:clipToPadding">false</item>
-        <item name="android:listSelector">@android:color/transparent</item>
         <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:fastScrollEnabled">true</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:requiresFadingEdge">none</item>
+    </style>
+
+    <style name="ListOfCards" parent="MaterialList">
+        <item name="android:listSelector">@android:color/transparent</item>
         <item name="android:dividerHeight">6dp</item>
         <item name="android:choiceMode">singleChoice</item>
         <item name="android:fastScrollEnabled">true</item>
         <item name="android:cacheColorHint">#00000000</item>
-        <item name="android:fadingEdge">none</item>
-        <item name="android:requiresFadingEdge">none</item>
     </style>
 
     <style name="ListOfSongs">
