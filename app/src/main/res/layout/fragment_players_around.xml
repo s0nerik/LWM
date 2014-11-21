@@ -21,6 +21,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
+        style="?android:progressBarStyleLarge"
         android:id="@+id/progressBar"
         android:visibility="gone"
         tools:visibility="visible"
