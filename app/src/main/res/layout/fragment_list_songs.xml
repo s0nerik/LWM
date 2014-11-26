@@ -6,7 +6,7 @@
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$SongsListFragment">
 
     <ListView
-        style="@style/MaterialList"
+        style="@style/ListOfSongs"
         android:id="@+id/listView"
         android:saveEnabled="true"
         android:layout_width="match_parent"

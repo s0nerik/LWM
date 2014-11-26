@@ -1,5 +1,7 @@
 package com.lwm.app.ui.activity;
 
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -42,6 +44,9 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     @Inject
     Bus bus;
 
+    @Inject
+    Resources resources;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +80,11 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
     private void initHeader(Album album){
         ImageView header = (ImageView) findViewById(R.id.image_header);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(resources.getColor(R.color.primary)));
 
         Ion.with(header)
                 .error(R.drawable.no_cover)
-                .placeholder(R.drawable.no_cover)
+                .placeholder(R.color.grid_item_default_bg)
                 .smartSize(true)
                 .load("file://"+album.getAlbumArtPath());
 
