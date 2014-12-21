@@ -54,6 +54,7 @@ public class LocalPlayer extends BasePlayer {
         setOnCompletionListener(new NextSongOnCompletionListener());
         setOnSeekCompleteListener(new StartingOnSeekCompleteListener());
         setOnPreparedListener(new SongPreparedListener());
+        setOnErrorListener(new LocalPlayerErrorListener());
     }
 
     public void shuffleQueue() {
@@ -129,7 +130,7 @@ public class LocalPlayer extends BasePlayer {
     }
 
     public boolean hasCurrentSong() {
-        return active;
+        return active && queue.getSong() != null;
     }
 
     @Override
@@ -190,6 +191,11 @@ public class LocalPlayer extends BasePlayer {
         context.startService(new Intent(context, LocalPlayerService.class));
     }
 
+//    @Override
+//    public void reset() {
+//        context.stopService(new Intent(context, LocalPlayerService.class));
+//        super.reset();
+//    }
 
     public boolean isShuffle() {
         return queue.isShuffled();
@@ -242,7 +248,10 @@ public class LocalPlayer extends BasePlayer {
         public void onCompletion(MediaPlayer mediaPlayer) {
             Log.d("LWM", "LocalPlayer: onCompletion");
 
-            if (getCurrentPosition() > getDuration() - 1000) {
+            int currentPosition = getCurrentPosition();
+            int duration = getDuration() - 1000;
+
+            if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
                 if (isRepeat()) {
                     play();
                 } else {
@@ -265,6 +274,14 @@ public class LocalPlayer extends BasePlayer {
             } else {
                 start();
             }
+        }
+    }
+
+    private class LocalPlayerErrorListener implements OnErrorListener {
+
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            return true;
         }
     }
 

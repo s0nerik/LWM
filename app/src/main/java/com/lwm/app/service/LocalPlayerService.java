@@ -1,8 +1,9 @@
 package com.lwm.app.service;
 
-import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.IBinder;
 
 import com.lwm.app.Injector;
@@ -16,6 +17,7 @@ import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.receiver.MediaButtonIntentReceiver;
 import com.lwm.app.ui.notification.NowPlayingNotification;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
@@ -35,11 +37,12 @@ public class LocalPlayerService extends Service {
     WifiAP wifiAP;
 
     @Inject
-    NotificationManager notificationManager;
+    AudioManager audioManager;
+
+    ComponentName mediaButtonsReceiver;
 
     @Override
     public void onCreate() {
-        super.onCreate();
         Injector.inject(this);
 
         if (wifiAP.isEnabled()) {
@@ -47,17 +50,23 @@ public class LocalPlayerService extends Service {
         }
 
         bus.register(this);
+
+        mediaButtonsReceiver = new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getCanonicalName());
+        audioManager.registerMediaButtonEventReceiver(mediaButtonsReceiver);
     }
 
     @Override
     public void onDestroy() {
+        stopForeground(true);
+
         if (player.isPlaying()) {
             player.pause();
         }
-        player.reset();
+
         stopServer();
         bus.unregister(this);
-        super.onDestroy();
+
+        audioManager.unregisterMediaButtonEventReceiver(mediaButtonsReceiver);
     }
 
     @Override
@@ -67,10 +76,10 @@ public class LocalPlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (player.getCurrentSong() != null) {
+        if (player.hasCurrentSong()) {
             makeForeground(player.isPlaying());
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     private void makeForeground(boolean isPlaying) {
@@ -102,6 +111,16 @@ public class LocalPlayerService extends Service {
                 break;
             case PREV:
                 player.prevSong();
+                break;
+            case PLAY:
+                if (!player.isPlaying()) {
+                    player.start();
+                }
+                break;
+            case PAUSE:
+                if (player.isPlaying()) {
+                    player.pause();
+                }
                 break;
             case TOGGLE_PAUSE:
                 player.togglePause();

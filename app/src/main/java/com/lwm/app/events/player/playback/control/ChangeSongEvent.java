@@ -2,7 +2,7 @@ package com.lwm.app.events.player.playback.control;
 
 public class ChangeSongEvent {
 
-    public enum Type { NEXT, PREV, TOGGLE_PAUSE }
+    public enum Type { NEXT, PREV, TOGGLE_PAUSE, PAUSE, PLAY }
 
     private Type type;
 

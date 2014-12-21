@@ -33,12 +33,14 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
                     case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                         bus.post(new ChangeSongEvent(ChangeSongEvent.Type.PREV));
                         break;
+                    case KeyEvent.KEYCODE_MEDIA_PLAY:
+                    case KeyEvent.KEYCODE_MEDIA_PAUSE:
                     case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                         bus.post(new ChangeSongEvent(ChangeSongEvent.Type.TOGGLE_PAUSE));
                         break;
                 }
             }
-            abortBroadcast();
+//            abortBroadcast();
         }
     }
 

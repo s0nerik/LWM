@@ -9,12 +9,10 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
@@ -24,7 +22,6 @@ import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
 import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.helper.wifi.WifiAP;
-import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.Croutons;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
@@ -73,9 +70,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        localPlayerServiceIntent = new Intent(this, LocalPlayerService.class);
-        startService(localPlayerServiceIntent);
-
         streamPlayerServiceIntent = new Intent(this, StreamPlayerService.class);
         stopService(streamPlayerServiceIntent);
 
@@ -83,15 +77,6 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         ButterKnife.inject(this);
 
         initNavigationDrawer();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!player.isPlaying()) {
-            Log.d(App.TAG, "stopService");
-            stopService(localPlayerServiceIntent);
-        }
     }
 
     @Override

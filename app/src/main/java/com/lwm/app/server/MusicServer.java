@@ -77,9 +77,7 @@ public class MusicServer {
             public void run() {
                 try {
                     webSocketMessageServer.stop();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
