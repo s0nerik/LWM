@@ -66,8 +66,8 @@
     <string name="waiting_for_server">Waiting for station...</string>
 
     // AlbumInfoActivity
-    <string name="songs_count_title">SONGS:</string>
-    <string name="year_title">YEAR:</string>
+    <string name="songs_count_title">Songs:</string>
+    <string name="year_title">Year:</string>
     <string name="year_unknown">UNKNOWN</string>
     <string name="album_added_to_queue">Album added to the queue</string>
     <string name="song_added_to_queue">Song added to the queue</string>

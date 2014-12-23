@@ -108,15 +108,20 @@ public class Utils {
         } catch (Throwable t) {}
     }
 
-    public int dpToPixels(int dp) {
-        float density = resources.getDisplayMetrics().density;
-        return (int) (dp * density);
-    }
-
     public int getScreenWidth() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
+    }
+
+    public static int dpToPx(int dp)
+    {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int pxToDp(int px)
+    {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
 }

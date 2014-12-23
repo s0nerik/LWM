@@ -110,7 +110,8 @@
         <activity
             android:screenOrientation="portrait"
             android:name=".ui.activity.AlbumInfoActivity"
-            android:theme="@style/AppTheme.TranslucentActionBar"
+            android:label=""
+            android:theme="@style/AppTheme.LocalSongChooserActivity"
             android:parentActivityName=".ui.activity.LocalSongChooserActivity" >
 
             <meta-data
