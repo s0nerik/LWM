@@ -1,6 +1,8 @@
 package com.lwm.app.ui.activity;
 
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -89,6 +91,10 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.BLACK);
+        }
+
         setSupportActionBar(mToolbar);
 
         mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -103,10 +109,19 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
                     mToolbar.setBackgroundResource(R.color.primary);
                     mToolbar.setTitle(mTitle.getText());
                     mToolbar.setSubtitle(mSubtitle.getText());
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(resources.getColor(R.color.primaryDark));
+                    }
+
                 } else if (scroll <= mCover.getHeight() - Utils.dpToPx(56) && scroll < lastScroll) {
                     mToolbar.setBackgroundResource(android.R.color.transparent);
                     mToolbar.setTitle(null);
                     mToolbar.setSubtitle(null);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(Color.BLACK);
+                    }
                 }
 
                 lastScroll = scroll;
