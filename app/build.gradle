@@ -80,5 +80,6 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.22.0'
 
     compile 'com.github.nirhart:parallaxscroll:1.0'
+    compile 'com.skyfishjy.ripplebackground:library:1.0.1'
 
 }

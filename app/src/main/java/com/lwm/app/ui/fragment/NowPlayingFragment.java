@@ -52,6 +52,8 @@ public class NowPlayingFragment extends DaggerFragment {
     ImageView mBtnPlayPause;
     @InjectView(R.id.now_playing_layout)
     RelativeLayout mGlobalLayout;
+    @InjectView(R.id.shadow)
+    View mShadow;
     @InjectView(R.id.progress_wheel)
     ProgressWheel mProgressWheel;
 
@@ -91,7 +93,7 @@ public class NowPlayingFragment extends DaggerFragment {
                 .error(R.drawable.no_cover)
                 .load(song.getAlbumArtUri().toString())
                 .withBitmapInfo()
-                .setCallback(new SingleBitmapPaletteInfoCallback(mGlobalLayout, mTitle, mArtist));
+                .setCallback(new SingleBitmapPaletteInfoCallback(mGlobalLayout, mShadow, mTitle, mArtist));
 
         mArtist.setText(utils.getArtistName(song.getArtist()));
         mTitle.setText(song.getTitle());

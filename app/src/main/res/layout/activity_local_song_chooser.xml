@@ -33,12 +33,6 @@
                 android:layout_height="match_parent"
                 android:id="@+id/container" />
 
-            <View
-                android:layout_alignBottom="@+id/container"
-                android:background="@drawable/horizontal_shadow"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/now_playing_shadow_size" />
-
             <fragment
                 android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"

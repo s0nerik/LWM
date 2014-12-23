@@ -11,6 +11,7 @@ import com.koushikdutta.ion.ImageViewBitmapInfo;
 import com.koushikdutta.ion.bitmap.BitmapInfo;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
+import com.lwm.app.Utils;
 
 import javax.inject.Inject;
 
@@ -20,6 +21,7 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
     Resources resources;
 
     private View mLayout;
+    private View mLayoutShadow;
     private TextView mTitle;
     private TextView mSubtitle;
 
@@ -28,6 +30,11 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
         mTitle = title;
         mSubtitle = subtitle;
         Injector.inject(this);
+    }
+
+    public SingleBitmapPaletteInfoCallback(View layout, View layoutShadow, TextView title, TextView subtitle) {
+        this(layout, title, subtitle);
+        mLayoutShadow = layoutShadow;
     }
 
     @Override
@@ -41,6 +48,7 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
                     if (swatch != null) {
                         applyStyle(
                                 swatch.getRgb(),
+                                Utils.darkerColor(swatch.getRgb(), 0.8f),
                                 swatch.getTitleTextColor(),
                                 swatch.getBodyTextColor()
                         );
@@ -55,11 +63,17 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
     }
 
     private void applyDefaultStyle() {
-        applyStyle(resources.getColor(R.color.grid_item_default_bg), Color.WHITE, Color.WHITE);
+        applyStyle(
+                resources.getColor(R.color.grid_item_default_bg),
+                Utils.darkerColor(resources.getColor(R.color.grid_item_default_bg), 0.8f),
+                Color.WHITE,
+                Color.WHITE
+        );
     }
 
-    private void applyStyle(int bgColor, int titleColor, int subtitleColor) {
+    private void applyStyle(int bgColor, int shadowColor, int titleColor, int subtitleColor) {
         mLayout.setBackgroundColor(bgColor);
+        if (mLayoutShadow != null) mLayoutShadow.setBackgroundColor(shadowColor);
         mTitle.setTextColor(titleColor);
         mSubtitle.setTextColor(subtitleColor);
     }
