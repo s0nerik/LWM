@@ -76,6 +76,9 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     @Inject
     LocalPlayer player;
 
+    @Inject
+    Utils utils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +118,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
                 .smartSize(true)
                 .load("file://" + album.getAlbumArtPath());
 
-        String artistName = album.getArtist();
+        String artistName = utils.getArtistName(album.getArtist());
         String title = String.valueOf(album.getTitle());
 
         int year = album.getYear();

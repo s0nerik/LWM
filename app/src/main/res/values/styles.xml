@@ -21,7 +21,7 @@
     </style>
 
     <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@color/card_list_background</item>
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">

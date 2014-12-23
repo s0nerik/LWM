@@ -60,4 +60,6 @@
 
     <color name="grid_item_default_bg">@color/now_playing_bg</color>
 
+    <color name="album_info_header_overlay_bg">#eee</color>
+
 </resources>
