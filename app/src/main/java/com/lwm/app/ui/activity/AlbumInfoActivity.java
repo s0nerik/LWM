@@ -95,49 +95,18 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
             getWindow().setStatusBarColor(Color.BLACK);
         }
 
-        setSupportActionBar(mToolbar);
-
-        mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-
-            int lastScroll = 0;
-
-            @Override
-            public void onScrollChanged() {
-                int scroll = mScrollView.getScrollY();
-
-                if (scroll >= mCover.getHeight() - Utils.dpToPx(56) && scroll > lastScroll) {
-                    mToolbar.setBackgroundResource(R.color.primary);
-                    mToolbar.setTitle(mTitle.getText());
-                    mToolbar.setSubtitle(mSubtitle.getText());
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getWindow().setStatusBarColor(resources.getColor(R.color.primaryDark));
-                    }
-
-                } else if (scroll <= mCover.getHeight() - Utils.dpToPx(56) && scroll < lastScroll) {
-                    mToolbar.setBackgroundResource(android.R.color.transparent);
-                    mToolbar.setTitle(null);
-                    mToolbar.setSubtitle(null);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getWindow().setStatusBarColor(Color.BLACK);
-                    }
-                }
-
-                lastScroll = scroll;
-            }
-        });
-
         Album album = new AlbumsCursorGetter().getAlbumById(albumId);
 
         initHeader(album);
+
+        setSupportActionBar(mToolbar);
+
+        mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ActionBarColorOnScrollChangedListener());
 
         bus.register(this);
     }
 
     private void initHeader(Album album) {
-//        mToolbar.setBackgroundResource(R.color.primary);
-
         mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         Ion.with(mCover)
@@ -159,8 +128,8 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         mTitle.setText(title);
         mSubtitle.setText(artistName);
 
-//        mToolbar.setTitle(title);
-//        mToolbar.setSubtitle(artistName);
+        mToolbar.setTitle(title);
+        mToolbar.setSubtitle(artistName);
     }
 
     @Override
@@ -222,6 +191,69 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     public void playbackStarted(PlaybackStartedEvent event) {
         showNowPlayingBar(true);
         highlightCurrentSong();
+    }
+
+    private class ActionBarColorOnScrollChangedListener implements ViewTreeObserver.OnScrollChangedListener {
+
+        int lastScroll = 0;
+        int abHeight = Utils.dpToPx(56);
+        int primaryColor = resources.getColor(R.color.primary);
+        int primaryDarkColor = resources.getColor(R.color.primaryDark);
+
+        @Override
+        public void onScrollChanged() {
+            int scroll = mScrollView.getScrollY();
+            int parallaxArea = mCover.getHeight() - abHeight;
+
+            if (scroll >= parallaxArea && scroll > lastScroll) {
+
+                mToolbar.setBackgroundColor(primaryColor);
+                mToolbar.setTitleTextColor(Color.WHITE);
+                mToolbar.setSubtitleTextColor(Color.WHITE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(primaryDarkColor);
+                }
+
+            } else if (scroll <= 0) { // Overscrolled
+
+                mToolbar.setBackgroundColor(Color.TRANSPARENT);
+                mToolbar.setTitleTextColor(Color.TRANSPARENT);
+                mToolbar.setSubtitleTextColor(Color.TRANSPARENT);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(Color.BLACK);
+                }
+
+            } else if (scroll <= parallaxArea) {
+
+                Log.d(App.TAG, "Scroll: " + scroll);
+
+                float scrolledPercent = scroll / (float) parallaxArea;
+                int transparency = Math.round(scrolledPercent * 255f);
+
+                mToolbar.setBackgroundColor(Color.argb(transparency,
+                        Color.red(primaryColor),
+                        Color.green(primaryColor),
+                        Color.blue(primaryColor)
+                ));
+                mToolbar.setTitleTextColor(Color.argb(transparency, 255, 255, 255));
+                mToolbar.setSubtitleTextColor(Color.argb(transparency, 255, 255, 255));
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(
+                            Utils.darkerColor(Color.rgb(
+                                    Color.red(primaryDarkColor),
+                                    Color.green(primaryDarkColor),
+                                    Color.blue(primaryDarkColor)
+                            ), scrolledPercent)
+                    );
+                }
+
+            }
+
+            lastScroll = scroll;
+        }
     }
 
 }
