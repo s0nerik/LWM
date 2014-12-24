@@ -35,6 +35,7 @@
                     android:layout_height="match_parent"
                     tools:layout_height="200dp"
                     tools:listItem="@layout/list_item_songs_simple"
+                    android:choiceMode="singleChoice"
                     android:divider="@null"
                     android:dividerHeight="0dp"
                     android:background="@android:color/white"
@@ -71,6 +72,26 @@
                     app:fab_shadow="true"
                     app:fab_colorNormal="@color/primaryDark"
                     app:fab_colorPressed="@color/primary" />
+
+                <com.andexert.library.RippleView
+                    app:rv_alpha="255"
+                    app:rv_color="@color/primary"
+                    app:rv_centered="true"
+                    app:rv_rippleDuration="250"
+                    android:id="@+id/overflowMenu"
+                    android:clickable="true"
+                    android:layout_alignRight="@+id/overlay"
+                    android:layout_alignBottom="@+id/overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:padding="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_navigation_more_vert"
+                        android:tint="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </com.andexert.library.RippleView>
 
             </RelativeLayout>
 

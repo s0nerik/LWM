@@ -10,10 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Checkable;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.danh32.fontify.TextView;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
@@ -105,6 +106,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
     }
 
     static class ViewHolder {
+        public Checkable layout;
         public TextView title;
         public TextView duration;
         public ImageView nowPlayingIcon;
@@ -122,6 +124,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
             rowView = inflater.inflate(R.layout.list_item_songs_simple, null, true);
             holder = new ViewHolder();
 
+            holder.layout = (Checkable) rowView.findViewById(R.id.layout);
             holder.title = (TextView) rowView.findViewById(R.id.songs_list_item_title);
             holder.duration = (TextView) rowView.findViewById(R.id.songs_list_item_duration);
             holder.nowPlayingIcon = (ImageView) rowView.findViewById(R.id.now_playing_icon);
@@ -139,8 +142,21 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
 
         if (checked == position){
+            holder.title.setFont(R.string.FONT_ROBOTO_BOLD);
+            holder.title.setTextColor(Color.WHITE);
+            holder.duration.setTextColor(Color.WHITE);
+            holder.contextMenu.setColorFilter(Color.WHITE);
+            holder.layout.setChecked(true);
+
+            holder.nowPlayingIcon.setImageResource(player.isPlaying()? R.drawable.ic_av_play_arrow : R.drawable.ic_av_pause);
             holder.nowPlayingIcon.setVisibility(View.VISIBLE);
         } else {
+            holder.title.setFont(R.string.FONT_ROBOTO_REGULAR);
+            holder.title.setTextColor(Color.BLACK);
+            holder.duration.setTextColor(Color.BLACK);
+            holder.contextMenu.setColorFilter(Color.GRAY);
+            holder.layout.setChecked(false);
+
             holder.nowPlayingIcon.setVisibility(View.GONE);
         }
 

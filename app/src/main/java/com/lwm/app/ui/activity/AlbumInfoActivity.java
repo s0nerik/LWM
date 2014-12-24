@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.andexert.library.RippleView;
 import com.danh32.fontify.TextView;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
@@ -59,6 +60,8 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     TextView mYear;
     @InjectView(R.id.scrollView)
     ParallaxScrollView mScrollView;
+    @InjectView(R.id.overflowMenu)
+    RippleView mOverflowMenu;
 
     private List<Song> playlist;
 
@@ -90,6 +93,13 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(albumId));
 
         adapter = new SimpleSongsListAdapter(this, player, playlist);
+
+        mOverflowMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
@@ -186,7 +196,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     }
 
     private void setSelection(int position) {
-        mListView.setItemChecked(position + 1, true);
+        mListView.setItemChecked(position, true);
         adapter.setChecked(position);
     }
 
