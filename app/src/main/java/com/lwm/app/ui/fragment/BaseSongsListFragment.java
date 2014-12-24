@@ -81,7 +81,9 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
 
     private void setSelection(int position) {
         mListView.setItemChecked(position, true);
-        mListView.setSelection(position);
+        if (position < mListView.getFirstVisiblePosition() || position > mListView.getLastVisiblePosition()) {
+            mListView.setSelection(position);
+        }
     }
 
     protected void initAdapter(List<Song> songs) {
