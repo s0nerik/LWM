@@ -97,6 +97,7 @@
         <activity
             android:screenOrientation="portrait"
             android:name=".ui.activity.StationChooserActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.activity.MainActivity"
             android:label="@string/title_activity_station_chooser" >
 

@@ -10,9 +10,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,6 @@ import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
 import com.melnykov.fab.FloatingActionButton;
-import com.skyfishjy.library.RippleBackground;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -45,7 +43,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,8 +54,6 @@ import butterknife.OnItemClick;
 
 public class PlayersAroundFragment extends DaggerFragment {
 
-    private FloatingActionButton[] mFound;
-
     @InjectView(R.id.progressBar)
     ProgressBar mProgressBar;
     @InjectView(R.id.emptyView)
@@ -67,26 +62,10 @@ public class PlayersAroundFragment extends DaggerFragment {
     ListView mListView;
     @InjectView(R.id.refreshLayout)
     SwipeRefreshLayout mRefreshLayout;
-    @InjectView(R.id.content)
-    RippleBackground mContent;
     @InjectView(R.id.me)
     FloatingActionButton mMe;
-    @InjectView(R.id.found1)
-    FloatingActionButton mFound1;
-    @InjectView(R.id.found2)
-    FloatingActionButton mFound2;
-    @InjectView(R.id.found3)
-    FloatingActionButton mFound3;
-    @InjectView(R.id.found4)
-    FloatingActionButton mFound4;
-    @InjectView(R.id.found5)
-    FloatingActionButton mFound5;
-    @InjectView(R.id.found6)
-    FloatingActionButton mFound6;
-    @InjectView(R.id.found7)
-    FloatingActionButton mFound7;
-    @InjectView(R.id.found8)
-    FloatingActionButton mFound8;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Inject
     Bus bus;
@@ -112,35 +91,7 @@ public class PlayersAroundFragment extends DaggerFragment {
         View v = inflater.inflate(R.layout.fragment_players_around, container, false);
         ButterKnife.inject(this, v);
 
-        mFound = new FloatingActionButton[8];
-        mFound[0] = mFound1;
-        mFound[1] = mFound2;
-        mFound[2] = mFound3;
-        mFound[3] = mFound4;
-        mFound[4] = mFound5;
-        mFound[5] = mFound6;
-        mFound[6] = mFound7;
-        mFound[7] = mFound8;
-
-        mMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mContent.startRippleAnimation();
-                Handler h = new Handler(Looper.getMainLooper());
-                h.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<ScanResult> results = new ArrayList<>();
-                        for (int i = 0; i < 5; i++) {
-                            results.add(createFakeScanResult());
-                        }
-
-                        onScanResultsAvailable(new WifiScanResultsAvailableEvent(results));
-//                        mContent.stopRippleAnimation();
-                    }
-                }, 5000);
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         mRefreshLayout.setColorSchemeResources(
                 R.color.pull_to_refresh_1,
@@ -191,27 +142,21 @@ public class PlayersAroundFragment extends DaggerFragment {
         Log.d(App.TAG, "setScanResults()");
         scanResults = event.getScanResults();
 
-        int i = 0;
-        for (ScanResult result : scanResults) {
-            mFound[i].setVisibility(View.VISIBLE);
-            i++;
+        stationsAdapter = new StationsAdapter(getActivity(), scanResults);
+
+        if (isRefreshing) {
+            mRefreshLayout.setRefreshing(false);
+            isRefreshing = false;
         }
 
-//        stationsAdapter = new StationsAdapter(getActivity(), scanResults);
-//
-//        if (isRefreshing) {
-//            mRefreshLayout.setRefreshing(false);
-//            isRefreshing = false;
-//        }
-//
-//        mProgressBar.setVisibility(View.GONE);
-//        if (stationsAdapter.getCount() > 0) {
-//            mListView.setVisibility(View.VISIBLE);
-//            mListView.setAdapter(stationsAdapter);
-//        } else {
-//            mListView.setVisibility(View.GONE);
-//            mEmptyView.setVisibility(View.VISIBLE);
-//        }
+        mProgressBar.setVisibility(View.GONE);
+        if (stationsAdapter.getCount() > 0) {
+            mListView.setVisibility(View.VISIBLE);
+            mListView.setAdapter(stationsAdapter);
+        } else {
+            mListView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     // For debug only
@@ -251,6 +196,7 @@ public class PlayersAroundFragment extends DaggerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        ButterKnife.reset(this);
         ButterKnife.reset(this);
     }
 

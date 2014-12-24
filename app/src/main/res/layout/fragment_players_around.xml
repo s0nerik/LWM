@@ -7,13 +7,65 @@
     android:layout_height="match_parent"
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$PlayersAroundFragment">
 
+    <!--android:layout_below="@+id/toolbarLayout"-->
+
+    <!--<com.skyfishjy.library.RippleBackground-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:layout_width="800dp"-->
+        <!--android:layout_height="800dp"-->
+
+        <!--android:layout_marginTop="-400dp"-->
+        <!--android:layout_marginLeft="-352dp"-->
+        <!--android:layout_below="@+id/toolbarLayout"-->
+
+        <!--android:id="@+id/rippleBg"-->
+        <!--app:rb_color="@color/primary"-->
+        <!--app:rb_radius="32dp"-->
+        <!--app:rb_rippleAmount="6"-->
+        <!--app:rb_duration="3000"-->
+        <!--app:rb_scale="6" />-->
+
+    <LinearLayout
+        android:id="@+id/toolbarLayout"
+        android:orientation="vertical"
+        android:background="?attr/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp">
+
+            <TextView
+                android:textColor="@android:color/white"
+                android:paddingLeft="88dp"
+                android:layout_centerVertical="true"
+                android:textSize="24sp"
+                android:text="@string/stations_around"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+         </RelativeLayout>
+
+    </LinearLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@+id/toolbarLayout"
         android:id="@+id/refreshLayout"
         tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ListView
             style="@style/MaterialList"
+            android:paddingTop="28dp"
+            android:clipToPadding="false"
             tools:listitem="@layout/list_item_players_around"
             android:id="@+id/listView"
             android:layout_height="match_parent"
@@ -34,7 +86,10 @@
         tools:visibility="visible"
         android:visibility="gone"
         android:orientation="vertical"
-        android:layout_centerInParent="true"
+        android:layout_below="@+id/toolbarLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
@@ -60,169 +115,19 @@
 
     </LinearLayout>
 
-    <com.skyfishjy.library.RippleBackground
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content"
-        app:rb_color="@color/primary"
-        app:rb_radius="32dp"
-        app:rb_rippleAmount="6"
-        app:rb_duration="3000"
-        app:rb_scale="6">
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/abc_ic_search_api_mtrl_alpha"
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/me"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_av_play_arrow"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="-28dp"
+        android:layout_below="@+id/toolbarLayout"
 
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary"
-            />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found1"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/me"
-            android:layout_above="@id/me"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found2"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@id/me"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginBottom="48dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found3"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/me"
-            android:layout_above="@id/me"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="16dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found4"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/me"
-            android:layout_centerVertical="true"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginLeft="48dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found5"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/me"
-            android:layout_centerVertical="true"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginRight="48dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found6"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/me"
-            android:layout_below="@id/me"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found7"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/me"
-            android:layout_below="@id/me"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/found8"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/me"
-            android:tint="#fff"
-            android:src="@drawable/ic_action_play"
-
-            android:layout_marginTop="48dp"
-
-            app:fab_shadow="true"
-            app:fab_colorNormal="@color/primaryDark"
-            app:fab_colorPressed="@color/primary" />
-
-    </com.skyfishjy.library.RippleBackground>
+        app:fab_colorNormal="?attr/colorPrimaryDark"
+        app:fab_colorPressed="@color/primary"
+        />
 
 </RelativeLayout>
