@@ -1,7 +1,7 @@
 package com.lwm.app.ui.base;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.lwm.app.Injector;
 

@@ -7,25 +7,6 @@
     android:layout_height="match_parent"
     tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$PlayersAroundFragment">
 
-    <!--android:layout_below="@+id/toolbarLayout"-->
-
-    <!--<com.skyfishjy.library.RippleBackground-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:layout_width="800dp"-->
-        <!--android:layout_height="800dp"-->
-
-        <!--android:layout_marginTop="-400dp"-->
-        <!--android:layout_marginLeft="-352dp"-->
-        <!--android:layout_below="@+id/toolbarLayout"-->
-
-        <!--android:id="@+id/rippleBg"-->
-        <!--app:rb_color="@color/primary"-->
-        <!--app:rb_radius="32dp"-->
-        <!--app:rb_rippleAmount="6"-->
-        <!--app:rb_duration="3000"-->
-        <!--app:rb_scale="6" />-->
-
     <LinearLayout
         android:id="@+id/toolbarLayout"
         android:orientation="vertical"
@@ -39,81 +20,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <RelativeLayout
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="72dp">-->
+
+            <!--<TextView-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:paddingLeft="72dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:textSize="24sp"-->
+                <!--android:text="@string/stations_around"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content" />-->
+
+         <!--</RelativeLayout>-->
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="72dp">
-
-            <TextView
-                android:textColor="@android:color/white"
-                android:paddingLeft="88dp"
-                android:layout_centerVertical="true"
-                android:textSize="24sp"
-                android:text="@string/stations_around"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-         </RelativeLayout>
+            android:layout_height="48dp"
+            android:textColor="@android:color/white"
+            app:pstsIndicatorHeight="2dp"
+            app:pstsShouldExpand="true"
+            app:pstsUnderlineColor="@android:color/transparent"
+            app:pstsIndicatorColor="@android:color/white" />
 
     </LinearLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <android.support.v4.view.ViewPager
         android:layout_below="@+id/toolbarLayout"
-        android:id="@+id/refreshLayout"
-        tools:visibility="visible"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ListView
-            style="@style/MaterialList"
-            android:paddingTop="28dp"
-            android:clipToPadding="false"
-            tools:listitem="@layout/list_item_players_around"
-            android:id="@+id/listView"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <ProgressBar
-        style="?android:progressBarStyleLarge"
-        android:id="@+id/progressBar"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:id="@+id/emptyView"
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:orientation="vertical"
-        android:layout_below="@+id/toolbarLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:layout_gravity="center"
-            android:src="@drawable/ic_sad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:text="@string/nobody_around"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btnRefresh"
-            android:layout_marginTop="10dp"
-            android:text="@string/refresh"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/me"
@@ -125,6 +63,8 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="-28dp"
         android:layout_below="@+id/toolbarLayout"
+
+        android:visibility="gone"
 
         app:fab_colorNormal="?attr/colorPrimaryDark"
         app:fab_colorPressed="@color/primary"

@@ -1,7 +1,7 @@
 package com.lwm.app.ui.activity;
 
-import android.app.FragmentManager;
 import android.media.AudioManager;
+import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 
 import com.lwm.app.R;
@@ -65,7 +65,7 @@ public abstract class BaseLocalActivity extends DaggerActivity {
     }
 
     public void showNowPlayingBar(boolean show){
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         NowPlayingFragment nowPlaying = (NowPlayingFragment) fragmentManager.findFragmentById(R.id.fragment_now_playing);
 
         if (show && !nowPlaying.isVisible()) {
