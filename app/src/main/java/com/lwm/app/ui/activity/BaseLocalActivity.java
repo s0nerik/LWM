@@ -70,7 +70,7 @@ public abstract class BaseLocalActivity extends DaggerActivity {
 
         if (show && !nowPlaying.isVisible()) {
             fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.now_playing_enter_anim, 0)
+//                    .setCustomAnimations(R.anim.now_playing_enter_anim, 0)
                     .show(nowPlaying)
                     .commitAllowingStateLoss();
         } else if (!show) {
