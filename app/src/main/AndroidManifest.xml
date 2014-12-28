@@ -22,6 +22,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="08edadb9fc2e12e9e70668f355d12942ec4181b2"/>
+
         <receiver android:name=".receiver.MediaButtonIntentReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -142,8 +144,6 @@
             android:windowSoftInputMode="adjustResize"
             android:name=".ui.activity.ChatActivity" >
         </activity>
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="08edadb9fc2e12e9e70668f355d12942ec4181b2"/>
-
 
     </application>
 
