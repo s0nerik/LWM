@@ -12,6 +12,8 @@
         <!-- colorAccent is used as the default value for colorControlActivated,
              which is used to tint widgets -->
         <item name="colorAccent">@color/accent</item>
+
+        <item name="popupMenuStyle">@style/OverflowMenu</item>
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">
@@ -325,6 +327,15 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:adjustViewBounds">false</item>
         <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for pre-Lollipop. -->
+        <item name="overlapAnchor">true</item>
+
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor">true</item>
+
     </style>
 
 </resources>

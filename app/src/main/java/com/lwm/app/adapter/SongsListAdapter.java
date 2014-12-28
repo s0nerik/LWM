@@ -1,7 +1,6 @@
 package com.lwm.app.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.os.Build;
 import android.support.v7.widget.PopupMenu;
@@ -56,7 +55,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 final ImageView v = (ImageView) view;
                 final ColorFilter oldFilter = v.getColorFilter();
-                v.setColorFilter(Color.parseColor("#33b5e5"));
+                v.setColorFilter(context.getResources().getColor(R.color.accent));
                 menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
                     @Override
                     public void onDismiss(PopupMenu popupMenu) {
