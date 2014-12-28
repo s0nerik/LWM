@@ -13,6 +13,9 @@ import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
@@ -44,17 +47,28 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
             Palette.generateAsync(bitmapInfo.bitmaps[0], new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(Palette palette) {
-                    Palette.Swatch swatch = palette.getVibrantSwatch();
-                    if (swatch != null) {
-                        applyStyle(
-                                swatch.getRgb(),
-                                Utils.darkerColor(swatch.getRgb(), 0.8f),
-                                swatch.getTitleTextColor(),
-                                swatch.getBodyTextColor()
-                        );
-                    } else {
-                        applyDefaultStyle();
+                    List<Palette.Swatch> swatches = new ArrayList<>();
+
+                    swatches.add(palette.getVibrantSwatch());
+                    swatches.add(palette.getDarkVibrantSwatch());
+                    swatches.add(palette.getMutedSwatch());
+                    swatches.add(palette.getDarkMutedSwatch());
+                    swatches.add(palette.getLightVibrantSwatch());
+                    swatches.add(palette.getLightMutedSwatch());
+
+                    for (Palette.Swatch swatch : swatches) {
+                        if (swatch != null) {
+                            applyStyle(
+                                    swatch.getRgb(),
+                                    Utils.darkerColor(swatch.getRgb(), 0.8f),
+                                    swatch.getTitleTextColor(),
+                                    swatch.getBodyTextColor()
+                            );
+                            return;
+                        }
                     }
+
+                    applyDefaultStyle();
                 }
             });
         } else {
