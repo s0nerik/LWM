@@ -15,14 +15,19 @@
 
     <com.danh32.fontify.TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="From death to destiny of them samsara"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:singleLine="true"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:textColor="@android:color/black"
         android:textSize="24sp"
-        fontify:font="@string/FONT_ROBOTO_BOLD" />
+        fontify:font="@string/FONT_ROBOTO_BOLD" >
+        <requestFocus />
+    </com.danh32.fontify.TextView>
 
     <com.danh32.fontify.TextView
         android:id="@+id/subtitle"
