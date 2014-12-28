@@ -62,7 +62,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
                 .error(R.drawable.no_cover)
                 .load("file://" + album.getAlbumArtPath())
                 .withBitmapInfo()
-                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.mTitle, holder.mSubtitle));
+                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.mShadow, holder.mTitle, holder.mSubtitle));
 
         return rowView;
     }
@@ -82,6 +82,8 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         com.danh32.fontify.TextView mSubtitle;
         @InjectView(R.id.bottom_bar)
         LinearLayout mBottomBar;
+        @InjectView(R.id.shadow)
+        View mShadow;
 
         ViewHolder(View view) {
             ButterKnife.inject(this, view);
