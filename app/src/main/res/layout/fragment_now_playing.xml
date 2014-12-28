@@ -55,7 +55,7 @@
                 android:textSize="16sp"
                 android:textColor="#cccccc"
 
-                app:font="@string/FONT_ROBOTO_THIN" />
+                app:font="@string/FONT_ROBOTO_LIGHT" />
 
         </LinearLayout>
 

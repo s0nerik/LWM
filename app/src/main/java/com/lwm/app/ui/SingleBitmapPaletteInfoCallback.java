@@ -69,7 +69,7 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
                                     swatch.getRgb(),
                                     Utils.darkerColor(swatch.getRgb(), 0.8f),
                                     swatch.getTitleTextColor(),
-                                    swatch.getBodyTextColor()
+                                    swatch.getTitleTextColor()
                             );
                             return;
                         }
