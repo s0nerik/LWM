@@ -4,19 +4,11 @@ This project aims to make a player, which would be able not only to play Android
 
 Download
 ---
-![QR code](http://qrfree.kaywa.com/?l=1&s=8&d=https%3A%2F%2Fdl.dropboxusercontent.com%2Fu%2F9689938%2FLWM%2Frelease%2Fv0.3%2FListenWithMe.apk "Download link QR code")
 
-[Download link](https://dl.dropboxusercontent.com/u/9689938/LWM/release/v0.3/ListenWithMe.apk) [Current version: 0.3 (Alpha)]
-
-Build
----
-This project uses NDK library so you will need NDK to build it successfully. (Download: https://developer.android.com/tools/sdk/ndk/index.html)
-
-1. Clone this repo to your computer.
-2. Import project.
-3. Go to libs/StackBlur folder and run "ndk-build" from it.
-4. Rebuild project.
-5. PROFIT!
+<a href="https://play.google.com/store/apps/details?id=com.lwm.app">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
+</a>
 
 Release notes
 ---
