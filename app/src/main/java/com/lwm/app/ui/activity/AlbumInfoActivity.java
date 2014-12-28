@@ -43,6 +43,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.OnItemClickListener {
 
@@ -98,13 +99,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
         adapter = new SimpleSongsListAdapter(this, player, playlist);
 
-        mOverflowMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
 
@@ -152,6 +146,20 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
         mToolbar.setTitle(title);
         mToolbar.setSubtitle(artistName);
+    }
+
+    @OnClick(R.id.fab)
+    public void onFabClicked() {
+        if (player.isPlaying()) {
+            player.stop();
+        }
+        player.setQueue(playlist);
+        player.play(0);
+    }
+
+    @OnClick(R.id.overflowMenu)
+    public void onOverflowMenuClicked(View view) {
+
     }
 
     @Override
