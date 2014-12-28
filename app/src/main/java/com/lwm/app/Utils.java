@@ -156,4 +156,8 @@ public class Utils {
         return color;
     }
 
+    public static int stripAlpha(int color) {
+        return color | 0xFF000000;
+    }
+
 }
