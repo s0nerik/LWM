@@ -147,17 +147,12 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
             holder.duration.setTextColor(Color.WHITE);
             holder.contextMenu.setColorFilter(Color.WHITE);
             holder.layout.setChecked(true);
-
-            holder.nowPlayingIcon.setImageResource(player.isPlaying()? R.drawable.ic_av_play_arrow : R.drawable.ic_av_pause);
-            holder.nowPlayingIcon.setVisibility(View.VISIBLE);
         } else {
             holder.title.setFont(R.string.FONT_ROBOTO_REGULAR);
             holder.title.setTextColor(Color.BLACK);
             holder.duration.setTextColor(Color.BLACK);
             holder.contextMenu.setColorFilter(Color.GRAY);
             holder.layout.setChecked(false);
-
-            holder.nowPlayingIcon.setVisibility(View.GONE);
         }
 
         return rowView;

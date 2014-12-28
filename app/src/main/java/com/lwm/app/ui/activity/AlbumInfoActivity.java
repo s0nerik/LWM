@@ -24,6 +24,7 @@ import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.helper.db.AlbumsCursorGetter;
 import com.lwm.app.helper.db.SongsCursorGetter;
 import com.lwm.app.model.Album;
@@ -203,6 +204,11 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     @Subscribe
     public void playbackStarted(PlaybackStartedEvent event) {
         showNowPlayingBar(true);
+        highlightCurrentSong();
+    }
+
+    @Subscribe
+    public void currentSongAvailable(CurrentSongAvailableEvent event) {
         highlightCurrentSong();
     }
 
