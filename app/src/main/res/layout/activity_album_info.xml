@@ -60,7 +60,7 @@
                     android:layout_height="56dp"
                     android:layout_marginRight="24dp"
                     android:tint="#fff"
-                    android:src="@drawable/ic_action_play"
+                    android:src="@drawable/ic_av_play_arrow"
                     android:layout_alignParentRight="true"
                     android:layout_centerHorizontal="true"
                     app:fab_shadow="true"

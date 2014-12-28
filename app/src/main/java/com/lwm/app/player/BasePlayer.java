@@ -82,7 +82,7 @@ public abstract class BasePlayer extends MediaPlayer {
 
         @Override
         public void run() {
-            bus.post(new SongPlayingEvent(getCurrentPosition(), getCurrentSong().getDuration()));
+            if (getCurrentSong() != null) bus.post(new SongPlayingEvent(getCurrentPosition(), getCurrentSong().getDuration()));
         }
     }
 
