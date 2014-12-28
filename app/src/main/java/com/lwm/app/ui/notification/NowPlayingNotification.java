@@ -126,9 +126,11 @@ public class NowPlayingNotification {
             bigContentView.setInt(R.id.btn_close, "setColorFilter", buttonColor);
 
             // Set text colors
-            bigContentView.setTextColor(R.id.title, swatch.getTitleTextColor());
-            bigContentView.setTextColor(R.id.artist, swatch.getBodyTextColor());
-            bigContentView.setTextColor(R.id.album, swatch.getBodyTextColor());
+            int textColor = swatch.getTitleTextColor();
+
+            bigContentView.setTextColor(R.id.title, textColor);
+            bigContentView.setTextColor(R.id.artist, textColor);
+            bigContentView.setTextColor(R.id.album, textColor);
         }
 
         bigContentView.setTextViewText(R.id.title, song.getTitle());
@@ -165,9 +167,11 @@ public class NowPlayingNotification {
             contentView.setInt(R.id.btn_close, "setColorFilter", buttonColor);
 
             // Set text colors
-            contentView.setTextColor(R.id.title, swatch.getTitleTextColor());
-            contentView.setTextColor(R.id.artist, swatch.getBodyTextColor());
-            contentView.setTextColor(R.id.album, swatch.getBodyTextColor());
+            int textColor = swatch.getTitleTextColor();
+
+            contentView.setTextColor(R.id.title, textColor);
+            contentView.setTextColor(R.id.artist, textColor);
+            contentView.setTextColor(R.id.album, textColor);
         }
 
         contentView.setTextViewText(R.id.title, song.getTitle());
