@@ -2,6 +2,7 @@ package com.lwm.app;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.lwm.app.modules.AndroidModule;
 
 public class App extends Application {
@@ -12,6 +13,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Injector.init(new AndroidModule(this));
+        if (BuildConfig.CRASHLYTICS) {
+            Crashlytics.start(this);
+        }
     }
 
 }
