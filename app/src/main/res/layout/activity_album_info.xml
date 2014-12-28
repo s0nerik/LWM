@@ -22,6 +22,7 @@
                 layout="@layout/album_info_header" />
 
             <RelativeLayout
+                android:id="@+id/listLayout"
                 android:layout_below="@+id/parallaxed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,9 +43,8 @@
                     />
 
                 <include
-                    android:id="@+id/overlay"
                     layout="@layout/album_info_header_overlay"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="26dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -53,12 +53,6 @@
                     android:background="@drawable/header_overlay_shadow_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="2dp" />
-
-                <View
-                    android:layout_marginTop="24dp"
-                    android:background="@drawable/header_overlay_shadow_top"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp" />
 
                 <com.melnykov.fab.FloatingActionButton
                     android:id="@+id/fab"

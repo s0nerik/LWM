@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -63,6 +64,8 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     ParallaxScrollView mScrollView;
     @InjectView(R.id.overflowMenu)
     RippleView mOverflowMenu;
+    @InjectView(R.id.overlay)
+    LinearLayout mOverlay;
 
     private List<Song> playlist;
 
@@ -128,6 +131,11 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
                 .placeholder(R.color.grid_item_default_bg)
                 .smartSize(true)
                 .load("file://" + album.getAlbumArtPath());
+//                .withBitmapInfo()
+//                .setCallback(SingleBitmapPaletteInfoCallback.builder()
+//                                    .floatingActionButton(mFab)
+//                                    .build()
+//                );
 
         String artistName = utils.getArtistName(album.getArtist());
         String title = String.valueOf(album.getTitle());

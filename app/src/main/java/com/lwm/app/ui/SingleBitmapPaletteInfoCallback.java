@@ -12,29 +12,39 @@ import com.koushikdutta.ion.bitmap.BitmapInfo;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.melnykov.fab.FloatingActionButton;
 
 import javax.inject.Inject;
+
+import lombok.experimental.Builder;
 
 public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
 
     @Inject
     Resources resources;
 
-    private View mLayout;
-    private View mLayoutShadow;
-    private TextView mTitle;
-    private TextView mSubtitle;
+    private View layout;
+    private View layoutShadow;
+    private TextView title;
+    private TextView subtitle;
+    private FloatingActionButton floatingActionButton;
 
     public SingleBitmapPaletteInfoCallback(View layout, TextView title, TextView subtitle) {
-        mLayout = layout;
-        mTitle = title;
-        mSubtitle = subtitle;
+        this.layout = layout;
+        this.title = title;
+        this.subtitle = subtitle;
         Injector.inject(this);
     }
 
     public SingleBitmapPaletteInfoCallback(View layout, View layoutShadow, TextView title, TextView subtitle) {
         this(layout, title, subtitle);
-        mLayoutShadow = layoutShadow;
+        this.layoutShadow = layoutShadow;
+    }
+
+    @Builder
+    public SingleBitmapPaletteInfoCallback(View layout, View layoutShadow, TextView title, TextView subtitle, FloatingActionButton floatingActionButton) {
+        this(layout, layoutShadow, title, subtitle);
+        this.floatingActionButton = floatingActionButton;
     }
 
     @Override
@@ -83,10 +93,14 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
     }
 
     private void applyStyle(int bgColor, int shadowColor, int titleColor, int subtitleColor) {
-        mLayout.setBackgroundColor(bgColor);
-        if (mLayoutShadow != null) mLayoutShadow.setBackgroundColor(shadowColor);
-        mTitle.setTextColor(titleColor);
-        mSubtitle.setTextColor(subtitleColor);
+        if (layout != null) layout.setBackgroundColor(bgColor);
+        if (floatingActionButton != null) {
+            floatingActionButton.setColorNormal(shadowColor);
+            floatingActionButton.setColorNormal(bgColor);
+        }
+        if (layoutShadow != null) layoutShadow.setBackgroundColor(shadowColor);
+        if (title != null) title.setTextColor(titleColor);
+        if (subtitle != null) subtitle.setTextColor(subtitleColor);
     }
 
 }
