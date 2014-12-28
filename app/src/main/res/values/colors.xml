@@ -58,7 +58,8 @@
     <color name="card_shadow_1">#161616</color>
     <color name="card_shadow_2">#101010</color>
 
-    <color name="grid_item_default_bg">@color/now_playing_bg</color>
+    <color name="grid_item_default_bg">#262626</color>
+    <color name="grid_item_no_cover_bg">@color/now_playing_bg</color>
 
     <color name="album_info_header_overlay_bg">#eee</color>
 

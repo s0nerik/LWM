@@ -30,6 +30,9 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     @Inject
     Utils utils;
 
+    @Inject
+    LayoutInflater inflater;
+
     public AlbumsAdapter(final Context context, List<Album> albums) {
         super(context, R.layout.list_item_songs, albums);
         Injector.inject(this);
@@ -44,7 +47,6 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
 
         View rowView = convertView;
         if (rowView == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
             rowView = inflater.inflate(R.layout.item_albums, null, true);
             holder = new ViewHolder(rowView);
             rowView.setTag(holder);
@@ -55,6 +57,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         Album album = albumsList.get(position);
         holder.mTitle.setText(album.getTitle());
         holder.mSubtitle.setText(utils.getArtistName(album.getArtist()));
+        holder.mBottomBar.setBackgroundResource(R.color.grid_item_default_bg);
 
         Ion.with(holder.mCover)
                 .smartSize(true)
