@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
-import com.andexert.library.RippleView;
 import com.danh32.fontify.TextView;
+import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.events.player.RepeatStateChangedEvent;
@@ -58,24 +59,14 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     SeekBar mSeekBar;
     @InjectView(R.id.btnShuffleIcon)
     ImageView mBtnShuffleIcon;
-    @InjectView(R.id.btnShuffle)
-    RippleView mBtnShuffle;
     @InjectView(R.id.btnPrevIcon)
     ImageView mBtnPrevIcon;
-    @InjectView(R.id.btnPrev)
-    RippleView mBtnPrev;
     @InjectView(R.id.btnPlayPauseIcon)
     ImageView mBtnPlayPauseIcon;
-    @InjectView(R.id.btnPlayPause)
-    RippleView mBtnPlayPause;
     @InjectView(R.id.btnNextIcon)
     ImageView mBtnNextIcon;
-    @InjectView(R.id.btnNext)
-    RippleView mBtnNext;
     @InjectView(R.id.btnRepeatIcon)
     ImageView mBtnRepeatIcon;
-    @InjectView(R.id.btnRepeat)
-    RippleView mBtnRepeat;
     @InjectView(R.id.controls)
     LinearLayout mControls;
     @InjectView(R.id.bottomBar)
@@ -118,10 +109,12 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     }
 
     protected void onPlaybackStarted(PlaybackStartedEvent event) {
+        Log.d(App.TAG, "onPlaybackStarted");
         setPlayButton(player.isPlaying());
     }
 
     protected void onPlaybackPaused(PlaybackPausedEvent event) {
+        Log.d(App.TAG, "onPlaybackPaused");
         setPlayButton(player.isPlaying());
     }
 
@@ -157,9 +150,9 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     private void setPlayButton(boolean playing) {
         if (playing) {
-            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_av_pause));
+            mBtnPlayPauseIcon.setImageResource(R.drawable.ic_av_pause);
         } else {
-            mBtnPlayPauseIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_av_play_arrow));
+            mBtnPlayPauseIcon.setImageResource(R.drawable.ic_av_play_arrow);
         }
     }
 

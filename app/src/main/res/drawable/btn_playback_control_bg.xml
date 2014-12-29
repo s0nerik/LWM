@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="300"
+    android:exitFadeDuration="300" >
+
+    <item android:state_pressed="true" android:drawable="@drawable/btn_playback_control_bg_pressed" />
+    <item android:drawable="@android:color/transparent" />
+
+</selector>
