@@ -26,6 +26,7 @@ import com.lwm.app.server.MusicServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.squareup.otto.Bus;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class LocalPlayer extends BasePlayer {
     Context context;
     @Inject
     NotificationManager notificationManager;
+
+    private boolean prepared = true;
 
     private boolean repeat = false;
     private boolean active = false;
@@ -101,16 +104,19 @@ public class LocalPlayer extends BasePlayer {
 
     @Override
     public void stop() throws IllegalStateException {
+        stopNotifyingPlaybackProgress();
         super.stop();
     }
 
     @Override
     public void seekTo(int msec) throws IllegalStateException {
         Log.d(App.TAG, "LocalPlayer: seekTo(" + msec + ")");
-        if (server.isStarted()) {
-            bus.post(new SeekToClientsEvent(msec));
+        if (prepared) {
+            if (server.isStarted()) {
+                bus.post(new SeekToClientsEvent(msec));
+            }
+            super.seekTo(msec);
         }
-        super.seekTo(msec);
     }
 
     public void play(int position) {
@@ -122,8 +128,10 @@ public class LocalPlayer extends BasePlayer {
         reset();
         try {
             assert queue != null : "queue == null";
-            setDataSource(queue.getSong().getSource());
+            FileInputStream fis = new FileInputStream(queue.getSong().getSource());
+            setDataSource(fis.getFD());
             prepareAsync();
+            prepared = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -131,6 +139,12 @@ public class LocalPlayer extends BasePlayer {
 
     public boolean hasCurrentSong() {
         return active && queue.getSong() != null;
+    }
+
+    @Override
+    public void reset() {
+        stopNotifyingPlaybackProgress();
+        super.reset();
     }
 
     @Override
@@ -176,19 +190,23 @@ public class LocalPlayer extends BasePlayer {
 
     @Override
     public void pause() throws IllegalStateException {
-        super.pause();
-        stopNotifyingPlaybackProgress();
+        if (prepared) {
+            stopNotifyingPlaybackProgress();
+            super.pause();
 
-        bus.post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
+            bus.post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
+        }
     }
 
     @Override
     public void start() throws IllegalStateException {
-        super.start();
-        startNotifyingPlaybackProgress();
+        if (prepared) {
+            super.start();
+            startNotifyingPlaybackProgress();
 
-        bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
-        context.startService(new Intent(context, LocalPlayerService.class));
+            bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
+            context.startService(new Intent(context, LocalPlayerService.class));
+        }
     }
 
 //    @Override
@@ -248,14 +266,16 @@ public class LocalPlayer extends BasePlayer {
         public void onCompletion(MediaPlayer mediaPlayer) {
             Log.d("LWM", "LocalPlayer: onCompletion");
 
-            int currentPosition = getCurrentPosition();
-            int duration = getDuration() - 1000;
+            if (prepared) {
+                int currentPosition = getCurrentPosition();
+                int duration = getDuration() - 1000;
 
-            if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
-                if (isRepeat()) {
-                    play();
-                } else {
-                    nextSong();
+                if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
+                    if (isRepeat()) {
+                        play();
+                    } else {
+                        nextSong();
+                    }
                 }
             }
         }
@@ -265,6 +285,7 @@ public class LocalPlayer extends BasePlayer {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
+            prepared = true;
             active = true;
 
             bus.post(new SongChangedEvent(getCurrentSong()));
@@ -281,6 +302,8 @@ public class LocalPlayer extends BasePlayer {
 
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
+            Log.e(App.TAG, "onError: " + what + ", " + extra);
+            prepared = true;
             return true;
         }
     }
