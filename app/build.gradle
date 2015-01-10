@@ -81,7 +81,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
     compile 'com.github.nirhart:parallaxscroll:1.0'
-    compile 'com.melnykov:floatingactionbutton:1.0.6'
+    compile 'com.melnykov:floatingactionbutton:1.1.0'
 
     // Serialization
     compile 'com.google.code.gson:gson:2.3.1'

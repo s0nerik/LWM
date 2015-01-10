@@ -7,13 +7,18 @@ import com.lwm.app.R;
 import com.lwm.app.events.ui.SongsListLoadingEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.ui.async.SongsLoaderTask;
+import com.melnykov.fab.FloatingActionButton;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import butterknife.InjectView;
 import butterknife.OnItemClick;
 
 public class SongsListFragment extends BaseSongsListFragment {
+
+    @InjectView(R.id.fab)
+    FloatingActionButton mFab;
 
     @Override
     protected int getViewId() {
@@ -36,6 +41,7 @@ public class SongsListFragment extends BaseSongsListFragment {
         switch (event.getState()) {
             case LOADING:
                 mProgress.setVisibility(View.VISIBLE);
+                mFab.hide();
                 break;
             case LOADED:
                 mProgress.setVisibility(View.GONE);
@@ -43,6 +49,8 @@ public class SongsListFragment extends BaseSongsListFragment {
                 if (!event.getList().isEmpty()) {
                     initAdapter(songs);
                     setSelection(currentSong);
+                    mFab.show(true);
+                    mFab.attachToListView(mListView);
                 } else {
                     mEmptyView.setVisibility(View.VISIBLE);
                 }

@@ -111,7 +111,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         switch (activeFragment) {
             case SONGS:
                 title = resources.getString(R.string.actionbar_title_songs);
-                menuId = R.menu.local_broadcast_shuffle;
+                menuId = R.menu.local_broadcast;
                 break;
             case ALBUMS:
                 title = resources.getString(R.string.actionbar_title_albums);
@@ -123,7 +123,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
                 break;
             case QUEUE:
                 title = resources.getString(R.string.actionbar_title_queue);
-                menuId = R.menu.local_broadcast_shuffle;
+                menuId = R.menu.local_broadcast;
                 break;
             default:
                 title = "Listen With Me!";
