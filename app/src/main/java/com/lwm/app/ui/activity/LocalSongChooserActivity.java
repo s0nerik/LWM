@@ -16,7 +16,6 @@ import android.widget.ListView;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
-import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
@@ -190,10 +189,10 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
     }
 
-    @Subscribe
-    public void playbackStarted(PlaybackStartedEvent event) {
-        showNowPlayingBar(true);
-    }
+//    @Subscribe
+//    public void playbackStarted(PlaybackStartedEvent event) {
+//        showNowPlayingBar(true);
+//    }
 
     @Subscribe
     public void onClientConnected(ClientConnectedEvent event) {

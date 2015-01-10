@@ -1,48 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.lwm.app.ui.custom_view.ScrimInsetsFrameLayout
+    android:id="@+id/scrimInsetsFrameLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer"
-    android:orientation="vertical"
-    android:background="@color/drawer_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:layout_width="192dp"
-    android:layout_height="match_parent" >
+    android:fitsSystemWindows="true"
+    app:insetForeground="#0000" >
 
-    <ListView
-        android:id="@+id/drawer_list"
-        android:layout_marginTop="8dp"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/drawer_buttons"
-        android:isScrollContainer="false"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"
-        android:choiceMode="singleChoice"
-        tools:listitem="@layout/list_item_drawer"/>
+    <RelativeLayout
+        android:id="@+id/drawer"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="256dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/drawer_background"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/drawer_buttons"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="168dp">
 
-        <com.danh32.fontify.Button
-            android:id="@+id/drawer_btn_donate"
-            android:text="@string/donate"
-            style="@style/DrawerBottomButton" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/background_main_activity" />
 
-        <com.danh32.fontify.Button
-            android:id="@+id/drawer_btn_settings"
-            android:text="@string/action_settings"
-            style="@style/DrawerBottomButton" />
+            <fragment
+                android:id="@+id/nowPlayingFragment"
+                android:layout_alignParentBottom="true"
+                android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_now_playing" />
 
-        <com.danh32.fontify.Button
-            android:id="@+id/drawer_btn_send_feedback"
-            android:text="@string/send_feedback"
-            style="@style/DrawerBottomButton" />
+        </RelativeLayout>
 
-    </LinearLayout>
+        <ListView
+            android:id="@+id/drawer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/drawer_buttons"
+            android:layout_below="@+id/header"
+            android:layout_marginTop="8dp"
+            android:choiceMode="singleChoice"
+            android:divider="@null"
+            android:isScrollContainer="false"
+            tools:listitem="@layout/list_item_drawer" />
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/drawer_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:src="@drawable/ic_attach_money_white_24dp"
+                    android:layout_centerVertical="true"
+                    android:tint="#000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/DrawerBottomButton"
+                    android:text="@string/donate"
+                    android:paddingLeft="56dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:src="@drawable/ic_thumb_up_grey600_24dp"
+                    android:layout_centerVertical="true"
+                    android:tint="#000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/DrawerBottomButton"
+                    android:text="@string/rate_app"
+                    android:paddingLeft="56dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:src="@drawable/ic_settings_white_24dp"
+                    android:layout_centerVertical="true"
+                    android:tint="#000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/DrawerBottomButton"
+                    android:text="@string/action_settings"
+                    android:paddingLeft="56dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</com.lwm.app.ui.custom_view.ScrimInsetsFrameLayout>

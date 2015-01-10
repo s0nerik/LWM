@@ -16,6 +16,12 @@
         <item name="popupMenuStyle">@style/OverflowMenu</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
+    </style>
+
     <style name="AppTheme.StartActivity" parent="AppTheme">
         <item name="actionBarStyle">@style/Widget.ActionBar.Custom</item>
         <item name="android:actionBarStyle">@style/Widget.ActionBar.Custom</item>
@@ -24,12 +30,9 @@
 
     <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar" parent="AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowTitleSize">0dp</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.PlaybackActivity" parent="AppTheme.NoActionBar">
@@ -307,11 +310,8 @@
 
     <style name="DrawerBottomButton">
         <item name="android:textSize">16sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:background">@null</item>
-        <item name="font">@string/FONT_ROBOTO_LIGHT</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="font">@string/FONT_ROBOTO_REGULAR</item>
     </style>
 
     <style name="artist_item_cover_shadow">

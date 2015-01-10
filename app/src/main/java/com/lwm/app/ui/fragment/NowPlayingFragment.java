@@ -6,22 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.danh32.fontify.TextView;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
-import com.lwm.app.events.player.playback.PlaybackPausedEvent;
-import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.playback.SongChangedEvent;
-import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
-import com.lwm.app.ui.custom_view.ProgressWheel;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -46,16 +41,10 @@ public class NowPlayingFragment extends DaggerFragment {
     TextView mTitle;
     @InjectView(R.id.artist)
     TextView mArtist;
-    @InjectView(R.id.layout)
-    View mLayout;
-    @InjectView(R.id.btn_play_pause)
-    ImageView mBtnPlayPause;
     @InjectView(R.id.now_playing_layout)
-    RelativeLayout mGlobalLayout;
-    @InjectView(R.id.shadow)
-    View mShadow;
-    @InjectView(R.id.progress_wheel)
-    ProgressWheel mProgressWheel;
+    View mOverlay;
+//    @InjectView(R.id.shadow)
+//    View mShadow;
 
     @Override
     public void onResume() {
@@ -93,22 +82,14 @@ public class NowPlayingFragment extends DaggerFragment {
                 .error(R.drawable.no_cover)
                 .load(song.getAlbumArtUri().toString())
                 .withBitmapInfo()
-                .setCallback(new SingleBitmapPaletteInfoCallback(mGlobalLayout, mShadow, mTitle, mArtist));
+                .setCallback(new SingleBitmapPaletteInfoCallback(mOverlay, mTitle, mArtist));
 
         mArtist.setText(utils.getArtistName(song.getArtist()));
         mTitle.setText(song.getTitle());
-        setPlayButton(player.isPlaying());
 
-    }
+//        ViewHelper.setAlpha(mShadow, 0.9f);
+//        ViewHelper.setAlpha(mOverlay, 0.9f);
 
-    private void setPlayButton(boolean playing) {
-        mBtnPlayPause.setImageResource(playing ? R.drawable.ic_av_pause : R.drawable.ic_av_play_arrow);
-    }
-
-    @OnClick(R.id.btn_play_pause)
-    public void onPlayPauseClicked() {
-        player.togglePause();
-        setPlayButton(player.isPlaying());
     }
 
     @OnClick({R.id.layout, R.id.cover})
@@ -121,21 +102,6 @@ public class NowPlayingFragment extends DaggerFragment {
     @Subscribe
     public void onSongChanged(SongChangedEvent event) {
         setSongInfo(event.getSong());
-    }
-
-    @Subscribe
-    public void onPlaybackStarted(PlaybackStartedEvent event) {
-        setPlayButton(true);
-    }
-
-    @Subscribe
-    public void onPlaybackPaused(PlaybackPausedEvent event) {
-        setPlayButton(false);
-    }
-
-    @Subscribe
-    public void onPlaying(SongPlayingEvent event) {
-        mProgressWheel.setProgress((int) (360 * (event.getProgress() / (float) event.getDuration())));
     }
 
 }

@@ -132,5 +132,6 @@
     <string name="play_next">Play next</string>
     <string name="donate">Donate</string>
     <string name="send_feedback">Send feedback</string>
+    <string name="rate_app">Rate this app!</string>
 
 </resources>

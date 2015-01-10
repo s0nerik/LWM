@@ -9,8 +9,7 @@
     <com.nirhart.parallaxscroll.views.ParallaxScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/fragment_now_playing" >
+        android:layout_height="match_parent" >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -99,13 +98,5 @@
         android:layout_height="wrap_content"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         />
-
-    <fragment
-        android:id="@+id/fragment_now_playing"
-        android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        tools:layout="@layout/fragment_now_playing" />
 
 </RelativeLayout>

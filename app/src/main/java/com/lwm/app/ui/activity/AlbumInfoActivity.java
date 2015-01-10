@@ -217,7 +217,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
     @Subscribe
     public void playbackStarted(PlaybackStartedEvent event) {
-        showNowPlayingBar(true);
         highlightCurrentSong();
     }
 
