@@ -36,7 +36,7 @@ public class MainActivity extends ActionBarActivity {
     private View.OnClickListener settingsButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(MainActivity.this, PreferenceActivity.class));
+            startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };

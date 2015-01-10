@@ -92,9 +92,15 @@
                 android:value=".ui.activity.StationChooserActivity" />
         </activity>
 
+        <!--<activity-->
+            <!--android:label="@string/action_settings"-->
+            <!--android:theme="@style/AppTheme"-->
+            <!--android:name="com.lwm.app.ui.activity.PreferenceActivity" />-->
+
         <activity
             android:label="@string/action_settings"
-            android:name="com.lwm.app.ui.activity.PreferenceActivity" />
+            android:theme="@style/AppTheme"
+            android:name="com.lwm.app.ui.activity.PreferencesActivity" />
 
         <activity
             android:screenOrientation="portrait"

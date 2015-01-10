@@ -1,8 +1,6 @@
 include ':app'
 include ':app-test'
-include ':libs:UnifiedPreference'
 include ':libs:android-stackblur'
 include ':libs:Fontify'
 include ':libs:androidsvg'
-include ':libs:FadingActionBar'
 include ':libs:ExoPlayer'
