@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.andexert.library.RippleView;
+//import com.andexert.library.RippleView;
 import com.danh32.fontify.TextView;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
@@ -63,8 +63,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     TextView mYear;
     @InjectView(R.id.scrollView)
     ParallaxScrollView mScrollView;
-    @InjectView(R.id.overflowMenu)
-    RippleView mOverflowMenu;
     @InjectView(R.id.overlay)
     LinearLayout mOverlay;
 
