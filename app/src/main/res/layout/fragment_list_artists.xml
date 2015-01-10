@@ -5,7 +5,7 @@
     android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$ArtistsListFragment">
+    tools:context="com.lwm.app.ui.activity.LocalMusicActivity$ArtistsListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/grid"

@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +13,9 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.lwm.app.R;
+import com.lwm.app.adapter.LocalMusicFragmentsAdapter;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
@@ -23,19 +25,14 @@ import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.Croutons;
-import com.lwm.app.ui.fragment.AlbumsListFragment;
-import com.lwm.app.ui.fragment.ArtistsListFragment;
-import com.lwm.app.ui.fragment.QueueFragment;
-import com.lwm.app.ui.fragment.SongsListFragment;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnItemClick;
 
-public class LocalSongChooserActivity extends BaseLocalActivity {
+public class LocalMusicActivity extends BaseLocalActivity {
 
     public static final String DRAWER_SELECTION = "drawer_selection";
 
@@ -54,6 +51,10 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
     ListView mDrawerList;
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @InjectView(R.id.tabs)
+    PagerSlidingTabStrip mTabs;
+    @InjectView(R.id.pager)
+    ViewPager mPager;
 
     private enum DrawerItem {SONGS, ARTISTS, ALBUMS, QUEUE}
 
@@ -72,7 +73,7 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         streamPlayerServiceIntent = new Intent(this, StreamPlayerService.class);
         stopService(streamPlayerServiceIntent);
 
-        setContentView(R.layout.activity_local_song_chooser);
+        setContentView(R.layout.activity_local_music);
         ButterKnife.inject(this);
 
         initNavigationDrawer();
@@ -84,25 +85,28 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
 
         drawerToggle.syncState();
 
-        if (savedInstanceState == null) {
-            showSelectedFragment(activeFragment);
-        }
+        mPager.setAdapter(new LocalMusicFragmentsAdapter(getSupportFragmentManager()));
+        mTabs.setViewPager(mPager);
+
+//        if (savedInstanceState == null) {
+//            showSelectedFragment(activeFragment);
+//        }
 
     }
 
-    protected Fragment getFragmentFromDrawer(DrawerItem i) {
-        switch (i) {
-            case SONGS:
-                return new SongsListFragment();
-            case ARTISTS:
-                return new ArtistsListFragment();
-            case ALBUMS:
-                return new AlbumsListFragment();
-            case QUEUE:
-                return new QueueFragment();
-        }
-        return null;
-    }
+//    protected Fragment getFragmentFromDrawer(DrawerItem i) {
+//        switch (i) {
+//            case SONGS:
+//                return new SongsListFragment();
+//            case ARTISTS:
+//                return new ArtistsListFragment();
+//            case ALBUMS:
+//                return new AlbumsListFragment();
+//            case QUEUE:
+//                return new QueueFragment();
+//        }
+//        return null;
+//    }
 
     protected void initToolbar() {
         String title;
@@ -161,13 +165,13 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
     }
 
-    protected void showSelectedFragment(DrawerItem i) {
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, getFragmentFromDrawer(i))
-                .commit();
-        activeFragment = i;
-        initToolbar();
-    }
+//    protected void showSelectedFragment(DrawerItem i) {
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.container, getFragmentFromDrawer(i))
+//                .commit();
+//        activeFragment = i;
+//        initToolbar();
+//    }
 
     @Override
     protected void onResume() {
@@ -182,12 +186,12 @@ public class LocalSongChooserActivity extends BaseLocalActivity {
         bus.unregister(this);
     }
 
-    @OnItemClick(R.id.drawer_list)
-    public void onDrawerItemClicked(int i) {
-        showSelectedFragment(DrawerItem.values()[i]);
-        mDrawerLayout.closeDrawer(Gravity.LEFT);
-        sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
-    }
+//    @OnItemClick(R.id.drawer_list)
+//    public void onDrawerItemClicked(int i) {
+//        showSelectedFragment(DrawerItem.values()[i]);
+//        mDrawerLayout.closeDrawer(Gravity.LEFT);
+//        sharedPreferences.edit().putInt(DRAWER_SELECTION, i).apply();
+//    }
 
 //    @Subscribe
 //    public void playbackStarted(PlaybackStartedEvent event) {

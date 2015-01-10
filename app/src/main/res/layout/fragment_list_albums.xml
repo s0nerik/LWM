@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$AlbumsListFragment">
+    tools:context="com.lwm.app.ui.activity.LocalMusicActivity$AlbumsListFragment">
 
     <GridView
         android:id="@+id/grid"

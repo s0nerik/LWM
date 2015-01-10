@@ -30,13 +30,13 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/background_main_activity" />
 
-            <fragment
-                android:id="@+id/nowPlayingFragment"
-                android:layout_alignParentBottom="true"
-                android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_now_playing" />
+            <!--<fragment-->
+                <!--android:id="@+id/nowPlayingFragment"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:name="com.lwm.app.ui.fragment.NowPlayingFragment"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--tools:layout="@layout/fragment_now_playing" />-->
 
         </RelativeLayout>
 

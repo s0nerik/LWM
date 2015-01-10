@@ -15,4 +15,6 @@
     <dimen name="item_covers_size">160dp</dimen>
     <dimen name="padding_grid">1dp</dimen>
 
+    <dimen name="toolbar_padding_top">0dp</dimen>
+
 </resources>

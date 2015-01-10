@@ -16,6 +16,7 @@ import com.lwm.app.Utils;
 import com.lwm.app.adapter.AlbumCoversAdapter;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.adapter.ArtistWrappersAdapter;
+import com.lwm.app.adapter.LocalMusicFragmentsAdapter;
 import com.lwm.app.adapter.SongsListAdapter;
 import com.lwm.app.events.MainThreadBus;
 import com.lwm.app.helper.bitmap.ArtistAlbumsBitmapHelper;
@@ -36,7 +37,7 @@ import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.activity.ArtistInfoActivity;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
-import com.lwm.app.ui.activity.LocalSongChooserActivity;
+import com.lwm.app.ui.activity.LocalMusicActivity;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.async.AlbumsLoaderTask;
@@ -119,6 +120,7 @@ import static android.content.Context.WIFI_SERVICE;
         AlbumsAdapter.class,
         ArtistWrappersAdapter.class,
         AlbumCoversAdapter.class,
+        LocalMusicFragmentsAdapter.class,
 
         // Fragments
         QueueFragment.class,
@@ -132,7 +134,7 @@ import static android.content.Context.WIFI_SERVICE;
         FindStationsFragment.class,
 
         // Activities
-        LocalSongChooserActivity.class,
+        LocalMusicActivity.class,
         AlbumInfoActivity.class,
         LocalPlaybackActivity.class,
         RemotePlaybackActivity.class,

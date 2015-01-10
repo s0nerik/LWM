@@ -20,7 +20,7 @@ public class MainActivity extends ActionBarActivity {
     private View.OnClickListener localMusicButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(MainActivity.this, LocalSongChooserActivity.class));
+            startActivity(new Intent(MainActivity.this, LocalMusicActivity.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
         }
     };
@@ -62,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(this, FirstTimeActivity.class));
         }
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("always_local", false)){
-            startActivity(new Intent(this, LocalSongChooserActivity.class));
+            startActivity(new Intent(this, LocalMusicActivity.class));
         }
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();

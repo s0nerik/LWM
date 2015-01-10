@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$PlaylistFragment">
+    tools:context="com.lwm.app.ui.activity.LocalMusicActivity$PlaylistFragment">
 
     <ListView
         style="@style/ListOfSongs"
