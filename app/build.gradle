@@ -80,6 +80,7 @@ dependencies {
     compile 'com.github.nirhart:parallaxscroll:1.0'
     compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.flaviofaria:kenburnsview:1.0.5'
+    compile 'de.hdodenhof:circleimageview:1.2.1'
 
     // Networking
     compile 'com.koushikdutta.ion:ion:1.4.1'

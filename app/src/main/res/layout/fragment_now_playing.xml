@@ -4,39 +4,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_width="256dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content" >
+
+    <!--<com.lwm.app.ui.custom_view.SquareWidthImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:id="@+id/cover" />-->
 
     <com.flaviofaria.kenburnsview.KenBurnsView
+        tools:src="@drawable/bg"
         android:layout_width="match_parent"
-        android:layout_height="168dp"
-        android:scaleType="centerInside"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/now_playing_layout"
+        android:scaleType="centerCrop"
         android:id="@+id/cover" />
 
-    <!--<TextView-->
-        <!--tools:background="@color/primary"-->
-        <!--android:id="@+id/shadow"-->
-        <!--android:paddingLeft="16dp"-->
-        <!--android:text="@string/now_playing"-->
-        <!--android:textColor="#fff"-->
-        <!--android:textAllCaps="true"-->
-        <!--android:layout_above="@+id/now_playing_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
     <RelativeLayout
-        android:layout_alignBottom="@+id/cover"
         android:background="@color/now_playing_bg"
         android:id="@+id/now_playing_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/now_playing_bar_height" >
-
-        <!--<com.flaviofaria.kenburnsview.KenBurnsView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/now_playing_bar_height"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:id="@+id/cover" />-->
+        android:layout_height="wrap_content" >
 
         <!--<View-->
             <!--android:background="@color/now_playing_bg"-->
@@ -46,13 +36,23 @@
 
         <LinearLayout
             android:id="@+id/layout"
-
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content" >
+
+            <TextView
+                tools:background="@color/primary"
+                android:id="@+id/shadow"
+                android:paddingLeft="16dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:text="@string/now_playing"
+                android:textColor="#fff"
+                android:textAllCaps="true"
+                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <com.danh32.fontify.TextView
                 style="@style/SongTitle"
@@ -63,6 +63,9 @@
 
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
 
                 app:font="@string/FONT_ROBOTO_REGULAR" />
 
@@ -76,6 +79,9 @@
                 android:maxLines="1"
                 android:textSize="16sp"
                 android:textColor="#cccccc"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_marginBottom="8dp"
 
                 app:font="@string/FONT_ROBOTO_LIGHT" />
 

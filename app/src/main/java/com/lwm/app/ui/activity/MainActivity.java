@@ -10,11 +10,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ListView;
 
 import com.lwm.app.PrefManager;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
+import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.ui.base.DaggerActivity;
 import com.lwm.app.ui.fragment.LocalMusicFragment;
 import com.lwm.app.ui.fragment.StationsAroundFragment;
@@ -41,6 +43,8 @@ public class MainActivity extends DaggerActivity {
     ListView mDrawerList;
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @InjectView(R.id.nowPlayingFrame)
+    View mNowPlayingFrame;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -92,6 +96,11 @@ public class MainActivity extends DaggerActivity {
         int activeFragment = prefManager.drawerSelection().getOr(0);
 
         mDrawerList.setItemChecked(activeFragment, true);
+    }
+
+    @Subscribe
+    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
+        mNowPlayingFrame.setVisibility(View.VISIBLE);
     }
 
     @OnItemClick(R.id.drawer_list)

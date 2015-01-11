@@ -17,6 +17,7 @@ import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.base.DaggerFragment;
+import com.nineoldandroids.view.ViewHelper;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -43,8 +44,8 @@ public class NowPlayingFragment extends DaggerFragment {
     TextView mArtist;
     @InjectView(R.id.now_playing_layout)
     View mOverlay;
-//    @InjectView(R.id.shadow)
-//    View mShadow;
+    @InjectView(R.id.shadow)
+    View mShadow;
 
     @Override
     public void onResume() {
@@ -82,14 +83,13 @@ public class NowPlayingFragment extends DaggerFragment {
                 .error(R.drawable.no_cover)
                 .load(song.getAlbumArtUri().toString())
                 .withBitmapInfo()
-                .setCallback(new SingleBitmapPaletteInfoCallback(mOverlay, mTitle, mArtist));
+                .setCallback(new SingleBitmapPaletteInfoCallback(mOverlay, mShadow, mTitle, mArtist));
 
         mArtist.setText(utils.getArtistName(song.getArtist()));
         mTitle.setText(song.getTitle());
 
-//        ViewHelper.setAlpha(mShadow, 0.9f);
-//        ViewHelper.setAlpha(mOverlay, 0.9f);
-
+        ViewHelper.setAlpha(mShadow, 0.9f);
+        ViewHelper.setAlpha(mOverlay, 0.9f);
     }
 
     @OnClick({R.id.layout, R.id.cover})
