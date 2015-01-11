@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
 public class MainActivity extends DaggerActivity {
 
@@ -42,8 +43,6 @@ public class MainActivity extends DaggerActivity {
     DrawerLayout mDrawerLayout;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-
-    private int activeFragment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +89,16 @@ public class MainActivity extends DaggerActivity {
                 getResources().getStringArray(R.array.drawer_items),
                 getResources().obtainTypedArray(R.array.drawer_icons)));
 
-        activeFragment = prefManager.drawerSelection().getOr(0);
+        int activeFragment = prefManager.drawerSelection().getOr(0);
 
         mDrawerList.setItemChecked(activeFragment, true);
+    }
+
+    @OnItemClick(R.id.drawer_list)
+    public void onDrawerItemClicked(int i) {
+        prefManager.drawerSelection().put(i).apply();
+        showFragmentFromDrawer(i);
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
     }
 
     @Subscribe
