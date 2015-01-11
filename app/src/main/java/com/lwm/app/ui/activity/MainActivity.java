@@ -16,8 +16,8 @@ import com.lwm.app.PrefManager;
 import com.lwm.app.R;
 import com.lwm.app.adapter.NavigationDrawerListAdapter;
 import com.lwm.app.ui.base.DaggerActivity;
-import com.lwm.app.ui.fragment.FindStationsFragment;
 import com.lwm.app.ui.fragment.LocalMusicFragment;
+import com.lwm.app.ui.fragment.StationsAroundFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -72,7 +72,7 @@ public class MainActivity extends DaggerActivity {
                 fragment = new LocalMusicFragment();
                 break;
             case 1:
-                fragment = new FindStationsFragment();
+                fragment = new StationsAroundFragment();
                 break;
             default:
                 fragment = new LocalMusicFragment();

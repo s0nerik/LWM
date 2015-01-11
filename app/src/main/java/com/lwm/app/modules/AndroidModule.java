@@ -41,7 +41,6 @@ import com.lwm.app.ui.activity.LocalPlaybackActivity;
 import com.lwm.app.ui.activity.MainActivity;
 import com.lwm.app.ui.fragment.LocalMusicFragment;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
-import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.async.AlbumsLoaderTask;
 import com.lwm.app.ui.async.ArtistsLoaderTask;
 import com.lwm.app.ui.async.QueueLoaderTask;
@@ -51,7 +50,7 @@ import com.lwm.app.ui.fragment.AlbumsListFragment;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.FindStationsFragment;
 import com.lwm.app.ui.fragment.NowPlayingFragment;
-import com.lwm.app.ui.fragment.PlayersAroundFragment;
+import com.lwm.app.ui.fragment.StationsAroundFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
 import com.lwm.app.ui.fragment.playback.LocalPlaybackFragment;
@@ -131,7 +130,7 @@ import static android.content.Context.WIFI_SERVICE;
         ArtistsListFragment.class,
         LocalPlaybackFragment.class,
         RemotePlaybackFragment.class,
-        PlayersAroundFragment.class,
+        StationsAroundFragment.class,
         AlbumsListFragment.class,
         FindStationsFragment.class,
         LocalMusicFragment.class,
@@ -141,7 +140,6 @@ import static android.content.Context.WIFI_SERVICE;
         AlbumInfoActivity.class,
         LocalPlaybackActivity.class,
         RemotePlaybackActivity.class,
-        StationChooserActivity.class,
         ArtistInfoActivity.class,
         MainActivity.class,
 
