@@ -13,6 +13,7 @@ import com.squareup.otto.Subscribe;
 import java.util.List;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnItemClick;
 
 public class SongsListFragment extends BaseSongsListFragment {
@@ -34,6 +35,11 @@ public class SongsListFragment extends BaseSongsListFragment {
     public void onItemClicked(int pos) {
         player.setQueue(songs);
         player.play(pos);
+    }
+
+    @OnClick(R.id.fab)
+    public void onFabClicked() {
+        shuffleAll();
     }
 
     @Subscribe
