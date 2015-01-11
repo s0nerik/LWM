@@ -84,18 +84,22 @@
 
     // Navigation Drawer titles
     <string-array name="drawer_items">
-        <item>Songs</item>
-        <item>Artists</item>
-        <item>Albums</item>
-        <item>Queue</item>
+        <item>@string/local_music</item>
+        <item>Stations around</item>
     </string-array>
 
     // Navigation Drawer icons
     <string-array name="drawer_icons">
-        <item>@drawable/ic_drawer_songs</item>
-        <item>@drawable/ic_drawer_artists</item>
-        <item>@drawable/ic_drawer_albums</item>
-        <item>@drawable/ic_drawer_queue</item>
+        <item>@drawable/ic_my_library_music_grey600_24dp</item>
+        <item>@drawable/ic_radio_grey600_24dp</item>
+    </string-array>
+
+    // MainActivity tab titles
+    <string-array name="local_music_tabs">
+        <item>Songs</item>
+        <item>Artists</item>
+        <item>Albums</item>
+        <item>Queue</item>
     </string-array>
 
     // Navigation Drawer titles
@@ -133,5 +137,7 @@
     <string name="donate">Donate</string>
     <string name="send_feedback">Send feedback</string>
     <string name="rate_app">Rate this app!</string>
+
+    <string name="local_music">Local music</string>
 
 </resources>

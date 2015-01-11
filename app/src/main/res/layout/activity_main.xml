@@ -1,68 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <com.danh32.fontify.TextView
-        android:id="@+id/btn_local_text"
-        android:text="@string/my_music"
-        android:layout_toLeftOf="@+id/btn_local"
-        android:layout_alignBottom="@+id/btn_local"
-        android:layout_alignTop="@+id/btn_local"
-        style="@style/StartScreenText" />
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <View
-        android:id="@+id/shadow_local_btn"
-        android:layout_alignBottom="@+id/btn_local"
-        android:layout_alignTop="@+id/btn_local"
-        style="@style/StartScreenButtonBackground" />
+    <include layout="@layout/drawer" />
 
-    <com.lwm.app.ui.custom_view.CircleButton
-        style="@style/StartScreenCircleButton"
-        android:id="@+id/btn_local"
-        android:src="@drawable/ic_local_music"
-        android:layout_above="@+id/btn_remote" />
-
-    <com.danh32.fontify.TextView
-        android:id="@+id/btn_remote_text"
-        android:text="@string/stations_around"
-        android:layout_alignTop="@+id/btn_remote"
-        android:layout_alignBottom="@+id/btn_remote"
-        android:layout_toLeftOf="@+id/btn_remote"
-        style="@style/StartScreenText" />
-
-    <View
-        android:id="@+id/shadow_remote_btn"
-        android:layout_alignBottom="@+id/btn_remote"
-        android:layout_alignTop="@+id/btn_remote"
-        style="@style/StartScreenButtonBackground" />
-
-    <com.lwm.app.ui.custom_view.CircleButton
-        style="@style/StartScreenCircleButton"
-        android:id="@+id/btn_remote"
-        android:src="@drawable/ic_remote_music"
-        android:layout_centerVertical="true" />
-
-    <com.danh32.fontify.TextView
-        android:id="@+id/btn_settings_text"
-        android:text="@string/action_settings"
-        android:layout_alignTop="@+id/btn_settings"
-        android:layout_toLeftOf="@+id/btn_settings"
-        android:layout_alignBottom="@+id/btn_settings"
-        style="@style/StartScreenText" />
-
-    <View
-        android:id="@+id/shadow_settings_btn"
-        android:layout_alignBottom="@+id/btn_settings"
-        android:layout_alignTop="@+id/btn_settings"
-        style="@style/StartScreenButtonBackground" />
-
-    <com.lwm.app.ui.custom_view.CircleButton
-        style="@style/StartScreenCircleButton"
-        android:id="@+id/btn_settings"
-        android:src="@drawable/ic_settings"
-        android:layout_below="@+id/btn_remote" />
-
-</RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

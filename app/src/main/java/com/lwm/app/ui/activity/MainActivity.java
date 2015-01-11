@@ -1,140 +1,112 @@
 package com.lwm.app.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.View;
+import android.widget.ListView;
 
+import com.lwm.app.PrefManager;
 import com.lwm.app.R;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
+import com.lwm.app.adapter.NavigationDrawerListAdapter;
+import com.lwm.app.ui.base.DaggerActivity;
+import com.lwm.app.ui.fragment.FindStationsFragment;
+import com.lwm.app.ui.fragment.LocalMusicFragment;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-public class MainActivity extends ActionBarActivity {
+import javax.inject.Inject;
 
-    private View.OnClickListener localMusicButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(MainActivity.this, LocalMusicActivity.class));
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
-        }
-    };
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
-    private View.OnClickListener remoteMusicButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(MainActivity.this, StationChooserActivity.class));
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
-        }
-    };
+public class MainActivity extends DaggerActivity {
 
-    private View.OnClickListener settingsButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
-        }
-    };
+    private ActionBarDrawerToggle drawerToggle;
 
-    private AnimatorSet settingsBtnAnimation;
-    private AnimatorSet localBtnAnimation;
-    private AnimatorSet remoteBtnAnimation;
-    private View localBtn;
-    private View localBtnShadow;
-    private View localBtnText;
-    private View remoteBtn;
-    private View remoteBtnShadow;
-    private View remoteBtnText;
-    private View settingsBtn;
-    private View settingsBtnShadow;
-    private View settingsBtnText;
-    private AnimatorSet animatorSet;
+    @Inject
+    Bus bus;
+
+    @Inject
+    PrefManager prefManager;
+
+    @InjectView(R.id.drawer_list)
+    ListView mDrawerList;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+
+    private int activeFragment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_time", false)) {
-            startActivity(new Intent(this, FirstTimeActivity.class));
-        }
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("always_local", false)){
-            startActivity(new Intent(this, LocalMusicActivity.class));
-        }
         setContentView(R.layout.activity_main);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setCustomView(R.layout.actionbar_main_activity);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
+        ButterKnife.inject(this);
+        bus.register(this);
+        initNavigationDrawer();
+    }
 
-        localBtn = findViewById(R.id.btn_local);
-        localBtn.setOnClickListener(localMusicButtonClickListener);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bus.unregister(this);
+    }
 
-        remoteBtn = findViewById(R.id.btn_remote);
-        remoteBtn.setOnClickListener(remoteMusicButtonClickListener);
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        showFragmentFromDrawer(prefManager.drawerSelection().getOr(0));
+    }
 
-        settingsBtn = findViewById(R.id.btn_settings);
-        settingsBtn.setOnClickListener(settingsButtonClickListener);
+    private void showFragmentFromDrawer(int i) {
+        Fragment fragment;
+        switch (i) {
+            case 0:
+                fragment = new LocalMusicFragment();
+                break;
+            case 1:
+                fragment = new FindStationsFragment();
+                break;
+            default:
+                fragment = new LocalMusicFragment();
+                break;
+        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+    }
 
-        localBtnShadow = findViewById(R.id.shadow_local_btn);
-        remoteBtnShadow = findViewById(R.id.shadow_remote_btn);
-        settingsBtnShadow = findViewById(R.id.shadow_settings_btn);
+    protected void initNavigationDrawer() {
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new NavigationDrawerListAdapter(this,
+                getResources().getStringArray(R.array.drawer_items),
+                getResources().obtainTypedArray(R.array.drawer_icons)));
 
-        localBtnText = findViewById(R.id.btn_local_text);
-        remoteBtnText = findViewById(R.id.btn_remote_text);
-        settingsBtnText = findViewById(R.id.btn_settings_text);
+        activeFragment = prefManager.drawerSelection().getOr(0);
 
-        localBtnAnimation = new AnimatorSet();
-        localBtnAnimation.playTogether(
-                ObjectAnimator.ofFloat(localBtn, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(localBtnShadow, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(localBtnText, "alpha", 0f, 0.25f, 1f)
+        mDrawerList.setItemChecked(activeFragment, true);
+    }
+
+    @Subscribe
+    public void onToolbarAvailable(Toolbar toolbar) {
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close
         );
-
-        remoteBtnAnimation = new AnimatorSet();
-        remoteBtnAnimation.playTogether(
-                ObjectAnimator.ofFloat(remoteBtn, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(remoteBtnShadow, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(remoteBtnText, "alpha", 0f, 0.25f, 1f)
-        );
-
-        settingsBtnAnimation = new AnimatorSet();
-        settingsBtnAnimation.playTogether(
-                ObjectAnimator.ofFloat(settingsBtn, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(settingsBtnShadow, "translationX", 300f, 0f),
-                ObjectAnimator.ofFloat(settingsBtnText, "alpha", 0f, 0.25f, 1f)
-        );
-
-        // Actually animate it
-        animatorSet = new AnimatorSet();
-        animatorSet.playTogether(
-                localBtnAnimation.setDuration(200),
-                remoteBtnAnimation.setDuration(400),
-                settingsBtnAnimation.setDuration(800)
-        );
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Show everything before animating it
-                localBtn.setVisibility(View.VISIBLE);
-                localBtnShadow.setVisibility(View.VISIBLE);
-                localBtnText.setVisibility(View.VISIBLE);
-                remoteBtn.setVisibility(View.VISIBLE);
-                remoteBtnShadow.setVisibility(View.VISIBLE);
-                remoteBtnText.setVisibility(View.VISIBLE);
-                settingsBtn.setVisibility(View.VISIBLE);
-                settingsBtnShadow.setVisibility(View.VISIBLE);
-                settingsBtnText.setVisibility(View.VISIBLE);
-
-                animatorSet.start();
-            }
-        }, 500);
-
+        mDrawerLayout.setDrawerListener(drawerToggle);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
+        drawerToggle.syncState();
     }
 
     @Override

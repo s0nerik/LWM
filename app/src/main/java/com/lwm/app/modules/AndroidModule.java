@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.WindowManager;
 
 import com.lwm.app.App;
+import com.lwm.app.PrefManager;
 import com.lwm.app.Utils;
 import com.lwm.app.adapter.AlbumCoversAdapter;
 import com.lwm.app.adapter.AlbumsAdapter;
@@ -37,7 +38,8 @@ import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.activity.ArtistInfoActivity;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
-import com.lwm.app.ui.activity.LocalMusicActivity;
+import com.lwm.app.ui.activity.MainActivity;
+import com.lwm.app.ui.fragment.LocalMusicFragment;
 import com.lwm.app.ui.activity.RemotePlaybackActivity;
 import com.lwm.app.ui.activity.StationChooserActivity;
 import com.lwm.app.ui.async.AlbumsLoaderTask;
@@ -132,14 +134,16 @@ import static android.content.Context.WIFI_SERVICE;
         PlayersAroundFragment.class,
         AlbumsListFragment.class,
         FindStationsFragment.class,
+        LocalMusicFragment.class,
 
         // Activities
-        LocalMusicActivity.class,
+        LocalMusicFragment.class,
         AlbumInfoActivity.class,
         LocalPlaybackActivity.class,
         RemotePlaybackActivity.class,
         StationChooserActivity.class,
         ArtistInfoActivity.class,
+        MainActivity.class,
 
         },
         library = true)
@@ -244,6 +248,12 @@ public class AndroidModule {
     @Singleton
     WindowManager provideWindowManager() {
         return (WindowManager) application.getSystemService(Context.WINDOW_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    PrefManager providePrefManager() {
+        return new PrefManager(application);
     }
 
 }

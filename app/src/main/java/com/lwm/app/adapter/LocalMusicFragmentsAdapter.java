@@ -24,7 +24,7 @@ public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
     public LocalMusicFragmentsAdapter(FragmentManager fm) {
         super(fm);
         Injector.inject(this);
-        names = resources.getStringArray(R.array.drawer_items);
+        names = resources.getStringArray(R.array.local_music_tabs);
     }
 
     @Override
@@ -49,6 +49,6 @@ public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return names.length;
     }
 }
