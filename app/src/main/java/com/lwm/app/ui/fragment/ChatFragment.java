@@ -35,7 +35,7 @@ import butterknife.OnEditorAction;
 
 public class ChatFragment extends DaggerFragment {
 
-    @InjectView(R.id.recyclerView)
+    @InjectView(R.id.covers)
     RecyclerView mRecyclerView;
     @InjectView(R.id.textField)
     EditText mTextField;

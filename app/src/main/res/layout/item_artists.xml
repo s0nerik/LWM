@@ -8,8 +8,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <ImageView
+        android:id="@+id/covers"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_covers_size" />
 
