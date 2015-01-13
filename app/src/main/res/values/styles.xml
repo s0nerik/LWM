@@ -342,4 +342,11 @@
 
     </style>
 
+    <style name="item_artists_album">
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/item_covers_size</item>
+    </style>
+
 </resources>

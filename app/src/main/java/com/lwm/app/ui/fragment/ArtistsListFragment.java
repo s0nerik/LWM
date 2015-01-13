@@ -74,10 +74,9 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     }
 
     private void initAdapter(ArtistWrapperList list) {
-        ArtistWrappersAdapter adapter = new ArtistWrappersAdapter(list);
+        ArtistWrappersAdapter adapter = new ArtistWrappersAdapter(getActivity(), list);
         mGrid.setAdapter(adapter);
         mGrid.setHasFixedSize(true);
     }
-
 
 }
