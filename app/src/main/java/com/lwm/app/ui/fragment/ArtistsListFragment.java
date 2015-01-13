@@ -24,8 +24,8 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @InjectView(R.id.empty)
     LinearLayout mEmpty;
-    @InjectView(R.id.grid)
-    RecyclerView mGrid;
+    @InjectView(R.id.recyclerView)
+    RecyclerView mRecyclerView;
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
@@ -45,7 +45,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mGrid.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         new ArtistsLoaderTask().execute();
     }
@@ -75,8 +75,8 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     private void initAdapter(ArtistWrapperList list) {
         ArtistWrappersAdapter adapter = new ArtistWrappersAdapter(getActivity(), list);
-        mGrid.setAdapter(adapter);
-        mGrid.setHasFixedSize(true);
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
 }
