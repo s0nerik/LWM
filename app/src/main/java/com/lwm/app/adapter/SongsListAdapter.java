@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.ColorFilter;
 import android.os.Build;
 import android.support.v7.widget.PopupMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,8 +121,7 @@ public class SongsListAdapter extends ArrayAdapter<Song> {
 
         View rowView = convertView;
         if (rowView == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            rowView = inflater.inflate(R.layout.list_item_songs, null, true);
+            rowView = View.inflate(context, R.layout.list_item_songs, null);
             holder = new ViewHolder();
 
             holder.title = (TextView) rowView.findViewById(R.id.songs_list_item_title);

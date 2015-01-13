@@ -5,7 +5,7 @@
     android:exitFadeDuration="@android:integer/config_mediumAnimTime">
 
     <item android:state_checked="true" android:drawable="@color/primaryDark" />
-    <item android:state_pressed="true" android:drawable="@color/primary" />
-    <item android:drawable="@android:color/transparent" />
+    <!--<item android:state_pressed="true" android:drawable="@color/primary" />-->
+    <item android:drawable="?attr/selectableItemBackground" />
 
 </selector>
