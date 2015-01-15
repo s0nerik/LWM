@@ -34,7 +34,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     LayoutInflater inflater;
 
     public AlbumsAdapter(final Context context, List<Album> albums) {
-        super(context, R.layout.list_item_songs, albums);
+        super(context, R.layout.item_songs, albums);
         Injector.inject(this);
         this.context = context;
         albumsList = albums;

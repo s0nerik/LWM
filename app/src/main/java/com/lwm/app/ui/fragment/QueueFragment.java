@@ -15,8 +15,6 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import butterknife.OnItemClick;
-
 public class QueueFragment extends BaseSongsListFragment {
 
     @Override
@@ -27,11 +25,6 @@ public class QueueFragment extends BaseSongsListFragment {
     @Override
     protected AsyncTask<Void, Void, List<Song>> getSongsLoaderTask() {
         return new QueueLoaderTask();
-    }
-
-    @OnItemClick(R.id.listView)
-    public void onItemClicked(int pos) {
-        player.play(pos);
     }
 
     @Subscribe
@@ -54,15 +47,11 @@ public class QueueFragment extends BaseSongsListFragment {
     }
 
     @Subscribe
-    public void onSongAddedToQueueEvent(SongAddedToQueueEvent event) {
-        songs.add(event.getSong());
-        adapter.notifyDataSetChanged();
-    }
-
-    @Subscribe
     public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
+        int startIndex = songs.size();
         songs.addAll(event.getAppendedSongs());
-        adapter.notifyDataSetChanged();
+
+        adapter.notifyItemRangeInserted(startIndex, event.getAppendedSongs().size());
     }
 
     @Subscribe
@@ -75,13 +64,13 @@ public class QueueFragment extends BaseSongsListFragment {
     @Subscribe
     public void onSongAddedToQueue(SongAddedToQueueEvent event) {
         songs.add(event.getSong());
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(songs.size() - 1);
     }
 
     @Subscribe
     public void onSongRemovedFromQueue(SongRemovedFromQueueEvent event) {
         songs.remove(event.getSong());
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRemoved(songs.size());
     }
 
 }

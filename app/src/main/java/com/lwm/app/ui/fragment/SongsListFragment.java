@@ -14,7 +14,6 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 
 public class SongsListFragment extends BaseSongsListFragment {
 
@@ -26,15 +25,24 @@ public class SongsListFragment extends BaseSongsListFragment {
         return R.layout.fragment_list_songs;
     }
 
+//    @Override
+//    public void onViewCreated(View view, Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        ItemClickSupport itemClickSupport = ItemClickSupport.addTo(mTwoWayView);
+//        itemClickSupport.setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
+//                player.setQueue(songs);
+//                player.play(i);
+//
+//                adapter.setSelection(i);
+//            }
+//        });
+//    }
+
     @Override
     protected AsyncTask<Void, Void, List<Song>> getSongsLoaderTask() {
         return new SongsLoaderTask();
-    }
-
-    @OnItemClick(R.id.listView)
-    public void onItemClicked(int pos) {
-        player.setQueue(songs);
-        player.play(pos);
     }
 
     @OnClick(R.id.fab)
@@ -56,7 +64,7 @@ public class SongsListFragment extends BaseSongsListFragment {
                     initAdapter(songs);
                     setSelection(currentSong);
                     mFab.show(true);
-                    mFab.attachToListView(mListView);
+                    mFab.attachToRecyclerView(mTwoWayView);
                 } else {
                     mEmptyView.setVisibility(View.VISIBLE);
                 }

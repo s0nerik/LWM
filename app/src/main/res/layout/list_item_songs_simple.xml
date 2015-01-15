@@ -25,7 +25,7 @@
         android:layout_height="wrap_content" />
 
     <com.lwm.app.ui.custom_view.CheckedTextView
-        android:id="@+id/songs_list_item_title"
+        android:id="@+id/title"
         android:checkMark="@null"
         android:padding="16dp"
         android:layout_width="0dp"
@@ -40,7 +40,7 @@
         fontify:font="@string/FONT_ROBOTO_REGULAR" />
 
     <com.lwm.app.ui.custom_view.CheckedTextView
-        android:id="@+id/songs_list_item_duration"
+        android:id="@+id/duration"
         android:checkMark="@null"
         android:padding="6dp"
         android:layout_marginRight="-20dp"
@@ -55,7 +55,7 @@
         fontify:font="@string/FONT_ROBOTO_THIN" />
 
     <ImageView
-        android:id="@+id/button_context_menu"
+        android:id="@+id/contextMenu"
         android:paddingLeft="20dp"
         android:paddingRight="16dp"
         android:layout_width="wrap_content"

@@ -125,10 +125,10 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
             holder = new ViewHolder();
 
             holder.layout = (Checkable) rowView.findViewById(R.id.layout);
-            holder.title = (TextView) rowView.findViewById(R.id.songs_list_item_title);
-            holder.duration = (TextView) rowView.findViewById(R.id.songs_list_item_duration);
+            holder.title = (TextView) rowView.findViewById(R.id.title);
+            holder.duration = (TextView) rowView.findViewById(R.id.duration);
             holder.nowPlayingIcon = (ImageView) rowView.findViewById(R.id.now_playing_icon);
-            holder.contextMenu = (ImageView) rowView.findViewById(R.id.button_context_menu);
+            holder.contextMenu = (ImageView) rowView.findViewById(R.id.contextMenu);
 
             rowView.setTag(holder);
         } else {

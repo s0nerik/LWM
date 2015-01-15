@@ -63,7 +63,7 @@ public class FindStationsFragment extends DaggerFragment {
     @Inject
     WifiManager wifiManager;
 
-    @InjectView(R.id.listView)
+    @InjectView(R.id.twoWayView)
     ListView mListView;
     @InjectView(R.id.refreshLayout)
     SwipeRefreshLayout mRefreshLayout;
@@ -116,7 +116,7 @@ public class FindStationsFragment extends DaggerFragment {
         ButterKnife.reset(this);
     }
 
-    @OnItemClick(R.id.listView)
+    @OnItemClick(R.id.twoWayView)
     void onStationClicked(int position) {
         String ap = stationsAdapter.getItem(position).SSID;
         new StationConnectionTask().execute(ap);

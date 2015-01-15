@@ -24,7 +24,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @InjectView(R.id.empty)
     LinearLayout mEmpty;
-    @InjectView(R.id.recyclerView)
+    @InjectView(R.id.twoWayView)
     RecyclerView mRecyclerView;
     @InjectView(R.id.progress)
     ProgressBar mProgress;
@@ -53,7 +53,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+//        ButterKnife.reset(this);
     }
 
     @Subscribe

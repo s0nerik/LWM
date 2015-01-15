@@ -7,7 +7,7 @@
     tools:context="com.lwm.app.ui.fragment.LocalMusicFragment$ArtistsListFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/twoWayView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="8dp"

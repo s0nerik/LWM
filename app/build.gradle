@@ -83,6 +83,7 @@ dependencies {
     compile 'com.flaviofaria:kenburnsview:1.0.5'
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.0'
+    compile 'com.bignerdranch.android:recyclerview-multiselect:0.1'
     compile 'org.lucasr.twowayview:core:1.0.0-SNAPSHOT@aar'
     compile 'org.lucasr.twowayview:layouts:1.0.0-SNAPSHOT@aar'
 

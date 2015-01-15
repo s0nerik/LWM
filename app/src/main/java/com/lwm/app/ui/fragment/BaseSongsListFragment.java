@@ -2,11 +2,11 @@ package com.lwm.app.ui.fragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -29,12 +29,12 @@ import butterknife.InjectView;
 
 public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
 
-    @InjectView(R.id.listView)
-    ListView mListView;
+    @InjectView(R.id.twoWayView)
+    RecyclerView mTwoWayView;
     @InjectView(R.id.progress)
     ProgressBar mProgress;
     @InjectView(R.id.emptyView)
-    LinearLayout mEmptyView;
+    View mEmptyView;
 
     @Inject
     protected LocalPlayer player;
@@ -43,6 +43,8 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
     protected Song currentSong;
 
     protected SongsListAdapter adapter;
+
+    private LinearLayoutManager layoutManager;
 
     protected abstract int getViewId();
     protected abstract AsyncTask<Void, Void, List<Song>> getSongsLoaderTask();
@@ -55,8 +57,12 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(getViewId(), container, false);
+        View v = View.inflate(getActivity(), getViewId(), null);
         ButterKnife.inject(this, v);
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mTwoWayView.setLayoutManager(layoutManager);
+//        mTwoWayView.setLayoutManager(new ListLayoutManager(getActivity(), TwoWayLayoutManager.Orientation.VERTICAL));
+        mTwoWayView.setHasFixedSize(true);
         return v;
     }
 
@@ -69,26 +75,34 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+//        ButterKnife.reset(this);
     }
 
     protected void setSelection(Song song) {
         if (songs != null) {
             int index = songs.indexOf(song);
-            setSelection(index);
+            if (index >= 0) {
+                setSelection(index);
+            }
         }
     }
 
     private void setSelection(int position) {
-        mListView.setItemChecked(position, true);
-        if (position < mListView.getFirstVisiblePosition() || position > mListView.getLastVisiblePosition()) {
-            mListView.setSelection(position);
+        int prevSelection = adapter.getSelection();
+        adapter.setSelection(position);
+        if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
+                position > layoutManager.findLastCompletelyVisibleItemPosition()) {
+            if (Math.abs(prevSelection - adapter.getSelection()) <= 100) {
+                mTwoWayView.smoothScrollToPosition(position);
+            } else {
+                mTwoWayView.scrollToPosition(position);
+            }
         }
     }
 
     protected void initAdapter(List<Song> songs) {
-        adapter = new SongsListAdapter(getActivity(), player, songs);
-        mListView.setAdapter(adapter);
+        adapter = new SongsListAdapter(getActivity(), songs);
+        mTwoWayView.setAdapter(adapter);
     }
 
     protected void shuffleAll() {

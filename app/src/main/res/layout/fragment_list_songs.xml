@@ -3,16 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     tools:context="com.lwm.app.ui.fragment.LocalMusicFragment$SongsListFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         style="@style/ListOfSongs"
-        android:id="@+id/listView"
-        android:saveEnabled="true"
+        android:id="@+id/twoWayView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_songs" />
+        tools:listitem="@layout/item_songs" />
 
     <LinearLayout
         android:id="@+id/emptyView"

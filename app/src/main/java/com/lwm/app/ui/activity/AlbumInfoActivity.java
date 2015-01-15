@@ -53,7 +53,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     ImageView mCover;
     @InjectView(R.id.fab)
     FloatingActionButton mFab;
-    @InjectView(R.id.listView)
+    @InjectView(R.id.twoWayView)
     ListView mListView;
     @InjectView(R.id.title)
     TextView mTitle;
