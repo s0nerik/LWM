@@ -94,6 +94,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        android:paddingTop="@dimen/toolbar_padding_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
