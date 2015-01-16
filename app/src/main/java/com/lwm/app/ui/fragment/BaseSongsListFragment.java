@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public abstract class BaseSongsListFragment extends DaggerOttoOnCreateFragment {
+public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.twoWayView)
     RecyclerView mTwoWayView;
