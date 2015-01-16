@@ -2,14 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
     tools:context="com.lwm.app.ui.fragment.LocalMusicFragment$AlbumsListFragment">
 
     <GridView
         android:id="@+id/grid"
         android:verticalSpacing="@dimen/padding_grid"
         android:horizontalSpacing="@dimen/padding_grid"
-        android:padding="@dimen/padding_grid"
         android:clipToPadding="false"
         android:stretchMode="columnWidth"
         android:numColumns="2"
