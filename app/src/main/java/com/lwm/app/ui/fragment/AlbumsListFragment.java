@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 
-public class AlbumsListFragment extends DaggerOttoOnCreateFragment {
+public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.grid)
     GridView mGrid;
