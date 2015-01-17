@@ -87,7 +87,7 @@
                     <ImageView
                         android:padding="8dp"
                         android:scaleType="center"
-                        android:src="@drawable/ic_navigation_more_vert"
+                        android:src="@drawable/ic_more_vert_grey600_24dp"
                         android:tint="@android:color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
