@@ -121,7 +121,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         View rowView = convertView;
         if (rowView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            rowView = inflater.inflate(R.layout.list_item_songs_simple, null, true);
+            rowView = inflater.inflate(R.layout.list_item_songs_simple, parent, false);
             holder = new ViewHolder();
 
             holder.layout = (Checkable) rowView.findViewById(R.id.layout);

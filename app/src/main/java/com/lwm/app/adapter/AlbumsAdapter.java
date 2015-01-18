@@ -47,7 +47,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
 
         View rowView = convertView;
         if (rowView == null) {
-            rowView = inflater.inflate(R.layout.item_albums, null, true);
+            rowView = inflater.inflate(R.layout.item_albums, parent, false);
             holder = new ViewHolder(rowView);
             rowView.setTag(holder);
         } else {

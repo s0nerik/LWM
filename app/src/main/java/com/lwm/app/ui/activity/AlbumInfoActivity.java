@@ -1,5 +1,6 @@
 package com.lwm.app.ui.activity;
 
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.danh32.fontify.TextView;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
+import com.lwm.app.BuildConfig;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
@@ -92,7 +94,9 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         ButterKnife.inject(this);
 
         long albumId = getIntent().getIntExtra("album_id", -1);
-        assert albumId != -1 : "albumId == -1";
+
+        if (BuildConfig.DEBUG && albumId == -1) throw new AssertionError();
+
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(albumId));
 
         adapter = new SimpleSongsListAdapter(this, player, playlist);
@@ -225,6 +229,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         highlightCurrentSong();
     }
 
+    @TargetApi(21)
     private class ActionBarColorOnScrollChangedListener implements ViewTreeObserver.OnScrollChangedListener {
 
         int lastScroll = 0;

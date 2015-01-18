@@ -37,7 +37,7 @@ public class NavigationDrawerListAdapter extends ArrayAdapter<String> {
         View rowView = convertView;
         if (rowView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            rowView = inflater.inflate(R.layout.list_item_drawer, null, true);
+            rowView = inflater.inflate(R.layout.list_item_drawer, parent, false);
             holder = new NavigationDrawerListAdapter.ViewHolder();
             holder.title = (TextView) rowView.findViewById(R.id.text);
             holder.icon = (ImageView) rowView.findViewById(R.id.icon);

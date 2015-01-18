@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
+import com.lwm.app.BuildConfig;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.helper.db.ArtistsCursorGetter;
@@ -37,7 +38,9 @@ public class ArtistInfoActivity extends BaseLocalActivity {
         ButterKnife.inject(this);
 
         long artistId = getIntent().getLongExtra("artist_id", -1);
-        assert artistId != -1 : "artistId == -1";
+
+        if (BuildConfig.DEBUG && artistId == -1) throw new AssertionError();
+
         Artist artist = new ArtistsCursorGetter().getArtistById(artistId);
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
