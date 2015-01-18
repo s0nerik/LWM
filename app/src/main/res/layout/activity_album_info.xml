@@ -30,7 +30,7 @@
 
                 <com.lwm.app.ui.custom_view.ExpandedListView
                     android:id="@+id/twoWayView"
-                    android:layout_below="@+id/overlay"
+                    android:layout_below="@id/overlay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:layout_height="200dp"
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content" />
 
                 <View
-                    android:layout_below="@+id/overlay"
+                    android:layout_below="@id/overlay"
                     android:background="@drawable/bottom_shadow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -80,8 +80,8 @@
                     app:rv_rippleDuration="250"
                     android:id="@+id/overflowMenu"
                     android:clickable="true"
-                    android:layout_alignRight="@+id/overlay"
-                    android:layout_alignBottom="@+id/overlay"
+                    android:layout_alignRight="@id/overlay"
+                    android:layout_alignBottom="@id/overlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
