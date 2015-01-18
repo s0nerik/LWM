@@ -21,7 +21,6 @@
 
     <color name="drawer_item_text_inactive">#59585B</color>
     <color name="drawer_item_text_active">@color/orange_main</color>
-    <color name="drawer_item_background_active">#1a000000</color>
     <color name="drawer_item_background_pressed">#c3c3c3</color>
     <color name="drawer_divider">#DBDBDB</color>
     <color name="drawer_background">#fff</color>
