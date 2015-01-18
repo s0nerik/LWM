@@ -30,9 +30,9 @@
 
     <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
     </style>
 
     <style name="AppTheme.PlaybackActivity" parent="AppTheme.NoActionBar">
