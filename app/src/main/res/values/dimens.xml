@@ -1,20 +1,9 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">0dp</dimen>
-    <dimen name="activity_vertical_margin">0dp</dimen>
-    <dimen name="albumart_size">200dp</dimen>
-    <dimen name="start_screen_portrait_button_size">150dp</dimen>
-    <dimen name="actionbar_primary_text_size">18sp</dimen>
-    <dimen name="actionbar_secondary_text_size">16sp</dimen>
-    <dimen name="now_playing_bar_height">56dp</dimen>
-    <dimen name="now_playing_bar_progress_circle_height">56dp</dimen>
-    <dimen name="now_playing_shadow_size">2dp</dimen>
-
     <bool name="in_landscape">false</bool>
 
     <dimen name="item_covers_size">160dp</dimen>
+
     <dimen name="padding_grid">1dp</dimen>
 
     <dimen name="toolbar_padding_top">0dp</dimen>
-
 </resources>
