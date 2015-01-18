@@ -87,6 +87,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     @Inject
     Utils utils;
 
+    @TargetApi(21)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

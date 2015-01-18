@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
+    <permission android:name="MANAGE_PLAYER" />
+    
     <application
         android:name="com.lwm.app.App"
         android:allowBackup="true"
@@ -30,7 +32,9 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.PendingIntentReceiver" >
+        <receiver
+            android:name=".receiver.PendingIntentReceiver"
+            android:permission="MANAGE_PLAYER" >
             <intent-filter>
                 <action android:name="com.lwm.app.player.close" />
                 <action android:name="com.lwm.app.player.play_pause" />
