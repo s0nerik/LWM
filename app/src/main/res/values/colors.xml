@@ -6,14 +6,7 @@
     <color name="accent">#FFE83F</color>
     <color name="accentDark">#FCE010</color>
 
-    <color name="card_list_background">#ffdddddd</color>
-
-    <color name="actionbar_spinner_item_pressed">#222222</color>
-
     <color name="drawer_item_text_inactive">#59585B</color>
-    <color name="drawer_item_text_active">@color/orange_main</color>
-    <color name="drawer_item_background_pressed">#c3c3c3</color>
-    <color name="drawer_divider">#DBDBDB</color>
     <color name="drawer_background">#fff</color>
 
     <color name="songs_list_item_title_inactive">#000000</color>
@@ -26,7 +19,6 @@
 
     <color name="actionbar_semi_transparent">#66000000</color>
     <color name="actionbar_background">#272727</color>
-    <color name="actionbar_background_dark">#161616</color>
 
     <color name="title_text_color">#ffffff</color>
     <color name="title_shadow_color">#000000</color>
@@ -43,11 +35,7 @@
     <color name="pull_to_refresh_3">#FFAA40</color>
     <color name="pull_to_refresh_4">#FBB917</color>
 
-    <color name="playback_fragment_toolbar_bg">#55000000</color>
     <color name="now_playing_bg">@color/primaryDark</color>
-
-    <color name="card_shadow_1">#161616</color>
-    <color name="card_shadow_2">#101010</color>
 
     <color name="grid_item_default_bg">#262626</color>
     <color name="grid_item_no_cover_bg">@color/now_playing_bg</color>
