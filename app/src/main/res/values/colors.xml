@@ -6,15 +6,6 @@
     <color name="accent">#FFE83F</color>
     <color name="accentDark">#FCE010</color>
 
-    <color name="toolbar_btn_disabled">#9575cd</color>
-    <color name="toolbar_btn_enabled">#ffffff</color>
-
-    // Card colors
-    <color name="card_shadow">#ccc</color>
-    <color name="checked">#2d2d2d</color>
-    <color name="pressed">#c3c3c3</color>
-    <color name="card_checked_inner_shadow">#262626</color>
-
     <color name="card_list_background">#ffdddddd</color>
 
     <color name="actionbar_spinner_item_pressed">#222222</color>

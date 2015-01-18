@@ -117,12 +117,6 @@
         <item name="android:thumb">@null</item>
     </style>
 
-    <style name="Card">
-        <item name="android:background">@drawable/background_card_checkable</item>
-        <item name="android:checkMark">@null</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
-
     <style name="MaterialItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -177,21 +171,6 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">#ddd</item>
         <item name="font">@string/FONT_ROBOTO_LIGHT</item>
-    </style>
-
-    <style name="Card.NonCheckable" parent="Card">
-        <item name="android:background">@drawable/background_card</item>
-        <item name="android:checkable">false</item>
-    </style>
-
-    <style name="CardWithImage" parent="Card">
-        <item name="android:paddingTop">1dp</item>
-        <item name="android:paddingBottom">0dp</item>
-    </style>
-
-    <style name="CardWithImage.NonCheckable" parent="CardWithImage">
-        <item name="android:background">@drawable/background_card</item>
-        <item name="android:checkable">false</item>
     </style>
 
     <style name="MaterialList">
