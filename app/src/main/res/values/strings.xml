@@ -4,49 +4,25 @@
     // ActionBar
     <string name="app_name">Listen With Me!</string>
     <string name="action_settings">Settings</string>
-    <string name="btn_connect">Connect</string>
 
-    <string name="action_connect">Connect to the stream</string>
     <string name="action_broadcast">Broadcast</string>
     <string name="action_add_to_queue">Add to playback queue</string>
     <string name="action_remove_from_queue">Remove from playback queue</string>
     <string name="action_shuffle">Shuffle all</string>
 
-    <string name="btn_broadcast">Broadcast</string>
-    <string name="btn_listen">Listen</string>
-    <string name="artists_list_item_caption_albums">Albums:</string>
-    <string name="now_playing">Now playing</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
-    <string name="now_playing_bar_header">Now playing:</string>
-
-    <string name="actionbar_title_songs">Songs</string>
-    <string name="actionbar_title_albums">Albums</string>
-    <string name="actionbar_title_artists">Artists</string>
-
-    <string name="actionbar_title_queue">Queue</string>
-
 
     // ** Preferences **
-    <string name="pref_header_ap">Station settings</string>
 
     <string name="title_ap_name_preference">Station name</string>
     <string name="summary_ap_name_preference">Give name to your local station</string>
 
-    <string name="title_ap_password_preference">Station password</string>
-    <string name="summary_ap_password_preference">Set your station\'s password</string>
-
-    <string name="title_ap_clients_can_manage_preference">Clients can manage station playback</string>
-    <string name="summary_ap_clients_can_manage_preference">Use it with caution(and only with your friends)</string>
-
-
-    <string name="pref_header_app">Application settings</string>
     <string name="title_app_always_local">Always start a local player</string>
     <string name="summary_app_always_local">Select this if you don\'t want to see a start screen</string>
 
 
     // Start activity
-    <string name="my_music">My music</string>
     <string name="stations_around">Stations around</string>
 
     // SongsListFragment
@@ -66,9 +42,6 @@
     <string name="waiting_for_server">Waiting for station...</string>
 
     // AlbumInfoActivity
-    <string name="songs_count_title">Songs:</string>
-    <string name="year_title">Year:</string>
-    <string name="year_unknown">UNKNOWN</string>
     <string name="album_added_to_queue">Album added to the queue</string>
     <string name="song_added_to_queue">Song added to the queue</string>
     <string name="song_removed_from_queue">Song removed from queue</string>
@@ -110,13 +83,10 @@
     </string-array>
 
     // Station chooser activity
-    <string name="title_activity_station_chooser">Stations around</string>
     <string name="connecting_to_the_station">Connecting to the station...</string>
     <string name="wifi_disabled">Please turn on Wi-Fi</string>
 
-    <string name="crash_toast_text">Sending crash report...</string>
     <string name="nobody_around">Nobody wants you to listen with him...</string>
-
 
     <string name="nothing_to_shuffle">There\'s nothing to shuffle</string>
     <string name="refresh">Refresh</string>
@@ -125,7 +95,6 @@
     <string name="action_chat">Chat</string>
     <string name="pref_client_name_title">Name</string>
     <string name="pref_client_name_summary">This name will be shown to other users</string>
-    <string name="pref_header_client">Client settings</string>
     <string name="chat_hint">Message</string>
     <string name="chat_activity_label">Chat</string>
 
@@ -135,7 +104,6 @@
     <string name="crouton_chat_message_format">%1$s: %2$s</string>
     <string name="play_next">Play next</string>
     <string name="donate">Donate</string>
-    <string name="send_feedback">Send feedback</string>
     <string name="rate_app">Rate this app!</string>
 
     <string name="local_music">Local music</string>

@@ -47,7 +47,7 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
-                android:text="@string/now_playing"
+                android:text="Now playing"
                 android:textColor="#fff"
                 android:textAllCaps="true"
                 android:textSize="14sp"

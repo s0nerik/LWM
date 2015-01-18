@@ -13,7 +13,7 @@
         android:id="@+id/icon"
         android:checkMark="@null"
         app:tint="@color/selector_drawer_item_text_color"
-        tools:src="@drawable/ic_drawer_songs"
+        tools:src="@drawable/ic_my_library_music_grey600_24dp"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
