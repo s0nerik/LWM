@@ -19,6 +19,7 @@
     
     <application
         android:name="com.lwm.app.App"
+        android:supportsRtl="false"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"

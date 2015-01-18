@@ -38,9 +38,6 @@
     // QueueFragment
     <string name="queue_is_empty">Queue is empty.</string>
 
-    // PlaybackFragment
-    <string name="waiting_for_server">Waiting for station...</string>
-
     // AlbumInfoActivity
     <string name="album_added_to_queue">Album added to the queue</string>
     <string name="song_added_to_queue">Song added to the queue</string>
