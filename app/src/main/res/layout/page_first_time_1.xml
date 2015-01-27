@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/logo"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_launcher"
+        android:src="@mipmap/ic_launcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
