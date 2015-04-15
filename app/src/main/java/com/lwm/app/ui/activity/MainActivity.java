@@ -55,6 +55,8 @@ public class MainActivity extends DaggerActivity {
         ButterKnife.inject(this);
         bus.register(this);
         initNavigationDrawer();
+
+//        startActivity(new Intent(this, SplashActivity.class));
     }
 
     @Override

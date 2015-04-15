@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
     <permission android:name="MANAGE_PLAYER" />
     
     <application
@@ -28,6 +31,8 @@
         android:theme="@style/AppTheme" >
 
         <meta-data android:name="com.crashlytics.ApiKey" android:value="08edadb9fc2e12e9e70668f355d12942ec4181b2"/>
+
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
         <receiver android:name=".receiver.MediaButtonIntentReceiver" >
             <intent-filter>
@@ -95,6 +100,10 @@
             android:label="@string/action_settings"
             android:theme="@style/AppTheme"
             android:name="com.lwm.app.ui.activity.PreferencesActivity" />
+
+        <activity
+            android:theme="@style/AppTheme"
+            android:name="com.lwm.app.ui.activity.SplashActivity" />
 
         <activity
             android:screenOrientation="portrait"
