@@ -1,4 +1,3 @@
 include ':app'
 include ':app-test'
-include ':libs:Fontify'
-include ':libs:ExoPlayer'
+//include ':libs:ExoPlayer'

@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.danh32.fontify.TextView;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;

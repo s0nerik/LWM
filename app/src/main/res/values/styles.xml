@@ -142,13 +142,13 @@
     <style name="ListItemText.Title">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/selector_songs_list_item_title</item>
-        <item name="font">@string/FONT_ROBOTO_REGULAR</item>
+        <!--<item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>-->
     </style>
 
     <style name="ListItemText.Subtitle">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/selector_songs_list_item_artist</item>
-        <item name="font">@string/FONT_ROBOTO_LIGHT</item>
+        <!--<item name="fontPath">@string/FONT_ROBOTO_LIGHT</item>-->
     </style>
 
     <style name="GridItemDescription" parent="SongItem">
@@ -164,13 +164,13 @@
     <style name="GridItemText.Title">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="font">@string/FONT_ROBOTO_REGULAR</item>
+        <item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>
     </style>
 
     <style name="GridItemText.Subtitle">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">#ddd</item>
-        <item name="font">@string/FONT_ROBOTO_LIGHT</item>
+        <item name="fontPath">@string/FONT_ROBOTO_LIGHT</item>
     </style>
 
     <style name="MaterialList">
@@ -229,7 +229,7 @@
         <item name="android:gravity">center_vertical|right</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">20sp</item>
-        <item name="font">@string/FONT_ROBOTO_THIN_ITALIC</item>
+        <item name="fontPath">@string/FONT_ROBOTO_THIN_ITALIC</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">2</item>
         <item name="android:shadowDy">2</item>
@@ -290,7 +290,7 @@
     <style name="DrawerBottomButton">
         <item name="android:textSize">16sp</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="font">@string/FONT_ROBOTO_REGULAR</item>
+        <item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>
     </style>
 
     <style name="artist_item_cover_shadow">

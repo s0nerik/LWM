@@ -16,10 +16,9 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.andexert.library.RippleView;
-import com.danh32.fontify.TextView;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.App;
 import com.lwm.app.BuildConfig;
@@ -46,6 +45,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+//import com.andexert.library.RippleView;
 
 public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.OnItemClickListener {
 

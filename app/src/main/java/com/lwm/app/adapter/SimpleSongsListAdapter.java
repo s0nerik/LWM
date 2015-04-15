@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Checkable;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.danh32.fontify.TextView;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
@@ -142,13 +142,13 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
 
         if (checked == position){
-            holder.title.setFont(R.string.FONT_ROBOTO_BOLD);
+//            holder.title.setFont(R.string.FONT_ROBOTO_BOLD);
             holder.title.setTextColor(Color.WHITE);
             holder.duration.setTextColor(Color.WHITE);
             holder.contextMenu.setColorFilter(Color.WHITE);
             holder.layout.setChecked(true);
         } else {
-            holder.title.setFont(R.string.FONT_ROBOTO_REGULAR);
+//            holder.title.setFont(R.string.FONT_ROBOTO_REGULAR);
             holder.title.setTextColor(Color.BLACK);
             holder.duration.setTextColor(Color.BLACK);
             holder.contextMenu.setColorFilter(Color.GRAY);

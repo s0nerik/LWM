@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
-import com.danh32.fontify.TextView;
 import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;

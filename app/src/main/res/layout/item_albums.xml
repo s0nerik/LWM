@@ -31,12 +31,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.danh32.fontify.TextView
+        <TextView
             style="@style/GridItemText.Title"
             tools:text="Title"
             android:id="@+id/title" />
 
-        <com.danh32.fontify.TextView
+        <TextView
             style="@style/GridItemText.Subtitle"
             tools:text="Subtitle"
             android:id="@+id/subtitle" />

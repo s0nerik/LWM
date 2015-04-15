@@ -29,6 +29,6 @@
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        app:font="@string/FONT_ROBOTO_REGULAR" />
+        fontPath="@string/FONT_ROBOTO_REGULAR" />
 
 </com.lwm.app.ui.custom_view.CheckedRelativeLayout>

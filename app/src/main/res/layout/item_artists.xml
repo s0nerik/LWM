@@ -23,21 +23,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.danh32.fontify.TextView
+        <TextView
             android:id="@+id/title"
             android:textSize="16sp"
             android:textColor="#000"
             android:maxLines="2"
             tools:text="Asking Alexandria"
-            app:font="@string/FONT_ROBOTO_REGULAR"
+            fontPath="@string/FONT_ROBOTO_REGULAR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.danh32.fontify.TextView
+        <TextView
             android:id="@+id/subtitle"
             android:textColor="#666"
             tools:text="8 albums, 112 songs"
-            app:font="@string/FONT_ROBOTO_REGULAR"
+            fontPath="@string/FONT_ROBOTO_REGULAR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

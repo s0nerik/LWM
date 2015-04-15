@@ -4,8 +4,7 @@ package com.lwm.app.ui.custom_view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Checkable;
-
-import com.danh32.fontify.TextView;
+import android.widget.TextView;
 
 public class CheckedTextView extends TextView implements Checkable {
 

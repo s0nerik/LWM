@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.Injector;
@@ -80,9 +81,9 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         @InjectView(R.id.cover)
         SquareWidthImageView mCover;
         @InjectView(R.id.title)
-        com.danh32.fontify.TextView mTitle;
+        TextView mTitle;
         @InjectView(R.id.subtitle)
-        com.danh32.fontify.TextView mSubtitle;
+        TextView mSubtitle;
         @InjectView(R.id.bottom_bar)
         LinearLayout mBottomBar;
         @InjectView(R.id.shadow)

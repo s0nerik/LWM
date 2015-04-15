@@ -13,9 +13,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp" />
 
-    <com.danh32.fontify.TextView
+    <TextView
         tools:text="2"
-        app:font="@string/FONT_ROBOTO_THIN"
+        fontPath="@string/FONT_ROBOTO_THIN"
         tools:visibility="visible"
         android:visibility="gone"
         android:id="@+id/newMessagesCounter"
