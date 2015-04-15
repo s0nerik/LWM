@@ -29,7 +29,7 @@ public class Blur extends Daggered {
             blur.setRadius(RADIUS);
             blur.setInput(alloc);
 
-            Bitmap result = Bitmap.createBitmap(input.getWidth(), input.getHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap result = Bitmap.createBitmap(input.getWidth(), input.getHeight(), Bitmap.Config.RGB_565);
             Allocation outAlloc = Allocation.createFromBitmap(rsScript, result);
 
             blur.forEach(outAlloc);
