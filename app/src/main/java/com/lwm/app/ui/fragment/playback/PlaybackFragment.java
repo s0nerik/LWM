@@ -30,6 +30,7 @@ import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
 import com.lwm.app.ui.custom_view.SquareWidthImageView;
 import com.lwm.app.ui.fragment.DaggerOttoOnResumeFragment;
+import com.nvanbenschoten.motion.ParallaxImageView;
 
 import javax.inject.Inject;
 
@@ -46,7 +47,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     Resources resources;
 
     @InjectView(R.id.background)
-    ImageView mBackground;
+    ParallaxImageView mBackground;
     @InjectView(R.id.cover)
     SquareWidthImageView mCover;
     @InjectView(R.id.albumArtLayout)
@@ -97,6 +98,13 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     public void onResume() {
         super.onResume();
         initView();
+        mBackground.registerSensorManager();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mBackground.unregisterSensorManager();
     }
 
     protected void onSongPlaying(SongPlayingEvent event) {

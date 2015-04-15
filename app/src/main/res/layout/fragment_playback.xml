@@ -6,10 +6,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <ImageView
+    <com.nvanbenschoten.motion.ParallaxImageView
         android:id="@+id/background"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:src="@android:color/black"

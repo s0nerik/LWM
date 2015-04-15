@@ -114,6 +114,7 @@ dependencies {
     compile 'uk.co.chrisjenx:calligraphy:2.0.2'
     compile 'com.github.claucookie.miniequalizer:library:1.0.0'
     compile 'com.wada811:android-material-design-colors:2.0.0'
+    compile 'com.nvanbenschoten.motion:library:1.0.2'
 
     // F*CK YOU, BOILERPLATE! =)
     provided 'org.projectlombok:lombok:1.14.8'
