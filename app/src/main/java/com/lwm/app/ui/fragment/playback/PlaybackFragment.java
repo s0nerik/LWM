@@ -28,7 +28,6 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
-import com.lwm.app.ui.custom_view.SquareWidthImageView;
 import com.lwm.app.ui.fragment.DaggerOttoOnResumeFragment;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
@@ -49,7 +48,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     @InjectView(R.id.background)
     ParallaxImageView mBackground;
     @InjectView(R.id.cover)
-    SquareWidthImageView mCover;
+    ImageView mCover;
     @InjectView(R.id.albumArtLayout)
     FrameLayout mAlbumArtLayout;
     @InjectView(R.id.currentTime)
