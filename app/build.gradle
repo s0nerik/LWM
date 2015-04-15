@@ -18,6 +18,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'http://download.crashlytics.com/maven' }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
+    maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
 }
 
 android {
@@ -111,6 +112,8 @@ dependencies {
     compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
     compile 'org.apache.commons:commons-lang3:3.3.2'
     compile 'uk.co.chrisjenx:calligraphy:2.0.2'
+    compile 'com.github.claucookie.miniequalizer:library:1.0.0'
+    compile 'com.wada811:android-material-design-colors:2.0.0'
 
     // F*CK YOU, BOILERPLATE! =)
     provided 'org.projectlombok:lombok:1.14.8'

@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import es.claucookie.miniequalizerlibrary.EqualizerView;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,6 +77,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
 //        if (selector.isSelected(position, 0)) {
         if (selection == position) {
             holder.mPlayIcon.setVisibility(View.VISIBLE);
+            holder.mPlayIcon.animateBars();
         } else {
             holder.mPlayIcon.setVisibility(View.GONE);
         }
@@ -146,7 +148,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
         @InjectView(R.id.contextMenu)
         ImageView mContextMenu;
         @InjectView(R.id.playIcon)
-        ImageView mPlayIcon;
+        EqualizerView mPlayIcon;
         @InjectView(R.id.container)
         RelativeLayout mContainer;
 

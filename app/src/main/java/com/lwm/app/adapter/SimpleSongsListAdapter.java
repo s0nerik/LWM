@@ -22,6 +22,8 @@ import com.lwm.app.player.LocalPlayer;
 
 import java.util.List;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
+
 public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
 
     private final Context context;
@@ -109,7 +111,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         public Checkable layout;
         public TextView title;
         public TextView duration;
-        public ImageView nowPlayingIcon;
+        public EqualizerView nowPlayingEqIcon;
         public ImageView contextMenu;
     }
 
@@ -127,7 +129,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
             holder.layout = (Checkable) rowView.findViewById(R.id.layout);
             holder.title = (TextView) rowView.findViewById(R.id.title);
             holder.duration = (TextView) rowView.findViewById(R.id.duration);
-            holder.nowPlayingIcon = (ImageView) rowView.findViewById(R.id.now_playing_icon);
+            holder.nowPlayingEqIcon = (EqualizerView) rowView.findViewById(R.id.now_playing_icon);
             holder.contextMenu = (ImageView) rowView.findViewById(R.id.contextMenu);
 
             rowView.setTag(holder);
