@@ -28,6 +28,8 @@ android {
         targetSdkVersion TARGET_SDK
         versionCode 4
         versionName '0.7'
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -114,7 +116,6 @@ dependencies {
     provided 'com.pushtorefresh:javac-warning-annotation:1.0.0'
 
     // Library projects
-    compile project(':libs:android-stackblur')
     compile project(':libs:Fontify')
     compile project(':libs:ExoPlayer')
 

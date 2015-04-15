@@ -8,11 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
-import com.enrique.stackblur.StackBlurManager;
 import com.lwm.app.R;
 import com.lwm.app.SupportAsyncTask;
 import com.lwm.app.server.StreamServer;
-import com.lwm.app.ui.fragment.playback.PlaybackFragment;
+import com.lwm.app.ui.Blur;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -50,11 +49,11 @@ public class RemoteAlbumArtAsyncGetter extends SupportAsyncTask<Void, Void, Void
             if(cover == null){
                 cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_cover);
             }
-            background = new StackBlurManager(cover).processNatively(PlaybackFragment.BLUR_RADIUS);
+            background = new Blur().blur(cover);
         } catch (IOException e) {
             e.printStackTrace();
             cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_cover);
-            background = new StackBlurManager(cover).processNatively(PlaybackFragment.BLUR_RADIUS);
+            background = new Blur().blur(cover);
         }
 
         try{

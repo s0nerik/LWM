@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.enrique.stackblur.StackBlurManager;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
@@ -22,6 +21,7 @@ import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.ui.Blur;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -111,7 +111,7 @@ public class LocalPlaybackFragment extends PlaybackFragment {
                 .transform(new Transform() {
                     @Override
                     public Bitmap transform(Bitmap b) {
-                        return new StackBlurManager(b).processNatively(BLUR_RADIUS);
+                        return new Blur().blur(b);
                     }
 
                     @Override

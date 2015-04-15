@@ -184,8 +184,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
-                return true;
             case R.id.action_add_to_queue:
                 player.addToQueue(playlist);
                 Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT);

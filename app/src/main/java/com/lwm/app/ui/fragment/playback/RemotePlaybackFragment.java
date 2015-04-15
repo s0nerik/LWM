@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.enrique.stackblur.StackBlurManager;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
 import com.lwm.app.App;
@@ -20,6 +19,7 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.server.StreamServer;
+import com.lwm.app.ui.Blur;
 import com.squareup.otto.Subscribe;
 
 import java.util.UUID;
@@ -64,7 +64,7 @@ public class RemotePlaybackFragment extends PlaybackFragment {
                 .transform(new Transform() {
                     @Override
                     public Bitmap transform(Bitmap b) {
-                        return new StackBlurManager(b).processNatively(BLUR_RADIUS);
+                        return new Blur().blur(b);
                     }
 
                     @Override
