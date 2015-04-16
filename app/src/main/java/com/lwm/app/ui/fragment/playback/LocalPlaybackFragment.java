@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
@@ -94,13 +92,15 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 
     @Override
     protected void setCover(Song song) {
-        mAlbumArtLayout.setAlpha(0f);
+//        mAlbumArtLayout.setAlpha(0f);
+        final Drawable prevDrawable = mCover.getDrawable().getConstantState().newDrawable();
         Ion.with(mCover)
                 .crossfade(false)
-//                .placeholder(R.drawable.no_cover)
+                .placeholder(prevDrawable)
                 .error(R.drawable.no_cover)
+                .crossfade(true)
                 .smartSize(true)
-                .fadeIn(false)
+//                .fadeIn(false)
                 .load(song.getAlbumArtUri().toString())
                 .setCallback(new FutureCallback<ImageView>() {
                     @Override
@@ -108,10 +108,10 @@ public class LocalPlaybackFragment extends PlaybackFragment {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                mAlbumArtLayout.setAlpha(1f);
-                                YoYo.with(Techniques.BounceIn)
-                                        .duration(500)
-                                        .playOn(mAlbumArtLayout);
+//                                mAlbumArtLayout.setAlpha(1f);
+//                                YoYo.with(Techniques.BounceIn)
+//                                        .duration(500)
+//                                        .playOn(mAlbumArtLayout);
                             }
                         });
                     }
