@@ -1,11 +1,17 @@
 package com.lwm.app.ui.fragment.playback;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
@@ -37,6 +43,9 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 
     @Inject
     WifiAP wifiAP;
+
+    @Inject
+    WindowManager windowManager;
 
     private View chatButton;
 
@@ -85,28 +94,36 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 
     @Override
     protected void setCover(Song song) {
-        mCover.setVisibility(View.INVISIBLE);
+        mAlbumArtLayout.setAlpha(0f);
         Ion.with(mCover)
-                .animateIn(R.anim.abc_fade_in)
-//                .crossfade()
+                .crossfade(false)
 //                .placeholder(R.drawable.no_cover)
                 .error(R.drawable.no_cover)
                 .smartSize(true)
+                .fadeIn(false)
                 .load(song.getAlbumArtUri().toString())
                 .setCallback(new FutureCallback<ImageView>() {
                     @Override
                     public void onCompleted(Exception e, ImageView result) {
-                        result.setVisibility(View.VISIBLE);
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAlbumArtLayout.setAlpha(1f);
+                                YoYo.with(Techniques.BounceIn)
+                                        .duration(500)
+                                        .playOn(mAlbumArtLayout);
+                            }
+                        });
                     }
                 });
     }
 
     @Override
     protected void setBackground(final Song song) {
+        final Drawable prevDrawable = mBackground.getDrawable().getConstantState().newDrawable();
         Ion.with(mBackground)
-//                .placeholder(R.drawable.no_cover_blurred)
-                .error(R.drawable.no_cover_blurred)
-                .crossfade()
+                .placeholder(prevDrawable)
+                .crossfade(true)
                 .smartSize(true)
                 .transform(new Transform() {
                     @Override
@@ -116,10 +133,22 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 
                     @Override
                     public String key() {
-                        return song.getAlbumArtUri().toString();
+                        return "blur_bg_" + song.getTitle();
                     }
                 })
-                .load(song.getAlbumArtUri().toString());
+                .load(song.getAlbumArtUri().toString())
+                .setCallback(new FutureCallback<ImageView>() {
+                    @Override
+                    public void onCompleted(Exception e, ImageView result) {
+                        if (e != null) {
+                            Ion.with(mBackground)
+                                    .placeholder(prevDrawable)
+                                    .crossfade(true)
+                                    .smartSize(true)
+                                    .load("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.no_cover_blurred);
+                        }
+                    }
+                });
     }
 
     @Subscribe

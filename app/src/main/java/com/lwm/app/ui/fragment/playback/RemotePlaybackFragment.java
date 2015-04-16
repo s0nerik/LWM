@@ -47,7 +47,7 @@ public class RemotePlaybackFragment extends PlaybackFragment {
     @Override
     protected void setCover(Song song) {
         Ion.with(mCover)
-                .crossfade()
+                .crossfade(true)
                 .placeholder(R.drawable.no_cover)
                 .error(R.drawable.no_cover)
                 .smartSize(true)
@@ -59,7 +59,7 @@ public class RemotePlaybackFragment extends PlaybackFragment {
         Ion.with(mBackground)
                 .placeholder(R.drawable.no_cover_blurred)
                 .error(R.drawable.no_cover_blurred)
-                .crossfade()
+                .crossfade(true)
                 .smartSize(true)
                 .transform(new Transform() {
                     @Override

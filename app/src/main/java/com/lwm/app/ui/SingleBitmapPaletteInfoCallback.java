@@ -50,8 +50,8 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
     @Override
     public void onCompleted(Exception e, ImageViewBitmapInfo result) {
         BitmapInfo bitmapInfo = result.getBitmapInfo();
-        if (result.getException() == null && bitmapInfo.bitmaps != null && bitmapInfo.bitmaps.length > 0) {
-            Palette.generateAsync(bitmapInfo.bitmaps[0], new Palette.PaletteAsyncListener() {
+        if (result.getException() == null && bitmapInfo.bitmap != null) {
+            Palette.generateAsync(bitmapInfo.bitmap, new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(Palette palette) {
                     Palette.Swatch[] swatches = new Palette.Swatch[6];

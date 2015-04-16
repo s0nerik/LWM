@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 public class Blur extends Daggered {
 
-    public static final int RADIUS = 20;
+    public static final int RADIUS = 16;
 
     @Inject
     Context context;
@@ -22,20 +22,26 @@ public class Blur extends Daggered {
     @SuppressLint("NewApi")
     public Bitmap blur(Bitmap input) {
         try {
-            RenderScript rsScript = RenderScript.create(context);
-            Allocation alloc = Allocation.createFromBitmap(rsScript, input);
+            RenderScript rs = RenderScript.create(context);
+            Allocation alloc = Allocation.createFromBitmap(rs, input);
 
-            ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rsScript, Element.U8_4(rsScript));
+            ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
             blur.setRadius(RADIUS);
             blur.setInput(alloc);
 
-            Bitmap result = Bitmap.createBitmap(input.getWidth(), input.getHeight(), Bitmap.Config.RGB_565);
-            Allocation outAlloc = Allocation.createFromBitmap(rsScript, result);
+            Bitmap result = Bitmap.createBitmap(input.getWidth(), input.getHeight(), Bitmap.Config.ARGB_8888);
+            Allocation outAlloc = Allocation.createFromBitmap(rs, result);
 
             blur.forEach(outAlloc);
+
+//            // Make greyscale
+//            final ScriptIntrinsicColorMatrix scriptColor = ScriptIntrinsicColorMatrix.create(rs, Element.U8_4(rs));
+//            scriptColor.setGreyscale();
+//            scriptColor.forEach(outAlloc, outAlloc);
+
             outAlloc.copyTo(result);
 
-            rsScript.destroy();
+            rs.destroy();
             return result;
         } catch (Exception e) {
             // TODO: handle exception

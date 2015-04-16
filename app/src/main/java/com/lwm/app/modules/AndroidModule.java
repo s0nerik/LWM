@@ -34,6 +34,7 @@ import com.lwm.app.server.MusicServer;
 import com.lwm.app.server.StreamServer;
 import com.lwm.app.service.LocalPlayerService;
 import com.lwm.app.service.StreamPlayerService;
+import com.lwm.app.ui.Blur;
 import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.activity.ArtistInfoActivity;
@@ -99,6 +100,7 @@ import static android.content.Context.WIFI_SERVICE;
         Utils.class,
         WifiUtils.class,
         WifiAP.class,
+        Blur.class,
 
         // Players
         LocalPlayer.class,
