@@ -38,8 +38,6 @@ import butterknife.InjectView;
 
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
-    public static final int BLUR_RADIUS = 50;
-
     private BasePlayer player;
 
     @Inject

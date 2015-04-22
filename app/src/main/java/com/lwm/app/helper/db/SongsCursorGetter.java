@@ -7,11 +7,10 @@ import android.util.Log;
 
 import com.lwm.app.App;
 import com.lwm.app.Daggered;
-import com.lwm.app.lib.QuickAdapter;
 
 import javax.inject.Inject;
 
-public class SongsCursorGetter extends Daggered implements QuickAdapter.DataSource {
+public class SongsCursorGetter extends Daggered {
 
     @Inject
     ContentResolver contentResolver;
@@ -89,30 +88,5 @@ public class SongsCursorGetter extends Daggered implements QuickAdapter.DataSour
                 "random()"
         );
 
-    }
-
-    @Override
-    public Cursor getRowIds() {
-        return contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Audio.Media._ID},
-                selection,
-                null,
-                MediaStore.Audio.Media.ARTIST + " ASC, "
-                        + MediaStore.Audio.Media.ALBUM_ID + " ASC, "
-                        + MediaStore.Audio.Media.TRACK + " ASC, "
-                        + MediaStore.Audio.Media.DISPLAY_NAME + " ASC"
-        );
-    }
-
-    @Override
-    public Cursor getRowById(long rowId) {
-        return contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                MediaStore.Audio.Media._ID+" = "+rowId,
-                null,
-                null
-        );
     }
 }

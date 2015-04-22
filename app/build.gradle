@@ -116,6 +116,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
     compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile('com.joanzapata.android.asyncservice:android-asyncservice:0.0.5@aar') { transitive = true }
 
     // F*CK YOU, BOILERPLATE! =)
     provided 'org.projectlombok:lombok:1.14.8'
