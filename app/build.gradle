@@ -98,6 +98,7 @@ dependencies {
     compile 'com.wada811:android-material-design-colors:2.0.0'
     compile 'com.nvanbenschoten.motion:library:1.0.2'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
+    compile 'xyz.danoz:recyclerviewfastscroller:0.1.2'
 
     // Networking
     compile 'com.koushikdutta.ion:ion:2.+'

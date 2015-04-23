@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
 public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
@@ -34,6 +35,8 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     ProgressBar mProgress;
     @InjectView(R.id.emptyView)
     View mEmptyView;
+    @InjectView(R.id.fast_scroller)
+    VerticalRecyclerViewFastScroller fastScroller;
 
     @Inject
     protected LocalPlayer player;
@@ -62,6 +65,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         mTwoWayView.setLayoutManager(layoutManager);
 //        mTwoWayView.setLayoutManager(new ListLayoutManager(getActivity(), TwoWayLayoutManager.Orientation.VERTICAL));
         mTwoWayView.setHasFixedSize(true);
+        fastScroller.setRecyclerView(mTwoWayView);
         return v;
     }
 
@@ -102,6 +106,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     protected void initAdapter(List<Song> songs) {
         adapter = new SongsListAdapter(getActivity(), songs);
         mTwoWayView.setAdapter(adapter);
+        mTwoWayView.setOnScrollListener(fastScroller.getOnScrollListener());
     }
 
     protected void shuffleAll() {
