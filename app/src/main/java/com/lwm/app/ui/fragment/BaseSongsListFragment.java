@@ -66,6 +66,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         mTwoWayView.setLayoutManager(layoutManager);
         mTwoWayView.setHasFixedSize(true);
         fastScroller.setRecyclerView(mTwoWayView);
+        mTwoWayView.addOnScrollListener(fastScroller.getOnScrollListener());
         return v;
     }
 
@@ -78,7 +79,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        ButterKnife.reset(this);
+        ButterKnife.reset(this);
     }
 
     protected void setSelection(Song song) {
@@ -106,7 +107,6 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     protected void initAdapter(List<Song> songs) {
         adapter = new SongsListAdapter(getActivity(), songs);
         mTwoWayView.setAdapter(adapter);
-        mTwoWayView.setOnScrollListener(fastScroller.getOnScrollListener());
     }
 
     protected void shuffleAll() {
