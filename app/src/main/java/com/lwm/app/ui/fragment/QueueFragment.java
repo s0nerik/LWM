@@ -1,6 +1,5 @@
 package com.lwm.app.ui.fragment;
 
-import android.os.AsyncTask;
 import android.view.View;
 
 import com.lwm.app.R;
@@ -8,14 +7,15 @@ import com.lwm.app.events.player.queue.PlaylistAddedToQueueEvent;
 import com.lwm.app.events.player.queue.QueueShuffledEvent;
 import com.lwm.app.events.player.queue.SongAddedToQueueEvent;
 import com.lwm.app.events.player.queue.SongRemovedFromQueueEvent;
-import com.lwm.app.events.ui.QueueLoadingEvent;
-import com.lwm.app.model.Song;
-import com.lwm.app.ui.async.QueueLoaderTask;
+import com.lwm.app.player.LocalPlayer;
 import com.squareup.otto.Subscribe;
 
-import java.util.List;
+import javax.inject.Inject;
 
 public class QueueFragment extends BaseSongsListFragment {
+
+    @Inject
+    LocalPlayer player;
 
     @Override
     protected int getViewId() {
@@ -23,26 +23,13 @@ public class QueueFragment extends BaseSongsListFragment {
     }
 
     @Override
-    protected AsyncTask<Void, Void, List<Song>> getSongsLoaderTask() {
-        return new QueueLoaderTask();
-    }
-
-    @Subscribe
-    public void onQueueLoadingEvent(QueueLoadingEvent event) {
-        switch (event.getState()) {
-            case LOADING:
-                mProgress.setVisibility(View.VISIBLE);
-                break;
-            case LOADED:
-                mProgress.setVisibility(View.GONE);
-                songs = event.getList();
-                if (!event.getList().isEmpty()) {
-                    initAdapter(event.getList());
-                    setSelection(currentSong);
-                } else {
-                    mEmptyView.setVisibility(View.VISIBLE);
-                }
-                break;
+    protected void loadSongs() {
+        songs = player.getQueue();
+        if (!songs.isEmpty()) {
+            initAdapter(songs);
+            setSelection(currentSong);
+        } else {
+            mEmptyView.setVisibility(View.VISIBLE);
         }
     }
 

@@ -11,14 +11,15 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.joanzapata.android.asyncservice.api.annotation.InjectService;
+import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
+import com.joanzapata.android.asyncservice.api.internal.AsyncService;
 import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
-import com.lwm.app.events.ui.AlbumsListLoadingEvent;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
-import com.lwm.app.ui.async.AlbumsLoaderTask;
-import com.squareup.otto.Subscribe;
+import com.lwm.app.ui.async.MusicLoaderService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,15 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
+    @InjectService
+    MusicLoaderService musicLoaderService;
+
     private List<Album> albums = new ArrayList<>();
     private Artist artist;
+
+    public AlbumsListFragment() {
+        AsyncService.inject(this);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,21 +65,15 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new AlbumsLoaderTask(artist).execute();
+        mProgress.setVisibility(View.VISIBLE);
+        musicLoaderService.loadAllAlbums(artist);
     }
 
-    @Subscribe
-    public void onAlbumsLoadingEvent(AlbumsListLoadingEvent event) {
-        switch (event.getState()) {
-            case LOADING:
-                mProgress.setVisibility(View.VISIBLE);
-                break;
-            case LOADED:
-                mProgress.setVisibility(View.GONE);
-                albums = event.getList();
-                initAdapter(albums);
-                break;
-        }
+    @OnMessage
+    public void onAlbumsLoaded(MusicLoaderService.AlbumsLoadedEvent event) {
+        mProgress.setVisibility(View.GONE);
+        albums = event.getAlbums();
+        initAdapter(albums);
     }
 
     @OnItemClick(R.id.grid)

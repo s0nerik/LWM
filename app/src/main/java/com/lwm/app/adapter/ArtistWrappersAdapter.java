@@ -15,7 +15,6 @@ import com.lwm.app.Utils;
 import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.model.Artist;
 import com.lwm.app.model.ArtistWrapper;
-import com.lwm.app.model.ArtistWrapperList;
 import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -40,9 +39,9 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
     @Inject
     Utils utils;
 
-    public ArtistWrappersAdapter(Context context, ArtistWrapperList artists) {
+    public ArtistWrappersAdapter(Context context, List<ArtistWrapper> artists) {
         Injector.inject(this);
-        artistWrapperList = artists.getArtistWrappers();
+        artistWrapperList = artists;
         this.context = context;
     }
 

@@ -1,6 +1,5 @@
 package com.lwm.app.ui.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +46,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     private LinearLayoutManager layoutManager;
 
     protected abstract int getViewId();
-    protected abstract AsyncTask<Void, Void, List<Song>> getSongsLoaderTask();
+    protected abstract void loadSongs();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getSongsLoaderTask().execute();
+        loadSongs();
     }
 
     @Override
