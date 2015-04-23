@@ -2,36 +2,51 @@ package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
-import com.lwm.app.App;
+import com.lwm.app.BuildConfig;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.helper.ArtistsCursorGetter;
+import com.lwm.app.helper.db.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragment;
-import com.squareup.otto.Subscribe;
+import com.squareup.otto.Bus;
 
-public class ArtistInfoActivity extends BasicActivity {
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+public class ArtistInfoActivity extends BaseLocalActivity {
+
+    @Inject
+    Bus bus;
+
+    @Inject
+    Utils utils;
+
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_artist_info);
+        ButterKnife.inject(this);
 
         long artistId = getIntent().getLongExtra("artist_id", -1);
-        assert artistId != -1 : "artistId == -1";
-        Artist artist = new ArtistsCursorGetter(this).getArtistById(artistId);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(new Utils(this).getArtistName(artist.getName()));
-        actionBar.setSubtitle("ALBUMS: "+artist.getNumberOfAlbums());
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(android.R.color.transparent);
+        if (BuildConfig.DEBUG && artistId == -1) throw new AssertionError();
+
+        Artist artist = new ArtistsCursorGetter().getArtistById(artistId);
+
+        mToolbar.setTitle(utils.getArtistName(artist.getName()));
+        mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Fragment albumsListFragment = new AlbumsListFragment();
         Bundle args = new Bundle();
@@ -64,18 +79,18 @@ public class ArtistInfoActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        App.getBus().register(this);
+        bus.register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        App.getBus().unregister(this);
+        bus.unregister(this);
     }
 
-    @Subscribe
-    public void playbackStarted(PlaybackStartedEvent event) {
-        showNowPlayingBar(true);
-    }
+//    @Subscribe
+//    public void playbackStarted(PlaybackStartedEvent event) {
+//        showNowPlayingBar(true);
+//    }
 
 }

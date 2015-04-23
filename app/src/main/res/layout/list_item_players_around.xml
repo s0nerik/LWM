@@ -3,28 +3,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card"
-    tools:layout_margin="6dp"
+    android:padding="0dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:layout_height="72dp" >
 
-    <com.danh32.fontify.TextView
-        android:id="@+id/name"
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/circle_48dp"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        tools:text="Listen With Me!"
-        app:font="@string/FONT_ROBOTO_REGULAR" />
+        android:layout_height="wrap_content" />
 
-    <com.danh32.fontify.TextView
-        android:id="@+id/signal"
+    <ImageView
+        android:src="@drawable/ic_ap_off"
+        android:scaleType="center"
+        android:layout_alignTop="@+id/icon"
+        android:layout_alignBottom="@+id/icon"
+        android:layout_alignRight="@+id/icon"
+        android:layout_alignLeft="@+id/icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4sp"
-        android:textSize="16sp"
-        android:layout_below="@+id/name"
-        tools:text="Signal: good"
-        app:font="@string/FONT_ROBOTO_LIGHT" />
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/icon"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/ListItemText.Title"
+            android:id="@+id/name"
+            tools:text="Listen With Me!" />
+
+        <TextView
+            style="@style/ListItemText.Subtitle"
+            android:id="@+id/signal"
+            tools:text="Signal: good" />
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -8,149 +8,150 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lwm.app.App;
-import com.lwm.app.events.player.PlaybackPausedEvent;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.events.player.PlaylistAddedToQueueEvent;
-import com.lwm.app.events.player.PlaylistRemovedFromQueueEvent;
-import com.lwm.app.events.player.QueueShuffledEvent;
-import com.lwm.app.events.player.SongAddedToQueueEvent;
-import com.lwm.app.events.player.SongRemovedFromQueueEvent;
+import com.lwm.app.events.player.RepeatStateChangedEvent;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
+import com.lwm.app.events.player.playback.PlaybackStartedEvent;
+import com.lwm.app.events.player.playback.SongChangedEvent;
+import com.lwm.app.events.player.queue.PlaylistAddedToQueueEvent;
+import com.lwm.app.events.player.queue.PlaylistRemovedFromQueueEvent;
+import com.lwm.app.events.player.queue.QueueShuffledEvent;
+import com.lwm.app.events.player.queue.SongAddedToQueueEvent;
+import com.lwm.app.events.player.queue.SongRemovedFromQueueEvent;
 import com.lwm.app.events.server.PauseClientsEvent;
 import com.lwm.app.events.server.PrepareClientsEvent;
 import com.lwm.app.events.server.SeekToClientsEvent;
 import com.lwm.app.events.server.StartClientsEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.ui.notification.NowPlayingNotification;
+import com.lwm.app.server.MusicServer;
+import com.lwm.app.service.LocalPlayerService;
+import com.squareup.otto.Bus;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LocalPlayer extends BasePlayer {
 
-    private Context context;
+    @Inject
+    Bus bus;
+    @Inject
+    Context context;
+    @Inject
+    NotificationManager notificationManager;
+
+    private boolean prepared = true;
 
     private boolean repeat = false;
-
     private boolean active = false;
-
     private Queue queue = new Queue();
 
-    private NotificationManager notificationManager;
+    private MusicServer server;
 
-    private OnCompletionListener onCompletionListener = new OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mediaPlayer) {
-            Log.d("LWM", "LocalPlayer: onCompletion");
+    public LocalPlayer() {
+        super();
 
-            if(getCurrentPosition() > getDuration()-1000){
-                if(isRepeat()){
-                    play();
-                }else{
-                    nextSong();
-                }
-            }
-        }
-    };
+        server = new MusicServer(this);
 
-    private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
-        @Override
-        public void onSeekComplete(MediaPlayer mediaPlayer) {
-            start();
-        }
-    };
-
-    public LocalPlayer(Context context){
-        super(context);
-        this.context = context;
-
-        setOnCompletionListener(onCompletionListener);
-        setOnSeekCompleteListener(onSeekCompleteListener);
-
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        setOnCompletionListener(new NextSongOnCompletionListener());
+        setOnSeekCompleteListener(new StartingOnSeekCompleteListener());
+        setOnPreparedListener(new SongPreparedListener());
+        setOnErrorListener(new LocalPlayerErrorListener());
     }
 
-    public List<Song> getQueue(){
+    public void shuffleQueue() {
+        queue.shuffle();
+        bus.post(new QueueShuffledEvent(getQueue()));
+    }
+
+    public List<Song> getQueue() {
         return queue.getQueue();
     }
 
-    public void setQueue(List<Song> songs){
+    public void setQueue(List<Song> songs) {
         queue = new Queue(songs);
     }
 
-    public void shuffleQueue(){
-        queue.shuffle();
-        App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
-    }
-
-    public void shuffleQueueExceptPlayed(){
+    public void shuffleQueueExceptPlayed() {
         queue.shuffleExceptPlayed();
-        App.getBus().post(new QueueShuffledEvent(queue.getQueue()));
+        bus.post(new QueueShuffledEvent(getQueue()));
     }
 
-    public void addToQueue(List<Song> songs){
+    public void addToQueue(List<Song> songs) {
         queue.addSongs(songs);
-        App.getBus().post(new PlaylistAddedToQueueEvent(queue.getQueue(), songs));
+        bus.post(new PlaylistAddedToQueueEvent(getQueue(), songs));
     }
 
-    public void addToQueue(Song song){
+    public void addToQueue(Song song) {
         queue.addSong(song);
-        App.getBus().post(new SongAddedToQueueEvent(queue.getQueue(), song));
+        bus.post(new SongAddedToQueueEvent(getQueue(), song));
     }
 
-    public void removeFromQueue(Song song){
+    public void removeFromQueue(Song song) {
         queue.removeSong(song);
-        App.getBus().post(new SongRemovedFromQueueEvent(queue.getQueue(), song));
+        bus.post(new SongRemovedFromQueueEvent(getQueue(), song));
     }
 
-    public void removeFromQueue(List<Song> songs){
+    public void removeFromQueue(List<Song> songs) {
         queue.removeSongs(songs);
-        App.getBus().post(new PlaylistRemovedFromQueueEvent(queue.getQueue(), songs));
+        bus.post(new PlaylistRemovedFromQueueEvent(getQueue(), songs));
     }
 
-    public Song getCurrentSong(){
-        Log.d(App.TAG, "getCurrentSong");
+    public Song getCurrentSong() {
         return queue.getSong();
     }
 
     @Override
     public void stop() throws IllegalStateException {
+        stopNotifyingPlaybackProgress();
         super.stop();
     }
 
-    public void play(int position){
+    @Override
+    public void seekTo(int msec) throws IllegalStateException {
+        Log.d(App.TAG, "LocalPlayer: seekTo(" + msec + ")");
+        if (prepared) {
+            if (server.isStarted()) {
+                bus.post(new SeekToClientsEvent(msec));
+            }
+            super.seekTo(msec);
+        }
+    }
+
+    public void play(int position) {
         queue.moveTo(position);
         play();
     }
 
-    public void play(){
+    public void play() {
         reset();
         try {
             assert queue != null : "queue == null";
-            setDataSource(queue.getSong().getSource());
-            prepare();
-
-            active = true;
-
-            if (App.isServerStarted()) {
-                App.getBus().post(new PrepareClientsEvent());
-            } else {
-                start();
-            }
-
+            FileInputStream fis = new FileInputStream(queue.getSong().getSource());
+            setDataSource(fis.getFD());
+            prepareAsync();
+            prepared = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public boolean hasCurrentSong() {
-        return active;
+        return active && queue.getSong() != null;
+    }
+
+    @Override
+    public void reset() {
+        stopNotifyingPlaybackProgress();
+        super.reset();
     }
 
     @Override
     public void nextSong() {
         Log.d(App.TAG, "LocalPlayer: nextSong");
 
-        if(queue.moveToNext()) {
+        if (queue.moveToNext()) {
             play();
         } else {
             Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show();
@@ -159,13 +160,60 @@ public class LocalPlayer extends BasePlayer {
     }
 
     @Override
-    public void seekTo(int msec) throws IllegalStateException {
-        Log.d(App.TAG, "LocalPlayer: seekTo("+msec+")");
-        if (App.isServerStarted()) {
-            App.getBus().post(new SeekToClientsEvent(msec));
+    public void prevSong() {
+        Log.d(App.TAG, "LocalPlayer: prevSong");
+
+        if (queue.moveToPrev()) {
+            play();
+        } else {
+            Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show();
         }
-        super.seekTo(msec);
+
     }
+
+    @Override
+    public void togglePause() {
+        if (isPlaying()) {
+            if (server.isStarted()) {
+                bus.post(new PauseClientsEvent());
+            } else {
+                pause();
+            }
+        } else {
+            if (server.isStarted()) {
+                bus.post(new StartClientsEvent());
+            } else {
+                start();
+            }
+        }
+    }
+
+    @Override
+    public void pause() throws IllegalStateException {
+        if (prepared) {
+            stopNotifyingPlaybackProgress();
+            super.pause();
+
+            bus.post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
+        }
+    }
+
+    @Override
+    public void start() throws IllegalStateException {
+        if (prepared) {
+            super.start();
+            startNotifyingPlaybackProgress();
+
+            bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
+            context.startService(new Intent(context, LocalPlayerService.class));
+        }
+    }
+
+//    @Override
+//    public void reset() {
+//        context.stopService(new Intent(context, LocalPlayerService.class));
+//        super.reset();
+//    }
 
     public boolean isShuffle() {
         return queue.isShuffled();
@@ -177,64 +225,19 @@ public class LocalPlayer extends BasePlayer {
 
     public void setRepeat(boolean flag) {
         repeat = flag;
+        bus.post(new RepeatStateChangedEvent(flag));
     }
 
-    @Override
-    public void prevSong(){
-        Log.d(App.TAG, "LocalPlayer: prevSong");
-
-        if(queue.moveToPrev()) {
-            play();
-        } else {
-            Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show();
-        }
-
+    public void startServer() {
+        server.start();
     }
 
-    @Override
-    public void pause() throws IllegalStateException {
-        super.pause();
-
-        updateNotificationIfForeground();
-
-        App.getBus().post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
-
-        context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
+    public void stopServer() {
+        server.stop();
     }
 
-    @Override
-    public void start() throws IllegalStateException {
-        super.start();
-
-        updateNotificationIfForeground();
-
-        App.getBus().post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
-
-        context.sendOrderedBroadcast(new Intent(NowPlayingNotification.ACTION_SHOW), null);
-    }
-
-    @Override
-    public void togglePause(){
-        if (isPlaying()){
-            if(App.isServerStarted()) {
-                App.getBus().post(new PauseClientsEvent());
-            } else {
-                pause();
-            }
-        } else {
-            if(App.isServerStarted()) {
-                App.getBus().post(new StartClientsEvent());
-            } else {
-                start();
-            }
-        }
-    }
-
-    private void updateNotificationIfForeground() {
-        if (App.isLocalPlayerServiceInForeground())
-            notificationManager.notify(
-                    NowPlayingNotification.NOTIFICATION_ID,
-                    NowPlayingNotification.create(context));
+    public MusicServer getServer() {
+        return server;
     }
 
     public int getCurrentQueuePosition() {
@@ -247,6 +250,62 @@ public class LocalPlayer extends BasePlayer {
 
     public boolean isSongInQueue(Song song) {
         return queue.contains(song);
+    }
+
+    private class StartingOnSeekCompleteListener implements OnSeekCompleteListener {
+
+        @Override
+        public void onSeekComplete(MediaPlayer mediaPlayer) {
+            start();
+        }
+    }
+
+    private class NextSongOnCompletionListener implements OnCompletionListener {
+
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+            Log.d("LWM", "LocalPlayer: onCompletion");
+
+            if (prepared) {
+                int currentPosition = getCurrentPosition();
+                int duration = getDuration() - 1000;
+
+                if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
+                    if (isRepeat()) {
+                        play();
+                    } else {
+                        nextSong();
+                    }
+                }
+            }
+        }
+    }
+
+    private class SongPreparedListener implements OnPreparedListener {
+
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            prepared = true;
+            active = true;
+
+            bus.post(new SongChangedEvent(getCurrentSong()));
+
+            if (server.isStarted()) {
+                bus.post(new PrepareClientsEvent());
+            } else {
+                start();
+            }
+        }
+    }
+
+    private class LocalPlayerErrorListener implements OnErrorListener {
+
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            Log.e(App.TAG, "onError: " + what + ", " + extra);
+            prepared = true;
+            return true;
+        }
     }
 
 }

@@ -1,14 +1,14 @@
 package com.lwm.app.server;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.ContentResolver;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 public class StreamServer extends NanoHTTPD {
 
@@ -34,14 +36,15 @@ public class StreamServer extends NanoHTTPD {
         String STREAM = SERVER_ADDRESS + Method.STREAM;
     }
 
-//    private boolean clientsCanManage = true;
-    private Context context;
+    @Inject
+    ContentResolver contentResolver;
 
-    public StreamServer(Context context) {
+    private LocalPlayer player;
+
+    public StreamServer(LocalPlayer player) {
         super(8888);
-        this.context = context;
-        SharedPreferences sharedPreferences = context.getSharedPreferences("server_prefs", Context.MODE_PRIVATE);
-//        clientsCanManage = sharedPreferences.getBoolean("clients_can_manage", false);
+        this.player = player;
+        Injector.inject(this);
     }
 
     @Override
@@ -64,19 +67,14 @@ public class StreamServer extends NanoHTTPD {
 
         switch(method){
             case GET: // Outcoming info
-                if(App.localPlayerActive()){
-                    LocalPlayerService localPlayer = App.getLocalPlayerService();
-                    Song song = localPlayer.getCurrentSong();
-                    switch (uri) {
-                        case Method.STREAM:
-                            return stream(song);
-                        case Method.CURRENT_INFO:
-                            return currentInfo(song);
-                        case Method.CURRENT_ALBUMART:
-                            return currentAlbumArt(song);
-                    }
-                } else {
-                    return new Response(Response.Status.NO_CONTENT, MIME_PLAINTEXT, "LocalPlayer isn't instantiated");
+                Song song = player.getCurrentSong();
+                switch (uri) {
+                    case Method.STREAM:
+                        return stream(song);
+                    case Method.CURRENT_INFO:
+                        return currentInfo(song);
+                    case Method.CURRENT_ALBUMART:
+                        return currentAlbumArt(song);
                 }
             default:
                 return new Response(Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "Only GET is supported.");
@@ -107,7 +105,7 @@ public class StreamServer extends NanoHTTPD {
         Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
         InputStream is = null;
         try {
-            is = context.getContentResolver().openInputStream(song.getAlbumArtUri());
+            is = contentResolver.openInputStream(song.getAlbumArtUri());
         } catch (FileNotFoundException ignored) {}
         return new Response(Response.Status.OK, "image", is);
     }

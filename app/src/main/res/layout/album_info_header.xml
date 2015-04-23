@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
 
     <com.lwm.app.ui.custom_view.SquareWidthImageView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/image_header"
+        android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
@@ -14,7 +15,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="96dp"
         android:background="@drawable/header_image_shadow" />
 
 </FrameLayout>

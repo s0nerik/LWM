@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.lwm.app.ui.custom_view.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="48dp"
-    android:background="@drawable/selector_drawer_item_background"
-    android:checkMark="@null"
+<com.lwm.app.ui.custom_view.CheckedRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
     <com.lwm.app.ui.custom_view.CheckedImageView
-        android:id="@+id/drawer_item_icon"
-        android:layout_gravity="center_vertical"
+        android:id="@+id/icon"
         android:checkMark="@null"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="5dp" />
+        app:tint="@color/selector_drawer_item_text_color"
+        tools:src="@drawable/ic_my_library_music_grey600_24dp"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp" />
 
-    <CheckedTextView
-        android:id="@+id/drawer_item_text"
+    <com.lwm.app.ui.custom_view.CheckedTextView
+        android:id="@+id/text"
+        tools:text="All songs"
+        android:layout_marginLeft="72dp"
         android:singleLine="true"
-        android:textSize="18sp"
-        android:textColor="@color/selector_drawer_item_textcolor"
-        android:paddingLeft="12dp"
+        android:textSize="16sp"
+        android:textColor="@color/selector_drawer_item_text_color"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:ellipsize="marquee" />
+        android:layout_height="48dp"
+        fontPath="@string/FONT_ROBOTO_REGULAR" />
 
-</com.lwm.app.ui.custom_view.CheckedLinearLayout>
+</com.lwm.app.ui.custom_view.CheckedRelativeLayout>

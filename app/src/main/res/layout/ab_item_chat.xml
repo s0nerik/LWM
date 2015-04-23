@@ -4,25 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:background="@color/actionbar_background"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="?actionBarSize"
+    android:layout_height="?actionBarSize">
 
     <ImageView
-        android:src="@drawable/ic_action_mode_comment"
+        android:src="@drawable/ic_action_chat"
         android:layout_gravity="center"
-        android:padding="8dp"
-        android:layout_width="48dp"
-        android:layout_height="48dp" />
+        android:layout_width="24dp"
+        android:layout_height="24dp" />
 
-    <com.danh32.fontify.TextView
+    <TextView
         tools:text="2"
-        app:font="@string/FONT_ROBOTO_THIN"
+        fontPath="@string/FONT_ROBOTO_THIN"
         tools:visibility="visible"
         android:visibility="gone"
         android:id="@+id/newMessagesCounter"
         android:textColor="#fff"
         android:textSize="12sp"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:layout_gravity="right"
         android:gravity="center"
         android:background="@drawable/background_circle"

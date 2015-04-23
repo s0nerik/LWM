@@ -1,128 +1,107 @@
 package com.lwm.app.ui.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lwm.app.App;
+import com.koushikdutta.ion.Ion;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
+import com.lwm.app.events.player.playback.SongChangedEvent;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.ui.SingleBitmapPaletteInfoCallback;
 import com.lwm.app.ui.activity.LocalPlaybackActivity;
+import com.lwm.app.ui.base.DaggerFragment;
+import com.nineoldandroids.view.ViewHelper;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-public class NowPlayingFragment extends Fragment
-//        implements PlayerListener
-{
+import javax.inject.Inject;
 
-    private ImageView albumArt;
-    private ImageView playPauseButton;
-    private TextView artist;
-    private TextView title;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
-    private Utils utils;
+public class NowPlayingFragment extends DaggerFragment {
 
-    View.OnClickListener onPlayPauseClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            LocalPlayerService player = App.getLocalPlayerService();
-            player.togglePause();
-            setPlayButton(player.isPlaying());
-        }
-    };
+    @Inject
+    Utils utils;
+    @Inject
+    Bus bus;
+    @Inject
+    LocalPlayer player;
 
-    View.OnClickListener onNowPlayingBarClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
-            startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
-        }
-    };
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        utils = new Utils(getActivity());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_now_playing, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        albumArt = (ImageView) view.findViewById(R.id.now_playing_cover);
-        artist = (TextView) view.findViewById(R.id.now_playing_bar_artist);
-        title = (TextView) view.findViewById(R.id.now_playing_bar_title);
-        playPauseButton = (ImageView) view.findViewById(R.id.now_playing_bar_play_pause_button);
-        playPauseButton.setOnClickListener(onPlayPauseClicked);
-        view.findViewById(R.id.now_playing_bar_layout).setOnClickListener(onNowPlayingBarClicked);
-        title.setSelected(true);
-    }
+    @InjectView(R.id.cover)
+    ImageView mCover;
+    @InjectView(R.id.title)
+    TextView mTitle;
+    @InjectView(R.id.artist)
+    TextView mArtist;
+    @InjectView(R.id.now_playing_layout)
+    View mOverlay;
+    @InjectView(R.id.shadow)
+    View mShadow;
 
     @Override
     public void onResume() {
         super.onResume();
-        if(App.localPlayerActive()){
-            LocalPlayerService player = App.getLocalPlayerService();
-//            player.registerListener(this);
-            if(player.hasCurrentSong()){
-                setCurrentSongInfo();
-                setPlayButton(App.getLocalPlayerService().isPlaying());
-            }
+        bus.register(this);
+        Song song = player.getCurrentSong();
+        if (song != null) {
+            setSongInfo(player.getCurrentSong());
         }
     }
 
     @Override
     public void onPause() {
+        bus.unregister(this);
         super.onPause();
-//        if(App.localPlayerActive()){
-//            App.getLocalPlayer().unregisterListener(this);
-//        }
     }
 
-    public void setCurrentSongInfo(){
-        if(App.localPlayerActive()) {
-            LocalPlayerService player = App.getLocalPlayerService();
-            if (player.hasCurrentSong()) {
-                Song song = player.getCurrentSong();
-                setAlbumArtFromUri(song.getAlbumArtUri());
-                artist.setText(utils.getArtistName(song.getArtist()));
-                title.setText(song.getTitle());
-                setPlayButton(true);
-            }
-        }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_now_playing, container, false);
+        ButterKnife.inject(this, v);
+        return v;
     }
 
-    public void setAlbumArtFromUri(Uri uri){
-        Utils.setAlbumArtFromUri(getActivity(), albumArt, uri);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
-    public void setPlayButton(boolean playing){
-        playPauseButton.setImageResource(playing? R.drawable.ic_pause : R.drawable.ic_play);
+    public void setSongInfo(Song song) {
+        Ion.with(mCover)
+                .smartSize(true)
+                .placeholder(R.drawable.no_cover)
+                .error(R.drawable.no_cover)
+                .load(song.getAlbumArtUri().toString())
+                .withBitmapInfo()
+                .setCallback(new SingleBitmapPaletteInfoCallback(mOverlay, mShadow, mTitle, mArtist));
+
+        mArtist.setText(utils.getArtistName(song.getArtist()));
+        mTitle.setText(song.getTitle());
+
+        ViewHelper.setAlpha(mShadow, 0.9f);
+        ViewHelper.setAlpha(mOverlay, 0.9f);
     }
 
-//    @Override
-//    public void onSongChanged(Song song) {
-//        setCurrentSongInfo();
-//    }
-//
-//    @Override
-//    public void onPlaybackPaused() {
-//        setPlayButton(false);
-//    }
-//
-//    @Override
-//    public void onPlaybackStarted() {
-//        setPlayButton(true);
-//    }
+    @OnClick({R.id.layout, R.id.cover})
+    public void onLayoutClicked() {
+        Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
+    }
+
+    @Subscribe
+    public void onSongChanged(SongChangedEvent event) {
+        setSongInfo(event.getSong());
+    }
+
 }

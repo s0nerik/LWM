@@ -2,20 +2,14 @@ package com.lwm.app.websocket.entities;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class ClientInfo {
 
     @Expose
-    private String name;
+    @Getter
+    private final String name;
 
-    public ClientInfo(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

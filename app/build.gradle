@@ -1,18 +1,24 @@
 buildscript {
     repositories {
-        mavenCentral()
+        maven { url 'http://download.crashlytics.com/maven' }
     }
+
     dependencies {
-        classpath CLASSPATH
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.7'
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
 
 repositories {
     flatDir {
         dirs '../libs'
     }
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'http://dl.bintray.com/amulyakhare/maven' }
+    maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
 }
 
 android {
@@ -23,45 +29,106 @@ android {
         targetSdkVersion TARGET_SDK
         versionCode 4
         versionName '0.7'
-
-        // 9-patch bug workaround
-        android.aaptOptions.useAaptPngCruncher = true
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
 
+        release {
+
+        }
+    }
+    productFlavors {
+        withCrashlytics {
+            buildConfigField "boolean", "CRASHLYTICS", "true"
+        }
+        noCrashlytics {
+            buildConfigField "boolean", "CRASHLYTICS", "false"
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
     lintOptions {
         abortOnError false
     }
 }
 
 dependencies {
-    compile fileTree(dir: '../libs', include: '*.jar')
+    compile fileTree(include: '*.jar', dir: '../libs')
+
+    // Support libs
+    compile 'com.android.support:appcompat-v7:22.1.0'
+    compile 'com.android.support:support-v4:22.1.0'
+    compile 'com.android.support:recyclerview-v7:22.1.0'
+    compile 'com.android.support:cardview-v7:22.1.0'
+    compile 'com.android.support:palette-v7:22.1.0'
+
+    // GMS
+    compile 'com.google.android.gms:play-services-plus:+'
+    compile 'com.google.android.gms:play-services-identity:+'
+
+    // Compatibility
     compile 'uk.me.lewisdeane.ldialogs:ldialogs@aar'
-    compile 'com.android.support:appcompat-v7:20.0.0'
-    compile 'com.android.support:support-v4:20.0.0'
-    compile 'com.google.code.gson:gson:+'
-    compile project(':libs:UnifiedPreference')
-    compile project(':libs:android-stackblur')
-    compile project(':libs:Fontify')
-    compile project(':libs:FadingActionBar')
-    compile project(':libs:ExoPlayer')
-    compile 'com.nineoldandroids:library:+'
-    compile 'com.jakewharton:butterknife:+'
-    compile 'com.squareup:otto:+'
-    compile 'com.squareup.okio:okio:+'
-    compile 'com.loopj.android:android-async-http:1.4.5'
-    compile 'com.squareup.okhttp:okhttp:+'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:+'
-    compile 'com.squareup.mimecraft:mimecraft:+'
-    compile 'com.koushikdutta.ion:ion:1.+'
-    compile 'org.java-websocket:Java-WebSocket:1.3.0'
-    //    compile 'com.viewpagerindicator:library:2.4.1'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.github.traex.rippleeffect:library:1.2.3'
+
+    // UI elements
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
-    compile 'com.android.support:recyclerview-v7:21.0.0'
+    compile 'com.jpardogo.materialtabstrip:library:1.0.7'
+    compile 'com.github.nirhart:parallaxscroll:1.0'
+    compile 'com.melnykov:floatingactionbutton:1.1.0'
+    compile 'com.flaviofaria:kenburnsview:1.0.5'
+    compile 'de.hdodenhof:circleimageview:1.2.1'
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.0'
+    compile 'com.bignerdranch.android:recyclerview-multiselect:0.1'
+    compile 'org.lucasr.twowayview:core:1.0.0-SNAPSHOT@aar'
+    compile 'org.lucasr.twowayview:layouts:1.0.0-SNAPSHOT@aar'
+    compile 'uk.co.chrisjenx:calligraphy:2.0.2'
+    compile 'com.github.claucookie.miniequalizer:library:1.0.0'
+    compile 'com.wada811:android-material-design-colors:2.0.0'
+    compile 'com.nvanbenschoten.motion:library:1.0.2'
+    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
+    compile 'xyz.danoz:recyclerviewfastscroller:0.1.2'
+
+    // Networking
+    compile 'com.koushikdutta.ion:ion:2.+'
+    compile 'org.java-websocket:Java-WebSocket:1.3.0'
+
+    // Crash reports
+    compile 'com.crashlytics.android:crashlytics:1.1.13'
+
+    // Thanks, Square!
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'com.squareup:otto:1.3.5'
+    compile 'com.jakewharton:butterknife:6.0.0'
+
+    // Misc
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile('com.joanzapata.android.asyncservice:android-asyncservice:0.0.5@aar') { transitive = true }
+
+    // F*CK YOU, BOILERPLATE! =)
+    provided 'org.projectlombok:lombok:1.14.8'
+    provided 'com.pushtorefresh:javac-warning-annotation:1.0.0'
+
+    // Animations
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.1@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+
+    // Library projects
+//    compile project(':libs:ExoPlayer')
+
 }

@@ -1,22 +1,43 @@
 package com.lwm.app.player;
 
-import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.lwm.app.App;
+import com.lwm.app.Injector;
+import com.lwm.app.events.player.playback.SongPlayingEvent;
+import com.lwm.app.model.Song;
+import com.squareup.otto.Bus;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.inject.Inject;
 
 public abstract class BasePlayer extends MediaPlayer {
 
-    private AudioManager audioManager;
+    @Inject
+    AudioManager audioManager;
+
+    @Inject
+    Bus bus;
 
     public abstract void nextSong();
     public abstract void prevSong();
     public abstract void togglePause();
+    public abstract boolean isShuffle();
+    public abstract boolean isRepeat();
+    public abstract Song getCurrentSong();
 
-    protected BasePlayer(Context context) {
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+    public static final int NOTIFY_INTERVAL = 1000;
+
+    private AFListener afListener = new AFListener();
+
+    private Timer playbackProgressNotifierTimer;
+
+    public BasePlayer() {
+        Injector.inject(this);
     }
 
     public String getCurrentDurationInMinutes(){
@@ -45,7 +66,25 @@ public abstract class BasePlayer extends MediaPlayer {
         audioManager.requestAudioFocus(afListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
-    private AFListener afListener = new AFListener();
+    protected void startNotifyingPlaybackProgress() {
+        playbackProgressNotifierTimer = new Timer();
+        playbackProgressNotifierTimer.schedule(new PlaybackProgressNotifierTask(), 0, NOTIFY_INTERVAL);
+    }
+
+    protected void stopNotifyingPlaybackProgress() {
+        if (playbackProgressNotifierTimer != null) {
+            playbackProgressNotifierTimer.cancel();
+            playbackProgressNotifierTimer = null;
+        }
+    }
+
+    private class PlaybackProgressNotifierTask extends TimerTask {
+
+        @Override
+        public void run() {
+            if (getCurrentSong() != null) bus.post(new SongPlayingEvent(getCurrentPosition(), getCurrentSong().getDuration()));
+        }
+    }
 
     private class AFListener implements AudioManager.OnAudioFocusChangeListener {
 

@@ -1,24 +1,111 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:context=".ui.activity.AlbumInfoActivity">
 
-    <ListView
-        android:id="@android:id/list"
-        android:choiceMode="singleChoice"
+    <com.nirhart.parallaxscroll.views.ParallaxScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="#eeeeee"
-        android:dividerHeight="1dp" />
+        android:layout_height="match_parent" >
 
-    <fragment
-        android:id="@+id/fragment_now_playing"
-        android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
-        android:layout_marginTop="-5dp"
-        tools:layout="@layout/fragment_now_playing"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <include
+                android:id="@+id/parallaxed"
+                layout="@layout/album_info_header" />
+
+            <RelativeLayout
+                android:id="@+id/listLayout"
+                android:layout_below="@+id/parallaxed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-28dp"
+                android:orientation="vertical">
+
+                <com.lwm.app.ui.custom_view.ExpandedListView
+                    android:id="@+id/twoWayView"
+                    android:layout_below="@+id/overlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:layout_height="200dp"
+                    tools:listItem="@layout/list_item_songs_simple"
+                    android:choiceMode="singleChoice"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:background="@android:color/white"
+                    />
+
+                <View
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/header_overlay_shadow_top"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="24dp"
+                    android:layout_height="2dp" />
+
+                <include
+                    layout="@layout/album_info_header_overlay"
+                    android:id="@+id/overlay"
+                    android:layout_marginTop="26dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:layout_below="@id/overlay"
+                    android:background="@drawable/bottom_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.melnykov.fab.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginRight="24dp"
+                    android:tint="#fff"
+                    android:src="@drawable/ic_av_play_arrow"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerHorizontal="true"
+                    app:fab_shadow="true"
+                    app:fab_colorNormal="@color/primaryDark"
+                    app:fab_colorPressed="@color/primary" />
+
+                <com.andexert.library.RippleView
+                    app:rv_alpha="255"
+                    app:rv_color="@color/primary"
+                    app:rv_centered="true"
+                    app:rv_rippleDuration="250"
+                    android:id="@+id/overflowMenu"
+                    android:clickable="true"
+                    android:layout_alignRight="@id/overlay"
+                    android:layout_alignBottom="@id/overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:padding="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_more_vert_grey600_24dp"
+                        android:tint="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </com.andexert.library.RippleView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:paddingTop="@dimen/toolbar_padding_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        />
 
-</LinearLayout>
+</RelativeLayout>

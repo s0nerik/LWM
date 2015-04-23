@@ -1,40 +1,28 @@
 package com.lwm.app.ui.fragment;
 
-import android.support.v4.content.Loader;
-import android.view.MenuItem;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.view.View;
 
+import com.joanzapata.android.asyncservice.api.annotation.InjectService;
+import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
+import com.joanzapata.android.asyncservice.api.internal.AsyncService;
 import com.lwm.app.R;
-import com.lwm.app.events.player.PlaybackStartedEvent;
-import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.events.player.service.LocalPlayerServiceAvailableEvent;
-import com.lwm.app.helper.SongsCursorGetter;
-import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
-import com.lwm.app.ui.async.SongsListLoader;
-import com.squareup.otto.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.lwm.app.ui.async.MusicLoaderService;
+import com.melnykov.fab.FloatingActionButton;
 
 import butterknife.InjectView;
-import butterknife.OnItemClick;
+import butterknife.OnClick;
 
 public class SongsListFragment extends BaseSongsListFragment {
 
-    @InjectView(R.id.listView)
-    ListView mListView;
-    @InjectView(R.id.progress)
-    ProgressBar mProgress;
-    @InjectView(R.id.emptyView)
-    LinearLayout mEmptyView;
+    @InjectView(R.id.fab)
+    FloatingActionButton mFab;
 
-    private LocalPlayerService player;
+    @InjectService
+    MusicLoaderService musicLoaderService;
 
-    public SongsListFragment() {}
+    public SongsListFragment() {
+        AsyncService.inject(this);
+    }
 
     @Override
     protected int getViewId() {
@@ -42,56 +30,43 @@ public class SongsListFragment extends BaseSongsListFragment {
     }
 
     @Override
-    protected int getMenuId() {
-        return R.menu.songs_list;
+    protected void loadSongs() {
+        mProgress.setVisibility(View.VISIBLE);
+        mFab.hide();
+        musicLoaderService.loadAllSongs();
     }
 
-    @Override
-    protected Loader<List<Song>> getSongsLoader() {
-        return new SongsListLoader(getActivity(), new SongsCursorGetter(getActivity()).getSongsCursor());
+//    @Override
+//    public void onViewCreated(View view, Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        ItemClickSupport itemClickSupport = ItemClickSupport.addTo(mTwoWayView);
+//        itemClickSupport.setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
+//                player.setQueue(songs);
+//                player.play(i);
+//
+//                adapter.setSelection(i);
+//            }
+//        });
+//    }
+
+    @OnClick(R.id.fab)
+    public void onFabClicked() {
+        shuffleAll();
     }
 
-    @Subscribe
-    public void onLocalPlayerServiceAvailable(LocalPlayerServiceAvailableEvent event) {
-        player = event.getService();
-        initAdapter();
-    }
-
-    @Subscribe
-    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-        currentSong = event.getSong();
-        setSelection(currentSong);
-    }
-
-    @Subscribe
-    public void onSongPlaybackStarted(PlaybackStartedEvent event) {
-        currentSong = event.getSong();
-        setSelection(currentSong);
-    }
-
-    @OnItemClick(R.id.listView)
-    public void onItemClicked(int pos) {
-        player.setQueue(songs);
-        player.play(pos);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_shuffle) {
-            shuffleAll();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void shuffleAll() {
-        if (songs != null && !songs.isEmpty()) {
-            List<Song> queue = new ArrayList<>(songs);
-            player.setQueue(queue);
-            player.shuffleQueue();
-            player.play(0);
+    @OnMessage
+    public void onSongsLoaded(MusicLoaderService.SongsLoadedEvent event) {
+        mProgress.setVisibility(View.GONE);
+        songs = event.getSongs();
+        if (!songs.isEmpty()) {
+            initAdapter(songs);
+            setSelection(currentSong);
+            mFab.show(true);
+            mFab.attachToRecyclerView(mTwoWayView);
         } else {
-            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show();
+            mEmptyView.setVisibility(View.VISIBLE);
         }
     }
 

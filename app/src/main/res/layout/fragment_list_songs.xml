@@ -1,30 +1,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$SongsListFragment">
+    tools:context="com.lwm.app.ui.fragment.LocalMusicFragment$SongsListFragment">
 
-    <ListView
-        style="@style/ListOfCards"
-        android:id="@+id/listView"
-        android:saveEnabled="true"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        style="@style/ListOfSongs"
+        android:id="@+id/twoWayView"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_songs"
-        android:layout_centerHorizontal="true" />
+        tools:listitem="@layout/item_songs" />
 
-    <ProgressBar
-        style="?android:progressBarStyleLarge"
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible" />
+    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
+        android:id="@+id/fast_scroller"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        />
 
     <LinearLayout
         android:id="@+id/emptyView"
@@ -48,5 +41,28 @@
             android:text="@string/no_songs_found"/>
 
     </LinearLayout>
+
+    <ProgressBar
+        style="?android:progressBarStyleLarge"
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab"
+        android:src="@drawable/ic_shuffle_white_24dp"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:fab_colorNormal="@color/primary"
+        app:fab_colorPressed="@color/primaryDark"
+        />
 
 </RelativeLayout>

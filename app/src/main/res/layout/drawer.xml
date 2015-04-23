@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lwm.app.ui.custom_view.ScrimInsetsFrameLayout
+    android:id="@+id/scrimInsetsFrameLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    app:insetForeground="#0000" >
+
+    <RelativeLayout
+        android:id="@+id/drawer"
+        android:layout_width="256dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/drawer_background"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/bg"
+                android:scaleType="centerCrop"
+                android:layout_alignBottom="@+id/userInfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:id="@+id/userInfo"
+                android:layout_marginTop="@dimen/toolbar_padding_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_image"
+                        android:layout_margin="16dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/profile"
+                        app:border_width="2dp"
+                        app:border_color="#fff"/>
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:text="Alex Isaienko"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#fff"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/email"
+                        android:text="thesonerik@gmail.com"
+                        android:textSize="14sp"
+                        android:textColor="#fff"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/nowPlayingFrame"
+                android:visibility="gone"
+                android:layout_below="@+id/userInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <fragment
+                    android:id="@+id/nowPlayingFragment"
+                    android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout="@layout/fragment_now_playing" />
+            </FrameLayout>
+
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/drawer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/drawer_buttons"
+            android:layout_below="@+id/header"
+            android:layout_marginTop="8dp"
+            android:choiceMode="singleChoice"
+            android:divider="@null"
+            android:isScrollContainer="false"
+            tools:listitem="@layout/list_item_drawer" />
+
+        <LinearLayout
+            android:id="@+id/drawer_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:src="@drawable/ic_attach_money_white_24dp"
+                    android:layout_centerVertical="true"
+                    android:tint="#000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/DrawerBottomButton"
+                    android:text="@string/donate"
+                    android:paddingLeft="56dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:src="@drawable/ic_thumb_up_grey600_24dp"
+                    android:layout_centerVertical="true"
+                    android:tint="#000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/DrawerBottomButton"
+                    android:text="@string/rate_app"
+                    android:paddingLeft="56dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:src="@drawable/ic_settings_white_24dp"
+                    android:layout_centerVertical="true"
+                    android:tint="#000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    style="@style/DrawerBottomButton"
+                    android:text="@string/action_settings"
+                    android:paddingLeft="56dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</com.lwm.app.ui.custom_view.ScrimInsetsFrameLayout>

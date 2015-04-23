@@ -1,13 +1,12 @@
 package com.lwm.app.websocket;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
 import com.lwm.app.events.chat.NotifyMessageAddedEvent;
@@ -19,8 +18,9 @@ import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.client.SocketClosedEvent;
 import com.lwm.app.events.client.SocketOpenedEvent;
 import com.lwm.app.model.chat.ChatMessage;
-import com.lwm.app.service.StreamPlayerService;
+import com.lwm.app.player.StreamPlayer;
 import com.lwm.app.websocket.entities.ClientInfo;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
@@ -31,20 +31,26 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class WebSocketMessageClient extends WebSocketClient {
 
-    private StreamPlayerService player;
+    @Inject
+    StreamPlayer player;
+    @Inject
+    Bus bus;
+    @Inject
+    SharedPreferences sharedPreferences;
 
     private List<ChatMessage> chatMessages = new ArrayList<>();
     private int unreadMessages = 0;
 
     private ClientInfo clientInfo;
 
-    public WebSocketMessageClient(Context context, URI serverURI) {
+    public WebSocketMessageClient(URI serverURI) {
         super(serverURI);
-        player = App.getStreamPlayerService();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        clientInfo = new ClientInfo(prefs.getString("client_name", Build.MODEL));
+        Injector.inject(this);
+        clientInfo = new ClientInfo(sharedPreferences.getString("client_name", Build.MODEL));
     }
 
     @Override
@@ -52,8 +58,8 @@ public class WebSocketMessageClient extends WebSocketClient {
         Log.d(App.TAG, "WebSocketMessageClient: opened with handshake:"
                 + "\nStatus: " + handshakedata.getHttpStatus()
                 + "\nMessage: " + handshakedata.getHttpStatusMessage());
-        App.getBus().register(this);
-        App.getBus().post(new SocketOpenedEvent());
+        bus.register(this);
+        bus.post(new SocketOpenedEvent());
     }
 
     @Override
@@ -99,11 +105,11 @@ public class WebSocketMessageClient extends WebSocketClient {
                     break;
                 case MESSAGE:
                     ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
-                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
+                    bus.post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
                     break;
                 case CLIENT_INFO:
                     ClientInfo clientInfo = new Gson().fromJson(body, ClientInfo.class);
-                    App.getBus().post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
+                    bus.post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
                     break;
                 default:
                     Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
@@ -114,8 +120,8 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageClient: closed:\nCode: "+code+" Reason: "+reason);
-        App.getBus().post(new SocketClosedEvent());
-        App.getBus().unregister(this);
+        bus.post(new SocketClosedEvent());
+        bus.unregister(this);
     }
 
     @Override
@@ -154,7 +160,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         ChatMessage message = event.getMessage();
         send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(message)).toJson());
         chatMessages.add(message);
-        App.getBus().post(new NotifyMessageAddedEvent(message));
+        bus.post(new NotifyMessageAddedEvent(message));
     }
 
     @Subscribe
@@ -162,7 +168,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         unreadMessages += 1;
         ChatMessage msg = event.getMessage();
         chatMessages.add(msg);
-        App.getBus().post(new NotifyMessageAddedEvent(msg));
+        bus.post(new NotifyMessageAddedEvent(msg));
     }
 
     @Subscribe

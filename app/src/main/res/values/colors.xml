@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    // Card colors
-    <color name="card_shadow">#ccc</color>
-    <color name="card_checked">#2d2d2d</color>
-    <color name="card_checked_inner_shadow">#262626</color>
-    <color name="card_pressed">#c3c3c3</color>
 
-    <color name="card_list_background">#ffdddddd</color>
-
-    <color name="actionbar_spinner_item_pressed">#222222</color>
+    <color name="primary">#673ab7</color>
+    <color name="primaryDark">#512da8</color>
+    <color name="accent">#FFE83F</color>
+    <color name="accentDark">#FCE010</color>
 
     <color name="drawer_item_text_inactive">#59585B</color>
-    <color name="drawer_item_text_active">#FFFFFF</color>
-    <color name="drawer_item_background_active">@color/card_checked</color>
-    <color name="drawer_item_background_pressed">#c3c3c3</color>
-    <color name="drawer_divider">#DBDBDB</color>
-    <color name="drawer_background">#EDEDED</color>
+    <color name="drawer_background">#fff</color>
 
     <color name="songs_list_item_title_inactive">#000000</color>
     <color name="songs_list_item_title_active">#ffffff</color>
     <color name="songs_list_item_artist_inactive">#666666</color>
     <color name="songs_list_item_artist_active">#eeeeee</color>
-
-    <color name="simple_songs_list_item_bg">#ffffff</color>
-    <color name="simple_songs_list_item_bg_active">#eee</color>
 
     <color name="actionbar_semi_transparent">#66000000</color>
     <color name="actionbar_background">#272727</color>
@@ -42,5 +31,12 @@
     <color name="pull_to_refresh_2">#F87217</color>
     <color name="pull_to_refresh_3">#FFAA40</color>
     <color name="pull_to_refresh_4">#FBB917</color>
+
+    <color name="now_playing_bg">@color/primaryDark</color>
+
+    <color name="grid_item_default_bg">#262626</color>
+    <color name="grid_item_no_cover_bg">@color/now_playing_bg</color>
+
+    <color name="album_info_header_overlay_bg">#eee</color>
 
 </resources>

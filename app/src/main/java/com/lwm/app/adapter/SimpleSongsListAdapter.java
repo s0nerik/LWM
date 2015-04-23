@@ -10,17 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.model.Song;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 
 import java.util.List;
+
+import es.claucookie.miniequalizerlibrary.EqualizerView;
 
 public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
 
@@ -28,6 +30,8 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
     private List<Song> songsList;
 
     private int checked = -1;
+
+    private LocalPlayer player;
 
     private class OnContextButtonClickListener implements View.OnClickListener {
         private int position;
@@ -40,7 +44,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         public void onClick(View view) {
             PopupMenu menu = new PopupMenu(context, view);
 
-            if (App.getLocalPlayerService().isSongInQueue(songsList.get(position))) {
+            if (player.isSongInQueue(songsList.get(position))) {
                 menu.inflate(R.menu.songs_popup_in_queue);
             } else {
                 menu.inflate(R.menu.songs_popup);
@@ -76,14 +80,12 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
                 case R.id.action_remove_from_queue: {
-                    LocalPlayerService player = App.getLocalPlayerService();
                     player.removeFromQueue(songsList.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 return true;
                 case R.id.action_add_to_queue: {
-                    LocalPlayerService player = App.getLocalPlayerService();
                     player.addToQueue(songsList.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
@@ -98,16 +100,18 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         }
     }
 
-    public SimpleSongsListAdapter(Context context, List<Song> playlist) {
+    public SimpleSongsListAdapter(Context context, LocalPlayer player, List<Song> playlist) {
         super(context, R.layout.list_item_songs_simple, playlist);
         this.context = context;
+        this.player = player;
         songsList = playlist;
     }
 
     static class ViewHolder {
+        public Checkable layout;
         public TextView title;
         public TextView duration;
-        public ImageView nowPlayingIcon;
+        public EqualizerView nowPlayingEqIcon;
         public ImageView contextMenu;
     }
 
@@ -119,13 +123,14 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         View rowView = convertView;
         if (rowView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            rowView = inflater.inflate(R.layout.list_item_songs_simple, null, true);
+            rowView = inflater.inflate(R.layout.list_item_songs_simple, parent, false);
             holder = new ViewHolder();
 
-            holder.title = (TextView) rowView.findViewById(R.id.songs_list_item_title);
-            holder.duration = (TextView) rowView.findViewById(R.id.songs_list_item_duration);
-            holder.nowPlayingIcon = (ImageView) rowView.findViewById(R.id.now_playing_icon);
-            holder.contextMenu = (ImageView) rowView.findViewById(R.id.button_context_menu);
+            holder.layout = (Checkable) rowView.findViewById(R.id.layout);
+            holder.title = (TextView) rowView.findViewById(R.id.title);
+            holder.duration = (TextView) rowView.findViewById(R.id.duration);
+            holder.nowPlayingEqIcon = (EqualizerView) rowView.findViewById(R.id.now_playing_icon);
+            holder.contextMenu = (ImageView) rowView.findViewById(R.id.contextMenu);
 
             rowView.setTag(holder);
         } else {
@@ -139,9 +144,17 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
 
         if (checked == position){
-            holder.nowPlayingIcon.setVisibility(View.VISIBLE);
+//            holder.title.setFont(R.string.FONT_ROBOTO_BOLD);
+            holder.title.setTextColor(Color.WHITE);
+            holder.duration.setTextColor(Color.WHITE);
+            holder.contextMenu.setColorFilter(Color.WHITE);
+            holder.layout.setChecked(true);
         } else {
-            holder.nowPlayingIcon.setVisibility(View.GONE);
+//            holder.title.setFont(R.string.FONT_ROBOTO_REGULAR);
+            holder.title.setTextColor(Color.BLACK);
+            holder.duration.setTextColor(Color.BLACK);
+            holder.contextMenu.setColorFilter(Color.GRAY);
+            holder.layout.setChecked(false);
         }
 
         return rowView;

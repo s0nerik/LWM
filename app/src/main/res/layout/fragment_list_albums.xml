@@ -2,18 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.lwm.app.ui.activity.LocalSongChooserActivity$AlbumsListFragment">
+    tools:context="com.lwm.app.ui.fragment.LocalMusicFragment$AlbumsListFragment">
 
-    <ListView
-        style="@style/ListOfCards"
-        android:id="@android:id/list"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true" />
+    <GridView
+        android:id="@+id/grid"
+        android:verticalSpacing="@dimen/padding_grid"
+        android:horizontalSpacing="@dimen/padding_grid"
+        android:clipToPadding="false"
+        android:stretchMode="columnWidth"
+        android:numColumns="2"
+        tools:listitem="@layout/item_albums"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@android:id/empty"
@@ -22,7 +22,7 @@
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible" >
+        tools:visibility="gone" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -37,5 +37,15 @@
             android:text="@string/no_albums_found"/>
 
     </LinearLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/progress"
+        android:indeterminate="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </RelativeLayout>

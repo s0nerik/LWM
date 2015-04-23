@@ -4,24 +4,28 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lwm.app.App;
+import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
 import com.lwm.app.events.server.ClientConnectedEvent;
 import com.lwm.app.events.server.ClientDisconnectedEvent;
 import com.lwm.app.events.server.ClientReadyEvent;
 import com.lwm.app.model.chat.ChatMessage;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.player.LocalPlayer;
 import com.lwm.app.websocket.entities.ClientInfo;
+import com.squareup.otto.Bus;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
@@ -29,17 +33,21 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private static final int TIMEOUT = 10 * 1000; // 10 seconds
 
-    private List<WebSocket> ready;
+    private Set<WebSocket> ready;
 
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<>();
 
     private long lastMessageTime = -1;
 
-    private LocalPlayerService player;
+    private LocalPlayer player;
 
-    public WebSocketMessageServer(InetSocketAddress address) {
+    @Inject
+    Bus bus;
+
+    public WebSocketMessageServer(InetSocketAddress address, LocalPlayer player) {
         super(address);
-        player = App.getLocalPlayerService();
+        this.player = player;
+        Injector.inject(this);
     }
 
     @Override
@@ -53,7 +61,7 @@ public class WebSocketMessageServer extends WebSocketServer {
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         Log.d(App.TAG, "WebSocketMessageServer: Close connection");
         Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
-        App.getBus().post(new ClientDisconnectedEvent(clientInfoMap.get(conn)));
+        bus.post(new ClientDisconnectedEvent(clientInfoMap.get(conn)));
     }
 
     @Override
@@ -86,7 +94,7 @@ public class WebSocketMessageServer extends WebSocketServer {
                     break;
                 case MESSAGE:
                     ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
-                    App.getBus().post(new ChatMessageReceivedEvent(chatMessage, conn));
+                    bus.post(new ChatMessageReceivedEvent(chatMessage, conn));
                     break;
                 default:
                     Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
@@ -103,14 +111,14 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private void processReadiness(WebSocket conn) {
         if (ready == null) {
-            ready = new ArrayList<>();
+            ready = new HashSet<>();
         }
         ready.add(conn);
 
-        App.getBus().post(new ClientReadyEvent(conn));
+        bus.post(new ClientReadyEvent(conn));
 
         if(ready.size() == connections().size()) {
-            App.getBus().post(new AllClientsReadyEvent());
+            bus.post(new AllClientsReadyEvent());
             ready = null;
         }
     }
@@ -120,10 +128,7 @@ public class WebSocketMessageServer extends WebSocketServer {
         if (player.isPlaying()) {
             conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
         }
-        App.getBus().post(new ClientConnectedEvent(info));
+        bus.post(new ClientConnectedEvent(info));
     }
 
-    public void setPlayer(LocalPlayerService player) {
-        this.player = player;
-    }
 }

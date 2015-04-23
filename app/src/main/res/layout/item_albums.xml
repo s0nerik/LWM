@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.lwm.app.ui.custom_view.SquareWidthImageView
+        android:id="@+id/cover"
+        android:scaleType="centerCrop"
+        android:layout_gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@color/grid_item_default_bg" />
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_above="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
+    <LinearLayout
+        style="@style/GridItemDescription"
+        android:id="@+id/bottom_bar"
+        android:layout_below="@+id/cover"
+        android:orientation="vertical"
+        android:background="@color/grid_item_default_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/GridItemText.Title"
+            tools:text="Title"
+            android:id="@+id/title" />
+
+        <TextView
+            style="@style/GridItemText.Subtitle"
+            tools:text="Subtitle"
+            android:id="@+id/subtitle" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/controls"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:clipChildren="false"
+    android:weightSum="5"
+    tools:visibility="visible">
+
+    <FrameLayout
+        android:id="@+id/btnShuffle"
+        style="@style/PlaybackControlButton">
+
+        <View style="@style/PlaybackControlButtonBg" />
+
+        <ImageView
+            android:id="@+id/btnShuffleIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_av_shuffle" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btnPrev"
+        style="@style/PlaybackControlButton">
+
+        <View style="@style/PlaybackControlButtonBg" />
+
+        <ImageView
+            android:id="@+id/btnPrevIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_av_skip_previous" />
+
+    </FrameLayout>
+
+    <!--style="@style/PlaybackControlButton"-->
+
+    <FrameLayout
+        android:id="@+id/btnPlayPause"
+        style="@style/PlaybackControlButton" >
+
+        <View style="@style/PlaybackControlButtonBg" />
+        
+        <ImageView
+            android:id="@+id/btnPlayPauseIcon"
+            style="@style/PlaybackControlButtonIcon"
+            tools:src="@drawable/ic_av_pause" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btnNext"
+        style="@style/PlaybackControlButton">
+
+        <View style="@style/PlaybackControlButtonBg" />
+
+        <ImageView
+            android:id="@+id/btnNextIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_av_skip_next" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btnRepeat"
+        style="@style/PlaybackControlButton">
+
+        <View style="@style/PlaybackControlButtonBg" />
+
+        <ImageView
+            android:id="@+id/btnRepeatIcon"
+            style="@style/PlaybackControlButtonIcon"
+            android:src="@drawable/ic_av_repeat" />
+    </FrameLayout>
+
+</LinearLayout>

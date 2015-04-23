@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="ap_name"
+        android:title="@string/title_ap_name_preference"
+        android:summary="@string/summary_ap_name_preference" />
+
+    <CheckBoxPreference
+        android:key="always_local"
+        android:title="@string/title_app_always_local"
+        android:summary="@string/summary_app_always_local" />
+
+    <EditTextPreference
+        android:key="client_name"
+        android:title="@string/pref_client_name_title"
+        android:summary="@string/pref_client_name_summary" />
+
+</PreferenceScreen>

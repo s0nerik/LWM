@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:id="@+id/container"
+    android:minHeight="72dp"
+    android:layout_width="match_parent"
+    android:layout_height="72dp" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_toRightOf="@+id/playIcon"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@+id/duration"
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/title"
+            tools:text="Someone, Somewhere"
+            android:textSize="16sp"
+            android:textColor="#000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/artist"
+            tools:text="Asking Alexandria"
+            android:textSize="14sp"
+            android:textColor="#666"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/contextMenu"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        tools:text="3:00"
+        android:gravity="center_vertical" />
+
+    <ImageView
+        android:id="@+id/contextMenu"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_more_vert_grey600_24dp" />
+
+    <es.claucookie.miniequalizerlibrary.EqualizerView
+        android:id="@+id/playIcon"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        app:foregroundColor="@android:color/black"
+        app:animDuration="3500" />
+
+</RelativeLayout>

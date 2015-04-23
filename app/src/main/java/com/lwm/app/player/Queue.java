@@ -55,6 +55,13 @@ public class Queue {
         queue.removeAll(songs);
     }
 
+    public void clear() {
+        currentIndex = -1;
+        currentSong = null;
+
+        queue.clear();
+    }
+
     /**
      * Removes played list from queue list, shuffles queue list and
      * then adds played list to the beginning of queue list.

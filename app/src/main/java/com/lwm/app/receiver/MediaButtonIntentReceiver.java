@@ -5,31 +5,42 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
 
-import com.lwm.app.App;
-import com.lwm.app.service.LocalPlayerService;
+import com.lwm.app.Injector;
+import com.lwm.app.events.player.playback.control.ChangeSongEvent;
+import com.squareup.otto.Bus;
+
+import javax.inject.Inject;
 
 public class MediaButtonIntentReceiver extends BroadcastReceiver {
 
+    @Inject
+    Bus bus;
+
+    public MediaButtonIntentReceiver() {
+        Injector.inject(this);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(App.localPlayerActive() && Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())){
+        if(Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())){
             KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
             assert keyEvent != null : "keyEvent == null";
-            LocalPlayerService player = App.getLocalPlayerService();
             if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                 switch (keyEvent.getKeyCode()) {
                     case KeyEvent.KEYCODE_MEDIA_NEXT:
-                        player.nextSong();
+                        bus.post(new ChangeSongEvent(ChangeSongEvent.Type.NEXT));
                         break;
                     case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                        player.prevSong();
+                        bus.post(new ChangeSongEvent(ChangeSongEvent.Type.PREV));
                         break;
+                    case KeyEvent.KEYCODE_MEDIA_PLAY:
+                    case KeyEvent.KEYCODE_MEDIA_PAUSE:
                     case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                        player.togglePause();
+                        bus.post(new ChangeSongEvent(ChangeSongEvent.Type.TOGGLE_PAUSE));
                         break;
                 }
             }
-            abortBroadcast();
+//            abortBroadcast();
         }
     }
 

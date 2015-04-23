@@ -1,177 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fontify="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/fragment_playback_layout"
+    <com.nvanbenschoten.motion.ParallaxImageView
+        android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@android:color/black"
+        android:x="0dp"
+        android:y="0dp" />
 
-        <ImageView
-            android:id="@+id/fragment_playback_background"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:src="@android:color/black"
-            android:x="0dp"
-            android:y="0dp" />
+    <View
+        android:background="@drawable/shadow_playback_fragment_top"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
-        <FrameLayout
-            tools:background="#fff"
-            android:id="@+id/offsetted_albumart"
+    <View
+        android:background="@drawable/shadow_playback_fragment_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <FrameLayout
+        android:id="@+id/albumArtLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/bottomBar">
+
+        <com.lwm.app.ui.custom_view.SquareWidthShadowLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/abc_action_bar_default_height"
-            android:layout_above="@+id/bottom_bar">
+            android:layout_margin="24dp"
+            android:layout_gravity="center"
+            app:sl_shadowRadius="4dp"
+            app:sl_shadowColor="#cc000000"
+            app:sl_dy="2dp"
+            app:sl_cornerRadius="0dp">
 
-            <com.lwm.app.ui.custom_view.SquareWidthImageView
-                android:background="@drawable/abc_menu_dropdown_panel_holo_light"
+            <ImageView
                 android:src="@drawable/no_cover"
-                android:id="@+id/fragment_playback_cover"
-                android:layout_margin="48dp"
+                android:id="@+id/cover"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
-        </FrameLayout>
 
-        <com.danh32.fontify.TextView
-            android:id="@+id/fragment_playback_now_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_bar"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
+        </com.lwm.app.ui.custom_view.SquareWidthShadowLayout>
+    </FrameLayout>
 
-            android:layout_marginRight="5dp"
-            android:gravity="center"
-            android:padding="3dp"
-            android:shadowColor="#000000"
+    <TextView
+        android:id="@+id/currentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomBar"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
 
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="2"
-            android:text="0:00"
-            android:textColor="@android:color/white"
+        android:layout_marginRight="5dp"
+        android:gravity="center"
+        android:padding="3dp"
+        android:shadowColor="#000000"
 
-            fontify:font="@string/FONT_ROBOTO_REGULAR" />
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="2"
+        android:text="0:00"
+        android:textColor="@android:color/white"
 
-        <com.danh32.fontify.TextView
-            android:id="@+id/fragment_playback_last_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_bar"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="5dp"
+        fontPath="@string/FONT_ROBOTO_REGULAR" />
 
-            android:layout_marginRight="10dp"
-            android:gravity="center"
-            android:padding="3dp"
-            android:shadowColor="#000000"
+    <TextView
+        android:id="@+id/endTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomBar"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
 
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="2"
-            android:text="3:00"
-            android:textColor="@android:color/white"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:padding="3dp"
+        android:shadowColor="#000000"
 
-            fontify:font="@string/FONT_ROBOTO_REGULAR" />
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="2"
+        android:text="3:00"
+        android:textColor="@android:color/white"
 
-        <LinearLayout
-            android:id="@+id/bottom_bar"
+        fontPath="@string/FONT_ROBOTO_REGULAR" />
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            style="@style/SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            tools:progress="50" />
 
-            <SeekBar
-                android:id="@+id/fragment_playback_seekBar"
-                style="@style/SeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_seekbar"
-                tools:progress="50" />
+        <include layout="@layout/part_playback_control_buttons" />
 
-            <LinearLayout
-                tools:visibility="visible"
-                android:id="@+id/fragment_playback_controls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#55000000">
-
-                <ImageView
-                    android:id="@+id/fragment_playback_shuffle_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onControlButtonClicked"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_shuffle_active" />
-
-                <ImageView
-                    android:id="@+id/fragment_playback_prev"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onControlButtonClicked"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_prev" />
-
-                <ImageView
-                    android:id="@+id/fragment_playback_play_pause"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onControlButtonClicked"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_pause" />
-
-                <ImageView
-                    android:id="@+id/fragment_playback_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onControlButtonClicked"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_next" />
-
-                <ImageView
-                    android:id="@+id/fragment_playback_repeat_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onControlButtonClicked"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_repeat" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/waiting_for_station"
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -180,18 +125,10 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <!--<VideoView-->
-        <!--android:id="@+id/waiting_for_station"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentBottom="true"-->
-
-        <!--android:gravity="center"-->
-        <!--android:visibility="gone"-->
-        <!--tools:visibility="visible" />-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:theme="@style/PlaybackFragmentToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

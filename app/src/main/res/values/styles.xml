@@ -2,7 +2,24 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">@color/primary</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated,
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/accent</item>
+
+        <item name="popupMenuStyle">@style/OverflowMenu</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">
@@ -11,26 +28,20 @@
         <item name="android:windowBackground">@drawable/background_main_activity</item>
     </style>
 
-    <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme">
-        <item name="android:windowBackground">@color/card_list_background</item>
+    <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
     </style>
 
-    <style name="AppTheme.PlaybackActivityStyle" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="actionBarStyle">@style/ActionBar</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:actionBarStyle">@style/ActionBar</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowTitleSize">0dp</item>
+    <style name="AppTheme.PlaybackActivity" parent="AppTheme.NoActionBar">
+        <item name="colorPrimaryDark">#000</item>
     </style>
 
     <style name="Widget" />
 
-    <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.Base.ActionBar" />
+    <style name="Widget.ActionBar" parent="Widget.AppCompat.Light.ActionBar" />
 
     <style name="Widget.ActionBar.Custom" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="displayOptions">showCustom</item>
@@ -38,13 +49,13 @@
         <item name="android:icon">@android:color/transparent</item>
     </style>
 
-    <style name="Widget.ActionBar.Transparent" parent="Widget.AppCompat.ActionBar">
+    <style name="Widget.ActionBar.Transparent" parent="@style/Widget.AppCompat.ActionBar">
         <item name="android:background">@android:color/transparent</item>
         <item name="displayOptions">homeAsUp|showCustom</item>
         <item name="android:displayOptions">homeAsUp|showCustom</item>
     </style>
 
-    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Title">
+    <style name="TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionMode.Title">
         <item name="android:textColor">@color/title_text_color</item>
         <!--<item name="android:textStyle">bold</item>-->
         <item name="android:shadowColor">@color/title_shadow_color</item>
@@ -53,7 +64,7 @@
         <item name="android:shadowRadius">3</item>
     </style>
 
-    <style name="SubtitleTextStyle" parent="TextAppearance.AppCompat.Widget.Base.ActionMode.Subtitle">
+    <style name="SubtitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionMode.Subtitle">
         <item name="android:textColor">@color/subtitle_text_color</item>
         <!--<item name="android:textStyle">bold</item>-->
         <item name="android:shadowColor">@color/subtitle_shadow_color</item>
@@ -66,7 +77,7 @@
         <item name="android:background">@drawable/actionbar_gradient</item>
     </style>
 
-    <style name="ActionBar" parent="Widget.AppCompat.Base.ActionBar.Solid">
+    <style name="ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="background">@color/actionbar_semi_transparent</item>
         <item name="android:background">@color/actionbar_semi_transparent</item>
         <item name="displayOptions">showCustom|showHome</item>
@@ -89,50 +100,112 @@
         <item name="android:shadowRadius">2</item>
     </style>
 
-    <style name="SeekBar" parent="android:Widget.SeekBar">
+    <style name="SeekBar">
         <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
         <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
         <item name="android:minHeight">13dip</item>
         <item name="android:maxHeight">13dip</item>
-        <item name="android:thumb">@drawable/apptheme_scrubber_control_selector_holo_light</item>
-        <item name="android:thumbOffset">16dip</item>
-        <item name="android:paddingLeft">16dip</item>
-        <item name="android:paddingRight">16dip</item>
+        <item name="android:thumb">@drawable/dummy_32dp</item>
     </style>
 
-    <style name="Card">
+    <style name="SeekBarNowPlaying" parent="SeekBar">
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:layout_marginTop">-4dp</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:thumb">@null</item>
+    </style>
+
+    <style name="MaterialItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">72dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="SongItem" parent="MaterialItem">
         <item name="android:background">@drawable/background_list_item_checkable</item>
-        <item name="android:checkMark">@null</item>
+    </style>
+
+    <style name="ListItemText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:checkMark">@null</item>
     </style>
 
-    <style name="Card.NonCheckable" parent="Card">
-        <item name="android:background">@drawable/background_list_item</item>
-        <item name="android:checkable">false</item>
+    <style name="ListItemText.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/selector_songs_list_item_title</item>
+        <!--<item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>-->
     </style>
 
-    <style name="CardWithImage" parent="Card">
-        <item name="android:paddingTop">1dp</item>
-        <item name="android:paddingBottom">0dp</item>
+    <style name="ListItemText.Subtitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/selector_songs_list_item_artist</item>
+        <!--<item name="fontPath">@string/FONT_ROBOTO_LIGHT</item>-->
     </style>
 
-    <style name="CardWithImage.NonCheckable" parent="CardWithImage">
-        <item name="android:background">@drawable/background_list_item</item>
-        <item name="android:checkable">false</item>
+    <style name="GridItemDescription" parent="SongItem">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:minHeight">68dp</item>
+        <item name="android:maxHeight">68dp</item>
+        <item name="android:background">@color/now_playing_bg</item>
     </style>
 
-    <style name="ListOfCards">
-        <item name="android:padding">6dp</item>
+    <style name="GridItemText" parent="ListItemText" />
+
+    <style name="GridItemText.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>
+    </style>
+
+    <style name="GridItemText.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#ddd</item>
+        <item name="fontPath">@string/FONT_ROBOTO_LIGHT</item>
+    </style>
+
+    <style name="MaterialList">
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:fastScrollEnabled">true</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:requiresFadingEdge">none</item>
+    </style>
+
+    <style name="ListOfCards" parent="MaterialList">
+        <item name="android:listSelector">@android:color/transparent</item>
+        <item name="android:dividerHeight">6dp</item>
+        <item name="android:choiceMode">singleChoice</item>
+        <item name="android:fastScrollEnabled">true</item>
+        <item name="android:cacheColorHint">#00000000</item>
+    </style>
+
+    <style name="ListOfSongs">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:listSelector">@android:color/transparent</item>
         <item name="android:divider">@android:color/transparent</item>
-        <item name="android:dividerHeight">6dp</item>
+        <item name="android:dividerHeight">0dp</item>
         <item name="android:choiceMode">singleChoice</item>
         <item name="android:fastScrollEnabled">true</item>
         <item name="android:cacheColorHint">#00000000</item>
         <item name="android:fadingEdge">none</item>
         <item name="android:requiresFadingEdge">none</item>
     </style>
+
 
     <style name="StartScreenCircleButton">
 
@@ -156,7 +229,7 @@
         <item name="android:gravity">center_vertical|right</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">20sp</item>
-        <item name="font">@string/FONT_ROBOTO_THIN_ITALIC</item>
+        <item name="fontPath">@string/FONT_ROBOTO_THIN_ITALIC</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">2</item>
         <item name="android:shadowDy">2</item>
@@ -171,12 +244,88 @@
         // Needed for "smoothness" hack to work
         <item name="android:visibility">invisible</item>
 
-        <item name="android:background">#333</item>
+        <item name="android:background">@color/primary</item>
         <item name="android:layout_width">70dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginTop">35dp</item>
         <item name="android:layout_marginBottom">35dp</item>
         <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="PlaybackControlButton">
+        <item name="android:clipChildren">false</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="PlaybackControlButtonIcon">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="PlaybackControlButtonBg">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/btn_playback_control_bg</item>
+        <item name="android:layout_width">72dp</item>
+        <item name="android:layout_height">72dp</item>
+    </style>
+
+    <style name="PlaybackFragmentToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorControlNormal">#fff</item>
+        <item name="colorControlHighlight">#3fff</item>
+    </style>
+
+    <style name="NotificationControlBtn">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/selector_notification_button_bg</item>
+    </style>
+
+    <style name="DrawerBottomButton">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>
+    </style>
+
+    <style name="artist_item_cover_shadow">
+        <item name="android:background">@drawable/shadow_playback_fragment_left</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="artist_item_cover_bg_layout">
+        <!--<item name="android:visibility">gone</item>-->
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">16dp</item>
+    </style>
+
+    <style name="artist_item_cover_bg_image">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:adjustViewBounds">false</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for pre-Lollipop. -->
+        <item name="overlapAnchor">true</item>
+
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor">true</item>
+
+    </style>
+
+    <style name="item_artists_album">
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/item_covers_size</item>
     </style>
 
 </resources>
