@@ -20,6 +20,7 @@ import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
 import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.async.MusicLoaderService;
+import com.lwm.app.ui.base.DaggerOttoOnResumeFragment;
 
 import java.util.ArrayList;
 import java.util.List;

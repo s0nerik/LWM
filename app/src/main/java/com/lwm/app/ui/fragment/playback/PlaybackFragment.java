@@ -28,7 +28,7 @@ import com.lwm.app.model.Song;
 import com.lwm.app.player.BasePlayer;
 import com.lwm.app.player.PlayerUtils;
 import com.lwm.app.ui.async.RemoteAlbumArtAsyncGetter;
-import com.lwm.app.ui.fragment.DaggerOttoOnResumeFragment;
+import com.lwm.app.ui.base.DaggerOttoOnResumeFragment;
 import com.nvanbenschoten.motion.ParallaxImageView;
 
 import javax.inject.Inject;

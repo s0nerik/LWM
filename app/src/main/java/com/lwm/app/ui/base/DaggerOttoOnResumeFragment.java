@@ -1,13 +1,10 @@
-package com.lwm.app.ui.fragment;
+package com.lwm.app.ui.base;
 
-import android.os.Bundle;
-
-import com.lwm.app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
 
-public abstract class DaggerOttoOnCreateFragment extends DaggerFragment {
+public abstract class DaggerOttoOnResumeFragment extends DaggerFragment {
 
     private Object[] busListeners = { this };
 
@@ -15,19 +12,19 @@ public abstract class DaggerOttoOnCreateFragment extends DaggerFragment {
     protected Bus bus;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         for (Object o : busListeners) {
             bus.register(o);
         }
     }
 
     @Override
-    public void onDestroy() {
+    public void onPause() {
         for (Object o : busListeners) {
             bus.unregister(o);
         }
-        super.onDestroy();
+        super.onPause();
     }
 
     public void setBusListeners(Object... busListeners) {

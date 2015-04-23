@@ -17,6 +17,7 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.ArtistWrappersAdapter;
 import com.lwm.app.model.ArtistWrapper;
 import com.lwm.app.ui.async.MusicLoaderService;
+import com.lwm.app.ui.base.DaggerOttoOnCreateFragment;
 
 import java.util.List;
 

@@ -36,21 +36,6 @@ public class SongsListFragment extends BaseSongsListFragment {
         musicLoaderService.loadAllSongs();
     }
 
-//    @Override
-//    public void onViewCreated(View view, Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        ItemClickSupport itemClickSupport = ItemClickSupport.addTo(mTwoWayView);
-//        itemClickSupport.setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
-//                player.setQueue(songs);
-//                player.play(i);
-//
-//                adapter.setSelection(i);
-//            }
-//        });
-//    }
-
     @OnClick(R.id.fab)
     public void onFabClicked() {
         shuffleAll();

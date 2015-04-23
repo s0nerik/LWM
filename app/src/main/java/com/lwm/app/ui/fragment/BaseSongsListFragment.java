@@ -16,6 +16,7 @@ import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
 import com.lwm.app.model.Song;
 import com.lwm.app.player.LocalPlayer;
+import com.lwm.app.ui.base.DaggerOttoOnResumeFragment;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -63,7 +64,6 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         ButterKnife.inject(this, v);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mTwoWayView.setLayoutManager(layoutManager);
-//        mTwoWayView.setLayoutManager(new ListLayoutManager(getActivity(), TwoWayLayoutManager.Orientation.VERTICAL));
         mTwoWayView.setHasFixedSize(true);
         fastScroller.setRecyclerView(mTwoWayView);
         return v;
