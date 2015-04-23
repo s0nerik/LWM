@@ -3,8 +3,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath CLASSPATH
-        classpath 'se.centril.robospock:gradle-plugin-robospock:0.2.1'
+        classpath "com.android.tools.build:gradle:1.1.0"
+        classpath 'se.centril.robospock:gradle-plugin-robospock:1.0.1'
     }
 }
 

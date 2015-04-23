@@ -4,6 +4,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath CLASSPATH
+        classpath "com.android.tools.build:gradle:1.1.0"
+        classpath 'net.sf.gapt:apt:1'
+        classpath 'me.tatarka:gradle-retrolambda:3.0.1'
     }
 }
