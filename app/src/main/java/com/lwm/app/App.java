@@ -5,6 +5,8 @@ import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.lwm.app.modules.AndroidModule;
 
+import ru.noties.debug.Debug;
+
 public class App extends Application {
 
     public static final String TAG = "LWM";
@@ -16,6 +18,7 @@ public class App extends Application {
         if (BuildConfig.CRASHLYTICS) {
             Crashlytics.start(this);
         }
+        Debug.init(BuildConfig.DEBUG);
     }
 
 }

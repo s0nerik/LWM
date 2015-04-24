@@ -113,6 +113,7 @@ dependencies {
     compile('com.joanzapata.android.asyncservice:android-asyncservice:0.0.5@aar') { transitive = true }
     compile 'com.github.talenguyen:prettybundle:1.0.2-SNAPSHOT'
     apt 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
+    compile 'ru.noties:debug:1.1.3'
 
     // F*CK YOU, BOILERPLATE! =)
     apt 'org.projectlombok:lombok:1.14.8'
