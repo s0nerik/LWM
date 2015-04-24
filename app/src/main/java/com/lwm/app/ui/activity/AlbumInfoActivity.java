@@ -28,6 +28,7 @@ import com.lwm.app.adapter.SimpleSongsListAdapter;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.helper.db.AlbumsCursorGetter;
+import com.lwm.app.helper.db.Order;
 import com.lwm.app.helper.db.SongsCursorGetter;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Playlist;
@@ -99,7 +100,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
         if (BuildConfig.DEBUG && albumId == -1) throw new AssertionError();
 
-        playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(albumId));
+        playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, albumId));
 
         adapter = new SimpleSongsListAdapter(this, player, playlist);
 

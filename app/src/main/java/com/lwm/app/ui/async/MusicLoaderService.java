@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.joanzapata.android.asyncservice.api.annotation.AsyncService;
 import com.lwm.app.helper.db.AlbumsCursorGetter;
 import com.lwm.app.helper.db.ArtistsCursorGetter;
+import com.lwm.app.helper.db.Order;
 import com.lwm.app.helper.db.SongsCursorGetter;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.AlbumsList;
@@ -24,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class MusicLoaderService {
 
     public SongsLoadedEvent loadAllSongs() {
-        return new SongsLoadedEvent(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor()));
+        return new SongsLoadedEvent(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)));
     }
 
     public ArtistsLoadedEvent loadAllArtists() {

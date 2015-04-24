@@ -14,16 +14,18 @@ public class Playlist {
         if(cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    songs.add(new Song(
-                            cursor.getLong(SongsCursorGetter._ID),
-                            cursor.getLong(SongsCursorGetter.ARTIST_ID),
-                            cursor.getLong(SongsCursorGetter.ALBUM_ID),
-                            cursor.getString(SongsCursorGetter.TITLE),
-                            cursor.getString(SongsCursorGetter.ARTIST),
-                            cursor.getString(SongsCursorGetter.ALBUM),
-                            cursor.getString(SongsCursorGetter.DATA),
-                            cursor.getInt(SongsCursorGetter.DURATION)
-                    ));
+                    songs.add(
+                            Song.builder()
+                                    .songId(cursor.getLong(SongsCursorGetter._ID))
+                                    .artistId(cursor.getLong(SongsCursorGetter.ARTIST_ID))
+                                    .albumId(cursor.getLong(SongsCursorGetter.ALBUM_ID))
+                                    .title(cursor.getString(SongsCursorGetter.TITLE))
+                                    .artist(cursor.getString(SongsCursorGetter.ARTIST))
+                                    .album(cursor.getString(SongsCursorGetter.ALBUM))
+                                    .source(cursor.getString(SongsCursorGetter.DATA))
+                                    .duration(cursor.getInt(SongsCursorGetter.DURATION))
+                                    .build()
+                    );
                 } while (cursor.moveToNext());
             }
             cursor.close();

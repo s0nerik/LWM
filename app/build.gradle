@@ -1,6 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "crashlytics"
-apply plugin: "net.sf.gapt"
+apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: "me.tatarka.retrolambda"
 
 repositories {
@@ -115,7 +115,9 @@ dependencies {
     apt 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
 
     // F*CK YOU, BOILERPLATE! =)
+    apt 'org.projectlombok:lombok:1.14.8'
     provided 'org.projectlombok:lombok:1.14.8'
+    apt 'com.pushtorefresh:javac-warning-annotation:1.0.0'
     provided 'com.pushtorefresh:javac-warning-annotation:1.0.0'
 
     // Animations

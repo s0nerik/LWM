@@ -77,13 +77,20 @@ public class AlbumsCursorGetter extends Daggered {
                 selectionArgs,
                 MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
 
-        cursor.moveToFirst();
-        return new Album(cursor.getInt(_ID),
-                cursor.getString(ALBUM),
-                cursor.getString(ARTIST),
-                cursor.getInt(FIRST_YEAR),
-                cursor.getString(ALBUM_ART),
-                cursor.getInt(NUMBER_OF_SONGS));
+        Album album = null;
+        if (cursor.moveToFirst()) {
+            album = Album.builder()
+                    .id(cursor.getInt(_ID))
+                    .title(cursor.getString(ALBUM))
+                    .artist(cursor.getString(ARTIST))
+                    .year(cursor.getInt(FIRST_YEAR))
+                    .albumArtPath(cursor.getString(ALBUM_ART))
+                    .songsCount(cursor.getInt(NUMBER_OF_SONGS))
+                    .build();
+        }
+        cursor.close();
+
+        return album;
     }
 
     public Cursor getAlbumsCursorByArtist(Artist artist){

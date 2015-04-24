@@ -22,16 +22,17 @@ public class AlbumsList {
             int songsCount = AlbumsCursorGetter.NUMBER_OF_SONGS;
 
             do {
-                albums.add(new Album(
-                        cursor.getInt(id),
-                        cursor.getString(album),
-                        cursor.getString(artist),
-                        cursor.getInt(year),
-                        cursor.getString(albumArt),
-                        cursor.getInt(songsCount)
-                ));
+                albums.add(
+                        Album.builder()
+                                .id(cursor.getInt(id))
+                                .title(cursor.getString(album))
+                                .artist(cursor.getString(artist))
+                                .year(cursor.getInt(year))
+                                .albumArtPath(cursor.getString(albumArt))
+                                .songsCount(cursor.getInt(songsCount))
+                                .build()
+                );
             } while (cursor.moveToNext());
-//            cursor.close();
         }
         cursor.close();
     }

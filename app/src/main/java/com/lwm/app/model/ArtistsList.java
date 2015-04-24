@@ -19,15 +19,15 @@ public class ArtistsList {
             int numberOfTracks = ArtistsCursorGetter.NUMBER_OF_TRACKS;
 
             do {
-                artists.add(new Artist(
-                        cursor.getInt(id),
-                        cursor.getString(artist),
-                        cursor.getInt(numberOfAlbums),
-                        cursor.getInt(numberOfTracks)
-                ));
+                artists.add(
+                        Artist.builder()
+                                .id(cursor.getInt(id))
+                                .name(cursor.getString(artist))
+                                .numberOfAlbums(cursor.getInt(numberOfAlbums))
+                                .numberOfSongs(cursor.getInt(numberOfTracks))
+                                .build()
+                );
             } while (cursor.moveToNext());
-
-//            cursor.close();
         }
         cursor.close();
     }

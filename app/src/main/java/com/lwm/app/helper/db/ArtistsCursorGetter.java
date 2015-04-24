@@ -27,14 +27,6 @@ public class ArtistsCursorGetter extends Daggered {
     public static final int NUMBER_OF_TRACKS = 3;
 
     public Cursor getArtistsCursor(){
-
-//        String[] projection = {
-//                MediaStore.Audio.Artists._ID,
-//                MediaStore.Audio.Artists.ARTIST,
-//                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
-//                MediaStore.Audio.Artists.NUMBER_OF_TRACKS
-//        };
-
         return contentResolver.query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,
@@ -55,12 +47,15 @@ public class ArtistsCursorGetter extends Daggered {
                 MediaStore.Audio.Artists.DEFAULT_SORT_ORDER);
 
         Artist artist = null;
-        if(cursor.moveToFirst()){
-            artist = new Artist(cursor.getInt(_ID),
-                    cursor.getString(ARTIST),
-                    cursor.getInt(NUMBER_OF_ALBUMS),
-                    cursor.getInt(NUMBER_OF_TRACKS));
+        if (cursor.moveToFirst()) {
+            artist = Artist.builder()
+                    .id(cursor.getInt(_ID))
+                    .name(cursor.getString(ARTIST))
+                    .numberOfAlbums(cursor.getInt(NUMBER_OF_ALBUMS))
+                    .numberOfSongs(cursor.getInt(NUMBER_OF_TRACKS))
+                    .build();
         }
+        cursor.close();
 
         return artist;
     }
