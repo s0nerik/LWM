@@ -1,9 +1,6 @@
 package com.lwm.app.websocket;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
-import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.server.AllClientsReadyEvent;
@@ -26,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+
+import ru.noties.debug.Debug;
 
 public class WebSocketMessageServer extends WebSocketServer {
 
@@ -52,21 +51,21 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        Log.d(App.TAG, "WebSocketMessageServer: New connection");
-        Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
+        Debug.d("WebSocketMessageServer: New connection");
+        Debug.d("WebSocketMessageServer: connections.size() = "+connections().size());
         conn.send(new SocketMessage(SocketMessage.Type.GET, SocketMessage.Message.CLIENT_INFO).toJson());
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        Log.d(App.TAG, "WebSocketMessageServer: Close connection");
-        Log.d(App.TAG, "WebSocketMessageServer: connections.size() = "+connections().size());
+        Debug.d("WebSocketMessageServer: Close connection");
+        Debug.d("WebSocketMessageServer: connections.size() = "+connections().size());
         bus.post(new ClientDisconnectedEvent(clientInfoMap.get(conn)));
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        Log.d(App.TAG, "WebSocket message: \"" + message + "\"");
+        Debug.d("WebSocket message: \"" + message + "\"");
 
         SocketMessage socketMessage = SocketMessage.fromJson(message);
         String body = socketMessage.getBody();
@@ -82,7 +81,7 @@ public class WebSocketMessageServer extends WebSocketServer {
                     conn.send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.IS_PLAYING, isPlaying).toJson());
                     break;
                 default:
-                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
+                    Debug.e("Can't process message: " + socketMessage.getMessage().name());
             }
         } else if (socketMessage.getType() == SocketMessage.Type.POST) {
             switch (socketMessage.getMessage()) {
@@ -97,7 +96,7 @@ public class WebSocketMessageServer extends WebSocketServer {
                     bus.post(new ChatMessageReceivedEvent(chatMessage, conn));
                     break;
                 default:
-                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
+                    Debug.e("Can't process message: "+socketMessage.getMessage().name());
             }
         }
 
@@ -106,7 +105,7 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        Log.e(App.TAG,"WebSocketMessageServer onError:\n", ex);
+        Debug.e("WebSocketMessageServer onError:\n", ex);
     }
 
     private void processReadiness(WebSocket conn) {

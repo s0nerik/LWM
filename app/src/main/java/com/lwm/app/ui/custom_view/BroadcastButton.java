@@ -3,13 +3,11 @@ package com.lwm.app.ui.custom_view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.events.access_point.AccessPointStateEvent;
@@ -21,6 +19,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import ru.noties.debug.Debug;
 
 public class BroadcastButton extends RelativeLayout {
 
@@ -78,14 +77,14 @@ public class BroadcastButton extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Log.d(App.TAG, "BroadcastButton onAttachedToWindow");
+        Debug.d("BroadcastButton onAttachedToWindow");
         bus.register(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.d(App.TAG, "BroadcastButton onDetachedFromWindow");
+        Debug.d("BroadcastButton onDetachedFromWindow");
         bus.unregister(this);
     }
 

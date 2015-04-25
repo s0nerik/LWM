@@ -9,8 +9,6 @@ import ru.noties.debug.Debug;
 
 public class App extends Application {
 
-    public static final String TAG = "LWM";
-
     @Override
     public void onCreate() {
         super.onCreate();

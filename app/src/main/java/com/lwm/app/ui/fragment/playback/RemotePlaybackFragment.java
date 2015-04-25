@@ -2,12 +2,10 @@ package com.lwm.app.ui.fragment.playback;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.Transform;
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.events.player.RepeatStateChangedEvent;
 import com.lwm.app.events.player.playback.PlaybackPausedEvent;
@@ -25,6 +23,8 @@ import com.squareup.otto.Subscribe;
 import java.util.UUID;
 
 import javax.inject.Inject;
+
+import ru.noties.debug.Debug;
 
 public class RemotePlaybackFragment extends PlaybackFragment {
 
@@ -78,20 +78,20 @@ public class RemotePlaybackFragment extends PlaybackFragment {
     @Subscribe
     @Override
     public void onSongChanged(SongChangedEvent event) {
-        Log.d(App.TAG, "RemotePlaybackFragment: onSongChanged");
+        Debug.d("RemotePlaybackFragment: onSongChanged");
     }
 
     @Subscribe
     @Override
     public void onPlaybackStarted(PlaybackStartedEvent event) {
         setSongInfo(event.getSong());
-        Log.d(App.TAG, "RemotePlaybackFragment: onPlaybackStarted");
+        Debug.d("RemotePlaybackFragment: onPlaybackStarted");
     }
 
     @Subscribe
     @Override
     public void onPlaybackPaused(PlaybackPausedEvent event) {
-        Log.d(App.TAG, "RemotePlaybackFragment: onPlaybackPaused");
+        Debug.d("RemotePlaybackFragment: onPlaybackPaused");
     }
 
     @Subscribe
@@ -103,13 +103,13 @@ public class RemotePlaybackFragment extends PlaybackFragment {
     @Subscribe
     @Override
     public void onQueueShuffled(QueueShuffledEvent event) {
-        Log.d(App.TAG, "RemotePlaybackFragment: onQueueShuffled");
+        Debug.d("RemotePlaybackFragment: onQueueShuffled");
     }
 
     @Subscribe
     @Override
     public void onRepeatStateChanged(RepeatStateChangedEvent event) {
-        Log.d(App.TAG, "RemotePlaybackFragment: onRepeatStateChanged");
+        Debug.d("RemotePlaybackFragment: onRepeatStateChanged");
     }
 
 }

@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.lib.NanoHTTPD;
 import com.lwm.app.model.Song;
@@ -18,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import ru.noties.debug.Debug;
 
 public class StreamServer extends NanoHTTPD {
 
@@ -82,7 +83,7 @@ public class StreamServer extends NanoHTTPD {
     }
 
     private Response stream(Song song) {
-        Log.d(App.TAG, "StreamServer: STREAM");
+        Debug.d("StreamServer: STREAM");
         FileInputStream fis = null;
         try {
 
@@ -97,12 +98,12 @@ public class StreamServer extends NanoHTTPD {
     }
 
     private Response currentInfo(Song song) {
-        Log.d(App.TAG, "StreamServer: CURRENT_INFO");
+        Debug.d("StreamServer: CURRENT_INFO");
         return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song));
     }
 
     private Response currentAlbumArt(Song song) {
-        Log.d(App.TAG, "StreamServer: CURRENT_ALBUMART");
+        Debug.d("StreamServer: CURRENT_ALBUMART");
         InputStream is = null;
         try {
             is = contentResolver.openInputStream(song.getAlbumArtUri());

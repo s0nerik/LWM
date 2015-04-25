@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koushikdutta.ion.Ion;
-import com.lwm.app.App;
 import com.lwm.app.BuildConfig;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
@@ -46,6 +44,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import ru.noties.debug.Debug;
 
 //import com.andexert.library.RippleView;
 
@@ -197,7 +196,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(App.TAG, "onItemClick: " + position);
+        Debug.d("onItemClick: " + position);
         setSelection(position);
 
         player.setQueue(playlist);
@@ -265,7 +264,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
             } else if (scroll <= parallaxArea) {
 
-                Log.d(App.TAG, "Scroll: " + scroll);
+                Debug.d("Scroll: " + scroll);
 
                 float scrolledPercent = scroll / (float) parallaxArea;
                 int transparency = Math.round(scrolledPercent * 255f);

@@ -32,6 +32,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ru.noties.debug.Debug;
+
 public class LocalPlayer extends BasePlayer {
 
     @Inject
@@ -110,7 +112,7 @@ public class LocalPlayer extends BasePlayer {
 
     @Override
     public void seekTo(int msec) throws IllegalStateException {
-        Log.d(App.TAG, "LocalPlayer: seekTo(" + msec + ")");
+        Debug.d("LocalPlayer: seekTo(%s)", msec);
         if (prepared) {
             if (server.isStarted()) {
                 bus.post(new SeekToClientsEvent(msec));
@@ -149,7 +151,7 @@ public class LocalPlayer extends BasePlayer {
 
     @Override
     public void nextSong() {
-        Log.d(App.TAG, "LocalPlayer: nextSong");
+        Debug.d("LocalPlayer: nextSong");
 
         if (queue.moveToNext()) {
             play();
@@ -161,7 +163,7 @@ public class LocalPlayer extends BasePlayer {
 
     @Override
     public void prevSong() {
-        Log.d(App.TAG, "LocalPlayer: prevSong");
+        Debug.d("LocalPlayer: prevSong");
 
         if (queue.moveToPrev()) {
             play();
@@ -302,7 +304,7 @@ public class LocalPlayer extends BasePlayer {
 
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
-            Log.e(App.TAG, "onError: " + what + ", " + extra);
+            Debug.e("onError: " + what + ", " + extra);
             prepared = true;
             return true;
         }

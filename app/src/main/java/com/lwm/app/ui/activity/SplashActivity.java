@@ -5,7 +5,6 @@ import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -13,13 +12,13 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
-import com.lwm.app.App;
 import com.lwm.app.R;
 
 import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ru.noties.debug.Debug;
 
 public class SplashActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -136,7 +135,7 @@ public class SplashActivity extends FragmentActivity implements
 
             @Override
             protected void onPostExecute(String authToken) {
-                Log.d(App.TAG, "Token: "+authToken);
+                Debug.d("Token: " + authToken);
 //                if (authToken != null) {
 //                    saveTokenAndGetCalendars(email, authToken);
 //                }

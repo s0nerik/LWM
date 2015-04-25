@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.StationsAdapter;
 import com.lwm.app.events.client.SocketOpenedEvent;
@@ -51,6 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import ru.noties.debug.Debug;
 
 public class FindStationsFragment extends DaggerFragment {
 
@@ -136,7 +135,7 @@ public class FindStationsFragment extends DaggerFragment {
 
     @Subscribe
     public void onScanResultsAvailable(WifiScanResultsAvailableEvent event) {
-        Log.d(App.TAG, "setScanResults()");
+        Debug.d("setScanResults()");
         scanResults = event.getScanResults();
 
         stationsAdapter = new StationsAdapter(getActivity(), scanResults);

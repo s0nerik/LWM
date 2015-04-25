@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.events.player.RepeatStateChangedEvent;
@@ -35,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import ru.noties.debug.Debug;
 
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
@@ -114,12 +113,12 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     }
 
     protected void onPlaybackStarted(PlaybackStartedEvent event) {
-        Log.d(App.TAG, "onPlaybackStarted");
+        Debug.d("onPlaybackStarted");
         setPlayButton(player.isPlaying());
     }
 
     protected void onPlaybackPaused(PlaybackPausedEvent event) {
-        Log.d(App.TAG, "onPlaybackPaused");
+        Debug.d("onPlaybackPaused");
         setPlayButton(player.isPlaying());
     }
 

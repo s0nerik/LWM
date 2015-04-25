@@ -1,12 +1,10 @@
 package com.lwm.app.ui.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.SetUnreadMessagesEvent;
@@ -21,6 +19,7 @@ import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
+import ru.noties.debug.Debug;
 import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class RemotePlaybackActivity extends PlaybackActivity {
@@ -52,7 +51,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(App.TAG, "RemotePlaybackActivity.onCreate()");
+        Debug.d("RemotePlaybackActivity.onCreate()");
         setContentView(R.layout.activity_remote_playback);
     }
 

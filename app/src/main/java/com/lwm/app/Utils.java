@@ -9,7 +9,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,6 +22,8 @@ import java.util.List;
 import java.util.Random;
 
 import javax.inject.Inject;
+
+import ru.noties.debug.Debug;
 
 public class Utils {
 
@@ -56,7 +57,7 @@ public class Utils {
                 view.setImageResource(R.drawable.no_cover);
             }
         } catch (IOException e) {
-            Log.d(App.TAG, "Unable to set ImageView from URI: " + e.toString());
+            Debug.d("Unable to set ImageView from URI: %s", e);
             view.setImageResource(R.drawable.no_cover);
         }
     }

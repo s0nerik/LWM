@@ -2,9 +2,7 @@ package com.lwm.app.player;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.util.Log;
 
-import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.events.player.playback.SongPlayingEvent;
 import com.lwm.app.model.Song;
@@ -14,6 +12,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.inject.Inject;
+
+import ru.noties.debug.Debug;
 
 public abstract class BasePlayer extends MediaPlayer {
 
@@ -103,7 +103,7 @@ public abstract class BasePlayer extends MediaPlayer {
                     BasePlayer.this.setVolume(1f, 1f);
                     break;
             }
-            Log.d(App.TAG, "onAudioFocusChange: " + event);
+            Debug.d("onAudioFocusChange: %s", event);
         }
     }
 }

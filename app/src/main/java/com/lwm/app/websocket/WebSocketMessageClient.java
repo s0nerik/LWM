@@ -2,10 +2,8 @@ package com.lwm.app.websocket;
 
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.gson.Gson;
-import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.events.chat.ChatMessageReceivedEvent;
 import com.lwm.app.events.chat.ChatMessagesAvailableEvent;
@@ -33,6 +31,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import ru.noties.debug.Debug;
+
 public class WebSocketMessageClient extends WebSocketClient {
 
     @Inject
@@ -55,7 +55,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        Log.d(App.TAG, "WebSocketMessageClient: opened with handshake:"
+        Debug.d("WebSocketMessageClient: opened with handshake:"
                 + "\nStatus: " + handshakedata.getHttpStatus()
                 + "\nMessage: " + handshakedata.getHttpStatusMessage());
         bus.register(this);
@@ -64,7 +64,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        Log.d(App.TAG, "WebSocketMessageClient: \"" + message + "\"");
+        Debug.d("WebSocketMessageClient: \"" + message + "\"");
 
         SocketMessage socketMessage = SocketMessage.fromJson(message);
         String body = socketMessage.getBody();
@@ -84,7 +84,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CLIENT_INFO, info).toJson());
                     break;
                 default:
-                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
+                    Debug.e("Can't process message: "+socketMessage.getMessage().name());
             }
         } else if (socketMessage.getType() == SocketMessage.Type.POST) {
             switch (socketMessage.getMessage()) {
@@ -112,21 +112,21 @@ public class WebSocketMessageClient extends WebSocketClient {
                     bus.post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
                     break;
                 default:
-                    Log.e(App.TAG, "Can't process message: "+socketMessage.getMessage().name());
+                    Debug.e("Can't process message: "+socketMessage.getMessage().name());
             }
         }
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        Log.d(App.TAG, "WebSocketMessageClient: closed:\nCode: "+code+" Reason: "+reason);
+        Debug.d("WebSocketMessageClient: closed:\nCode: "+code+" Reason: "+reason);
         bus.post(new SocketClosedEvent());
         bus.unregister(this);
     }
 
     @Override
     public void onError(Exception ex) {
-        Log.d(App.TAG, "WebSocketMessageClient: error:\n" + ex);
+        Debug.d("WebSocketMessageClient: error:\n" + ex);
     }
 
     private void startFrom(int pos) {

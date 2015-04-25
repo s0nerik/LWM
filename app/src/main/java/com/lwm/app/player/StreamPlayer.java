@@ -8,7 +8,6 @@ import android.util.Log;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
-import com.lwm.app.App;
 import com.lwm.app.Injector;
 import com.lwm.app.events.client.SendReadyEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
@@ -19,6 +18,8 @@ import com.squareup.otto.Bus;
 import java.io.IOException;
 
 import javax.inject.Inject;
+
+import ru.noties.debug.Debug;
 
 public class StreamPlayer extends BasePlayer {
 
@@ -43,7 +44,7 @@ public class StreamPlayer extends BasePlayer {
     private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
         @Override
         public void onSeekComplete(MediaPlayer mediaPlayer) {
-            Log.d(App.TAG, "StreamPlayer: onSeekComplete");
+            Debug.d("StreamPlayer: onSeekComplete");
             start();
         }
     };
@@ -51,7 +52,7 @@ public class StreamPlayer extends BasePlayer {
     private OnBufferingUpdateListener onBufferingUpdateListener = new OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//            Log.d(App.TAG, "Buffered: "+percent);
+//            Debug.d("Buffered: "+percent);
         }
     };
 
@@ -76,13 +77,13 @@ public class StreamPlayer extends BasePlayer {
 
     @Override
     public void nextSong() {
-        Log.d(App.TAG, "StreamPlayer: nextSong");
+        Debug.d("StreamPlayer: nextSong");
         prepareNewSong();
     }
 
     @Override
     public void prevSong() {
-        Log.d(App.TAG, "StreamPlayer: prevSong");
+        Debug.d("StreamPlayer: prevSong");
         prepareNewSong();
     }
 
@@ -132,7 +133,7 @@ public class StreamPlayer extends BasePlayer {
                             bus.post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
                             startNotifyingPlaybackProgress();
                         } else {
-                            Log.e(App.TAG, "Error getting song info", e);
+                            Debug.e("Error getting song info", e);
                         }
                     }
                 });

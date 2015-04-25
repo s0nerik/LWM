@@ -8,14 +8,12 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.lwm.app.App;
 import com.lwm.app.R;
 import com.lwm.app.adapter.PlayersAroundPagerAdapter;
 import com.lwm.app.events.wifi.WifiScanResultsAvailableEvent;
@@ -32,6 +30,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import ru.noties.debug.Debug;
 
 public class StationsAroundFragment extends DaggerFragment {
 
@@ -58,11 +57,11 @@ public class StationsAroundFragment extends DaggerFragment {
         public void onReceive(Context context, Intent i) {
             switch (i.getAction()) {
                 case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
-                    Log.d(App.TAG, "SCAN_RESULTS_AVAILABLE_ACTION");
+                    Debug.d("SCAN_RESULTS_AVAILABLE_ACTION");
                     bus.post(new WifiScanResultsAvailableEvent(wifiManager.getScanResults()));
                     break;
                 case WifiManager.WIFI_STATE_CHANGED_ACTION:
-                    Log.d(App.TAG, "WIFI_STATE_CHANGED_ACTION");
+                    Debug.d("WIFI_STATE_CHANGED_ACTION");
                     bus.post(new WifiStateChangedEvent(wifiManager));
                     break;
             }
