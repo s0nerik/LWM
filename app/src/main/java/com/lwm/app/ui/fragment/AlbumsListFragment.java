@@ -10,7 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 
-import com.google.gson.Gson;
+import com.hannesdorfmann.fragmentargs.FragmentArgs;
+import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.joanzapata.android.asyncservice.api.annotation.InjectService;
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
 import com.joanzapata.android.asyncservice.api.internal.AsyncService;
@@ -18,9 +19,9 @@ import com.lwm.app.R;
 import com.lwm.app.adapter.AlbumsAdapter;
 import com.lwm.app.model.Album;
 import com.lwm.app.model.Artist;
-import com.lwm.app.ui.activity.AlbumInfoActivity;
 import com.lwm.app.ui.async.MusicLoaderService;
 import com.lwm.app.ui.base.DaggerOttoOnResumeFragment;
+import com.tale.prettybundle.Activities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +42,13 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @InjectService
     MusicLoaderService musicLoaderService;
 
+    @Arg
+    Artist artist;
+
+//    @Extra
+//    Artist artist;
+
     private List<Album> albums = new ArrayList<>();
-    private Artist artist;
 
     public AlbumsListFragment() {
         AsyncService.inject(this);
@@ -51,9 +57,8 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().getString("artist") != null) {
-            artist = new Gson().fromJson(getArguments().getString("artist"), Artist.class);
-        }
+        FragmentArgs.inject(this);
+//        PrettyBundle.inject(this);
     }
 
     @Override
@@ -79,8 +84,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     @OnItemClick(R.id.grid)
     public void onItemClick(int position) {
-        Intent intent = new Intent(getActivity(), AlbumInfoActivity.class);
-        intent.putExtra("album_id", albums.get(position).getId());
+        Intent intent = Activities.createAlbumInfoActivityIntent(getActivity(), albums.get(position));
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
     }

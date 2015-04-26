@@ -5,14 +5,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.google.gson.Gson;
-import com.lwm.app.BuildConfig;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
-import com.lwm.app.helper.db.ArtistsCursorGetter;
 import com.lwm.app.model.Artist;
-import com.lwm.app.ui.fragment.AlbumsListFragment;
+import com.lwm.app.ui.fragment.AlbumsListFragmentBuilder;
 import com.squareup.otto.Bus;
+import com.tale.prettybundle.Extra;
+import com.tale.prettybundle.PrettyBundle;
 
 import javax.inject.Inject;
 
@@ -30,28 +29,27 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
 
+    @Extra
+    Artist artist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_artist_info);
         ButterKnife.inject(this);
-
-        long artistId = getIntent().getLongExtra("artist_id", -1);
-
-        if (BuildConfig.DEBUG && artistId == -1) throw new AssertionError();
-
-        Artist artist = new ArtistsCursorGetter().getArtistById(artistId);
+        PrettyBundle.inject(this);
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
         mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Fragment albumsListFragment = new AlbumsListFragment();
-        Bundle args = new Bundle();
-        args.putString("artist", new Gson().toJson(artist));
-        albumsListFragment.setArguments(args);
+        Fragment albumsListFragment = new AlbumsListFragmentBuilder(artist).build();
+
+//        Fragment albumsListFragment = new AlbumsListFragment();
+//        Bundle args = new Bundle();
+//        args.putString("artist", new Gson().toJson(artist));
+//        albumsListFragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, albumsListFragment)

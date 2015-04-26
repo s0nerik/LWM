@@ -19,13 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koushikdutta.ion.Ion;
-import com.lwm.app.BuildConfig;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
 import com.lwm.app.adapter.SimpleSongsListAdapter;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
-import com.lwm.app.helper.db.AlbumsCursorGetter;
 import com.lwm.app.helper.db.Order;
 import com.lwm.app.helper.db.SongsCursorGetter;
 import com.lwm.app.model.Album;
@@ -36,6 +34,8 @@ import com.melnykov.fab.FloatingActionButton;
 import com.nirhart.parallaxscroll.views.ParallaxScrollView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.tale.prettybundle.Extra;
+import com.tale.prettybundle.PrettyBundle;
 
 import java.util.List;
 
@@ -88,18 +88,18 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     @Inject
     Utils utils;
 
+    @Extra
+    Album album;
+
     @TargetApi(21)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_info);
         ButterKnife.inject(this);
+        PrettyBundle.inject(this);
 
-        long albumId = getIntent().getIntExtra("album_id", -1);
-
-        if (BuildConfig.DEBUG && albumId == -1) throw new AssertionError();
-
-        playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, albumId));
+        playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));
 
         adapter = new SimpleSongsListAdapter(this, player, playlist);
 
@@ -109,8 +109,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.BLACK);
         }
-
-        Album album = new AlbumsCursorGetter().getAlbumById(albumId);
 
         initHeader(album);
 

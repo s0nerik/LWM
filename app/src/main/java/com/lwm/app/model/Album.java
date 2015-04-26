@@ -1,11 +1,13 @@
 package com.lwm.app.model;
 
+import hrisey.Parcelable;
 import lombok.Data;
 import lombok.experimental.Builder;
 
 @Data
 @Builder
-public class Album {
+@Parcelable
+public final class Album implements android.os.Parcelable {
     private int id;
     private String title;
     private String artist;

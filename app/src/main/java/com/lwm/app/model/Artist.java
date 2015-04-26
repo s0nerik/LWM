@@ -6,12 +6,14 @@ import com.lwm.app.helper.db.AlbumsCursorGetter;
 
 import java.util.List;
 
+import hrisey.Parcelable;
 import lombok.Data;
 import lombok.experimental.Builder;
 
 @Data
 @Builder
-public class Artist {
+@Parcelable
+public final class Artist implements android.os.Parcelable {
     private long id;
     private String name;
     private int numberOfAlbums;

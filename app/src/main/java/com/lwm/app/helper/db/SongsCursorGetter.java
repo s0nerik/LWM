@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.lwm.app.Daggered;
+import com.lwm.app.model.Album;
 
 import javax.inject.Inject;
 
@@ -44,13 +45,13 @@ public class SongsCursorGetter extends Daggered {
 //    public static final int ALBUM_KEY    = 11;
 //    public static final int ALBUM_KEY    = 10;
 
-    public Cursor getSongsCursor(Order order, long albumId){
+    public Cursor getSongsCursor(Order order, Album album) {
 
         String[] selectionArgs = null;
         String selection = this.selection;
-        if (albumId > -1) {
+        if (album != null && album.getId() > -1) {
             selection = this.selection + " AND " + MediaStore.Audio.AudioColumns.ALBUM_ID + " = ?";
-            selectionArgs = new String[]{String.valueOf(albumId)};
+            selectionArgs = new String[]{String.valueOf(album.getId())};
         }
 
         String orderString = "";
@@ -81,6 +82,6 @@ public class SongsCursorGetter extends Daggered {
     }
 
     public Cursor getSongsCursor(Order order){
-        return getSongsCursor(order, -1);
+        return getSongsCursor(order, null);
     }
 }

@@ -1,7 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "crashlytics"
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: "me.tatarka.retrolambda"
+//apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.stanfy.android.apt'
+//apply plugin: "me.tatarka.retrolambda"
 
 repositories {
     flatDir {
@@ -14,6 +15,10 @@ repositories {
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
 }
 
+//retrolambda {
+//    jdk System.getenv("JAVA8_HOME") ?: "/usr/lib/jvm/java-8-jdk"
+//}
+
 android {
     compileSdkVersion "android-22"
     buildToolsVersion "22.0.1"
@@ -25,10 +30,10 @@ android {
         renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -102,7 +107,8 @@ dependencies {
 
     // Thanks, Square!
     compile 'com.squareup.dagger:dagger:1.2.2'
-    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
+//    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.squareup:otto:1.3.5'
     compile 'com.jakewharton:butterknife:6.0.0'
 
@@ -111,19 +117,24 @@ dependencies {
     compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
     compile 'org.apache.commons:commons-lang3:3.3.2'
     compile('com.joanzapata.android.asyncservice:android-asyncservice:0.0.5@aar') { transitive = true }
-    compile 'com.github.talenguyen:prettybundle:1.0.2-SNAPSHOT'
-    apt 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
     compile 'ru.noties:debug:1.1.3'
 
     // F*CK YOU, BOILERPLATE! =)
-    apt 'org.projectlombok:lombok:1.14.8'
-    provided 'org.projectlombok:lombok:1.14.8'
-    apt 'com.pushtorefresh:javac-warning-annotation:1.0.0'
+//    apt 'pl.mg6.hrisey:hrisey:0.3.1'
+    provided 'pl.mg6.hrisey:hrisey:0.3.1'
+//    apt 'com.pushtorefresh:javac-warning-annotation:1.0.0'
     provided 'com.pushtorefresh:javac-warning-annotation:1.0.0'
+
+    compile 'com.github.talenguyen:prettybundle:1.0.2-SNAPSHOT'
+    provided 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
+//    apt 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
+
+    compile 'com.hannesdorfmann.fragmentargs:annotation:2.0.1'
+    provided 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
+//    apt 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
 
     // Animations
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.easing:library:1.0.1@aar'
     compile 'com.daimajia.androidanimations:library:1.1.3@aar'
-
 }
