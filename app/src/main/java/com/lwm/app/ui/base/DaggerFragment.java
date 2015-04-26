@@ -1,11 +1,10 @@
 package com.lwm.app.ui.base;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import com.lwm.app.Injector;
 
-public abstract class DaggerFragment extends Fragment {
+public abstract class DaggerFragment extends BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 
-import com.hannesdorfmann.fragmentargs.FragmentArgs;
 import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.joanzapata.android.asyncservice.api.annotation.InjectService;
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
@@ -42,7 +41,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @InjectService
     MusicLoaderService musicLoaderService;
 
-    @Arg
+    @Arg(required = false)
     Artist artist;
 
 //    @Extra
@@ -57,7 +56,6 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FragmentArgs.inject(this);
 //        PrettyBundle.inject(this);
     }
 

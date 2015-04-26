@@ -19,11 +19,11 @@ import com.lwm.app.events.ui.ShouldStartArtistInfoActivity;
 import com.lwm.app.helper.wifi.WifiAP;
 import com.lwm.app.service.StreamPlayerService;
 import com.lwm.app.ui.Croutons;
-import com.lwm.app.ui.activity.ArtistInfoActivity;
 import com.lwm.app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
+import com.tale.prettybundle.Activities;
 
 import javax.inject.Inject;
 
@@ -100,8 +100,7 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Subscribe
     public void onStartArtistInfoActivity(ShouldStartArtistInfoActivity event) {
-        Intent intent = new Intent(getActivity(), ArtistInfoActivity.class);
-        intent.putExtra("artist_id", event.getArtist().getId());
+        Intent intent = Activities.createArtistInfoActivityIntent(getActivity(), event.getArtist());
         startActivity(intent);
     }
 

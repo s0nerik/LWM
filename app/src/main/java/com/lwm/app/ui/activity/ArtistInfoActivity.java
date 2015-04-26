@@ -11,7 +11,6 @@ import com.lwm.app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragmentBuilder;
 import com.squareup.otto.Bus;
 import com.tale.prettybundle.Extra;
-import com.tale.prettybundle.PrettyBundle;
 
 import javax.inject.Inject;
 
@@ -37,19 +36,13 @@ public class ArtistInfoActivity extends BaseLocalActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_info);
         ButterKnife.inject(this);
-        PrettyBundle.inject(this);
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
         mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Fragment albumsListFragment = new AlbumsListFragmentBuilder(artist).build();
-
-//        Fragment albumsListFragment = new AlbumsListFragment();
-//        Bundle args = new Bundle();
-//        args.putString("artist", new Gson().toJson(artist));
-//        albumsListFragment.setArguments(args);
+        Fragment albumsListFragment = new AlbumsListFragmentBuilder().artist(artist).build();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, albumsListFragment)

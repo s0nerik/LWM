@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.lwm.app.Injector;
 import com.lwm.app.R;
-import com.lwm.app.ui.fragment.AlbumsListFragment;
+import com.lwm.app.ui.fragment.AlbumsListFragmentBuilder;
 import com.lwm.app.ui.fragment.ArtistsListFragment;
 import com.lwm.app.ui.fragment.QueueFragment;
 import com.lwm.app.ui.fragment.SongsListFragment;
@@ -40,7 +40,7 @@ public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
             case 1:
                 return new ArtistsListFragment();
             case 2:
-                return new AlbumsListFragment();
+                return new AlbumsListFragmentBuilder().build();
             case 3:
                 return new QueueFragment();
         }
