@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:layout_width="256dp"
+    tools:layout_width="match_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
@@ -14,13 +14,21 @@
         <!--android:scaleType="centerCrop"-->
         <!--android:id="@+id/cover" />-->
 
-    <com.flaviofaria.kenburnsview.KenBurnsView
+    <ImageView
         tools:src="@drawable/bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/now_playing_layout"
         android:scaleType="centerCrop"
         android:id="@+id/cover" />
+
+    <!--<com.flaviofaria.kenburnsview.KenBurnsView-->
+        <!--tools:src="@drawable/bg"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignBottom="@+id/now_playing_layout"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:id="@+id/cover" />-->
 
     <RelativeLayout
         android:background="@color/now_playing_bg"
