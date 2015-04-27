@@ -1,34 +1,30 @@
-package app.ui.fragment;
+package app.ui.fragment
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.GridView
+import android.widget.LinearLayout
+import android.widget.ListAdapter
+import android.widget.ProgressBar
+import app.adapter.AlbumsAdapter
+import app.model.Album
+import app.model.Artist
+import app.ui.async.MusicLoaderService
+import app.ui.base.DaggerOttoOnResumeFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnItemClick
+import com.hannesdorfmann.fragmentargs.annotation.Arg
+import com.joanzapata.android.asyncservice.api.annotation.InjectService
+import com.joanzapata.android.asyncservice.api.annotation.OnMessage
+import com.joanzapata.android.asyncservice.api.internal.AsyncService
+import com.lwm.app.R
+import com.tale.prettybundle.Activities
+import groovy.transform.CompileStatic
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ProgressBar;
-
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.arasthel.swissknife.annotations.OnItemClick;
-import com.hannesdorfmann.fragmentargs.annotation.Arg;
-import com.joanzapata.android.asyncservice.api.annotation.InjectService;
-import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
-import com.joanzapata.android.asyncservice.api.internal.AsyncService;
-import com.lwm.app.R;
-import com.tale.prettybundle.Activities;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import app.adapter.AlbumsAdapter;
-import app.model.Album;
-import app.model.Artist;
-import app.ui.async.MusicLoaderService;
-import app.ui.base.DaggerOttoOnResumeFragment;
-
+@CompileStatic
 public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.grid)

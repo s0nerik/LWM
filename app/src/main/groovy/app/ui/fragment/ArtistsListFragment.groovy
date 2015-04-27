@@ -1,29 +1,26 @@
-package app.ui.fragment;
+package app.ui.fragment
+import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import app.Injector
+import app.adapter.ArtistWrappersAdapter
+import app.model.ArtistWrapper
+import app.ui.async.MusicLoaderService
+import app.ui.base.DaggerOttoOnCreateFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.joanzapata.android.asyncservice.api.annotation.InjectService
+import com.joanzapata.android.asyncservice.api.annotation.OnMessage
+import com.joanzapata.android.asyncservice.api.internal.AsyncService
+import com.lwm.app.R
+import groovy.transform.CompileStatic
 
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.joanzapata.android.asyncservice.api.annotation.InjectService;
-import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
-import com.joanzapata.android.asyncservice.api.internal.AsyncService;
-import com.lwm.app.R;
-
-import java.util.List;
-
-import app.Injector;
-import app.adapter.ArtistWrappersAdapter;
-import app.model.ArtistWrapper;
-import app.ui.async.MusicLoaderService;
-import app.ui.base.DaggerOttoOnCreateFragment;
-
+@CompileStatic
 public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @InjectView(R.id.empty)
@@ -57,12 +54,6 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
         mProgress.setVisibility(View.VISIBLE);
         musicLoaderService.loadAllArtists();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//
     }
 
     @OnMessage
