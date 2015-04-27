@@ -3,8 +3,10 @@ package app.model
 import android.content.ContentUris
 import android.net.Uri
 import com.arasthel.swissknife.annotations.Parcelable
+import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
 
+@CompileStatic
 @Builder
 @Parcelable
 public final class Song {
