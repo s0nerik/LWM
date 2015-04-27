@@ -9,7 +9,7 @@ import com.lwm.app.R;
 import app.ui.async.MusicLoaderService;
 import com.melnykov.fab.FloatingActionButton;
 
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 
 public class SongsListFragment extends BaseSongsListFragment {

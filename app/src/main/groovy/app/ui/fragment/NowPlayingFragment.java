@@ -24,7 +24,7 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 
 public class NowPlayingFragment extends DaggerFragment {
@@ -66,14 +66,14 @@ public class NowPlayingFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_now_playing, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
         return v;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+
     }
 
     public void setSongInfo(Song song) {

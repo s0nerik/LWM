@@ -28,7 +28,7 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 import ru.noties.debug.Debug;
 
@@ -77,7 +77,7 @@ public class StationsAroundFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_stations_around, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
 
         mToolbar.setTitle(getString(R.string.stations_around));
 
@@ -91,7 +91,7 @@ public class StationsAroundFragment extends DaggerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+
     }
 
     @Override

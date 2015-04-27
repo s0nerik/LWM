@@ -24,7 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
@@ -87,7 +87,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
         ViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            SwissKnife.inject(this, view);
         }
 
         @OnClick(R.id.itemLayout)

@@ -26,7 +26,7 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnItemClick;
 
 public class MainActivity extends DaggerActivity {
@@ -52,7 +52,7 @@ public class MainActivity extends DaggerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+        SwissKnife.inject(this);
         bus.register(this);
         initNavigationDrawer();
 

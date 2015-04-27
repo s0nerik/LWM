@@ -28,7 +28,7 @@ import com.tale.prettybundle.Activities;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 
 public class LocalMusicFragment extends DaggerFragment {
 
@@ -64,7 +64,7 @@ public class LocalMusicFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_local_music, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
         initToolbar();
         bus.register(this);
         return v;

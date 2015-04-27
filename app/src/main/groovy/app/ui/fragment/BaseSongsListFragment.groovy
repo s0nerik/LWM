@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,14 +16,16 @@ import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
-import butterknife.ButterKnife
-import butterknife.InjectView
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
 import com.lwm.app.R
 import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
 
 import javax.inject.Inject
 
+@CompileStatic
 public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.twoWayView)
@@ -56,7 +59,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = View.inflate(getActivity(), getViewId(), null);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mTwoWayView.setLayoutManager(layoutManager);
         mTwoWayView.setHasFixedSize(true);
@@ -74,7 +77,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+
     }
 
     protected void setSelection(Song song) {

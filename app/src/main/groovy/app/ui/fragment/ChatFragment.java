@@ -29,7 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
@@ -56,7 +56,7 @@ public class ChatFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
         return v;
     }
 
@@ -71,7 +71,7 @@ public class ChatFragment extends DaggerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+
     }
 
     @Override

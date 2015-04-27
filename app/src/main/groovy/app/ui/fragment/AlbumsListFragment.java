@@ -10,24 +10,24 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
+import com.arasthel.swissknife.annotations.OnItemClick;
 import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.joanzapata.android.asyncservice.api.annotation.InjectService;
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
 import com.joanzapata.android.asyncservice.api.internal.AsyncService;
 import com.lwm.app.R;
-import app.adapter.AlbumsAdapter;
-import app.model.Album;
-import app.model.Artist;
-import app.ui.async.MusicLoaderService;
-import app.ui.base.DaggerOttoOnResumeFragment;
 import com.tale.prettybundle.Activities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnItemClick;
+import app.adapter.AlbumsAdapter;
+import app.model.Album;
+import app.model.Artist;
+import app.ui.async.MusicLoaderService;
+import app.ui.base.DaggerOttoOnResumeFragment;
 
 public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
@@ -62,7 +62,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list_albums, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
         return v;
     }
 
@@ -85,12 +85,6 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         Intent intent = Activities.createAlbumInfoActivityIntent(getActivity(), albums.get(position));
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
     }
 
     private void initAdapter(List<Album> albums) {

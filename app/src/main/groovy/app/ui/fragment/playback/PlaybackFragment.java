@@ -14,7 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
 import com.lwm.app.R;
+import com.nvanbenschoten.motion.ParallaxImageView;
+
+import javax.inject.Inject;
+
 import app.Utils;
 import app.events.player.RepeatStateChangedEvent;
 import app.events.player.playback.PlaybackPausedEvent;
@@ -27,12 +33,6 @@ import app.player.BasePlayer;
 import app.player.PlayerUtils;
 import app.ui.async.RemoteAlbumArtAsyncGetter;
 import app.ui.base.DaggerOttoOnResumeFragment;
-import com.nvanbenschoten.motion.ParallaxImageView;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import ru.noties.debug.Debug;
 
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
@@ -86,7 +86,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_playback, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
         return v;
     }
 

@@ -12,7 +12,7 @@ import app.model.chat.ChatMessage;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
@@ -55,7 +55,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         ViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            SwissKnife.inject(this, view);
         }
     }
 }

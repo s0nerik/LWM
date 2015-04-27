@@ -16,7 +16,7 @@ import app.Utils
 import app.model.Song
 import app.player.LocalPlayer
 import butterknife.ButterKnife
-import butterknife.InjectView
+import SwissKnife.injectView
 import butterknife.OnClick
 import com.lwm.app.R
 import es.claucookie.miniequalizerlibrary.EqualizerView
@@ -137,7 +137,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
 
         BaseViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            SwissKnife.inject(this, view);
         }
 
         @OnClick(R.id.contextMenu)

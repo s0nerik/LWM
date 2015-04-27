@@ -42,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 import ru.noties.debug.Debug;
 
@@ -96,7 +96,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_info);
-        ButterKnife.inject(this);
+        SwissKnife.inject(this);
         PrettyBundle.inject(this);
 
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));

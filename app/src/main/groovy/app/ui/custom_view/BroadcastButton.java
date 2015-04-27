@@ -18,7 +18,7 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import ru.noties.debug.Debug;
 
 public class BroadcastButton extends RelativeLayout {
@@ -54,7 +54,7 @@ public class BroadcastButton extends RelativeLayout {
 
     private void init() {
         inflate(getContext(), R.layout.layout_btn_broadcast, this);
-        ButterKnife.inject(this, this);
+        SwissKnife.inject(this, this);
         Injector.inject(this);
         setBroadcastState(wifiAP.isEnabled());
         setOnClickListener(new OnClickListener() {

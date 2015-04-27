@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 
 public class StationsAdapter extends BaseAdapter {
 
@@ -95,7 +95,7 @@ public class StationsAdapter extends BaseAdapter {
         TextView mSignal;
 
         ViewHolder(View view) {
-            ButterKnife.inject(this, view);
+            SwissKnife.inject(this, view);
         }
     }
 

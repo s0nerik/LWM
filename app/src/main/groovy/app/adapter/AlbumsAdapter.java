@@ -8,20 +8,20 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
 import com.koushikdutta.ion.Ion;
-import app.Injector;
 import com.lwm.app.R;
-import app.Utils;
-import app.model.Album;
-import app.ui.SingleBitmapPaletteInfoCallback;
-import app.ui.custom_view.SquareWidthImageView;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import app.Injector;
+import app.Utils;
+import app.model.Album;
+import app.ui.SingleBitmapPaletteInfoCallback;
+import app.ui.custom_view.SquareWidthImageView;
 
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
@@ -90,7 +90,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         View mShadow;
 
         ViewHolder(View view) {
-            ButterKnife.inject(this, view);
+            SwissKnife.inject(this, view);
         }
     }
 }

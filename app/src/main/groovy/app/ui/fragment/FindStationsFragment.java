@@ -46,7 +46,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import ru.noties.debug.Debug;
@@ -81,7 +81,7 @@ public class FindStationsFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.page_stations_around, container, false);
-        ButterKnife.inject(this, v);
+        SwissKnife.inject(this, v);
 
         mRefreshLayout.setColorSchemeResources(
                 R.color.pull_to_refresh_1,
@@ -112,7 +112,7 @@ public class FindStationsFragment extends DaggerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+
     }
 
     @OnItemClick(R.id.twoWayView)

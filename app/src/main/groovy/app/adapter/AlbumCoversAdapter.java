@@ -23,7 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 
 public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.ViewHolder> {
 
@@ -92,7 +92,7 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
 
         ViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            SwissKnife.inject(this, view);
         }
     }
 

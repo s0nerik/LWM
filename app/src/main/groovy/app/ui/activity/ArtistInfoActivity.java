@@ -15,7 +15,7 @@ import com.tale.prettybundle.Extra;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import SwissKnife.injectView;
 
 public class ArtistInfoActivity extends BaseLocalActivity {
 
@@ -35,7 +35,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_info);
-        ButterKnife.inject(this);
+        SwissKnife.inject(this);
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
         mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());
