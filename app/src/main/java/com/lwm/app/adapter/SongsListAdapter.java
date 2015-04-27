@@ -13,8 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignerdranch.android.multiselector.MultiSelector;
-import com.bignerdranch.android.multiselector.SingleSelector;
 import com.lwm.app.Injector;
 import com.lwm.app.R;
 import com.lwm.app.Utils;
@@ -37,8 +35,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
     private final Context context;
     private List<Song> songs;
 
-    private MultiSelector selector = new SingleSelector();
-
     @Getter
     private int selection = -1;
 
@@ -55,7 +51,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
         Injector.inject(this);
         this.context = context;
         this.songs = songs;
-        selector.setSelectable(true);
     }
 
     @Override
@@ -74,7 +69,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
         holder.mArtist.setText(utils.getArtistName(song.getArtist()));
         holder.mDuration.setText(song.getDurationString());
 
-//        if (selector.isSelected(position, 0)) {
         if (selection == position) {
             holder.mPlayIcon.setVisibility(View.VISIBLE);
             holder.mPlayIcon.animateBars();
@@ -90,16 +84,6 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
     }
 
     public void setSelection(int position) {
-//        int oldSelection;
-//        if (selector.getSelectedPositions().size() > 0) {
-//            oldSelection = selector.getSelectedPositions().get(0);
-//        } else {
-//            oldSelection = -1;
-//        }
-//
-//        selector.setSelected(position, 0, true);
-//
-
         int oldSelection = selection;
         selection = position;
 
@@ -195,9 +179,9 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
         @OnClick(R.id.container)
         public void onItemClicked() {
             player.setQueue(songs);
-            player.play(getPosition());
+            player.play(getAdapterPosition());
 
-            setSelection(getPosition());
+            setSelection(getAdapterPosition());
         }
 
     }
@@ -210,9 +194,9 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
 
         @OnClick(R.id.container)
         public void onItemClicked() {
-            player.play(getPosition());
+            player.play(getAdapterPosition());
 
-            setSelection(getPosition());
+            setSelection(getAdapterPosition());
         }
 
     }
