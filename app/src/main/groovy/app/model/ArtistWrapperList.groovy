@@ -5,9 +5,6 @@ import android.database.Cursor;
 import app.helper.db.ArtistsCursorGetter
 import groovy.transform.CompileStatic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @CompileStatic
 public class ArtistWrapperList {
 
