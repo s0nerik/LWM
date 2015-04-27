@@ -1,56 +1,51 @@
-package app.ui.fragment;
+package app.ui.fragment
+import android.app.ProgressDialog
+import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.net.wifi.ScanResult
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
+import android.os.AsyncTask
+import android.os.Bundle
+import android.support.annotation.Nullable
+import android.support.v4.widget.SwipeRefreshLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.ProgressBar
+import app.adapter.StationsAdapter
+import app.events.client.SocketOpenedEvent
+import app.events.server.ShouldStartWebSocketClientEvent
+import app.events.wifi.WifiScanResultsAvailableEvent
+import app.helper.wifi.WifiAP
+import app.helper.wifi.WifiUtils
+import app.server.StreamServer
+import app.service.StreamPlayerService
+import app.ui.activity.RemotePlaybackActivity
+import app.ui.base.DaggerFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnClick
+import com.arasthel.swissknife.annotations.OnItemClick
+import com.lwm.app.R
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.impl.client.DefaultHttpClient
+import ru.noties.debug.Debug
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import javax.inject.Inject
+import java.lang.reflect.Constructor
+import java.lang.reflect.InvocationTargetException
 
-import com.lwm.app.R;
-import app.adapter.StationsAdapter;
-import app.events.client.SocketOpenedEvent;
-import app.events.server.ShouldStartWebSocketClientEvent;
-import app.events.wifi.WifiScanResultsAvailableEvent;
-import app.helper.wifi.WifiAP;
-import app.helper.wifi.WifiUtils;
-import app.server.StreamServer;
-import app.service.StreamPlayerService;
-import app.ui.activity.RemotePlaybackActivity;
-import app.ui.base.DaggerFragment;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class FindStationsFragment extends DaggerFragment {
 
     @Inject
@@ -127,8 +122,7 @@ public class FindStationsFragment extends DaggerFragment {
     }
 
     private boolean isWifiNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

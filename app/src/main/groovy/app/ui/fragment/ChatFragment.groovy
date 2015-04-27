@@ -1,38 +1,34 @@
-package app.ui.fragment;
+package app.ui.fragment
+import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.annotation.Nullable
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import app.adapter.ChatAdapter
+import app.events.chat.ChatMessagesAvailableEvent
+import app.events.chat.NotifyMessageAddedEvent
+import app.events.chat.ResetUnreadMessagesEvent
+import app.events.chat.SendChatMessageEvent
+import app.model.chat.ChatMessage
+import app.ui.base.DaggerFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnClick
+import com.arasthel.swissknife.annotations.OnEditorAction
+import com.lwm.app.R
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
 
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+import javax.inject.Inject
 
-import com.lwm.app.R;
-import app.adapter.ChatAdapter;
-import app.events.chat.ChatMessagesAvailableEvent;
-import app.events.chat.NotifyMessageAddedEvent;
-import app.events.chat.ResetUnreadMessagesEvent;
-import app.events.chat.SendChatMessageEvent;
-import app.model.chat.ChatMessage;
-import app.ui.base.DaggerFragment;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnClick;
-import butterknife.OnEditorAction;
-
+@CompileStatic
 public class ChatFragment extends DaggerFragment {
 
     @InjectView(R.id.covers)
