@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.lwm.app.R;
 import com.lwm.app.adapter.SongsListAdapter;
+import com.lwm.app.events.player.playback.PlaybackPausedEvent;
 import com.lwm.app.events.player.playback.PlaybackStartedEvent;
 import com.lwm.app.events.player.service.CurrentSongAvailableEvent;
 import com.lwm.app.events.ui.ShouldShuffleSongsEvent;
@@ -131,6 +132,11 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         public void onSongPlaybackStarted(PlaybackStartedEvent event) {
             currentSong = event.getSong();
             setSelection(currentSong);
+        }
+
+        @Subscribe
+        public void onSongPlaybackPaused(PlaybackPausedEvent event) {
+            adapter.updateEqualizerState();
         }
 
         @Subscribe

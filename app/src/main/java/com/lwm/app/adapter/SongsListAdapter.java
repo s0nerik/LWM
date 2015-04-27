@@ -71,7 +71,11 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
 
         if (selection == position) {
             holder.mPlayIcon.setVisibility(View.VISIBLE);
-            holder.mPlayIcon.animateBars();
+            if (player.isPlaying()) {
+                holder.mPlayIcon.animateBars();
+            } else {
+                holder.mPlayIcon.stopBars();
+            }
         } else {
             holder.mPlayIcon.setVisibility(View.GONE);
         }
@@ -89,6 +93,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
 
         notifyItemChanged(oldSelection);
         notifyItemChanged(position);
+    }
+
+    public void updateEqualizerState() {
+        notifyItemChanged(selection);
     }
 
     private class OnContextMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
