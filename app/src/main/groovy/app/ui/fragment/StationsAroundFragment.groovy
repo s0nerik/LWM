@@ -13,25 +13,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
+import com.arasthel.swissknife.annotations.OnClick;
 import com.astuetz.PagerSlidingTabStrip;
 import com.lwm.app.R;
-import app.adapter.PlayersAroundPagerAdapter;
-import app.events.wifi.WifiScanResultsAvailableEvent;
-import app.events.wifi.WifiStateChangedEvent;
-import app.helper.wifi.WifiAP;
-import app.service.LocalPlayerService;
-import app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnClick;
+import app.adapter.PlayersAroundPagerAdapter;
+import app.events.wifi.WifiScanResultsAvailableEvent;
+import app.events.wifi.WifiStateChangedEvent;
+import app.helper.wifi.WifiAP;
+import app.service.LocalPlayerService;
+import app.ui.base.DaggerFragment;
+import groovy.transform.CompileStatic;
 import ru.noties.debug.Debug;
 
+@CompileStatic
 public class StationsAroundFragment extends DaggerFragment {
 
     @Inject
