@@ -14,6 +14,13 @@ repositories {
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
 }
 
+project.androidGroovy {
+    options {
+        sourceCompatibility = '1.7'
+        targetCompatibility = '1.7'
+    }
+}
+
 android {
     compileSdkVersion "android-22"
     buildToolsVersion "22.0.1"

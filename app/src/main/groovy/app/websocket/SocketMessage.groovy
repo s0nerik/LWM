@@ -3,8 +3,6 @@ package app.websocket;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
-import lombok.Getter;
-
 public class SocketMessage {
     public static enum Message {
         START_FROM, SEEK_TO,
@@ -20,16 +18,13 @@ public class SocketMessage {
     }
 
     @Expose
-    @Getter
-    private Type type;
+    Type type;
 
     @Expose
-    @Getter
-    private Message message;
+    Message message;
 
     @Expose
-    @Getter
-    private String body;
+    String body;
 
     public SocketMessage(Type type, Message message) {
         this.type = type;

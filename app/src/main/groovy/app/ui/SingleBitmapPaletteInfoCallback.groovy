@@ -1,22 +1,20 @@
-package app.ui;
+package app.ui
 
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.support.v7.graphics.Palette;
-import android.view.View;
-import android.widget.TextView;
+import android.content.res.Resources
+import android.graphics.Color
+import android.support.v7.graphics.Palette
+import android.view.View
+import android.widget.TextView
+import app.Injector
+import app.Utils
+import com.koushikdutta.async.future.FutureCallback
+import com.koushikdutta.ion.ImageViewBitmapInfo
+import com.koushikdutta.ion.bitmap.BitmapInfo
+import com.lwm.app.R
+import com.melnykov.fab.FloatingActionButton
+import groovy.transform.builder.Builder
 
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.ImageViewBitmapInfo;
-import com.koushikdutta.ion.bitmap.BitmapInfo;
-import app.Injector;
-import com.lwm.app.R;
-import app.Utils;
-import com.melnykov.fab.FloatingActionButton;
-
-import javax.inject.Inject;
-
-import lombok.experimental.Builder;
+import javax.inject.Inject
 
 public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
 
