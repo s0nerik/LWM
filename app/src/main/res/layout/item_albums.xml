@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.lwm.app.ui.custom_view.SquareWidthImageView
+    <app.ui.custom_view.SquareWidthImageView
         android:id="@+id/cover"
         android:scaleType="centerCrop"
         android:layout_gravity="left"

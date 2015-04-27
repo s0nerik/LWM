@@ -34,7 +34,7 @@
         android:layout_below="@+id/toolbar"
         android:layout_above="@+id/bottomBar">
 
-        <com.lwm.app.ui.custom_view.SquareWidthShadowLayout
+        <app.ui.custom_view.SquareWidthShadowLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="24dp"
@@ -51,7 +51,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
-        </com.lwm.app.ui.custom_view.SquareWidthShadowLayout>
+        </app.ui.custom_view.SquareWidthShadowLayout>
     </FrameLayout>
 
     <TextView

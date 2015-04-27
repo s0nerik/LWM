@@ -28,7 +28,7 @@
                 android:layout_marginTop="-28dp"
                 android:orientation="vertical">
 
-                <com.lwm.app.ui.custom_view.ExpandedListView
+                <app.ui.custom_view.ExpandedListView
                     android:id="@+id/twoWayView"
                     android:layout_below="@+id/overlay"
                     android:layout_width="match_parent"

@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.lwm.app.ui.fragment.playback.LocalPlaybackFragment"
+    android:name="app.ui.fragment.playback.LocalPlaybackFragment"
     android:id="@+id/fragment_playback"
     tools:layout="@layout/fragment_playback" />

@@ -9,7 +9,7 @@
         android:id="@+id/fragment_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.lwm.app.ui.fragment.PreferencesFragment"
+        android:name="app.ui.fragment.PreferencesFragment"
         tools:layout="@layout/fragment_chat" />
 
 </RelativeLayout>

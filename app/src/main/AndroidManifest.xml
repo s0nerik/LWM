@@ -23,7 +23,7 @@
     
     <application
         tools:replace="android:icon"
-        android:name="com.lwm.app.App"
+        android:name="app.App"
         android:supportsRtl="false"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -34,14 +34,14 @@
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
-        <receiver android:name=".receiver.MediaButtonIntentReceiver" >
+        <receiver android:name="app.receiver.MediaButtonIntentReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
 
         <receiver
-            android:name=".receiver.PendingIntentReceiver"
+            android:name="app.receiver.PendingIntentReceiver"
             android:permission="MANAGE_PLAYER" >
             <intent-filter>
                 <action android:name="com.lwm.app.player.close" />
@@ -52,14 +52,14 @@
         </receiver>
 
         <service
-            android:name="com.lwm.app.service.LocalPlayerService" />
+            android:name="app.service.LocalPlayerService" />
 
         <service
-            android:name="com.lwm.app.service.StreamPlayerService" />
+            android:name="app.service.StreamPlayerService" />
 
         <activity
             android:screenOrientation="portrait"
-            android:name=".ui.activity.MainActivity"
+            android:name="app.ui.activity.MainActivity"
             android:theme="@style/AppTheme.LocalSongChooserActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -70,25 +70,25 @@
         </activity>
         <activity
             android:screenOrientation="portrait"
-            android:name=".ui.activity.LocalPlaybackActivity"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name="app.ui.activity.LocalPlaybackActivity"
+            android:parentActivityName="app.ui.activity.MainActivity"
             android:theme="@style/AppTheme.PlaybackActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.MainActivity" />
+                android:value="app.ui.activity.MainActivity" />
         </activity>
         <activity
             android:screenOrientation="portrait"
-            android:name=".ui.activity.RemotePlaybackActivity"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name="app.ui.activity.RemotePlaybackActivity"
+            android:parentActivityName="app.ui.activity.MainActivity"
             android:theme="@style/AppTheme.PlaybackActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.MainActivity" />
+                android:value="app.ui.activity.MainActivity" />
         </activity>
 
         <!--<activity-->
@@ -99,45 +99,45 @@
         <activity
             android:label="@string/action_settings"
             android:theme="@style/AppTheme"
-            android:name="com.lwm.app.ui.activity.PreferencesActivity" />
+            android:name="app.ui.activity.PreferencesActivity" />
 
         <activity
             android:theme="@style/AppTheme"
-            android:name="com.lwm.app.ui.activity.SplashActivity" />
+            android:name="app.ui.activity.SplashActivity" />
 
         <activity
             android:screenOrientation="portrait"
-            android:name=".ui.activity.AlbumInfoActivity"
+            android:name="app.ui.activity.AlbumInfoActivity"
             android:label=""
             android:theme="@style/AppTheme.LocalSongChooserActivity"
-            android:parentActivityName=".ui.activity.MainActivity" >
+            android:parentActivityName="app.ui.activity.MainActivity" >
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.MainActivity" />
+                android:value="app.ui.activity.MainActivity" />
         </activity>
 
         <activity
             android:screenOrientation="portrait"
-            android:name=".ui.activity.ArtistInfoActivity"
+            android:name="app.ui.activity.ArtistInfoActivity"
             android:theme="@style/AppTheme.LocalSongChooserActivity"
-            android:parentActivityName=".ui.activity.MainActivity" >
+            android:parentActivityName="app.ui.activity.MainActivity" >
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.MainActivity" />
+                android:value="app.ui.activity.MainActivity" />
         </activity>
 
         <activity
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.FirstTimeActivity" >
+            android:name="app.ui.activity.FirstTimeActivity" >
         </activity>
 
         <activity
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            android:name=".ui.activity.ChatActivity" >
+            android:name="app.ui.activity.ChatActivity" >
         </activity>
 
     </application>

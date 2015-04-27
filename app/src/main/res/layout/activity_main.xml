@@ -28,7 +28,7 @@
 
             <fragment
                 android:id="@+id/nowPlayingFragment"
-                android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
+                android:name="app.ui.fragment.NowPlayingFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:layout="@layout/fragment_now_playing" />

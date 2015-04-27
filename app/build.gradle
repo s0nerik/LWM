@@ -1,8 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "crashlytics"
-//apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.stanfy.android.apt'
-//apply plugin: "me.tatarka.retrolambda"
+apply plugin: 'groovyx.grooid.groovy-android'
 
 repositories {
     flatDir {
@@ -14,10 +13,6 @@ repositories {
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
 }
-
-//retrolambda {
-//    jdk System.getenv("JAVA8_HOME") ?: "/usr/lib/jvm/java-8-jdk"
-//}
 
 android {
     compileSdkVersion "android-22"
@@ -61,6 +56,8 @@ android {
 
 dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
+
+    compile 'org.codehaus.groovy:groovy:+:grooid'
 
     // Support libs
     compile 'com.android.support:appcompat-v7:22.1.0'
@@ -108,7 +105,6 @@ dependencies {
     // Thanks, Square!
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-//    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.squareup:otto:1.3.5'
     compile 'com.jakewharton:butterknife:6.0.0'
 
@@ -122,16 +118,10 @@ dependencies {
     compile 'ru.noties:debug:1.1.3'
 
     // F*CK YOU, BOILERPLATE! =)
-//    apt 'pl.mg6.hrisey:hrisey:0.3.1'
-    provided 'pl.mg6.hrisey:hrisey:0.3.1'
-//    apt 'com.pushtorefresh:javac-warning-annotation:1.0.0'
-    provided 'com.pushtorefresh:javac-warning-annotation:1.0.0'
     compile 'com.github.talenguyen:prettybundle:1.0.2-SNAPSHOT'
     provided 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
-//    apt 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
     compile 'com.hannesdorfmann.fragmentargs:annotation:2.0.1'
     provided 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
-//    apt 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
 
     // Animations
     compile 'com.nineoldandroids:library:2.4.0'
