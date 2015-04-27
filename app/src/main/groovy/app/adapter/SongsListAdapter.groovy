@@ -1,44 +1,37 @@
-package app.adapter;
+package app.adapter
+import android.content.Context
+import android.graphics.ColorFilter
+import android.os.Build
+import android.support.v7.widget.PopupMenu
+import android.support.v7.widget.RecyclerView
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
+import app.Injector
+import app.Utils
+import app.model.Song
+import app.player.LocalPlayer
+import butterknife.ButterKnife
+import butterknife.InjectView
+import butterknife.OnClick
+import com.lwm.app.R
+import es.claucookie.miniequalizerlibrary.EqualizerView
+import groovy.transform.CompileStatic
 
-import android.content.Context;
-import android.graphics.ColorFilter;
-import android.os.Build;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import javax.inject.Inject
 
-import app.Injector;
-import com.lwm.app.R;
-import app.Utils;
-import app.model.Song;
-import app.player.LocalPlayer;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import es.claucookie.miniequalizerlibrary.EqualizerView;
-import lombok.Getter;
-import lombok.Setter;
-
+@CompileStatic
 public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.BaseViewHolder> {
 
     private final Context context;
     private List<Song> songs;
 
-    @Getter
-    private int selection = -1;
+    int selection = -1;
 
-    @Setter
     private boolean newQueueOnClick;
 
     @Inject
@@ -109,18 +102,16 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.action_remove_from_queue: {
+                case R.id.action_remove_from_queue:
                     player.removeFromQueue(songs.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
                     toast.show();
-                }
-                return true;
-                case R.id.action_add_to_queue: {
+                    return true;
+                case R.id.action_add_to_queue:
                     player.addToQueue(songs.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
-                }
-                return true;
+                    return true;
                 case R.id.set_as_ringtone:
                     Utils.setSongAsRingtone(context, songs.get(position));
                     return true;

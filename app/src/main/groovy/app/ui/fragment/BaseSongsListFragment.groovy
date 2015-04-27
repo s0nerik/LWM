@@ -1,33 +1,27 @@
-package app.ui.fragment;
+package app.ui.fragment
+import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
+import app.adapter.SongsListAdapter
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.service.CurrentSongAvailableEvent
+import app.events.ui.ShouldShuffleSongsEvent
+import app.model.Song
+import app.player.LocalPlayer
+import app.ui.base.DaggerOttoOnResumeFragment
+import butterknife.ButterKnife
+import butterknife.InjectView
+import com.lwm.app.R
+import com.squareup.otto.Subscribe
+import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
 
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.lwm.app.R;
-import app.adapter.SongsListAdapter;
-import app.events.player.playback.PlaybackPausedEvent;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.events.player.service.CurrentSongAvailableEvent;
-import app.events.ui.ShouldShuffleSongsEvent;
-import app.model.Song;
-import app.player.LocalPlayer;
-import app.ui.base.DaggerOttoOnResumeFragment;
-import com.squareup.otto.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
+import javax.inject.Inject
 
 public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
@@ -92,7 +86,7 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         }
     }
 
-    private void setSelection(int position) {
+    protected void setSelection(int position) {
         int prevSelection = adapter.getSelection();
         adapter.setSelection(position);
         if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
