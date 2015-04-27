@@ -1,39 +1,39 @@
-package app.ui.fragment.playback;
+package app.ui.fragment.playback
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.support.annotation.Nullable
+import android.view.View
+import android.view.WindowManager
+import android.widget.ImageView
+import app.events.access_point.AccessPointStateEvent
+import app.events.player.RepeatStateChangedEvent
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongChangedEvent
+import app.events.player.playback.SongPlayingEvent
+import app.events.player.queue.QueueShuffledEvent
+import app.helper.wifi.WifiAP
+import app.model.Song
+import app.player.BasePlayer
+import app.player.LocalPlayer
+import app.ui.Blur
+import com.arasthel.swissknife.annotations.OnClick
+import com.koushikdutta.async.future.FutureCallback
+import com.koushikdutta.ion.Ion
+import com.koushikdutta.ion.bitmap.Transform
+import com.lwm.app.R
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
 
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.bitmap.Transform;
-import com.lwm.app.R;
-import app.events.access_point.AccessPointStateEvent;
-import app.events.player.RepeatStateChangedEvent;
-import app.events.player.playback.PlaybackPausedEvent;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.events.player.playback.SongChangedEvent;
-import app.events.player.playback.SongPlayingEvent;
-import app.events.player.queue.QueueShuffledEvent;
-import app.helper.wifi.WifiAP;
-import app.model.Song;
-import app.player.BasePlayer;
-import app.player.LocalPlayer;
-import app.ui.Blur;
-import com.squareup.otto.Subscribe;
+import javax.inject.Inject
 
-import javax.inject.Inject;
+import static app.events.access_point.AccessPointStateEvent.State.ENABLED
 
-import butterknife.OnClick;
-
-import static app.events.access_point.AccessPointStateEvent.State.ENABLED;
-
+@CompileStatic
 public class LocalPlaybackFragment extends PlaybackFragment {
 
     @Inject
@@ -64,7 +64,7 @@ public class LocalPlaybackFragment extends PlaybackFragment {
         chatButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    @OnClick({R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat})
+    @OnClick([R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat])
     public void onClickControls(View btn) {
         switch (btn.getId()) {
             case R.id.btnNext:

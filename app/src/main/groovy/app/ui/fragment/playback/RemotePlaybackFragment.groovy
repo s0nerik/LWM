@@ -1,31 +1,28 @@
-package app.ui.fragment.playback;
+package app.ui.fragment.playback
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.view.View
+import app.events.player.RepeatStateChangedEvent
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongChangedEvent
+import app.events.player.playback.SongPlayingEvent
+import app.events.player.queue.QueueShuffledEvent
+import app.model.Song
+import app.player.BasePlayer
+import app.player.StreamPlayer
+import app.server.StreamServer
+import app.ui.Blur
+import com.koushikdutta.ion.Ion
+import com.koushikdutta.ion.bitmap.Transform
+import com.lwm.app.R
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.view.View;
+import javax.inject.Inject
 
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.bitmap.Transform;
-import com.lwm.app.R;
-import app.events.player.RepeatStateChangedEvent;
-import app.events.player.playback.PlaybackPausedEvent;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.events.player.playback.SongChangedEvent;
-import app.events.player.playback.SongPlayingEvent;
-import app.events.player.queue.QueueShuffledEvent;
-import app.model.Song;
-import app.player.BasePlayer;
-import app.player.StreamPlayer;
-import app.server.StreamServer;
-import app.ui.Blur;
-import com.squareup.otto.Subscribe;
-
-import java.util.UUID;
-
-import javax.inject.Inject;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class RemotePlaybackFragment extends PlaybackFragment {
 
     @Inject
