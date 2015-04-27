@@ -8,8 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
+import com.arasthel.swissknife.annotations.OnClick;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.R;
+import com.nineoldandroids.view.ViewHelper;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
+
 import app.Utils;
 import app.events.player.playback.SongChangedEvent;
 import app.model.Song;
@@ -17,16 +26,9 @@ import app.player.LocalPlayer;
 import app.ui.SingleBitmapPaletteInfoCallback;
 import app.ui.activity.LocalPlaybackActivity;
 import app.ui.base.DaggerFragment;
-import com.nineoldandroids.view.ViewHelper;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import groovy.transform.CompileStatic;
 
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnClick;
-
+@CompileStatic
 public class NowPlayingFragment extends DaggerFragment {
 
     @Inject
@@ -92,7 +94,7 @@ public class NowPlayingFragment extends DaggerFragment {
         ViewHelper.setAlpha(mOverlay, 0.9f);
     }
 
-    @OnClick({R.id.layout, R.id.cover})
+    @OnClick([R.id.layout, R.id.cover])
     public void onLayoutClicked() {
         Intent intent = new Intent(getActivity(), LocalPlaybackActivity.class);
         startActivity(intent);

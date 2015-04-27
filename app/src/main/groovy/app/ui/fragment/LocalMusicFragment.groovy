@@ -10,16 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
 import com.astuetz.PagerSlidingTabStrip;
-import app.PrefManager;
 import com.lwm.app.R;
-import app.adapter.LocalMusicFragmentsAdapter;
-import app.events.chat.ChatMessageReceivedEvent;
-import app.events.ui.ShouldStartArtistInfoActivity;
-import app.helper.wifi.WifiAP;
-import app.service.StreamPlayerService;
-import app.ui.Croutons;
-import app.ui.base.DaggerFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
@@ -27,9 +21,17 @@ import com.tale.prettybundle.Activities;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
+import app.PrefManager;
+import app.adapter.LocalMusicFragmentsAdapter;
+import app.events.chat.ChatMessageReceivedEvent;
+import app.events.ui.ShouldStartArtistInfoActivity;
+import app.helper.wifi.WifiAP;
+import app.service.StreamPlayerService;
+import app.ui.Croutons;
+import app.ui.base.DaggerFragment;
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class LocalMusicFragment extends DaggerFragment {
 
     @Inject

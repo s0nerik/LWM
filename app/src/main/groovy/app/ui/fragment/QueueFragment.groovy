@@ -8,10 +8,12 @@ import app.events.player.queue.QueueShuffledEvent;
 import app.events.player.queue.SongAddedToQueueEvent;
 import app.events.player.queue.SongRemovedFromQueueEvent;
 import app.player.LocalPlayer;
-import com.squareup.otto.Subscribe;
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
+@CompileStatic
 public class QueueFragment extends BaseSongsListFragment {
 
     @Inject
