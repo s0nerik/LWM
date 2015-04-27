@@ -58,6 +58,7 @@ dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
     compile 'org.codehaus.groovy:groovy:+:grooid'
+    compile "com.arasthel:swissknife:+"
 
     // Support libs
     compile 'com.android.support:appcompat-v7:22.1.0'
