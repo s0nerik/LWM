@@ -8,17 +8,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import app.Injector;
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
 import com.lwm.app.R;
-import app.events.access_point.AccessPointStateEvent;
-import app.helper.wifi.WifiAP;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
+import app.Injector;
+import app.events.access_point.AccessPointStateEvent;
+import app.helper.wifi.WifiAP;
 import ru.noties.debug.Debug;
 
 public class BroadcastButton extends RelativeLayout {

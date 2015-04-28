@@ -1,17 +1,17 @@
-package app.ui.fragment;
+package app.ui.fragment
 
-import android.view.View;
+import android.view.View
+import app.ui.async.MusicLoaderService
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnClick
+import com.joanzapata.android.asyncservice.api.annotation.InjectService
+import com.joanzapata.android.asyncservice.api.annotation.OnMessage
+import com.joanzapata.android.asyncservice.api.internal.AsyncService
+import com.lwm.app.R
+import com.melnykov.fab.FloatingActionButton
+import groovy.transform.CompileStatic
 
-import com.joanzapata.android.asyncservice.api.annotation.InjectService;
-import com.joanzapata.android.asyncservice.api.annotation.OnMessage;
-import com.joanzapata.android.asyncservice.api.internal.AsyncService;
-import com.lwm.app.R;
-import app.ui.async.MusicLoaderService;
-import com.melnykov.fab.FloatingActionButton;
-
-import SwissKnife.injectView;
-import butterknife.OnClick;
-
+@CompileStatic
 public class SongsListFragment extends BaseSongsListFragment {
 
     @InjectView(R.id.fab)
