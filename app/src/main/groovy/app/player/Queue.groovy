@@ -1,16 +1,9 @@
-package app.player;
+package app.player
+import app.model.Song
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import app.model.Song;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EmptyStackException;
-import java.util.List;
-import java.util.Stack;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class Queue {
 
     // Needed only for proper shuffling

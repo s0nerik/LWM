@@ -87,7 +87,7 @@ public class LocalPlayer extends BasePlayer {
 
     public void shuffleQueue() {
         queue.shuffle();
-        bus.post(new QueueShuffledEvent(getQueue()));
+        bus.post(new QueueShuffledEvent(queue: getQueue()));
     }
 
     public List<Song> getQueue() {
@@ -100,7 +100,7 @@ public class LocalPlayer extends BasePlayer {
 
     public void shuffleQueueExceptPlayed() {
         queue.shuffleExceptPlayed();
-        bus.post(new QueueShuffledEvent(getQueue()));
+        bus.post(new QueueShuffledEvent(queue: getQueue()));
     }
 
     public void addToQueue(List<Song> songs) {

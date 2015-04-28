@@ -25,7 +25,7 @@ import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScrol
 import javax.inject.Inject
 
 @CompileStatic
-public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
+abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.twoWayView)
     RecyclerView mTwoWayView;
