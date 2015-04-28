@@ -47,10 +47,42 @@ public class LocalPlayer extends BasePlayer {
 
         server = new MusicServer(this);
 
-        onCompletionListener = new NextSongOnCompletionListener()
-        onSeekCompleteListener = new StartingOnSeekCompleteListener()
-        onPreparedListener = new SongPreparedListener()
-        onErrorListener = new LocalPlayerErrorListener()
+        onCompletionListener = {
+            Log.d("LWM", "LocalPlayer: onCompletion");
+
+            if (prepared) {
+                int currentPosition = getCurrentPosition();
+                int duration = getDuration() - 1000;
+
+                if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
+                    if (isRepeat()) {
+                        play();
+                    } else {
+                        nextSong();
+                    }
+                }
+            }
+        }
+        onSeekCompleteListener = {
+            start();
+        }
+        onPreparedListener = {
+            prepared = true;
+            active = true;
+
+            bus.post(new SongChangedEvent(getCurrentSong()));
+
+            if (server.isStarted()) {
+                bus.post(new PrepareClientsEvent());
+            } else {
+                start();
+            }
+        }
+        onErrorListener = { MediaPlayer mp, int what, int extra ->
+            Debug.e("onError: " + what + ", " + extra)
+            prepared = true
+            return true
+        }
     }
 
     public void shuffleQueue() {
@@ -243,62 +275,6 @@ public class LocalPlayer extends BasePlayer {
 
     public boolean isSongInQueue(Song song) {
         return queue.contains(song);
-    }
-
-    class StartingOnSeekCompleteListener implements android.media.MediaPlayer.OnSeekCompleteListener {
-
-        @Override
-        public void onSeekComplete(MediaPlayer mediaPlayer) {
-            start();
-        }
-    }
-
-    class NextSongOnCompletionListener implements android.media.MediaPlayer.OnCompletionListener {
-
-        @Override
-        public void onCompletion(MediaPlayer mediaPlayer) {
-            Log.d("LWM", "LocalPlayer: onCompletion");
-
-            if (prepared) {
-                int currentPosition = getCurrentPosition();
-                int duration = getDuration() - 1000;
-
-                if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
-                    if (isRepeat()) {
-                        play();
-                    } else {
-                        nextSong();
-                    }
-                }
-            }
-        }
-    }
-
-    class SongPreparedListener implements android.media.MediaPlayer.OnPreparedListener {
-
-        @Override
-        public void onPrepared(MediaPlayer mp) {
-            prepared = true;
-            active = true;
-
-            bus.post(new SongChangedEvent(getCurrentSong()));
-
-            if (server.isStarted()) {
-                bus.post(new PrepareClientsEvent());
-            } else {
-                start();
-            }
-        }
-    }
-
-    class LocalPlayerErrorListener implements android.media.MediaPlayer.OnErrorListener {
-
-        @Override
-        public boolean onError(MediaPlayer mp, int what, int extra) {
-            Debug.e("onError: " + what + ", " + extra);
-            prepared = true;
-            return true;
-        }
     }
 
 }
