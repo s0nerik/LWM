@@ -12,7 +12,6 @@ import android.widget.TextView
 import app.helper.wifi.WifiAP
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.lwm.app.R
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -69,7 +68,8 @@ public class StationsAdapter extends BaseAdapter {
 
         ScanResult result = getItem(position);
 
-        holder.mName.setText(result.SSID.replaceAll(WifiAP.AP_NAME_REGEXP, "$1"));
+        def m = result.SSID =~ WifiAP.AP_NAME_REGEXP
+        holder.mName.text = m[0][1]
 
         int signalLevel = WifiManager.calculateSignalLevel(getItem(position).level, signalLevels);
         String signal = signalLevelNames[signalLevel];
