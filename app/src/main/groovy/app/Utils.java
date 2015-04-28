@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.lwm.app.R;
+import app.R;
 
 import app.model.Song;
 import app.player.LocalPlayer;

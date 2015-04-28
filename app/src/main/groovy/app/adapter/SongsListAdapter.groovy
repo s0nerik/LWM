@@ -18,7 +18,7 @@ import app.player.LocalPlayer
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnClick
-import com.lwm.app.R
+import app.R
 import es.claucookie.miniequalizerlibrary.EqualizerView
 import groovy.transform.CompileStatic
 

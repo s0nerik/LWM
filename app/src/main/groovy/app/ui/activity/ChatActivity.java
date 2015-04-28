@@ -6,7 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.lwm.app.R;
+import app.R;
 
 public class ChatActivity extends ActionBarActivity {
 

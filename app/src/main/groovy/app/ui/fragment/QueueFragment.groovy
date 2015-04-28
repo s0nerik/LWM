@@ -2,7 +2,7 @@ package app.ui.fragment;
 
 import android.view.View;
 
-import com.lwm.app.R;
+import app.R;
 import app.events.player.queue.PlaylistAddedToQueueEvent;
 import app.events.player.queue.QueueShuffledEvent;
 import app.events.player.queue.SongAddedToQueueEvent;

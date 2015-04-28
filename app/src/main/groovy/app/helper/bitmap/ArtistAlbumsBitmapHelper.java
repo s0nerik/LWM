@@ -12,7 +12,7 @@ import android.view.WindowManager;
 
 import com.koushikdutta.ion.Ion;
 import app.Injector;
-import com.lwm.app.R;
+import app.R;
 import app.model.Album;
 import app.model.Artist;
 

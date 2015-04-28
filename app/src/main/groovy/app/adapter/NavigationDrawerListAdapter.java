@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lwm.app.R;
+import app.R;
 
 public class NavigationDrawerListAdapter extends ArrayAdapter<String> {
 

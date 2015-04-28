@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.lwm.app.R;
+import app.R;
 
 public class TintableImageView extends ImageView {
 

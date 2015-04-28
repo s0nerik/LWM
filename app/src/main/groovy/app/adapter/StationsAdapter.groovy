@@ -12,7 +12,7 @@ import android.widget.TextView
 import app.helper.wifi.WifiAP
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.lwm.app.R
+import app.R
 import groovy.transform.CompileStatic
 
 @CompileStatic

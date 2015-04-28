@@ -20,7 +20,7 @@ import app.ui.base.DaggerFragment
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.astuetz.PagerSlidingTabStrip
-import com.lwm.app.R
+import app.R
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe

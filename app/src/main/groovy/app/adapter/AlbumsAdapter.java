@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.arasthel.swissknife.SwissKnife;
 import com.arasthel.swissknife.annotations.InjectView;
 import com.koushikdutta.ion.Ion;
-import com.lwm.app.R;
+import app.R;
 
 import java.util.List;
 

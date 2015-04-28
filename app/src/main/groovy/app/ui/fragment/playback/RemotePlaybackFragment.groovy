@@ -15,7 +15,7 @@ import app.server.StreamServer
 import app.ui.Blur
 import com.koushikdutta.ion.Ion
 import com.koushikdutta.ion.bitmap.Transform
-import com.lwm.app.R
+import app.R
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug

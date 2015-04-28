@@ -2,7 +2,7 @@ package app.ui;
 
 import android.app.Activity;
 
-import com.lwm.app.R;
+import app.R;
 import app.model.chat.ChatMessage;
 import app.websocket.entities.ClientInfo;
 

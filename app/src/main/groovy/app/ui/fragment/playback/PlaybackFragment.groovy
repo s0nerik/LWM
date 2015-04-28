@@ -1,40 +1,33 @@
-package app.ui.fragment.playback;
+package app.ui.fragment.playback
 
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.lwm.app.R;
+import android.content.res.Resources
+import android.net.Uri
+import android.os.Bundle
+import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import app.R
+import app.Utils
+import app.events.player.RepeatStateChangedEvent
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongChangedEvent
+import app.events.player.playback.SongPlayingEvent
+import app.events.player.queue.QueueShuffledEvent
+import app.model.Song
+import app.player.BasePlayer
+import app.player.PlayerUtils
+import app.ui.async.RemoteAlbumArtAsyncGetter
+import app.ui.base.DaggerOttoOnResumeFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
 import com.nvanbenschoten.motion.ParallaxImageView
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import javax.inject.Inject;
-
-import app.Utils;
-import app.events.player.RepeatStateChangedEvent;
-import app.events.player.playback.PlaybackPausedEvent;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.events.player.playback.SongChangedEvent;
-import app.events.player.playback.SongPlayingEvent;
-import app.events.player.queue.QueueShuffledEvent;
-import app.model.Song;
-import app.player.BasePlayer;
-import app.player.PlayerUtils;
-import app.ui.async.RemoteAlbumArtAsyncGetter;
-import app.ui.base.DaggerOttoOnResumeFragment;
-import ru.noties.debug.Debug;
+import javax.inject.Inject
 
 @CompileStatic
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
@@ -42,7 +35,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     private BasePlayer player;
 
     @Inject
-    Resources resources;
+    Resources res
 
     @InjectView(R.id.background)
     ParallaxImageView mBackground;
@@ -162,11 +155,11 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     }
 
     private void setShuffleButton(boolean enabled) {
-        mBtnShuffleIcon.setColorFilter(resources.getColor(enabled? R.color.primary : android.R.color.white));
+        mBtnShuffleIcon.setColorFilter(res.getColor(enabled? R.color.primary : android.R.color.white));
     }
 
     private void setRepeatButton(boolean enabled) {
-        mBtnRepeatIcon.setColorFilter(resources.getColor(enabled? R.color.primary : android.R.color.white));
+        mBtnRepeatIcon.setColorFilter(res.getColor(enabled? R.color.primary : android.R.color.white));
     }
 
     private void initView() {

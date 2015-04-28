@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lwm.app.R;
+import app.R;
 import app.Utils;
 import app.model.Song;
 import app.player.LocalPlayer;

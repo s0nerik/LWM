@@ -2,7 +2,7 @@ package app.ui.activity;
 
 import android.os.Bundle;
 
-import com.lwm.app.R;
+import app.R;
 import app.events.server.ClientConnectedEvent;
 import app.events.server.ClientDisconnectedEvent;
 import com.squareup.otto.Subscribe;

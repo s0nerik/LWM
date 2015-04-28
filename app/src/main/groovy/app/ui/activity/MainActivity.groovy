@@ -16,7 +16,7 @@ import android.widget.ListView;
 import com.arasthel.swissknife.SwissKnife;
 import com.arasthel.swissknife.annotations.InjectView;
 import com.arasthel.swissknife.annotations.OnItemClick;
-import com.lwm.app.R;
+import app.R;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 

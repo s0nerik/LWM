@@ -9,7 +9,7 @@ import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import com.lwm.app.R;
+import app.R;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

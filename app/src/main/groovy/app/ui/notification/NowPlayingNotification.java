@@ -15,7 +15,7 @@ import android.support.v7.graphics.Palette;
 import android.widget.RemoteViews;
 
 import app.Injector;
-import com.lwm.app.R;
+import app.R;
 import app.Utils;
 import app.model.Song;
 import app.player.LocalPlayer;
@@ -32,10 +32,10 @@ public class NowPlayingNotification {
 
     public static final int NOTIFICATION_ID = 505173; // LOL
 
-    public static final String ACTION_CLOSE = "com.lwm.app.player.close";
-    public static final String ACTION_PLAY_PAUSE = "com.lwm.app.player.play_pause";
-    public static final String ACTION_PREV = "com.lwm.app.player.prev";
-    public static final String ACTION_NEXT = "com.lwm.app.player.next";
+    public static final String ACTION_CLOSE = "app.player.close";
+    public static final String ACTION_PLAY_PAUSE = "app.player.play_pause";
+    public static final String ACTION_PREV = "app.player.prev";
+    public static final String ACTION_NEXT = "app.player.next";
 
     public static final int ALBUM_ART_SIZE = 120;
 

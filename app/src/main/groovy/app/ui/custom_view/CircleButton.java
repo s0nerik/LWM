@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
-import com.lwm.app.R;
+import app.R;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 

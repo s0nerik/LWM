@@ -1,9 +1,7 @@
 package app
-
 import android.app.Application
 import app.modules.AndroidModule
 import com.crashlytics.android.Crashlytics
-import com.lwm.app.BuildConfig
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 

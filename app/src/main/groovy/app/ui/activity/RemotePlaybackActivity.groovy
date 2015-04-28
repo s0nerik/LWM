@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.lwm.app.R;
+import app.R;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 

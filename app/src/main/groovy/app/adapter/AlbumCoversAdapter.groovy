@@ -1,4 +1,5 @@
 package app.adapter
+
 import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,13 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import app.Injector
+import app.R
 import app.model.Album
 import app.ui.SingleBitmapPaletteInfoCallback
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.koushikdutta.ion.ImageViewBitmapInfo
 import com.koushikdutta.ion.Ion
-import com.lwm.app.R
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject

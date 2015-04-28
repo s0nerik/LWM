@@ -10,7 +10,7 @@ import app.Utils
 import com.koushikdutta.async.future.FutureCallback
 import com.koushikdutta.ion.ImageViewBitmapInfo
 import com.koushikdutta.ion.bitmap.BitmapInfo
-import com.lwm.app.R
+import app.R
 import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder

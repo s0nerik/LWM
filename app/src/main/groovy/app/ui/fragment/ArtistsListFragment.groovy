@@ -17,7 +17,7 @@ import com.arasthel.swissknife.annotations.InjectView
 import com.joanzapata.android.asyncservice.api.annotation.InjectService
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage
 import com.joanzapata.android.asyncservice.api.internal.AsyncService
-import com.lwm.app.R
+import app.R
 import groovy.transform.CompileStatic
 
 @CompileStatic

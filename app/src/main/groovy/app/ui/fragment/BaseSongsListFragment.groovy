@@ -18,7 +18,7 @@ import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.lwm.app.R
+import app.R
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller

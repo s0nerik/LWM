@@ -12,7 +12,7 @@ import com.arasthel.swissknife.SwissKnife;
 import com.arasthel.swissknife.annotations.InjectView;
 import com.arasthel.swissknife.annotations.OnClick;
 import com.koushikdutta.ion.Ion;
-import com.lwm.app.R;
+import app.R;
 import com.nineoldandroids.view.ViewHelper;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;

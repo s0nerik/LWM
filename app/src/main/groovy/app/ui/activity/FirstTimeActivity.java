@@ -3,7 +3,7 @@ package app.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.lwm.app.R;
+import app.R;
 
 public class FirstTimeActivity extends FragmentActivity {
 

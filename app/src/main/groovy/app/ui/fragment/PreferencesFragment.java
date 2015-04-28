@@ -3,7 +3,7 @@ package app.ui.fragment;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-import com.lwm.app.R;
+import app.R;
 
 public class PreferencesFragment extends PreferenceFragment {
 

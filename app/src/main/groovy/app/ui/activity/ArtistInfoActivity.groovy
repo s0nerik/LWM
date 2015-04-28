@@ -10,7 +10,7 @@ import app.ui.fragment.AlbumsListFragment
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.Extra
 import com.arasthel.swissknife.annotations.InjectView
-import com.lwm.app.R
+import app.R
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 

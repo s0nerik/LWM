@@ -15,7 +15,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnClick
-import com.lwm.app.R
+import app.R
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.text.WordUtils
