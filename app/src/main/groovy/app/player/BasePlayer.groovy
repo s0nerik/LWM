@@ -1,20 +1,16 @@
-package app.player;
+package app.player
+import android.media.AudioManager
+import android.media.MediaPlayer
+import app.Injector
+import app.events.player.playback.SongPlayingEvent
+import app.model.Song
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import javax.inject.Inject
 
-import app.Injector;
-import app.events.player.playback.SongPlayingEvent;
-import app.model.Song;
-import com.squareup.otto.Bus;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.inject.Inject;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public abstract class BasePlayer extends MediaPlayer {
 
     @Inject
@@ -40,16 +36,9 @@ public abstract class BasePlayer extends MediaPlayer {
         Injector.inject(this);
     }
 
-    public String getCurrentDurationInMinutes(){
-        int seconds = getDuration()/1000;
-        int minutes = seconds/60;
-        seconds -= minutes*60;
-        return minutes+":"+String.format("%02d",seconds);
-    }
-
     public String getCurrentPositionInMinutes(){
-        int seconds = getCurrentPosition()/1000;
-        int minutes = seconds/60;
+        int seconds = currentPosition / 1000 as int;
+        int minutes = seconds / 60 as int;
         seconds -= minutes*60;
         return minutes+":"+String.format("%02d",seconds);
     }

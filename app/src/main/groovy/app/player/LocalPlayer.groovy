@@ -1,38 +1,30 @@
-package app.player;
+package app.player
 
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
-import android.media.MediaPlayer;
-import android.util.Log;
-import android.widget.Toast;
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
+import android.media.MediaPlayer
+import android.util.Log
+import android.widget.Toast
+import app.events.player.RepeatStateChangedEvent
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongChangedEvent
+import app.events.player.queue.*
+import app.events.server.PauseClientsEvent
+import app.events.server.PrepareClientsEvent
+import app.events.server.SeekToClientsEvent
+import app.events.server.StartClientsEvent
+import app.model.Song
+import app.server.MusicServer
+import app.service.LocalPlayerService
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import app.events.player.RepeatStateChangedEvent;
-import app.events.player.playback.PlaybackPausedEvent;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.events.player.playback.SongChangedEvent;
-import app.events.player.queue.PlaylistAddedToQueueEvent;
-import app.events.player.queue.PlaylistRemovedFromQueueEvent;
-import app.events.player.queue.QueueShuffledEvent;
-import app.events.player.queue.SongAddedToQueueEvent;
-import app.events.player.queue.SongRemovedFromQueueEvent;
-import app.events.server.PauseClientsEvent;
-import app.events.server.PrepareClientsEvent;
-import app.events.server.SeekToClientsEvent;
-import app.events.server.StartClientsEvent;
-import app.model.Song;
-import app.server.MusicServer;
-import app.service.LocalPlayerService;
-import com.squareup.otto.Bus;
+import javax.inject.Inject
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class LocalPlayer extends BasePlayer {
 
     @Inject
@@ -55,10 +47,10 @@ public class LocalPlayer extends BasePlayer {
 
         server = new MusicServer(this);
 
-        setOnCompletionListener(new NextSongOnCompletionListener());
-        setOnSeekCompleteListener(new StartingOnSeekCompleteListener());
-        setOnPreparedListener(new SongPreparedListener());
-        setOnErrorListener(new LocalPlayerErrorListener());
+        onCompletionListener = new NextSongOnCompletionListener()
+        onSeekCompleteListener = new StartingOnSeekCompleteListener()
+        onPreparedListener = new SongPreparedListener()
+        onErrorListener = new LocalPlayerErrorListener()
     }
 
     public void shuffleQueue() {
@@ -253,7 +245,7 @@ public class LocalPlayer extends BasePlayer {
         return queue.contains(song);
     }
 
-    private class StartingOnSeekCompleteListener implements OnSeekCompleteListener {
+    class StartingOnSeekCompleteListener implements android.media.MediaPlayer.OnSeekCompleteListener {
 
         @Override
         public void onSeekComplete(MediaPlayer mediaPlayer) {
@@ -261,7 +253,7 @@ public class LocalPlayer extends BasePlayer {
         }
     }
 
-    private class NextSongOnCompletionListener implements OnCompletionListener {
+    class NextSongOnCompletionListener implements android.media.MediaPlayer.OnCompletionListener {
 
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
@@ -282,7 +274,7 @@ public class LocalPlayer extends BasePlayer {
         }
     }
 
-    private class SongPreparedListener implements OnPreparedListener {
+    class SongPreparedListener implements android.media.MediaPlayer.OnPreparedListener {
 
         @Override
         public void onPrepared(MediaPlayer mp) {
@@ -299,7 +291,7 @@ public class LocalPlayer extends BasePlayer {
         }
     }
 
-    private class LocalPlayerErrorListener implements OnErrorListener {
+    class LocalPlayerErrorListener implements android.media.MediaPlayer.OnErrorListener {
 
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {

@@ -1,22 +1,18 @@
-package app.player;
+package app.player
+import android.content.Context
+import android.media.MediaPlayer
+import android.os.Handler
+import app.Injector
+import app.events.client.SendReadyEvent
+import app.model.Song
+import app.server.StreamServer
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.os.Handler;
-import android.util.Log;
+import javax.inject.Inject
 
-import com.squareup.otto.Bus;
-
-import java.io.IOException;
-
-import javax.inject.Inject;
-
-import app.Injector;
-import app.events.client.SendReadyEvent;
-import app.model.Song;
-import app.server.StreamServer;
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class StreamPlayer extends BasePlayer {
 
     @Inject Context context;
@@ -29,36 +25,22 @@ public class StreamPlayer extends BasePlayer {
     @Inject Bus bus;
 
     public static final String STREAM_PATH = StreamServer.Url.STREAM;
-    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mediaPlayer) {
-            Log.d("LWM", "StreamPlayer: onPrepared");
-            bus.post(new SendReadyEvent());
-        }
-    };
-
-    private OnSeekCompleteListener onSeekCompleteListener = new OnSeekCompleteListener() {
-        @Override
-        public void onSeekComplete(MediaPlayer mediaPlayer) {
-            Debug.d("StreamPlayer: onSeekComplete");
-            start();
-        }
-    };
-
-    private OnBufferingUpdateListener onBufferingUpdateListener = new OnBufferingUpdateListener() {
-        @Override
-        public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//            Debug.d("Buffered: "+percent);
-        }
-    };
 
     public StreamPlayer() {
         super();
         Injector.inject(this);
         handler = new Handler(context.getMainLooper());
-        setOnSeekCompleteListener(onSeekCompleteListener);
-        setOnPreparedListener(onPreparedListener);
-        setOnBufferingUpdateListener(onBufferingUpdateListener);
+        onSeekCompleteListener = { MediaPlayer mediaPlayer ->
+            Debug.d("StreamPlayer: onSeekComplete");
+            start();
+        }
+        onPreparedListener = { MediaPlayer mediaPlayer ->
+            Debug.d("StreamPlayer: onPrepared");
+            bus.post(new SendReadyEvent());
+        }
+        onBufferingUpdateListener = { MediaPlayer mp, int percent ->
+            Debug.d("Buffered: "+percent);
+        }
     }
 
     public void prepareNewSong(){

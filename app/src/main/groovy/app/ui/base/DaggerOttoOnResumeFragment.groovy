@@ -8,7 +8,7 @@ import javax.inject.Inject;
 @CompileStatic
 public abstract class DaggerOttoOnResumeFragment extends DaggerFragment {
 
-    private Object[] busListeners = { this };
+    private Object[] busListeners = [ this ];
 
     @Inject
     protected Bus bus;
