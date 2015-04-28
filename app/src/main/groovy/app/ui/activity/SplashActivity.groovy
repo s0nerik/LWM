@@ -1,25 +1,22 @@
-package app.ui.activity;
+package app.ui.activity
+import android.content.Intent
+import android.content.IntentSender
+import android.os.AsyncTask
+import android.os.Bundle
+import android.support.v4.app.FragmentActivity
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.OnClick
+import com.google.android.gms.auth.GoogleAuthException
+import com.google.android.gms.auth.GoogleAuthUtil
+import com.google.android.gms.auth.UserRecoverableAuthException
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.plus.Plus
+import com.lwm.app.R
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.content.Intent;
-import android.content.IntentSender;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
-import com.lwm.app.R;
-
-import java.io.IOException;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class SplashActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 

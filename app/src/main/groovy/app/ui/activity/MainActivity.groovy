@@ -13,22 +13,24 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ListView;
 
-import app.PrefManager;
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
+import com.arasthel.swissknife.annotations.OnItemClick;
 import com.lwm.app.R;
-import app.adapter.NavigationDrawerListAdapter;
-import app.events.player.service.CurrentSongAvailableEvent;
-import app.ui.base.DaggerActivity;
-import app.ui.fragment.LocalMusicFragment;
-import app.ui.fragment.StationsAroundFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnItemClick;
+import app.PrefManager;
+import app.adapter.NavigationDrawerListAdapter;
+import app.events.player.service.CurrentSongAvailableEvent;
+import app.ui.base.DaggerActivity;
+import app.ui.fragment.LocalMusicFragment;
+import app.ui.fragment.StationsAroundFragment;
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class MainActivity extends DaggerActivity {
 
     private ActionBarDrawerToggle drawerToggle;
