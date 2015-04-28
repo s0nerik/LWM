@@ -5,18 +5,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.InjectView;
 import com.lwm.app.R;
-import app.Utils;
-import app.model.Artist;
 import com.lwm.app.ui.fragment.AlbumsListFragmentBuilder;
 import com.squareup.otto.Bus;
 import com.tale.prettybundle.Extra;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
+import app.Utils;
+import app.model.Artist;
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class ArtistInfoActivity extends BaseLocalActivity {
 
     @Inject

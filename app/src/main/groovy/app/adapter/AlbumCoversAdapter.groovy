@@ -1,30 +1,27 @@
-package app.adapter;
+package app.adapter
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import app.Injector
+import app.model.Album
+import app.ui.SingleBitmapPaletteInfoCallback
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.koushikdutta.ion.ImageViewBitmapInfo
+import com.koushikdutta.ion.Ion
+import com.koushikdutta.ion.bitmap.Transform
+import com.lwm.app.R
+import groovy.transform.CompileStatic
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import javax.inject.Inject
 
-import com.koushikdutta.ion.ImageViewBitmapInfo;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.bitmap.Transform;
-import app.Injector;
-import com.lwm.app.R;
-import app.model.Album;
-import app.ui.SingleBitmapPaletteInfoCallback;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-
+@CompileStatic
 public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.ViewHolder> {
 
     @Inject

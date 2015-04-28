@@ -18,8 +18,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.Extra;
+import com.arasthel.swissknife.annotations.InjectView;
+import com.arasthel.swissknife.annotations.OnClick;
 import com.koushikdutta.ion.Ion;
 import com.lwm.app.R;
+import com.melnykov.fab.FloatingActionButton;
+import com.nirhart.parallaxscroll.views.ParallaxScrollView;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import app.Utils;
 import app.adapter.SimpleSongsListAdapter;
 import app.events.player.playback.PlaybackStartedEvent;
@@ -30,23 +43,7 @@ import app.model.Album;
 import app.model.Playlist;
 import app.model.Song;
 import app.player.LocalPlayer;
-import com.melnykov.fab.FloatingActionButton;
-import com.nirhart.parallaxscroll.views.ParallaxScrollView;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-import com.tale.prettybundle.Extra;
-import com.tale.prettybundle.PrettyBundle;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnClick;
 import ru.noties.debug.Debug;
-
-//import com.andexert.library.RippleView;
 
 public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.OnItemClickListener {
 
@@ -97,7 +94,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_info);
         SwissKnife.inject(this);
-        PrettyBundle.inject(this);
 
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));
 

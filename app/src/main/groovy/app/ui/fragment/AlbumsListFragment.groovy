@@ -40,19 +40,10 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Arg(required = false)
     Artist artist;
 
-//    @Extra
-//    Artist artist;
-
     private List<Album> albums = new ArrayList<>();
 
     public AlbumsListFragment() {
         AsyncService.inject(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        PrettyBundle.inject(this);
     }
 
     @Override

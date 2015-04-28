@@ -12,20 +12,22 @@ import com.koushikdutta.ion.ImageViewBitmapInfo
 import com.koushikdutta.ion.bitmap.BitmapInfo
 import com.lwm.app.R
 import com.melnykov.fab.FloatingActionButton
+import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
 
 import javax.inject.Inject
 
+@CompileStatic
 public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageViewBitmapInfo> {
 
     @Inject
     Resources resources;
 
-    private View layout;
-    private View layoutShadow;
-    private TextView title;
-    private TextView subtitle;
-    private FloatingActionButton floatingActionButton;
+    View layout;
+    View layoutShadow;
+    TextView title;
+    TextView subtitle;
+    FloatingActionButton floatingActionButton;
 
     public SingleBitmapPaletteInfoCallback(View layout, TextView title, TextView subtitle) {
         this.layout = layout;

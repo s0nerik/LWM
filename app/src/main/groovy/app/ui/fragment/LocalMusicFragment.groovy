@@ -1,35 +1,34 @@
-package app.ui.fragment;
+package app.ui.fragment
 
-import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.Intent
+import android.content.res.Resources
+import android.os.Bundle
+import android.os.Parcelable
+import android.support.annotation.Nullable
+import android.support.v4.view.ViewPager
+import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import app.PrefManager
+import app.adapter.LocalMusicFragmentsAdapter
+import app.events.chat.ChatMessageReceivedEvent
+import app.events.ui.ShouldStartArtistInfoActivity
+import app.helper.wifi.WifiAP
+import app.service.StreamPlayerService
+import app.ui.Croutons
+import app.ui.activity.ArtistInfoActivity
+import app.ui.base.DaggerFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.astuetz.PagerSlidingTabStrip
+import com.lwm.app.R
+import com.squareup.otto.Bus
+import com.squareup.otto.Produce
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
 
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.astuetz.PagerSlidingTabStrip;
-import com.lwm.app.R;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
-import com.tale.prettybundle.Activities;
-
-import javax.inject.Inject;
-
-import app.PrefManager;
-import app.adapter.LocalMusicFragmentsAdapter;
-import app.events.chat.ChatMessageReceivedEvent;
-import app.events.ui.ShouldStartArtistInfoActivity;
-import app.helper.wifi.WifiAP;
-import app.service.StreamPlayerService;
-import app.ui.Croutons;
-import app.ui.base.DaggerFragment;
-import groovy.transform.CompileStatic;
+import javax.inject.Inject
 
 @CompileStatic
 public class LocalMusicFragment extends DaggerFragment {
@@ -102,8 +101,9 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Subscribe
     public void onStartArtistInfoActivity(ShouldStartArtistInfoActivity event) {
-        Intent intent = Activities.createArtistInfoActivityIntent(getActivity(), event.getArtist());
-        startActivity(intent);
+        Intent intent = new Intent(activity, ArtistInfoActivity);
+        intent.putExtra('artist', event.artist as Parcelable)
+        startActivity(intent)
     }
 
 }

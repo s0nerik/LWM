@@ -125,8 +125,6 @@ dependencies {
     compile 'ru.noties:debug:1.1.3'
 
     // F*CK YOU, BOILERPLATE! =)
-    compile 'com.github.talenguyen:prettybundle:1.0.2-SNAPSHOT'
-    provided 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
     compile 'com.hannesdorfmann.fragmentargs:annotation:2.0.1'
     provided 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
 
