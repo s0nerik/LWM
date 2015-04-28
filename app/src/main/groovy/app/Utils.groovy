@@ -1,32 +1,24 @@
-package app;
+package app
+import android.content.ContentValues
+import android.content.Context
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.media.RingtoneManager
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.DisplayMetrics
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.Toast
+import app.model.Song
+import app.player.LocalPlayer
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.Toast;
+import javax.inject.Inject
 
-import app.R;
-
-import app.model.Song;
-import app.player.LocalPlayer;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-
-import javax.inject.Inject;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class Utils {
 
     @Inject
