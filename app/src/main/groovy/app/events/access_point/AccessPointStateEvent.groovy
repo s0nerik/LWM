@@ -1,16 +1,15 @@
-package app.events.access_point;
+package app.events.access_point
 
+import groovy.transform.CompileStatic;
+
+@CompileStatic
 public class AccessPointStateEvent {
 
     public enum State { CHANGING, DISABLED, ENABLED }
 
-    private State state;
+    State state;
 
     public AccessPointStateEvent(State state) {
         this.state = state;
-    }
-
-    public State getState() {
-        return state;
     }
 }
