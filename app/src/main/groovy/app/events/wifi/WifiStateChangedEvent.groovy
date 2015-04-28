@@ -1,16 +1,14 @@
 package app.events.wifi;
 
-import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class WifiStateChangedEvent {
 
-    private WifiManager wifiManager;
+    WifiManager wifiManager;
 
     public WifiStateChangedEvent(WifiManager wifiManager) {
         this.wifiManager = wifiManager;
-    }
-
-    public WifiManager getWifiManager() {
-        return wifiManager;
     }
 }
