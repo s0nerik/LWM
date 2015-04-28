@@ -1,15 +1,13 @@
 package app.events.player.playback;
 
-import app.model.Song;
+import app.model.Song
+import groovy.transform.CompileStatic;
 
-/**
- *
- * Created by sonerik on 7/12/14.
- */
+@CompileStatic
 public class PlaybackPausedEvent {
 
-    private int time;
-    private Song song;
+    int time;
+    Song song;
 
     public PlaybackPausedEvent(Song song, int time) {
         this.song = song;
