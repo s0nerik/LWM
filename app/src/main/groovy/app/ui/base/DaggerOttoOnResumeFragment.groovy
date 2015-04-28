@@ -1,9 +1,11 @@
 package app.ui.base;
 
-import com.squareup.otto.Bus;
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
+@CompileStatic
 public abstract class DaggerOttoOnResumeFragment extends DaggerFragment {
 
     private Object[] busListeners = { this };

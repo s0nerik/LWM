@@ -1,5 +1,4 @@
 package app.ui.fragment
-
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -8,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import app.R
 import app.adapter.SongsListAdapter
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -18,7 +18,6 @@ import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import app.R
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
@@ -72,12 +71,6 @@ public abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadSongs();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
     }
 
     protected void setSelection(Song song) {
