@@ -26,8 +26,8 @@ public final class Song {
     int duration
 
     public String getDurationString() {
-        int seconds = duration / 1000;
-        int minutes = seconds / 60;
+        int seconds = duration / 1000 as int;
+        int minutes = seconds / 60 as int;
         seconds -= minutes * 60;
         return minutes + ":" + String.format("%02d", seconds);
     }
