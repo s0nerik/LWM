@@ -6,8 +6,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import app.R;
+import app.R
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class ChatActivity extends ActionBarActivity {
 
     private ActionBar actionBar;

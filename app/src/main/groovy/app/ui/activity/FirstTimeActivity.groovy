@@ -3,8 +3,10 @@ package app.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import app.R;
+import app.R
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class FirstTimeActivity extends FragmentActivity {
 
     @Override

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import app.R;
 import app.events.server.ClientConnectedEvent;
 import app.events.server.ClientDisconnectedEvent;
-import com.squareup.otto.Subscribe;
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Override

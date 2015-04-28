@@ -7,10 +7,12 @@ import app.player.LocalPlayer;
 import app.ui.Croutons;
 import app.ui.base.DaggerActivity;
 import app.websocket.entities.ClientInfo;
-import com.squareup.otto.Bus;
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
+@CompileStatic
 public abstract class BaseLocalActivity extends DaggerActivity {
 
     @Inject

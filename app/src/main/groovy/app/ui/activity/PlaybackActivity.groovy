@@ -6,10 +6,12 @@ import app.Utils;
 import app.events.server.ClientConnectedEvent;
 import app.events.server.ClientDisconnectedEvent;
 import app.ui.Croutons;
-import app.ui.base.DaggerActivity;
+import app.ui.base.DaggerActivity
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
+@CompileStatic
 public abstract class PlaybackActivity extends DaggerActivity {
 
     @Inject
