@@ -1,6 +1,9 @@
 package app.ui.fragment
+
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +19,6 @@ import app.ui.base.DaggerOttoOnResumeFragment
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
-import com.hannesdorfmann.fragmentargs.annotation.Arg
 import com.joanzapata.android.asyncservice.api.annotation.InjectService
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage
 import com.joanzapata.android.asyncservice.api.internal.AsyncService
@@ -37,13 +39,26 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @InjectService
     MusicLoaderService musicLoaderService;
 
-    @Arg(required = false)
-    Artist artist;
+    Artist artist
+
+    public static Fragment create(Artist artist) {
+        def fragment = new AlbumsListFragment()
+        def bundle = new Bundle()
+        bundle.putParcelable("artist", artist as Parcelable)
+        fragment.setArguments(bundle)
+        fragment
+    }
 
     private List<Album> albums = new ArrayList<>();
 
     public AlbumsListFragment() {
         AsyncService.inject(this);
+    }
+
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        artist = getArguments().getParcelable("artist")
     }
 
     @Override
