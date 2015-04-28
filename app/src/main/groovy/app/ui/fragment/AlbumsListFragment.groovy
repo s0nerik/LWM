@@ -1,5 +1,4 @@
 package app.ui.fragment
-
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -14,6 +13,7 @@ import android.widget.ProgressBar
 import app.adapter.AlbumsAdapter
 import app.model.Album
 import app.model.Artist
+import app.ui.activity.AlbumInfoActivity
 import app.ui.async.MusicLoaderService
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.arasthel.swissknife.SwissKnife
@@ -23,7 +23,6 @@ import com.joanzapata.android.asyncservice.api.annotation.InjectService
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage
 import com.joanzapata.android.asyncservice.api.internal.AsyncService
 import com.lwm.app.R
-import com.tale.prettybundle.Activities
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -84,7 +83,8 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     @OnItemClick(R.id.grid)
     public void onItemClick(int position) {
-        Intent intent = Activities.createAlbumInfoActivityIntent(getActivity(), albums.get(position));
+        def intent = new Intent(activity, AlbumInfoActivity)
+        intent.putExtra "album", albums.get(position) as Parcelable
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left_long_alpha);
     }

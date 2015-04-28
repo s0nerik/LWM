@@ -50,36 +50,38 @@ public class SingleBitmapPaletteInfoCallback implements FutureCallback<ImageView
     @Override
     public void onCompleted(Exception e, ImageViewBitmapInfo result) {
         BitmapInfo bitmapInfo = result.getBitmapInfo();
-        if (result.getException() == null && bitmapInfo.bitmap != null) {
-            Palette.generateAsync(bitmapInfo.bitmap, new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    Palette.Swatch[] swatches = new Palette.Swatch[6];
+        if (!result.exception && bitmapInfo.bitmap) {
+            new Palette.Builder(bitmapInfo.bitmap)
+                    .generate(
+                    new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            Palette.Swatch[] swatches = new Palette.Swatch[6];
 
-                    swatches[0] = palette.getVibrantSwatch();
-                    swatches[1] = palette.getDarkVibrantSwatch();
-                    swatches[2] = palette.getMutedSwatch();
-                    swatches[3] = palette.getDarkMutedSwatch();
-                    swatches[4] = palette.getLightVibrantSwatch();
-                    swatches[5] = palette.getLightMutedSwatch();
+                            swatches[0] = palette.getVibrantSwatch();
+                            swatches[1] = palette.getDarkVibrantSwatch();
+                            swatches[2] = palette.getMutedSwatch();
+                            swatches[3] = palette.getDarkMutedSwatch();
+                            swatches[4] = palette.getLightVibrantSwatch();
+                            swatches[5] = palette.getLightMutedSwatch();
 
-                    for (Palette.Swatch swatch : swatches) {
-                        if (swatch != null) {
-                            applyStyle(
-                                    swatch.getRgb(),
-                                    Utils.darkerColor(swatch.getRgb(), 0.8f),
-                                    swatch.getTitleTextColor(),
-                                    swatch.getTitleTextColor()
-                            );
-                            return;
+                            for (Palette.Swatch swatch : swatches) {
+                                if (swatch != null) {
+                                    applyStyle(
+                                            swatch.getRgb(),
+                                            Utils.darkerColor(swatch.getRgb(), 0.8f),
+                                            swatch.getTitleTextColor(),
+                                            swatch.getTitleTextColor()
+                                    );
+                                    return;
+                                }
+                            }
+
+                            applyDefaultStyle();
                         }
-                    }
-
-                    applyDefaultStyle();
-                }
-            });
+                    })
         } else {
-            applyDefaultStyle();
+            applyDefaultStyle()
         }
     }
 

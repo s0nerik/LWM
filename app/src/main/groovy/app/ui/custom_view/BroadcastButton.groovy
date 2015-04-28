@@ -57,12 +57,7 @@ public class BroadcastButton extends RelativeLayout {
         SwissKnife.inject(this, this);
         Injector.inject(this);
         setBroadcastState(wifiAP.isEnabled());
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wifiAP.toggleWiFiAP();
-            }
-        });
+        onClickListener = { wifiAP.toggleWiFiAP() }
     }
 
     private void setProgressVisibility(boolean show) {

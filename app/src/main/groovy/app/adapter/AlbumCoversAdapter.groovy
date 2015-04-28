@@ -1,7 +1,5 @@
 package app.adapter
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.media.ThumbnailUtils
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +13,13 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.koushikdutta.ion.ImageViewBitmapInfo
 import com.koushikdutta.ion.Ion
-import com.koushikdutta.ion.bitmap.Transform
 import com.lwm.app.R
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
 
 @CompileStatic
-public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.ViewHolder> {
+class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Inject
     LayoutInflater inflater;
@@ -30,15 +27,15 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
     @Inject
     Resources resources;
 
-    private List<Album> albums;
+    List<Album> albums;
 
     private int coverSize;
 
     private int width;
 
-    private View textLayout;
-    private TextView title;
-    private TextView subtitle;
+    View textLayout;
+    TextView title;
+    TextView subtitle;
 
     public AlbumCoversAdapter(List<Album> albums, int width, View textLayout, TextView title, TextView subtitle) {
         Injector.inject(this);
@@ -51,21 +48,22 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
     }
 
     @Override
-    public AlbumCoversAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         return new ViewHolder(inflater.inflate(R.layout.item_covers, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(final AlbumCoversAdapter.ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         viewHolder.mImage.setMaxWidth(width);
         viewHolder.mImage.setMinimumWidth(width);
         Ion.with(viewHolder.mImage)
                 .error(R.drawable.no_cover)
                 .placeholder(R.color.grid_item_default_bg)
-                .transform(new CropTransform())
+                .smartSize(true)
+//                .transform(new CropTransform())
                 .load("file://" + albums.get(i).getAlbumArtPath())
                 .withBitmapInfo()
-                .setCallback(new BitmapPaletteInfoCallback(i, viewHolder));
+                .setCallback(new BitmapPaletteInfoCallback(i, viewHolder, textLayout, albums, title, subtitle));
     }
 
     @Override
@@ -93,37 +91,39 @@ public class AlbumCoversAdapter extends RecyclerView.Adapter<AlbumCoversAdapter.
         }
     }
 
-    private class CropTransform implements Transform {
-        @Override
-        public Bitmap transform(Bitmap b) {
-            Bitmap thumb = ThumbnailUtils.extractThumbnail(
-                    b, coverSize, coverSize, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+//    private class CropTransform implements Transform {
+//        @Override
+//        public Bitmap transform(Bitmap b) {
+//            Bitmap thumb = ThumbnailUtils.extractThumbnail(
+//                    b, coverSize, coverSize, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+//
+//            Bitmap x;
+//            if (width <= coverSize) {
+//                x = Bitmap.createBitmap(thumb, 0, 0, width, coverSize);
+//            } else {
+//                x = Bitmap.createBitmap(thumb, 0, 0, coverSize, coverSize);
+//            }
+//            thumb.recycle();
+//            return x;
+//        }
+//
+//        @Override
+//        public String key() {
+//            return null;
+//        }
+//    }
 
-            Bitmap x;
-            if (width <= coverSize) {
-                x = android.graphics.Bitmap.createBitmap(thumb, 0, 0, width, coverSize);
-            } else {
-                x = android.graphics.Bitmap.createBitmap(thumb, 0, 0, coverSize, coverSize);
-            }
-            thumb.recycle();
-            return x;
-        }
-
-        @Override
-        public String key() {
-            return null;
-        }
-    }
-
-    public class BitmapPaletteInfoCallback extends SingleBitmapPaletteInfoCallback {
+    static class BitmapPaletteInfoCallback extends SingleBitmapPaletteInfoCallback {
 
         private int i;
         private ViewHolder holder;
+        private List<Album> albums
 
-        private BitmapPaletteInfoCallback(int i, ViewHolder holder) {
-            super(textLayout, title, subtitle);
-            this.i = i;
-            this.holder = holder;
+        private BitmapPaletteInfoCallback(int i, ViewHolder holder, View textLayout, List<Album> albums, TextView title, TextView subtitle) {
+            super(textLayout, title, subtitle)
+            this.i = i
+            this.holder = holder
+            this.albums = albums
         }
 
         @Override

@@ -17,7 +17,8 @@ import android.widget.TextView;
 import com.arasthel.swissknife.SwissKnife;
 import com.arasthel.swissknife.annotations.InjectView;
 import com.lwm.app.R;
-import com.nvanbenschoten.motion.ParallaxImageView;
+import com.nvanbenschoten.motion.ParallaxImageView
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import app.ui.async.RemoteAlbumArtAsyncGetter;
 import app.ui.base.DaggerOttoOnResumeFragment;
 import ru.noties.debug.Debug;
 
+@CompileStatic
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     private BasePlayer player;

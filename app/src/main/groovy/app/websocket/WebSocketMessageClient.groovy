@@ -60,15 +60,15 @@ public class WebSocketMessageClient extends WebSocketClient {
 
         if (socketMessage.getType() == SocketMessage.Type.GET) {
             switch (socketMessage.getMessage()) {
-                case CURRENT_POSITION:
+                case SocketMessage.Message.CURRENT_POSITION:
                     String pos = String.valueOf(player.getCurrentPosition());
                     send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CURRENT_POSITION, pos).toJson());
                     break;
-                case IS_PLAYING:
+                case SocketMessage.Message.IS_PLAYING:
                     String isPlaying = String.valueOf(player.isPlaying());
                     send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.IS_PLAYING, isPlaying).toJson());
                     break;
-                case CLIENT_INFO:
+                case SocketMessage.Message.CLIENT_INFO:
                     String info = new Gson().toJson(clientInfo, ClientInfo.class);
                     send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CLIENT_INFO, info).toJson());
                     break;
@@ -77,26 +77,26 @@ public class WebSocketMessageClient extends WebSocketClient {
             }
         } else if (socketMessage.getType() == SocketMessage.Type.POST) {
             switch (socketMessage.getMessage()) {
-                case START:
+                case SocketMessage.Message.START:
                     start();
                     break;
-                case PAUSE:
+                case SocketMessage.Message.PAUSE:
                     pause();
                     break;
-                case PREPARE:
+                case SocketMessage.Message.PREPARE:
                     prepare();
                     break;
-                case SEEK_TO:
+                case SocketMessage.Message.SEEK_TO:
                     seekTo(Integer.valueOf(body));
                     break;
-                case START_FROM:
+                case SocketMessage.Message.START_FROM:
                     startFrom(Integer.valueOf(body));
                     break;
-                case MESSAGE:
+                case SocketMessage.Message.MESSAGE:
                     ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
                     bus.post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
                     break;
-                case CLIENT_INFO:
+                case SocketMessage.Message.CLIENT_INFO:
                     ClientInfo clientInfo = new Gson().fromJson(body, ClientInfo.class);
                     bus.post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
                     break;

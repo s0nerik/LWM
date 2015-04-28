@@ -94,6 +94,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_info);
         SwissKnife.inject(this);
+        SwissKnife.loadExtras(this);
 
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));
 

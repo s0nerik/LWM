@@ -1,21 +1,20 @@
-package app.ui.activity;
+package app.ui.activity
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.widget.Toolbar
+import android.view.MenuItem
+import app.Utils
+import app.model.Artist
+import app.ui.fragment.AlbumsListFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.Extra
+import com.arasthel.swissknife.annotations.InjectView
+import com.lwm.app.R
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
 
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.Extra;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.lwm.app.R;
-import com.squareup.otto.Bus;
-
-import javax.inject.Inject;
-
-import app.Utils;
-import app.model.Artist;
-import groovy.transform.CompileStatic;
+import javax.inject.Inject
 
 @CompileStatic
 public class ArtistInfoActivity extends BaseLocalActivity {
@@ -44,7 +43,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Fragment albumsListFragment = new AlbumsListFragmentBuilder().artist(artist).build();
+        Fragment albumsListFragment = AlbumsListFragment.create(artist);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, albumsListFragment)

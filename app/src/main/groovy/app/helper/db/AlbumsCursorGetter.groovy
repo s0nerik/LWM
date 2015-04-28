@@ -71,7 +71,7 @@ public final class AlbumsCursorGetter extends Daggered {
 
     public Album getAlbumById(long id){
         String selection = MediaStore.Audio.Albums._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
+        String[] selectionArgs = [ String.valueOf(id) ];
         Cursor cursor = contentResolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
@@ -97,7 +97,7 @@ public final class AlbumsCursorGetter extends Daggered {
 
     public Cursor getAlbumsCursorByArtist(Artist artist){
         String selection = MediaStore.Audio.Albums.ARTIST + " = ?";
-        String[] selectionArgs = {artist.getName()};
+        String[] selectionArgs = [ artist.getName() ];
 
         return contentResolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,

@@ -1,7 +1,5 @@
 package app.ui.fragment
-
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.Nullable
@@ -35,9 +33,6 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Inject
     PrefManager prefManager;
-
-    @Inject
-    Resources resources;
 
     @Inject
     WifiAP wifiAP;
