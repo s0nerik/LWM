@@ -1,16 +1,14 @@
 package app.events.player.service;
 
 import app.model.Song;
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class CurrentSongAvailableEvent {
 
-    private Song song;
+    Song song;
 
     public CurrentSongAvailableEvent(Song song) {
         this.song = song;
-    }
-
-    public Song getSong() {
-        return song;
     }
 }
