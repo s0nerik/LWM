@@ -1,16 +1,14 @@
 package app.events.server;
 
-import app.websocket.entities.ClientInfo;
+import app.websocket.entities.ClientInfo
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class ClientConnectedEvent {
 
-    private ClientInfo clientInfo;
+    ClientInfo clientInfo;
 
     public ClientConnectedEvent(ClientInfo clientInfo) {
         this.clientInfo = clientInfo;
-    }
-
-    public ClientInfo getClientInfo() {
-        return clientInfo;
     }
 }

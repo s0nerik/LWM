@@ -1,14 +1,13 @@
-package app.events.server;
+package app.events.server
 
+import groovy.transform.CompileStatic;
+
+@CompileStatic
 public class SeekToClientsEvent {
-    private int position;
+    int position;
 
     public SeekToClientsEvent(int position) {
         this.position = position;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
 }
