@@ -5,17 +5,19 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import app.Daggered;
-import app.model.Album;
+import app.model.Album
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
-public class SongsCursorGetter extends Daggered {
+@CompileStatic
+public final class SongsCursorGetter extends Daggered {
 
     @Inject
     ContentResolver contentResolver;
 
     private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-    private String[] projection = {
+    private String[] projection = [
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
@@ -29,7 +31,7 @@ public class SongsCursorGetter extends Daggered {
 //            MediaStore.Audio.Media.TRACK,
 //            MediaStore.Audio.Media.ALBUM_KEY,
 //            MediaStore.Audio.Media.ALBUM_KEY,
-    };
+    ];
 
     public static final int _ID          = 0;
     public static final int TITLE        = 1;
@@ -51,18 +53,18 @@ public class SongsCursorGetter extends Daggered {
         String selection = this.selection;
         if (album != null && album.getId() > -1) {
             selection = this.selection + " AND " + MediaStore.Audio.AudioColumns.ALBUM_ID + " = ?";
-            selectionArgs = new String[]{String.valueOf(album.getId())};
+            selectionArgs = [ String.valueOf(album.getId()) ];
         }
 
         String orderString = "";
         switch (order) {
-            case ASCENDING:
+            case Order.ASCENDING:
                 orderString = "ASC";
                 break;
-            case DESCENDING:
+            case Order.DESCENDING:
                 orderString = "DESC";
                 break;
-            case RANDOM:
+            case Order.RANDOM:
                 orderString = "random()";
                 break;
         }
