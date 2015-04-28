@@ -1,19 +1,16 @@
-package app.adapter;
+package app.adapter
+import android.content.Context
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import app.model.chat.ChatMessage
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.lwm.app.R
+import groovy.transform.CompileStatic
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.lwm.app.R;
-import app.model.chat.ChatMessage;
-
-import java.util.List;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-
+@CompileStatic
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private List<ChatMessage> messages;

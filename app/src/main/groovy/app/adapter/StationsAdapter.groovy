@@ -1,24 +1,21 @@
-package app.adapter;
+package app.adapter
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.content.Context
+import android.content.res.Resources
+import android.net.wifi.ScanResult
+import android.net.wifi.WifiManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.TextView
+import app.helper.wifi.WifiAP
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.lwm.app.R
+import groovy.transform.CompileStatic
 
-import com.lwm.app.R;
-import app.helper.wifi.WifiAP;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-
+@CompileStatic
 public class StationsAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;

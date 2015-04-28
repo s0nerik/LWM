@@ -1,32 +1,28 @@
-package app.adapter;
+package app.adapter
+import android.content.Context
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import app.Injector
+import app.Utils
+import app.events.ui.ShouldStartArtistInfoActivity
+import app.model.Artist
+import app.model.ArtistWrapper
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnClick
+import com.lwm.app.R
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
+import org.apache.commons.lang3.text.WordUtils
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import javax.inject.Inject
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
-import app.Injector;
-import com.lwm.app.R;
-import app.Utils;
-import app.events.ui.ShouldStartArtistInfoActivity;
-import app.model.Artist;
-import app.model.ArtistWrapper;
-import com.squareup.otto.Bus;
-
-import org.apache.commons.lang3.text.WordUtils;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import SwissKnife.injectView;
-import butterknife.OnClick;
-
+@CompileStatic
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
 
     private List<ArtistWrapper> artistWrapperList;
@@ -92,7 +88,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
         @OnClick(R.id.itemLayout)
         public void onClick() {
-            bus.post(new ShouldStartArtistInfoActivity(artistWrapperList.get(getPosition()).getArtist()));
+            bus.post(new ShouldStartArtistInfoActivity(artist: artistWrapperList.get(getAdapterPosition()).getArtist()));
         }
 
     }
