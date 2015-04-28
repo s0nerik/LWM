@@ -148,9 +148,8 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     public void setRemoteAlbumArt() {
         RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(getActivity(), mCover, mBackground);
-        remoteAlbumArtAsyncGetter.executeWithThreadPoolExecutor();
+        remoteAlbumArtAsyncGetter.execute();
     }
-
 
     private void setPlayButton(boolean playing) {
         if (playing) {

@@ -5,14 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import app.Injector;
 import com.lwm.app.R;
-import com.lwm.app.ui.fragment.AlbumsListFragmentBuilder;
+
+import javax.inject.Inject;
+
+import app.Injector;
+import app.ui.fragment.AlbumsListFragment;
 import app.ui.fragment.ArtistsListFragment;
 import app.ui.fragment.QueueFragment;
 import app.ui.fragment.SongsListFragment;
-
-import javax.inject.Inject;
 
 public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
 
@@ -40,7 +41,7 @@ public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
             case 1:
                 return new ArtistsListFragment();
             case 2:
-                return new AlbumsListFragmentBuilder().build();
+                return new AlbumsListFragment();
             case 3:
                 return new QueueFragment();
         }

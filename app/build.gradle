@@ -124,7 +124,7 @@ dependencies {
 
 //    // F*CK YOU, BOILERPLATE! =)
 //    compile 'com.hannesdorfmann.fragmentargs:annotation:2.0.1'
-//    provided 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
+//    apt 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
 
     // Animations
     compile 'com.daimajia.easing:library:1.0.1@aar'

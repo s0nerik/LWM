@@ -5,21 +5,23 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import app.Daggered;
-import app.model.Artist;
+import app.model.Artist
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
-public class ArtistsCursorGetter extends Daggered {
+@CompileStatic
+public final class ArtistsCursorGetter extends Daggered {
 
     @Inject
     ContentResolver contentResolver;
 
-    private final String[] projection = {
+    private final String[] projection = [
             MediaStore.Audio.Artists._ID,
             MediaStore.Audio.Artists.ARTIST,
             MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
             MediaStore.Audio.Artists.NUMBER_OF_TRACKS
-    };
+    ];
 
     public static final int _ID              = 0;
     public static final int ARTIST           = 1;

@@ -1,11 +1,18 @@
-package app.ui.activity;
+package app.ui.activity
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.lwm.app.R;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
+
 import app.events.chat.ChatMessageReceivedEvent;
 import app.events.chat.SetUnreadMessagesEvent;
 import app.events.client.SocketClosedEvent;
@@ -14,13 +21,7 @@ import app.model.Song;
 import app.player.StreamPlayer;
 import app.ui.Croutons;
 import app.ui.fragment.playback.RemotePlaybackFragment;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import javax.inject.Inject;
-
 import ru.noties.debug.Debug;
-import uk.me.lewisdeane.ldialogs.CustomDialog;
 
 public class RemotePlaybackActivity extends PlaybackActivity {
 
@@ -95,18 +96,15 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Subscribe
     public void onSocketClosed(SocketClosedEvent event) {
         String title = "Station stopped broadcasting";
-        CustomDialog.Builder builder = new CustomDialog.Builder(this, title, "Ok");
-        builder.build().setClickListener(new CustomDialog.ClickListener() {
-            @Override
-            public void onConfirmClick() {
-                finish();
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        }).show();
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    void onClick(DialogInterface dialogInterface, int i) {
+                        finish()
+                    }
+                })
+                .show();
     }
 
     @Override

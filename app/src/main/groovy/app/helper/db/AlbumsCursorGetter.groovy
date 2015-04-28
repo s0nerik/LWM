@@ -6,18 +6,20 @@ import android.provider.MediaStore;
 
 import app.Daggered;
 import app.model.Album;
-import app.model.Artist;
+import app.model.Artist
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
-public class AlbumsCursorGetter extends Daggered {
+@CompileStatic
+public final class AlbumsCursorGetter extends Daggered {
 
     private String artist;
 
     @Inject
     ContentResolver contentResolver;
 
-    private final String[] projection = {
+    private final String[] projection = [
             MediaStore.Audio.Albums._ID,
             MediaStore.Audio.Albums.ALBUM,
             MediaStore.Audio.Albums.ALBUM_ART,
@@ -26,7 +28,7 @@ public class AlbumsCursorGetter extends Daggered {
             MediaStore.Audio.Albums.NUMBER_OF_SONGS,
 //            MediaStore.Audio.Albums.ALBUM_KEY
 //            MediaStore.Audio.AudioColumns.ALBUM_ID
-    };
+    ];
 
     private String selection = null;
     private String[] selectionArgs = null;
@@ -54,7 +56,7 @@ public class AlbumsCursorGetter extends Daggered {
 
         if(artist != null){
             selection = MediaStore.Audio.Artists.Albums.ARTIST + " = ?";
-            selectionArgs = new String[]{artist};
+            selectionArgs = [artist];
         }
 
         return contentResolver.query(
@@ -69,7 +71,7 @@ public class AlbumsCursorGetter extends Daggered {
 
     public Album getAlbumById(long id){
         String selection = MediaStore.Audio.Albums._ID + " = ?";
-        String[] selectionArgs = {String.valueOf(id)};
+        String[] selectionArgs = { String.valueOf(id) };
         Cursor cursor = contentResolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,

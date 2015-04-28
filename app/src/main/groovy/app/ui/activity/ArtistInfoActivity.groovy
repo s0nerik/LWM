@@ -6,11 +6,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.arasthel.swissknife.SwissKnife;
+import com.arasthel.swissknife.annotations.Extra;
 import com.arasthel.swissknife.annotations.InjectView;
 import com.lwm.app.R;
-import com.lwm.app.ui.fragment.AlbumsListFragmentBuilder;
 import com.squareup.otto.Bus;
-import com.tale.prettybundle.Extra;
 
 import javax.inject.Inject;
 
@@ -37,7 +36,8 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_info);
-        SwissKnife.inject(this);
+        SwissKnife.inject(this)
+        SwissKnife.loadExtras(this)
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
         mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());
