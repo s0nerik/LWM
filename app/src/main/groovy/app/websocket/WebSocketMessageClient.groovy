@@ -1,38 +1,27 @@
-package app.websocket;
+package app.websocket
+import android.content.SharedPreferences
+import android.os.Build
+import app.Injector
+import app.events.chat.*
+import app.events.client.ClientInfoReceivedEvent
+import app.events.client.SendReadyEvent
+import app.events.client.SocketClosedEvent
+import app.events.client.SocketOpenedEvent
+import app.model.chat.ChatMessage
+import app.player.StreamPlayer
+import app.websocket.entities.ClientInfo
+import com.google.gson.Gson
+import com.squareup.otto.Bus
+import com.squareup.otto.Produce
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
+import ru.noties.debug.Debug
 
-import android.content.SharedPreferences;
-import android.os.Build;
+import javax.inject.Inject
 
-import com.google.gson.Gson;
-import app.Injector;
-import app.events.chat.ChatMessageReceivedEvent;
-import app.events.chat.ChatMessagesAvailableEvent;
-import app.events.chat.NotifyMessageAddedEvent;
-import app.events.chat.ResetUnreadMessagesEvent;
-import app.events.chat.SendChatMessageEvent;
-import app.events.chat.SetUnreadMessagesEvent;
-import app.events.client.ClientInfoReceivedEvent;
-import app.events.client.SendReadyEvent;
-import app.events.client.SocketClosedEvent;
-import app.events.client.SocketOpenedEvent;
-import app.model.chat.ChatMessage;
-import app.player.StreamPlayer;
-import app.websocket.entities.ClientInfo;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
-
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class WebSocketMessageClient extends WebSocketClient {
 
     @Inject
@@ -50,7 +39,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     public WebSocketMessageClient(URI serverURI) {
         super(serverURI);
         Injector.inject(this);
-        clientInfo = new ClientInfo(sharedPreferences.getString("client_name", Build.MODEL));
+        clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL));
     }
 
     @Override
