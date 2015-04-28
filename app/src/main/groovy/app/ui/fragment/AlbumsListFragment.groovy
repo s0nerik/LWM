@@ -57,7 +57,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        artist = getArguments().getParcelable("artist")
+        artist = getArguments().getParcelable("artist") as Artist
     }
 
     @Override

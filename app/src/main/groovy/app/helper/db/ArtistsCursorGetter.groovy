@@ -40,7 +40,7 @@ public final class ArtistsCursorGetter extends Daggered {
 
     public Artist getArtistById(long id){
         String selection = MediaStore.Audio.Artists._ID + " = ?";
-        String[] selectionArgs = {String.valueOf(id)};
+        String[] selectionArgs = [ String.valueOf(id) ];
         Cursor cursor = contentResolver.query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,

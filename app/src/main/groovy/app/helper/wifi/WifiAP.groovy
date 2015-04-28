@@ -22,8 +22,8 @@ import static app.events.access_point.AccessPointStateEvent.State.ENABLED;
 
 public class WifiAP {
     private static final int WIFI_AP_STATE_UNKNOWN = -1;
-    public static String AP_NAME_REGEXP = /♪ (.{1,22}) #([0123456789abcdefABCDEF]{6})/;
-    public static String AP_NAME_FORMAT = /♪ %s %s/; // First - name, second - color
+    public static String AP_NAME_REGEXP = "♪ (.{1,22}) #([0123456789abcdefABCDEF]{6})";
+    public static String AP_NAME_FORMAT = "♪ %s %s"; // First - name, second - color
     private static int constant = 0;
     private static int WIFI_AP_STATE_DISABLING = 0;
     private static int WIFI_AP_STATE_DISABLED = 1;

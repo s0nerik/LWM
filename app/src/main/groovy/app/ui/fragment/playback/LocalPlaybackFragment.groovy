@@ -9,6 +9,7 @@ import android.support.annotation.Nullable
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.SeekBar
 import app.events.access_point.AccessPointStateEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
@@ -20,6 +21,7 @@ import app.helper.wifi.WifiAP
 import app.model.Song
 import app.player.BasePlayer
 import app.player.LocalPlayer
+import app.player.PlayerUtils
 import app.ui.Blur
 import com.arasthel.swissknife.annotations.OnClick
 import com.koushikdutta.async.future.FutureCallback
@@ -50,7 +52,7 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mSeekBar.setOnSeekBarChangeListener(new PlayerProgressOnSeekBarChangeListener());
+        mSeekBar.onSeekBarChangeListener = new PlayerProgressOnSeekBarChangeListener()
         initToolbar();
     }
 
@@ -190,5 +192,25 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     public void onRepeatStateChanged(RepeatStateChangedEvent event) {
         super.onRepeatStateChanged(event);
+    }
+
+    class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+
+        PlayerProgressOnSeekBarChangeListener() {}
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser) {
+                player.seekTo(PlayerUtils.convertSeekBarToProgress(progress));
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
     }
 }

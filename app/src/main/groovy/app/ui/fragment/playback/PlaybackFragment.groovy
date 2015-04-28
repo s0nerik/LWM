@@ -178,22 +178,4 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
         setRepeatButton(player.isRepeat());
     }
 
-    protected class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
-
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            if (fromUser) {
-                player.seekTo(PlayerUtils.convertSeekBarToProgress(progress));
-            }
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-        }
-    }
-
 }

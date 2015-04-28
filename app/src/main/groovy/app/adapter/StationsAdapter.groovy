@@ -69,8 +69,8 @@ public class StationsAdapter extends BaseAdapter {
 
         ScanResult result = getItem(position);
 
-        def m = result.SSID =~ WifiAP.AP_NAME_REGEXP
-        holder.mName.text = m[0][1]
+        def m = result.SSID =~ /${WifiAP.AP_NAME_REGEXP}/
+        holder.mName.text = m[0][0]
 
         int signalLevel = WifiManager.calculateSignalLevel(getItem(position).level, signalLevels);
         String signal = signalLevelNames[signalLevel];

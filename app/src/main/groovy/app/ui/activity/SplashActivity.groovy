@@ -85,9 +85,9 @@ public class SplashActivity extends FragmentActivity implements
 //                        "<APP-ACTIVITY1> <APP-ACTIVITY2>"
                         ""
                 );
-                String scopes = "oauth2:server:client_id:"
-                        +"608412075734-g1rs52is4nku7k5s7g3va1fnv74inidi.apps.googleusercontent.com:"
-                        +"api_scope:"+Plus.SCOPE_PLUS_LOGIN;
+                String scopes = "oauth2:server:client_id:"\
+                         +"608412075734-g1rs52is4nku7k5s7g3va1fnv74inidi.apps.googleusercontent.com:"\
+                         +"api_scope:${Plus.SCOPE_PLUS_LOGIN}"
                 String code = null;
                 try {
                     code = GoogleAuthUtil.getToken(
@@ -114,7 +114,7 @@ public class SplashActivity extends FragmentActivity implements
                         public void run() {
                             if (!mIntentInProgress) {
                                 mIntentInProgress = true;
-                                startActivityForResult(e.getIntent(), RC_SIGN_IN);
+                                FragmentActivity.startActivityForResult(e.getIntent(), RC_SIGN_IN);
                             }
                         }
                     });
