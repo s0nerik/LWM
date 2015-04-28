@@ -1,24 +1,17 @@
 package app.events.chat;
 
-import app.model.chat.ChatMessage;
-
+import app.model.chat.ChatMessage
+import groovy.transform.CompileStatic;
 import org.java_websocket.WebSocket;
 
+@CompileStatic
 public class ChatMessageReceivedEvent {
 
-    private ChatMessage message;
-    private WebSocket webSocket;
+    ChatMessage message;
+    WebSocket webSocket;
 
     public ChatMessageReceivedEvent(ChatMessage message, WebSocket webSocket) {
         this.message = message;
         this.webSocket = webSocket;
-    }
-
-    public ChatMessage getMessage() {
-        return message;
-    }
-
-    public WebSocket getWebSocket() {
-        return webSocket;
     }
 }

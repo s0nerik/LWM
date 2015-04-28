@@ -1,16 +1,14 @@
 package app.events.chat;
 
-import app.model.chat.ChatMessage;
+import app.model.chat.ChatMessage
+import groovy.transform.CompileStatic;
 
+@CompileStatic
 public class SendChatMessageEvent {
 
-    private ChatMessage message;
+    ChatMessage message;
 
     public SendChatMessageEvent(ChatMessage message) {
         this.message = message;
-    }
-
-    public ChatMessage getMessage() {
-        return message;
     }
 }
