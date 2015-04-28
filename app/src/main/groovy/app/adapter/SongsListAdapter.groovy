@@ -92,10 +92,10 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
         notifyItemChanged(selection);
     }
 
-    private class OnContextMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+    class OnContextMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
         private int position;
 
-        private OnContextMenuItemClickListener(int pos) {
+        OnContextMenuItemClickListener(int pos) {
             position = pos;
         }
 

@@ -5,20 +5,16 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.Response;
-import app.Injector;
-import app.events.client.SendReadyEvent;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.model.Song;
-import app.server.StreamServer;
 import com.squareup.otto.Bus;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
+import app.Injector;
+import app.events.client.SendReadyEvent;
+import app.model.Song;
+import app.server.StreamServer;
 import ru.noties.debug.Debug;
 
 public class StreamPlayer extends BasePlayer {
@@ -121,22 +117,23 @@ public class StreamPlayer extends BasePlayer {
     }
 
     private void updateSongInfo() {
-        Ion.with(context)
-                .load(StreamServer.Url.CURRENT_INFO)
-                .as(Song.class)
-                .withResponse()
-                .setCallback(new FutureCallback<Response<Song>>() {
-                    @Override
-                    public void onCompleted(Exception e, Response<Song> result) {
-                        if (e == null) {
-                            setCurrentSong(result.getResult());
-                            bus.post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
-                            startNotifyingPlaybackProgress();
-                        } else {
-                            Debug.e("Error getting song info", e);
-                        }
-                    }
-                });
+        // TODO: make it work
+//        Ion.with(context)
+//                .load(StreamServer.Url.CURRENT_INFO)
+//                .as(Song.class)
+//                .withResponse()
+//                .setCallback(new FutureCallback<Response<Song>>() {
+//                    @Override
+//                    public void onCompleted(Exception e, Response<Song> result) {
+//                        if (e == null) {
+//                            setCurrentSong(result.getResult());
+//                            bus.post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
+//                            startNotifyingPlaybackProgress();
+//                        } else {
+//                            Debug.e("Error getting song info", e);
+//                        }
+//                    }
+//                });
     }
 
 

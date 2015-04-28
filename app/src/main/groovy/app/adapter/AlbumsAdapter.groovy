@@ -1,28 +1,24 @@
-package app.adapter;
+package app.adapter
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.TextView
+import app.Injector
+import app.R
+import app.Utils
+import app.model.Album
+import app.ui.custom_view.SquareWidthImageView
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.bumptech.glide.Glide
+import groovy.transform.CompileStatic
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import javax.inject.Inject
 
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.koushikdutta.ion.Ion;
-import app.R;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import app.Injector;
-import app.Utils;
-import app.model.Album;
-import app.ui.SingleBitmapPaletteInfoCallback;
-import app.ui.custom_view.SquareWidthImageView;
-
+@CompileStatic
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private final Context context;
@@ -60,13 +56,16 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         holder.mSubtitle.setText(utils.getArtistName(album.getArtist()));
         holder.mBottomBar.setBackgroundResource(R.color.grid_item_default_bg);
 
-        Ion.with(holder.mCover)
-                .smartSize(true)
+        Glide.with(holder.mCover.context)
+                .load("file://" + album.getAlbumArtPath())
+                .centerCrop()
                 .placeholder(R.color.grid_item_default_bg)
                 .error(R.drawable.no_cover)
-                .load("file://" + album.getAlbumArtPath())
-                .withBitmapInfo()
-                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.mShadow, holder.mTitle, holder.mSubtitle));
+                .into(holder.mCover)
+//                .withBitmapInfo()
+//                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.mShadow, holder.mTitle, holder.mSubtitle));
+
+        // TODO: generate palette
 
         return rowView;
     }

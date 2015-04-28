@@ -1,50 +1,38 @@
-package app.ui.activity;
+package app.ui.activity
+import android.annotation.TargetApi
+import android.content.res.Resources
+import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
+import android.support.v7.widget.Toolbar
+import android.view.*
+import android.widget.*
+import app.R
+import app.Utils
+import app.adapter.SimpleSongsListAdapter
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.service.CurrentSongAvailableEvent
+import app.helper.db.Order
+import app.helper.db.SongsCursorGetter
+import app.model.Album
+import app.model.Playlist
+import app.model.Song
+import app.player.LocalPlayer
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.Extra
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnClick
+import com.bumptech.glide.Glide
+import com.melnykov.fab.FloatingActionButton
+import com.nirhart.parallaxscroll.views.ParallaxScrollView
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.annotation.TargetApi;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import javax.inject.Inject
 
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.Extra;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.arasthel.swissknife.annotations.OnClick;
-import com.koushikdutta.ion.Ion;
-import app.R;
-import com.melnykov.fab.FloatingActionButton;
-import com.nirhart.parallaxscroll.views.ParallaxScrollView;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import app.Utils;
-import app.adapter.SimpleSongsListAdapter;
-import app.events.player.playback.PlaybackStartedEvent;
-import app.events.player.service.CurrentSongAvailableEvent;
-import app.helper.db.Order;
-import app.helper.db.SongsCursorGetter;
-import app.model.Album;
-import app.model.Playlist;
-import app.model.Song;
-import app.player.LocalPlayer;
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.OnItemClickListener {
 
     @InjectView(R.id.toolbar)
@@ -119,11 +107,12 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     private void initHeader(Album album) {
         mToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
-        Ion.with(mCover)
+        Glide.with(this)
+                .load("file://" + album.getAlbumArtPath())
+                .centerCrop()
                 .error(R.drawable.no_cover)
                 .placeholder(R.color.grid_item_default_bg)
-                .smartSize(true)
-                .load("file://" + album.getAlbumArtPath());
+                .into(mCover)
 //                .withBitmapInfo()
 //                .setCallback(SingleBitmapPaletteInfoCallback.builder()
 //                                    .floatingActionButton(mFab)
@@ -261,7 +250,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
                 Debug.d("Scroll: " + scroll);
 
-                float scrolledPercent = scroll / (float) parallaxArea;
+                float scrolledPercent = scroll / parallaxArea as float;
                 int transparency = Math.round(scrolledPercent * 255f);
 
                 mToolbar.setBackgroundColor(Color.argb(transparency,

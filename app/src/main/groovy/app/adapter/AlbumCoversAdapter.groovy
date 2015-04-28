@@ -1,5 +1,4 @@
 package app.adapter
-
 import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,11 +9,9 @@ import android.widget.TextView
 import app.Injector
 import app.R
 import app.model.Album
-import app.ui.SingleBitmapPaletteInfoCallback
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.koushikdutta.ion.ImageViewBitmapInfo
-import com.koushikdutta.ion.Ion
+import com.bumptech.glide.Glide
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
@@ -57,14 +54,15 @@ class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         viewHolder.mImage.setMaxWidth(width);
         viewHolder.mImage.setMinimumWidth(width);
-        Ion.with(viewHolder.mImage)
+        Glide.with(viewHolder.mImage.context)
+                .load("file://" + albums.get(i).getAlbumArtPath())
                 .error(R.drawable.no_cover)
                 .placeholder(R.color.grid_item_default_bg)
-                .smartSize(true)
-//                .transform(new CropTransform())
-                .load("file://" + albums.get(i).getAlbumArtPath())
-                .withBitmapInfo()
-                .setCallback(new BitmapPaletteInfoCallback(i, viewHolder, textLayout, albums, title, subtitle));
+                .centerCrop()
+                .into(viewHolder.mImage)
+        // TODO: generate palette
+//                .withBitmapInfo()
+//                .setCallback(new BitmapPaletteInfoCallback(i, viewHolder, textLayout, albums, title, subtitle));
     }
 
     @Override
@@ -114,27 +112,27 @@ class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
 //        }
 //    }
 
-    static class BitmapPaletteInfoCallback extends SingleBitmapPaletteInfoCallback {
-
-        private int i;
-        private ViewHolder holder;
-        private List<Album> albums
-
-        private BitmapPaletteInfoCallback(int i, ViewHolder holder, View textLayout, List<Album> albums, TextView title, TextView subtitle) {
-            super(textLayout, title, subtitle)
-            this.i = i
-            this.holder = holder
-            this.albums = albums
-        }
-
-        @Override
-        public void onCompleted(Exception e, ImageViewBitmapInfo result) {
-            if (i < albums.size() - 1) {
-                holder.mShadow.setVisibility(View.VISIBLE);
-            } else {
-//                super.onCompleted(e, result);
-            }
-        }
-    }
+//    static class BitmapPaletteInfoCallback extends SingleBitmapPaletteInfoCallback {
+//
+//        private int i;
+//        private ViewHolder holder;
+//        private List<Album> albums
+//
+//        private BitmapPaletteInfoCallback(int i, ViewHolder holder, View textLayout, List<Album> albums, TextView title, TextView subtitle) {
+//            super(textLayout, title, subtitle)
+//            this.i = i
+//            this.holder = holder
+//            this.albums = albums
+//        }
+//
+//        @Override
+//        public void onCompleted(Exception e, ImageViewBitmapInfo result) {
+//            if (i < albums.size() - 1) {
+//                holder.mShadow.setVisibility(View.VISIBLE);
+//            } else {
+////                super.onCompleted(e, result);
+//            }
+//        }
+//    }
 
 }

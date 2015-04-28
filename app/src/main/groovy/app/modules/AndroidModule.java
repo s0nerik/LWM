@@ -11,6 +11,11 @@ import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
+
+import javax.inject.Singleton;
+
 import app.App;
 import app.PrefManager;
 import app.Utils;
@@ -20,7 +25,6 @@ import app.adapter.ArtistWrappersAdapter;
 import app.adapter.LocalMusicFragmentsAdapter;
 import app.adapter.SongsListAdapter;
 import app.events.MainThreadBus;
-import app.helper.bitmap.ArtistAlbumsBitmapHelper;
 import app.helper.db.AlbumsCursorGetter;
 import app.helper.db.ArtistsCursorGetter;
 import app.helper.db.SongsCursorGetter;
@@ -35,7 +39,6 @@ import app.server.StreamServer;
 import app.service.LocalPlayerService;
 import app.service.StreamPlayerService;
 import app.ui.Blur;
-import app.ui.SingleBitmapPaletteInfoCallback;
 import app.ui.activity.AlbumInfoActivity;
 import app.ui.activity.ArtistInfoActivity;
 import app.ui.activity.LocalPlaybackActivity;
@@ -55,11 +58,6 @@ import app.ui.fragment.playback.RemotePlaybackFragment;
 import app.ui.notification.NowPlayingNotification;
 import app.websocket.WebSocketMessageClient;
 import app.websocket.WebSocketMessageServer;
-import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -69,13 +67,13 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
-        ArtistAlbumsBitmapHelper.class,
+//        ArtistAlbumsBitmapHelper.class,
 
         WebSocketMessageServer.class,
         WebSocketMessageClient.class,
 
-        SingleBitmapPaletteInfoCallback.class,
-        AlbumCoversAdapter.BitmapPaletteInfoCallback.class,
+//        SingleBitmapPaletteInfoCallback.class,
+//        AlbumCoversAdapter.BitmapPaletteInfoCallback.class,
 
         NowPlayingNotification.class,
 

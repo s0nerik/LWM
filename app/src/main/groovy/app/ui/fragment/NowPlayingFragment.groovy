@@ -1,32 +1,28 @@
-package app.ui.fragment;
+package app.ui.fragment
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import app.R
+import app.Utils
+import app.events.player.playback.SongChangedEvent
+import app.model.Song
+import app.player.LocalPlayer
+import app.ui.activity.LocalPlaybackActivity
+import app.ui.base.DaggerFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnClick
+import com.bumptech.glide.Glide
+import com.nineoldandroids.view.ViewHelper
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.arasthel.swissknife.annotations.OnClick;
-import com.koushikdutta.ion.Ion;
-import app.R;
-import com.nineoldandroids.view.ViewHelper;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import javax.inject.Inject;
-
-import app.Utils;
-import app.events.player.playback.SongChangedEvent;
-import app.model.Song;
-import app.player.LocalPlayer;
-import app.ui.SingleBitmapPaletteInfoCallback;
-import app.ui.activity.LocalPlaybackActivity;
-import app.ui.base.DaggerFragment;
-import groovy.transform.CompileStatic;
+import javax.inject.Inject
 
 @CompileStatic
 public class NowPlayingFragment extends DaggerFragment {
@@ -79,13 +75,15 @@ public class NowPlayingFragment extends DaggerFragment {
     }
 
     public void setSongInfo(Song song) {
-        Ion.with(mCover)
-                .smartSize(true)
+        Glide.with(mCover.context)
+                .load(song.getAlbumArtUri().toString())
+                .centerCrop()
                 .placeholder(R.drawable.no_cover)
                 .error(R.drawable.no_cover)
-                .load(song.getAlbumArtUri().toString())
-                .withBitmapInfo()
-                .setCallback(new SingleBitmapPaletteInfoCallback(mOverlay, mShadow, mTitle, mArtist));
+//                .withBitmapInfo()
+//                .setCallback(new SingleBitmapPaletteInfoCallback(mOverlay, mShadow, mTitle, mArtist));
+
+        // TODO: generate palette
 
         mArtist.setText(utils.getArtistName(song.getArtist()));
         mTitle.setText(song.getTitle());
