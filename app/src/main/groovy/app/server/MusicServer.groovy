@@ -41,7 +41,7 @@ public class MusicServer {
         bus.register(this);
         streamServer = new StreamServer(player);
         try {
-            streamServer.start();
+//            streamServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class MusicServer {
 
     public void stop() {
         bus.unregister(this);
-        streamServer.stop();
+//        streamServer.stop();
         new Thread(new Runnable() {
             @Override
             public void run() {

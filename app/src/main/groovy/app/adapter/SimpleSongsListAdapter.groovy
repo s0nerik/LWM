@@ -5,7 +5,6 @@ import android.graphics.ColorFilter
 import android.os.Build
 import android.support.v7.widget.PopupMenu
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -29,7 +28,7 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
     private class OnContextButtonClickListener implements View.OnClickListener {
         private int position;
 
-        private OnContextButtonClickListener(int pos) {
+        OnContextButtonClickListener(int pos) {
             position = pos;
         }
 
@@ -43,7 +42,25 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
                 menu.inflate(R.menu.songs_popup);
             }
 
-            menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(position));
+            menu.onMenuItemClickListener = {
+                switch (it.getItemId()){
+                    case R.id.action_remove_from_queue:
+                        player.removeFromQueue(songsList.get(position));
+                        Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
+                        toast.show();
+                        return true;
+                    case R.id.action_add_to_queue:
+                        player.addToQueue(songsList.get(position));
+                        Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
+                        toast.show();
+                        return true;
+                    case R.id.set_as_ringtone:
+                        Utils.setSongAsRingtone(context, songsList.get(position));
+                        return true;
+                    default:
+                        return false;
+                }
+            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 final ImageView v = (ImageView) view;
@@ -60,35 +77,6 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
             menu.show();
         }
 
-    }
-
-    private class OnContextMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-        private int position;
-
-        private OnContextMenuItemClickListener(int pos) {
-            position = pos;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()){
-                case R.id.action_remove_from_queue:
-                    player.removeFromQueue(songsList.get(position));
-                    Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
-                    toast.show();
-                    return true;
-                case R.id.action_add_to_queue:
-                    player.addToQueue(songsList.get(position));
-                    Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
-                    toast.show();
-                    return true;
-                case R.id.set_as_ringtone:
-                    Utils.setSongAsRingtone(context, songsList.get(position));
-                    return true;
-                default:
-                    return false;
-            }
-        }
     }
 
     public SimpleSongsListAdapter(Context context, LocalPlayer player, List<Song> playlist) {
@@ -131,6 +119,49 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         Song song = songsList.get(position);
         holder.title.setText(song.getTitle());
         holder.duration.setText(song.getDurationString());
+
+        holder.contextMenu.onClickListener = {
+            PopupMenu menu = new PopupMenu(context, it);
+
+            if (player.isSongInQueue(songsList.get(position))) {
+                menu.inflate(R.menu.songs_popup_in_queue);
+            } else {
+                menu.inflate(R.menu.songs_popup);
+            }
+
+            menu.onMenuItemClickListener = {
+                switch (it.getItemId()){
+                    case R.id.action_remove_from_queue:
+                        player.removeFromQueue(songsList.get(position));
+                        Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
+                        toast.show();
+                        return true;
+                    case R.id.action_add_to_queue:
+                        player.addToQueue(songsList.get(position));
+                        Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
+                        toast.show();
+                        return true;
+                    case R.id.set_as_ringtone:
+                        Utils.setSongAsRingtone(context, songsList.get(position));
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                final ImageView v = (ImageView) it;
+                final ColorFilter oldFilter = v.colorFilter;
+
+                v.colorFilter = Color.parseColor("#33b5e5")
+
+                menu.onDismissListener = {
+                    v.setColorFilter oldFilter
+                }
+            }
+
+            menu.show();
+        }
 
         holder.contextMenu.setOnClickListener(new OnContextButtonClickListener(position));
 
