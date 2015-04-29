@@ -1,43 +1,39 @@
-package app.ui.activity;
+package app.ui.activity
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.ListView;
-
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.arasthel.swissknife.annotations.OnItemClick;
-import app.R;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import javax.inject.Inject;
-
-import app.PrefManager;
-import app.adapter.NavigationDrawerListAdapter;
-import app.events.player.service.CurrentSongAvailableEvent;
-import app.ui.base.DaggerActivity;
-import app.ui.fragment.LocalMusicFragment;
-import app.ui.fragment.StationsAroundFragment;
+import android.media.AudioManager
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.Toolbar
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.View
+import android.widget.ListView
+import app.PrefManager
+import app.R
+import app.adapter.NavigationDrawerListAdapter
+import app.events.player.service.CurrentSongAvailableEvent
+import app.ui.base.DaggerActivity
+import app.ui.fragment.LocalMusicFragment
+import app.ui.fragment.StationsAroundFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.arasthel.swissknife.annotations.OnItemClick
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
-import static android.media.AudioManager.ADJUST_LOWER
-import static android.media.AudioManager.ADJUST_RAISE
-import static android.media.AudioManager.FLAG_SHOW_UI
-import static android.media.AudioManager.STREAM_MUSIC
+import javax.inject.Inject
+
+import static android.media.AudioManager.*
 import static android.view.KeyEvent.KEYCODE_VOLUME_DOWN
-import static android.view.KeyEvent.KEYCODE_VOLUME_UP;
+import static android.view.KeyEvent.KEYCODE_VOLUME_UP
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class MainActivity extends DaggerActivity {
 
     @Inject
@@ -57,9 +53,9 @@ public class MainActivity extends DaggerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        SwissKnife.inject(this)
-        bus.register(this)
+        contentView = R.layout.activity_main
+        SwissKnife.inject this
+        bus.register this
         initNavigationDrawer()
 
 //        startActivity(new Intent(this, SplashActivity.class));

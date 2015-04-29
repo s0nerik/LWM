@@ -10,7 +10,7 @@ public abstract class DaggerActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Injector.inject(this);
+        super.onCreate(savedInstanceState)
+        Injector.inject this
     }
 }
