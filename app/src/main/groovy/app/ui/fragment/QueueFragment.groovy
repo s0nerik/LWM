@@ -1,22 +1,25 @@
 package app.ui.fragment
 
+import android.os.Bundle
+import android.support.annotation.Nullable
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import app.R
 import app.events.player.queue.PlaylistAddedToQueueEvent
 import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.player.LocalPlayer
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
 import com.squareup.otto.Subscribe
-import fr.grousset.fastsnail.transform.InjectLayout
-import fr.grousset.fastsnail.transform.InjectView
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
 
 @CompileStatic
-@InjectLayout(R.layout.fragment_list_queue)
-public class QueueFragment extends BaseSongsListFragment {
+public final class QueueFragment extends BaseSongsListFragment {
 
     @Inject
     LocalPlayer player;
@@ -33,6 +36,14 @@ public class QueueFragment extends BaseSongsListFragment {
         } else {
             emptyView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    View onCreateView(LayoutInflater inflater,
+                      @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        def v = inflater.inflate(R.layout.fragment_list_queue, container, false)
+        SwissKnife.inject(this, v)
+        return v
     }
 
     @Subscribe

@@ -13,8 +13,8 @@ import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
+import com.arasthel.swissknife.annotations.InjectView
 import com.squareup.otto.Subscribe
-import fr.grousset.fastsnail.transform.InjectView
 import groovy.transform.CompileStatic
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
 
