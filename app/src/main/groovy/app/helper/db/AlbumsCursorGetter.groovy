@@ -7,11 +7,14 @@ import android.provider.MediaStore;
 import app.Daggered;
 import app.model.Album;
 import app.model.Artist
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public final class AlbumsCursorGetter extends Daggered {
 
     private String artist;

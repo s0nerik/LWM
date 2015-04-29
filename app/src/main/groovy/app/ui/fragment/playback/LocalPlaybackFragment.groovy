@@ -23,12 +23,15 @@ import com.arasthel.swissknife.annotations.OnClick
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 import static app.events.access_point.AccessPointStateEvent.State.ENABLED
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class LocalPlaybackFragment extends PlaybackFragment {
 
     @Inject

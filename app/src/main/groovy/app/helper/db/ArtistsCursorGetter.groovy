@@ -6,11 +6,14 @@ import android.provider.MediaStore;
 
 import app.Daggered;
 import app.model.Artist
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public final class ArtistsCursorGetter extends Daggered {
 
     @Inject

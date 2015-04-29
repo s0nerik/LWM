@@ -18,11 +18,14 @@ import com.arasthel.swissknife.annotations.OnClick
 import app.R
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import org.apache.commons.lang3.text.WordUtils
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAdapter.ViewHolder> {
 
     private List<ArtistWrapper> artistWrapperList;

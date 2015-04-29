@@ -15,10 +15,13 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.bumptech.glide.Glide
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private final Context context;

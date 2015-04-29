@@ -16,11 +16,14 @@ import app.server.StreamServer
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class RemotePlaybackFragment extends PlaybackFragment {
 
     @Inject

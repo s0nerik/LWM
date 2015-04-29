@@ -14,11 +14,14 @@ import android.widget.Toast
 import app.model.Song
 import app.player.LocalPlayer
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class Utils {
 
     @Inject

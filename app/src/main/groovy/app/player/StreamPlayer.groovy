@@ -8,11 +8,14 @@ import app.model.Song
 import app.server.StreamServer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class StreamPlayer extends BasePlayer {
 
     @Inject Context context;

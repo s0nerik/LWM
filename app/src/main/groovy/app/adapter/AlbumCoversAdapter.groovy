@@ -13,10 +13,13 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.bumptech.glide.Glide
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Inject

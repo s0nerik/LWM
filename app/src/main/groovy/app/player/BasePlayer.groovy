@@ -6,11 +6,14 @@ import app.events.player.playback.SongPlayingEvent
 import app.model.Song
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 abstract class BasePlayer extends MediaPlayer {
 
     @Inject

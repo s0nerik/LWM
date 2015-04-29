@@ -13,10 +13,13 @@ import com.arasthel.swissknife.annotations.InjectView
 import app.R
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class ArtistInfoActivity extends BaseLocalActivity {
 
     @Inject

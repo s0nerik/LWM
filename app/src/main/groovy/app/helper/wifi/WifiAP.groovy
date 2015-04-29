@@ -10,7 +10,10 @@ import android.util.Log;
 import app.Injector;
 import app.Utils;
 import app.events.access_point.AccessPointStateEvent;
-import com.squareup.otto.Bus;
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import java.lang.reflect.Method;
 
@@ -20,6 +23,8 @@ import static app.events.access_point.AccessPointStateEvent.State.CHANGING;
 import static app.events.access_point.AccessPointStateEvent.State.DISABLED;
 import static app.events.access_point.AccessPointStateEvent.State.ENABLED;
 
+@CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class WifiAP {
     private static final int WIFI_AP_STATE_UNKNOWN = -1;
     public static String AP_NAME_REGEXP = "♪ (.{1,22}) #([0123456789abcdefABCDEF]{6})";

@@ -21,16 +21,19 @@ import com.arasthel.swissknife.annotations.OnClick
 import app.R
 import es.claucookie.miniequalizerlibrary.EqualizerView
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.BaseViewHolder> {
 
     private final Context context;
     private List<Song> songs;
 
-    int selection = -1;
+    public int selection = -1;
 
     private boolean newQueueOnClick;
 

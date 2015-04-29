@@ -69,11 +69,11 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     }
 
     protected void setSelection(int position) {
-        int prevSelection = adapter.getSelection();
+        int prevSelection = adapter.selection;
         adapter.setSelection(position);
         if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
                 position > layoutManager.findLastCompletelyVisibleItemPosition()) {
-            if (Math.abs(prevSelection - adapter.getSelection()) <= 100) {
+            if (Math.abs(prevSelection - adapter.selection) <= 100) {
                 recycler.smoothScrollToPosition(position);
             } else {
                 recycler.scrollToPosition(position);

@@ -6,9 +6,12 @@ import app.R;
 import app.events.server.ClientConnectedEvent;
 import app.events.server.ClientDisconnectedEvent;
 import com.squareup.otto.Subscribe
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class LocalPlaybackActivity extends PlaybackActivity {
 
     @Override

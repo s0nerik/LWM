@@ -14,8 +14,11 @@ import com.joanzapata.android.asyncservice.api.annotation.OnMessage
 import com.joanzapata.android.asyncservice.api.internal.AsyncService
 import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public final class SongsListFragment extends BaseSongsListFragment {
 
     @InjectView(R.id.fab)

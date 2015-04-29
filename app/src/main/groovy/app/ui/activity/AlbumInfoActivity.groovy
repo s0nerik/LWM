@@ -28,11 +28,14 @@ import com.nirhart.parallaxscroll.views.ParallaxScrollView
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.OnItemClickListener {
 
     @InjectView(R.id.toolbar)

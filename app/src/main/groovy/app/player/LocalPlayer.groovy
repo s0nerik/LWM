@@ -20,11 +20,14 @@ import app.server.MusicServer
 import app.service.LocalPlayerService
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 class LocalPlayer extends BasePlayer {
 
     @Inject

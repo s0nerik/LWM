@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import app.R;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
@@ -23,6 +26,8 @@ import app.ui.Croutons;
 import app.ui.fragment.playback.RemotePlaybackFragment;
 import ru.noties.debug.Debug;
 
+@CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class RemotePlaybackActivity extends PlaybackActivity {
 
     private int duration;

@@ -9,11 +9,14 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 import app.Daggered
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class Blur extends Daggered {
 
     public static final int RADIUS = 16;

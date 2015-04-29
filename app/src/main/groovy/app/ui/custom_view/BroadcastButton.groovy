@@ -1,26 +1,29 @@
-package app.ui.custom_view;
+package app.ui.custom_view
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.content.Context
+import android.content.res.Resources
+import android.util.AttributeSet
+import android.view.View
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import app.Injector
+import app.R
+import app.events.access_point.AccessPointStateEvent
+import app.helper.wifi.WifiAP
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
+import ru.noties.debug.Debug
 
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import app.R;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import javax.inject.Inject
 
-import javax.inject.Inject;
-
-import app.Injector;
-import app.events.access_point.AccessPointStateEvent;
-import app.helper.wifi.WifiAP;
-import ru.noties.debug.Debug;
-
+@CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class BroadcastButton extends RelativeLayout {
 
     @Inject
@@ -86,14 +89,14 @@ public class BroadcastButton extends RelativeLayout {
     @Subscribe
     public void onAccessPointStateEvent(AccessPointStateEvent event) {
         switch (event.getState()) {
-            case CHANGING:
+            case AccessPointStateEvent.State.CHANGING:
                 setProgressVisibility(true);
                 break;
-            case DISABLED:
+            case AccessPointStateEvent.State.DISABLED:
                 setProgressVisibility(false);
                 setBroadcastState(false);
                 break;
-            case ENABLED:
+            case AccessPointStateEvent.State.ENABLED:
                 setProgressVisibility(false);
                 setBroadcastState(true);
                 break;

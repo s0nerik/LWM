@@ -19,8 +19,11 @@ import com.joanzapata.android.asyncservice.api.annotation.OnMessage
 import com.joanzapata.android.asyncservice.api.internal.AsyncService
 import app.R
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @InjectView(R.id.empty)
