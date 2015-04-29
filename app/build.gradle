@@ -13,6 +13,7 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
+    maven { url 'http://repo.grousset.fr/snapshots' }
 }
 
 project.androidGroovy {
@@ -122,6 +123,9 @@ dependencies {
         transitive = true
     }
     compile 'ru.noties:debug:1.1.3'
+    compile('fr.grousset.fastsnail:fastsnail:0.1-SNAPSHOT') {
+        exclude group: 'org.codehaus.groovy'
+    }
 
 //    // F*CK YOU, BOILERPLATE! =)
 //    compile 'com.hannesdorfmann.fragmentargs:annotation:2.0.1'

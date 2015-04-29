@@ -11,7 +11,7 @@ import ru.noties.debug.Debug
 import javax.inject.Inject
 
 @CompileStatic
-public abstract class BasePlayer extends MediaPlayer {
+abstract class BasePlayer extends MediaPlayer {
 
     @Inject
     AudioManager audioManager;

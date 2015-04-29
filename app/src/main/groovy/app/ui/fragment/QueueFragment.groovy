@@ -1,28 +1,28 @@
-package app.ui.fragment;
+package app.ui.fragment
 
-import android.view.View;
-
-import app.R;
-import app.events.player.queue.PlaylistAddedToQueueEvent;
-import app.events.player.queue.QueueShuffledEvent;
-import app.events.player.queue.SongAddedToQueueEvent;
-import app.events.player.queue.SongRemovedFromQueueEvent;
-import app.player.LocalPlayer;
+import android.view.View
+import app.R
+import app.events.player.queue.PlaylistAddedToQueueEvent
+import app.events.player.queue.QueueShuffledEvent
+import app.events.player.queue.SongAddedToQueueEvent
+import app.events.player.queue.SongRemovedFromQueueEvent
+import app.player.LocalPlayer
 import com.squareup.otto.Subscribe
-import groovy.transform.CompileStatic;
+import fr.grousset.fastsnail.transform.InjectLayout
+import fr.grousset.fastsnail.transform.InjectView
+import groovy.transform.CompileStatic
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
 @CompileStatic
+@InjectLayout(R.layout.fragment_list_queue)
 public class QueueFragment extends BaseSongsListFragment {
 
     @Inject
     LocalPlayer player;
 
-    @Override
-    protected int getViewId() {
-        return R.layout.fragment_list_queue;
-    }
+    @InjectView(R.id.emptyView)
+    View emptyView
 
     @Override
     protected void loadSongs() {
@@ -31,7 +31,7 @@ public class QueueFragment extends BaseSongsListFragment {
             initAdapter(songs);
             setSelection(currentSong);
         } else {
-            mEmptyView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.VISIBLE);
         }
     }
 

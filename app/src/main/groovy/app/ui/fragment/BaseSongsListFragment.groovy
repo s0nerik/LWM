@@ -2,10 +2,7 @@ package app.ui.fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import app.R
 import app.adapter.SongsListAdapter
@@ -16,9 +13,8 @@ import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import com.squareup.otto.Subscribe
+import fr.grousset.fastsnail.transform.InjectView
 import groovy.transform.CompileStatic
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
 
@@ -28,13 +24,9 @@ import javax.inject.Inject
 abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.twoWayView)
-    RecyclerView mTwoWayView;
-    @InjectView(R.id.progress)
-    ProgressBar mProgress;
-    @InjectView(R.id.emptyView)
-    View mEmptyView;
+    RecyclerView recycler
     @InjectView(R.id.fast_scroller)
-    VerticalRecyclerViewFastScroller fastScroller;
+    VerticalRecyclerViewFastScroller fastScroller
 
     @Inject
     protected LocalPlayer player;
@@ -46,31 +38,23 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     private LinearLayoutManager layoutManager;
 
-    protected abstract int getViewId();
     protected abstract void loadSongs();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        setBusListeners(new BusListener(), this);
-        super.onCreate(savedInstanceState);
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        setBusListeners(new BusListener(), this)
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = View.inflate(getActivity(), getViewId(), null);
-        SwissKnife.inject(this, v);
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mTwoWayView.setLayoutManager(layoutManager);
-        mTwoWayView.setHasFixedSize(true);
-        fastScroller.setRecyclerView(mTwoWayView);
-        mTwoWayView.addOnScrollListener(fastScroller.getOnScrollListener());
-        return v;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadSongs();
+    void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState)
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
+        recycler.setLayoutManager(layoutManager)
+        recycler.setHasFixedSize(true)
+        fastScroller.setRecyclerView(recycler)
+        recycler.addOnScrollListener(fastScroller.getOnScrollListener())
+        loadSongs()
     }
 
     protected void setSelection(Song song) {
@@ -88,16 +72,16 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
                 position > layoutManager.findLastCompletelyVisibleItemPosition()) {
             if (Math.abs(prevSelection - adapter.getSelection()) <= 100) {
-                mTwoWayView.smoothScrollToPosition(position);
+                recycler.smoothScrollToPosition(position);
             } else {
-                mTwoWayView.scrollToPosition(position);
+                recycler.scrollToPosition(position);
             }
         }
     }
 
     protected void initAdapter(List<Song> songs) {
         adapter = new SongsListAdapter(getActivity(), songs);
-        mTwoWayView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
     }
 
     protected void shuffleAll() {

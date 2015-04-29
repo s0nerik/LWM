@@ -25,7 +25,7 @@ import ru.noties.debug.Debug
 import javax.inject.Inject
 
 @CompileStatic
-public class LocalPlayer extends BasePlayer {
+class LocalPlayer extends BasePlayer {
 
     @Inject
     Bus bus;
