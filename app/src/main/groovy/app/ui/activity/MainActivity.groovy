@@ -28,78 +28,82 @@ import app.events.player.service.CurrentSongAvailableEvent;
 import app.ui.base.DaggerActivity;
 import app.ui.fragment.LocalMusicFragment;
 import app.ui.fragment.StationsAroundFragment;
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+
+import static android.media.AudioManager.ADJUST_LOWER
+import static android.media.AudioManager.ADJUST_RAISE
+import static android.media.AudioManager.FLAG_SHOW_UI
+import static android.media.AudioManager.STREAM_MUSIC
+import static android.view.KeyEvent.KEYCODE_VOLUME_DOWN
+import static android.view.KeyEvent.KEYCODE_VOLUME_UP;
 
 @CompileStatic
 public class MainActivity extends DaggerActivity {
 
-    private ActionBarDrawerToggle drawerToggle;
-
     @Inject
-    Bus bus;
-
+    Bus bus
     @Inject
-    PrefManager prefManager;
+    AudioManager audio
+    @Inject
+    PrefManager prefManager
 
     @InjectView(R.id.drawer_list)
-    ListView mDrawerList;
+    ListView mDrawerList
     @InjectView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
+    DrawerLayout mDrawerLayout
     @InjectView(R.id.nowPlayingFrame)
-    View mNowPlayingFrame;
-
-    private FragmentManager fragmentManager = getSupportFragmentManager();
+    View mNowPlayingFrame
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        SwissKnife.inject(this);
-        bus.register(this);
-        initNavigationDrawer();
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        SwissKnife.inject(this)
+        bus.register(this)
+        initNavigationDrawer()
 
 //        startActivity(new Intent(this, SplashActivity.class));
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        bus.unregister(this);
+        super.onDestroy()
+        bus.unregister(this)
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        showFragmentFromDrawer(prefManager.drawerSelection().getOr(0));
+        super.onPostCreate(savedInstanceState)
+        showFragmentFromDrawer(prefManager.drawerSelection().getOr(0))
     }
 
     private void showFragmentFromDrawer(int i) {
-        Fragment fragment;
+        Fragment fragment
         switch (i) {
             case 0:
-                fragment = new LocalMusicFragment();
-                break;
+                fragment = new LocalMusicFragment()
+                break
             case 1:
-                fragment = new StationsAroundFragment();
-                break;
+                fragment = new StationsAroundFragment()
+                break
             default:
-                fragment = new LocalMusicFragment();
-                break;
+                fragment = new LocalMusicFragment()
+                break
         }
-        fragmentManager.beginTransaction()
+        supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .commit();
+                .commit()
     }
 
     protected void initNavigationDrawer() {
         // Set the adapter for the list view
         mDrawerList.setAdapter(new NavigationDrawerListAdapter(this,
                 getResources().getStringArray(R.array.drawer_items),
-                getResources().obtainTypedArray(R.array.drawer_icons)));
+                getResources().obtainTypedArray(R.array.drawer_icons)))
 
-        int activeFragment = prefManager.drawerSelection().getOr(0);
+        int activeFragment = prefManager.drawerSelection().getOr(0)
 
-        mDrawerList.setItemChecked(activeFragment, true);
+        mDrawerList.setItemChecked(activeFragment, true)
     }
 
     @Subscribe
@@ -116,32 +120,29 @@ public class MainActivity extends DaggerActivity {
 
     @Subscribe
     public void onToolbarAvailable(Toolbar toolbar) {
-        drawerToggle = new ActionBarDrawerToggle(
+        def drawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
                 toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
         );
-        mDrawerLayout.setDrawerListener(drawerToggle);
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
-        drawerToggle.syncState();
+        mDrawerLayout.drawerListener = drawerToggle
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT)
+        drawerToggle.syncState()
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
-                return true;
+            case KEYCODE_VOLUME_UP:
+                audio.adjustStreamVolume(STREAM_MUSIC, ADJUST_RAISE, FLAG_SHOW_UI)
+                return true
+            case KEYCODE_VOLUME_DOWN:
+                audio.adjustStreamVolume(STREAM_MUSIC, ADJUST_LOWER, FLAG_SHOW_UI)
+                return true
             default:
-                return super.onKeyDown(keyCode, event);
+                return super.onKeyDown(keyCode, event)
         }
     }
 
