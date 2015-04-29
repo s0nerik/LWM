@@ -2,10 +2,15 @@ package app.ui.fragment.playback
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.Nullable
 import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import app.R
 import app.Utils
+import app.ast.InjectView
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -18,15 +23,12 @@ import app.player.PlayerUtils
 import app.ui.async.RemoteAlbumArtAsyncGetter
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.nvanbenschoten.motion.ParallaxImageView
-import fr.grousset.fastsnail.transform.InjectLayout
-import fr.grousset.fastsnail.transform.InjectView
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
-@InjectLayout(R.layout.fragment_playback)
 public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     private BasePlayer player;
@@ -68,6 +70,14 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     protected abstract BasePlayer getPlayer();
     protected abstract void setCover(final Song song);
     protected abstract void setBackground(final Song song);
+
+    @Override
+    View onCreateView(LayoutInflater inflater,
+                      @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        def v = inflater.inflate(R.layout.fragment_playback, container, false)
+//        SwissKnife.inject(this, v)
+        return v
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

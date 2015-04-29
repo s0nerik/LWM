@@ -1,23 +1,20 @@
-package app.ui.async;
+package app.ui.async
+import android.app.ProgressDialog
+import android.content.Context
+import android.content.Intent
+import android.os.AsyncTask
+import app.server.StreamServer
+import app.ui.activity.RemotePlaybackActivity
+import groovy.transform.CompileStatic
+import org.apache.http.client.HttpClient
+import org.apache.http.client.ResponseHandler
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.impl.client.BasicResponseHandler
+import org.apache.http.impl.client.DefaultHttpClient
+import org.json.JSONException
+import org.json.JSONObject
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-
-import app.server.StreamServer;
-import app.ui.activity.RemotePlaybackActivity;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
+@CompileStatic
 public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
 
     private String artist;

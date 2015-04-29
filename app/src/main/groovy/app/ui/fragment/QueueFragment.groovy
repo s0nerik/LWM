@@ -24,9 +24,6 @@ public final class QueueFragment extends BaseSongsListFragment {
     @Inject
     LocalPlayer player;
 
-    @InjectView(R.id.emptyView)
-    View emptyView
-
     @Override
     protected void loadSongs() {
         songs = player.getQueue();

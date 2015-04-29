@@ -1,5 +1,7 @@
 package app
 import android.app.Application
+import android.content.Context
+import android.support.multidex.MultiDex
 import app.modules.AndroidModule
 import com.crashlytics.android.Crashlytics
 import groovy.transform.CompileStatic
@@ -18,4 +20,9 @@ public final class App extends Application {
         Debug.init(BuildConfig.DEBUG)
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
 }

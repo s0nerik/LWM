@@ -1,27 +1,22 @@
-package app.ui.async;
+package app.ui.async
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
+import android.os.AsyncTask
+import android.widget.ImageView
+import app.R
+import app.server.StreamServer
+import app.ui.Blur
+import groovy.transform.CompileStatic
+import org.apache.http.HttpResponse
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.impl.client.DefaultHttpClient
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.os.AsyncTask;
-import android.widget.ImageView;
-
-import app.R;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import app.server.StreamServer;
-import app.ui.Blur;
-
+@CompileStatic
 public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
     private Context context;
     private ImageView albumArt;
@@ -38,7 +33,7 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
         this.albumArt = albumArt;
         this.bg = bg;
         this.context = context;
-        drawables = new Drawable[]{bg.getDrawable(), bg.getDrawable()};
+        drawables = [ bg.getDrawable() ] * 2
     }
 
     @Override

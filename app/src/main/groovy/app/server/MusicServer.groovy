@@ -1,35 +1,21 @@
-package app.server;
+package app.server
+import app.Injector
+import app.events.chat.*
+import app.events.server.*
+import app.model.chat.ChatMessage
+import app.player.LocalPlayer
+import app.websocket.SocketMessage
+import app.websocket.WebSocketMessageServer
+import com.google.gson.Gson
+import com.squareup.otto.Bus
+import com.squareup.otto.Produce
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import org.java_websocket.WebSocket
 
-import com.google.gson.Gson;
-import app.Injector;
-import app.events.chat.ChatMessageReceivedEvent;
-import app.events.chat.ChatMessagesAvailableEvent;
-import app.events.chat.NotifyMessageAddedEvent;
-import app.events.chat.ResetUnreadMessagesEvent;
-import app.events.chat.SendChatMessageEvent;
-import app.events.chat.SetUnreadMessagesEvent;
-import app.events.server.AllClientsReadyEvent;
-import app.events.server.PauseClientsEvent;
-import app.events.server.PrepareClientsEvent;
-import app.events.server.SeekToClientsEvent;
-import app.events.server.StartClientsEvent;
-import app.model.chat.ChatMessage;
-import app.player.LocalPlayer;
-import app.websocket.SocketMessage;
-import app.websocket.WebSocketMessageServer;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
+import javax.inject.Inject
 
-import org.java_websocket.WebSocket;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
+@CompileStatic
 public class MusicServer {
 
     private WebSocketMessageServer webSocketMessageServer;

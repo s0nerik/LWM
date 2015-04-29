@@ -12,7 +12,8 @@ import android.view.LayoutInflater;
 import android.view.WindowManager;
 
 import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
+import com.squareup.otto.ThreadEnforcer
+import groovy.transform.CompileStatic;
 
 import javax.inject.Singleton;
 
@@ -66,7 +67,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
-@Module(injects = {
+@Module(injects = [
 //        ArtistAlbumsBitmapHelper.class,
 
         WebSocketMessageServer.class,
@@ -133,8 +134,9 @@ import static android.content.Context.WIFI_SERVICE;
         ArtistInfoActivity.class,
         MainActivity.class,
 
-        },
+        ],
         library = true)
+@CompileStatic
 public class AndroidModule {
     private final App application;
 

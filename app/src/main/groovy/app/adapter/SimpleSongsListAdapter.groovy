@@ -1,29 +1,22 @@
-package app.adapter;
+package app.adapter
+import android.content.Context
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.os.Build
+import android.support.v7.widget.PopupMenu
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import app.R
+import app.Utils
+import app.model.Song
+import app.player.LocalPlayer
+import es.claucookie.miniequalizerlibrary.EqualizerView
+import groovy.transform.CompileStatic
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.os.Build;
-import android.support.v7.widget.PopupMenu;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Checkable;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import app.R;
-import app.Utils;
-import app.model.Song;
-import app.player.LocalPlayer;
-
-import java.util.List;
-
-import es.claucookie.miniequalizerlibrary.EqualizerView;
-
+@CompileStatic
 public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
 
     private final Context context;
@@ -79,18 +72,16 @@ public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()){
-                case R.id.action_remove_from_queue: {
+                case R.id.action_remove_from_queue:
                     player.removeFromQueue(songsList.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
                     toast.show();
-                }
-                return true;
-                case R.id.action_add_to_queue: {
+                    return true;
+                case R.id.action_add_to_queue:
                     player.addToQueue(songsList.get(position));
                     Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                     toast.show();
-                }
-                return true;
+                    return true;
                 case R.id.set_as_ringtone:
                     Utils.setSongAsRingtone(context, songsList.get(position));
                     return true;

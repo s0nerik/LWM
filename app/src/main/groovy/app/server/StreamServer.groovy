@@ -1,40 +1,32 @@
-package app.server;
+package app.server
+import android.content.ContentResolver
+import android.util.Log
+import app.Injector
+import app.model.Song
+import app.player.LocalPlayer
+import com.google.gson.Gson
+import fi.iki.elonen.NanoHTTPD
+import groovy.transform.CompileStatic
+import ru.noties.debug.Debug
 
-import android.content.ContentResolver;
-import android.util.Log;
+import javax.inject.Inject
 
-import com.google.gson.Gson;
-import app.Injector;
-import app.lib.NanoHTTPD;
-import app.model.Song;
-import app.player.LocalPlayer;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import ru.noties.debug.Debug;
-
+@CompileStatic
 public class StreamServer extends NanoHTTPD {
 
     public static final String PORT = "8888";
 
-    public interface Method {
-        String CURRENT_INFO = "/info";
-        String CURRENT_ALBUMART = "/albumart";
-        String STREAM = "/stream";
+    static class Method {
+        static String CURRENT_INFO = "/info";
+        static String CURRENT_ALBUMART = "/albumart";
+        static String STREAM = "/stream";
     }
 
-    public interface Url {
-        String SERVER_ADDRESS = "http://192.168.43.1:" + PORT;
-        String CURRENT_INFO = SERVER_ADDRESS + Method.CURRENT_INFO;
-        String CURRENT_ALBUMART = SERVER_ADDRESS + Method.CURRENT_ALBUMART;
-        String STREAM = SERVER_ADDRESS + Method.STREAM;
+    static class Url {
+        static String SERVER_ADDRESS = "http://192.168.43.1:" + PORT;
+        static String CURRENT_INFO = SERVER_ADDRESS + Method.CURRENT_INFO;
+        static String CURRENT_ALBUMART = SERVER_ADDRESS + Method.CURRENT_ALBUMART;
+        static String STREAM = SERVER_ADDRESS + Method.STREAM;
     }
 
     @Inject
@@ -67,7 +59,7 @@ public class StreamServer extends NanoHTTPD {
         Map<String, String> params = session.getParms();
 
         switch(method){
-            case GET: // Outcoming info
+            case NanoHTTPD.Method.GET: // Outcoming info
                 Song song = player.getCurrentSong();
                 switch (uri) {
                     case Method.STREAM:
