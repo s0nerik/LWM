@@ -8,6 +8,7 @@ import android.widget.ProgressBar
 import app.R
 import app.ast.InjectView
 import app.ui.async.MusicLoaderService
+import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.OnClick
 import com.joanzapata.android.asyncservice.api.annotation.InjectService
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage
@@ -37,7 +38,7 @@ public final class SongsListFragment extends BaseSongsListFragment {
     View onCreateView(LayoutInflater inflater,
                       @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         def v = inflater.inflate(R.layout.fragment_list_songs, container, false)
-//        SwissKnife.inject(this, v)
+        SwissKnife.inject(this, v)
         return v
     }
 

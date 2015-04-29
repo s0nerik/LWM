@@ -52,9 +52,9 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
-        recycler.setLayoutManager(layoutManager)
-        recycler.setHasFixedSize(true)
-        fastScroller.setRecyclerView(recycler)
+        recycler.layoutManager = layoutManager
+        recycler.hasFixedSize = true
+        fastScroller.recyclerView = recycler
         recycler.addOnScrollListener(fastScroller.getOnScrollListener())
         loadSongs()
     }
