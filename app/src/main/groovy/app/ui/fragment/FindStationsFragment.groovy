@@ -36,6 +36,8 @@ import app.R
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.DefaultHttpClient
@@ -46,6 +48,7 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.InvocationTargetException
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class FindStationsFragment extends DaggerFragment {
 
     @Inject

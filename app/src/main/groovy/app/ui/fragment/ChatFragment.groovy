@@ -25,10 +25,13 @@ import app.R
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class ChatFragment extends DaggerFragment {
 
     @InjectView(R.id.covers)

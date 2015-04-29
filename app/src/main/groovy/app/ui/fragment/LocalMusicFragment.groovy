@@ -25,10 +25,13 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class LocalMusicFragment extends DaggerFragment {
 
     @Inject

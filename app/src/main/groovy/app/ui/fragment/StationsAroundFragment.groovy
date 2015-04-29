@@ -20,7 +20,9 @@ import com.astuetz.PagerSlidingTabStrip;
 import app.R;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
+import com.squareup.otto.Subscribe
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
@@ -34,6 +36,7 @@ import groovy.transform.CompileStatic;
 import ru.noties.debug.Debug;
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public class StationsAroundFragment extends DaggerFragment {
 
     @Inject

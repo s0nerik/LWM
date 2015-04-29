@@ -1,5 +1,4 @@
 package app.ui.fragment
-
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.view.LayoutInflater
@@ -12,13 +11,15 @@ import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.player.LocalPlayer
 import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public final class QueueFragment extends BaseSongsListFragment {
 
     @Inject
