@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Toast
 import app.R
 import app.adapter.SongsListAdapter
-import app.ast.InjectView
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -14,8 +13,11 @@ import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.InjectView
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
 
 import javax.inject.Inject
@@ -51,7 +53,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
+        SwissKnife.inject(this, view)
+        layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recycler.layoutManager = layoutManager
         recycler.hasFixedSize = true
         fastScroller.recyclerView = recycler

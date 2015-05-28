@@ -10,7 +10,6 @@ import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.player.LocalPlayer
-import com.arasthel.swissknife.SwissKnife
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -40,7 +39,6 @@ public final class QueueFragment extends BaseSongsListFragment {
     View onCreateView(LayoutInflater inflater,
                       @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         def v = inflater.inflate(R.layout.fragment_list_queue, container, false)
-        SwissKnife.inject(this, v)
         return v
     }
 

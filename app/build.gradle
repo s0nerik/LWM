@@ -73,15 +73,15 @@ dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
     compile 'org.codehaus.groovy:groovy:+:grooid'
-    compile "com.arasthel:swissknife:1.2.3"
+    compile "com.arasthel:swissknife:1.3.0"
 
     // Support libs
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.android.support:support-v4:22.1.1'
-    compile 'com.android.support:recyclerview-v7:22.1.0'
-    compile 'com.android.support:cardview-v7:22.1.0'
-    compile 'com.android.support:palette-v7:22.1.0'
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
+    compile 'com.android.support:palette-v7:22.2.0'
+//    compile 'com.android.support:multidex:+'
 
     // GMS
     compile 'com.google.android.gms:play-services-plus:+'
