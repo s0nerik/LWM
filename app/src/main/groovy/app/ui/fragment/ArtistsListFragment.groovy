@@ -32,7 +32,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     ProgressBar mProgress;
 
 //    @InjectService
-//    MusicLoaderService musicLoaderService;
+//    SongsManager musicLoaderService;
 
     @Override
     void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     }
 
 //    @OnMessage
-//    public void onArtistsLoaded(MusicLoaderService.ArtistsLoadedEvent event) {
+//    public void onArtistsLoaded(SongsManager.ArtistsLoadedEvent event) {
 //        mProgress.setVisibility(View.GONE);
 //        List<ArtistWrapper> artists = event.getArtists();
 //        if (!artists.isEmpty()) {

@@ -24,6 +24,9 @@ import app.adapter.AlbumsAdapter;
 import app.adapter.ArtistWrappersAdapter;
 import app.adapter.LocalMusicFragmentsAdapter;
 import app.adapter.SongsListAdapter;
+import app.adapter.view_holders.OnContextMenuItemClickListener;
+import app.adapter.view_holders.SongViewHolder;
+import app.data_managers.SongsManager;
 import app.events.MainThreadBus;
 import app.helper.db.AlbumsCursorGetter;
 import app.helper.db.ArtistsCursorGetter;
@@ -68,6 +71,9 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
+        SongViewHolder.class,
+        OnContextMenuItemClickListener.class,
+
 //        ArtistAlbumsBitmapHelper.class,
 
         WebSocketMessageServer.class,
@@ -244,6 +250,12 @@ public class AndroidModule {
     @Singleton
     PrefManager providePrefManager() {
         return new PrefManager(application);
+    }
+
+    @Provides
+    @Singleton
+    SongsManager provideSongsManager() {
+        return new SongsManager();
     }
 
 }

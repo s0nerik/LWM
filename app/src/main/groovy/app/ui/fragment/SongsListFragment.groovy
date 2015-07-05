@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.view.LayoutInflater
@@ -6,14 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import app.R
-import app.ui.async.MusicLoaderService
+import app.data_managers.SongsManager
+import app.model.Song
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.joanzapata.android.asyncservice.api.annotation.OnMessage
+import com.joanzapata.android.asyncservice.api.internal.AsyncService
 import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+
+import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -24,12 +28,12 @@ public final class SongsListFragment extends BaseSongsListFragment {
     @InjectView(R.id.progress)
     ProgressBar progress
 
-//    @InjectService
-//    MusicLoaderService musicLoaderService;
+    @Inject
+    SongsManager songsManager;
 
-//    SongsListFragment() {
-//        AsyncService.inject(this);
-//    }
+    SongsListFragment() {
+        AsyncService.inject(this);
+    }
 
     @Override
     View onCreateView(LayoutInflater inflater,
@@ -42,7 +46,7 @@ public final class SongsListFragment extends BaseSongsListFragment {
     protected void loadSongs() {
         progress.setVisibility(View.VISIBLE);
         mFab.hide();
-//        musicLoaderService.loadAllSongs();
+        songsManager.loadAllSongs().subscribe(this.&onSongsLoaded);
     }
 
     @OnClick(R.id.fab)
@@ -50,10 +54,8 @@ public final class SongsListFragment extends BaseSongsListFragment {
         shuffleAll();
     }
 
-    @OnMessage
-    public void onSongsLoaded(MusicLoaderService.SongsLoadedEvent event) {
+    private void onSongsLoaded(List<Song> songs) {
         progress.setVisibility(View.GONE);
-        songs = event.getSongs();
         if (!songs.isEmpty()) {
             initAdapter(songs);
             setSelection(currentSong);
@@ -63,5 +65,19 @@ public final class SongsListFragment extends BaseSongsListFragment {
             emptyView.setVisibility(View.VISIBLE);
         }
     }
+
+//    @OnMessage
+//    public void onSongsLoaded(SongsManager.SongsLoadedEvent event) {
+//        progress.setVisibility(View.GONE);
+//        songs = event.getSongs();
+//        if (!songs.isEmpty()) {
+//            initAdapter(songs);
+//            setSelection(currentSong);
+//            mFab.show(true);
+//            mFab.attachToRecyclerView(recycler);
+//        } else {
+//            emptyView.setVisibility(View.VISIBLE);
+//        }
+//    }
 
 }

@@ -26,6 +26,7 @@ import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.nvanbenschoten.motion.ParallaxImageView
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
@@ -36,6 +37,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     private BasePlayer player;
 
     @Inject
+    @PackageScope
     Resources res
 
     @InjectView(R.id.background)

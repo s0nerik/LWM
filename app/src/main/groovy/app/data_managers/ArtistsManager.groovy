@@ -1,4 +1,4 @@
-package app.ui.async
+package app.data_managers
 import android.database.Cursor
 import android.support.annotation.Nullable
 import app.helper.db.AlbumsCursorGetter
@@ -6,15 +6,14 @@ import app.helper.db.ArtistsCursorGetter
 import app.helper.db.Order
 import app.helper.db.SongsCursorGetter
 import app.model.*
-import com.joanzapata.android.asyncservice.api.annotation.AsyncService
 import groovy.transform.CompileStatic
+import rx.Observable
 
-@AsyncService
 @CompileStatic
-public class MusicLoaderService {
+public class ArtistsManager {
 
-    public SongsLoadedEvent loadAllSongs() {
-        return new SongsLoadedEvent(songs: Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)));
+    public Observable<List<Song>> loadAllSongs() {
+        return Observable.just(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)));
     }
 
     public ArtistsLoadedEvent loadAllArtists() {

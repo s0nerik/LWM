@@ -15,7 +15,7 @@ import app.adapter.AlbumsAdapter
 import app.model.Album
 import app.model.Artist
 import app.ui.activity.AlbumInfoActivity
-import app.ui.async.MusicLoaderService
+import app.data_managers.SongsManager
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnItemClick
@@ -36,7 +36,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     ProgressBar mProgress;
 
 //    @InjectService
-//    MusicLoaderService musicLoaderService;
+//    SongsManager musicLoaderService;
 
     Artist artist
 
@@ -75,7 +75,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     }
 
     @OnMessage
-    public void onAlbumsLoaded(MusicLoaderService.AlbumsLoadedEvent event) {
+    public void onAlbumsLoaded(SongsManager.AlbumsLoadedEvent event) {
         mProgress.setVisibility(View.GONE);
         albums = event.getAlbums();
         initAdapter(albums);

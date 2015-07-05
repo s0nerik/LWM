@@ -1,16 +1,6 @@
 package app.websocket;
 
 import com.google.gson.Gson;
-
-import app.Injector;
-import app.events.chat.ChatMessageReceivedEvent;
-import app.events.server.AllClientsReadyEvent;
-import app.events.server.ClientConnectedEvent;
-import app.events.server.ClientDisconnectedEvent;
-import app.events.server.ClientReadyEvent;
-import app.model.chat.ChatMessage;
-import app.player.LocalPlayer;
-import app.websocket.entities.ClientInfo;
 import com.squareup.otto.Bus;
 
 import org.java_websocket.WebSocket;
@@ -44,7 +34,7 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private Set<WebSocket> ready;
 
-    private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<>();
+    private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<WebSocket, ClientInfo>();
 
     private long lastMessageTime = -1;
 
@@ -120,7 +110,7 @@ public class WebSocketMessageServer extends WebSocketServer {
 
     private void processReadiness(WebSocket conn) {
         if (ready == null) {
-            ready = new HashSet<>();
+            ready = new HashSet<WebSocket>();
         }
         ready.add(conn);
 

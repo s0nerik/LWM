@@ -10,5 +10,6 @@ buildscript {
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.7'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.1.1'
     }
 }

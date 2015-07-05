@@ -1,14 +1,15 @@
 package app
-import android.app.Application
+
 import android.content.Context
 import android.support.multidex.MultiDex
+import android.support.multidex.MultiDexApplication
 import app.modules.AndroidModule
 import com.crashlytics.android.Crashlytics
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 
 @CompileStatic
-public final class App extends Application {
+public final class App extends MultiDexApplication {
 
     @Override
     public void onCreate() {
