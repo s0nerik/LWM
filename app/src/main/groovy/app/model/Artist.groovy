@@ -2,7 +2,7 @@ package app.model
 
 import android.database.Cursor
 import app.helper.db.AlbumsCursorGetter
-import com.arasthel.swissknife.annotations.Parcelable
+import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder;
 

@@ -19,8 +19,8 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.LocalPlayer
 import app.player.PlayerUtils
-import com.arasthel.swissknife.annotations.OnClick
 import com.bumptech.glide.Glide
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope

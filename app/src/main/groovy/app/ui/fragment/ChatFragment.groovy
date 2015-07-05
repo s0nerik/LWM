@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.Nullable
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import app.R
 import app.adapter.ChatAdapter
 import app.events.chat.ChatMessagesAvailableEvent
 import app.events.chat.NotifyMessageAddedEvent
@@ -17,11 +19,9 @@ import app.events.chat.ResetUnreadMessagesEvent
 import app.events.chat.SendChatMessageEvent
 import app.model.chat.ChatMessage
 import app.ui.base.DaggerFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
-import com.arasthel.swissknife.annotations.OnEditorAction
-import app.R
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
+import com.github.s0nerik.betterknife.annotations.OnEditorAction
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -55,7 +55,6 @@ public class ChatFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
-        SwissKnife.inject(this, v);
         return v;
     }
 

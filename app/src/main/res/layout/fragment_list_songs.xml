@@ -12,12 +12,12 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/item_songs" />
 
-    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
-        android:id="@+id/fast_scroller"
-        android:layout_width="24dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        />
+    <!--<xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller-->
+        <!--android:id="@+id/fast_scroller"-->
+        <!--android:layout_width="24dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--/>-->
 
     <LinearLayout
         android:id="@+id/emptyView"

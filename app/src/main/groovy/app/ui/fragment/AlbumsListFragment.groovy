@@ -10,19 +10,16 @@ import android.widget.GridView
 import android.widget.LinearLayout
 import android.widget.ListAdapter
 import android.widget.ProgressBar
+import app.R
 import app.adapter.AlbumsAdapter
 import app.model.Album
 import app.model.Artist
 import app.ui.activity.AlbumInfoActivity
 import app.ui.async.MusicLoaderService
 import app.ui.base.DaggerOttoOnResumeFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnItemClick
-import com.joanzapata.android.asyncservice.api.annotation.InjectService
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnItemClick
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage
-import com.joanzapata.android.asyncservice.api.internal.AsyncService
-import app.R
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -38,8 +35,8 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
-    @InjectService
-    MusicLoaderService musicLoaderService;
+//    @InjectService
+//    MusicLoaderService musicLoaderService;
 
     Artist artist
 
@@ -53,20 +50,20 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     private List<Album> albums = new ArrayList<>();
 
-    public AlbumsListFragment() {
-        AsyncService.inject(this);
-    }
+//    public AlbumsListFragment() {
+//        AsyncService.inject(this);
+//    }
 
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        artist = getArguments().getParcelable("artist") as Artist
+        artist = getArguments()?.getParcelable("artist") as Artist
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list_albums, container, false);
-        SwissKnife.inject(this, v);
+
         return v;
     }
 
@@ -74,7 +71,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mProgress.setVisibility(View.VISIBLE);
-        musicLoaderService.loadAllAlbums(artist);
+//        musicLoaderService.loadAllAlbums(artist);
     }
 
     @OnMessage

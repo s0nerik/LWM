@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import app.PrefManager
+import app.R
 import app.adapter.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.ui.ShouldStartArtistInfoActivity
@@ -17,10 +18,8 @@ import app.service.StreamPlayerService
 import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import com.astuetz.PagerSlidingTabStrip
-import app.R
+import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -63,23 +62,22 @@ public class LocalMusicFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_local_music, container, false);
-        SwissKnife.inject(this, v);
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initToolbar();
         bus.register(this);
-        return v;
+        mPager.setAdapter(new LocalMusicFragmentsAdapter(getChildFragmentManager()));
+        mTabs.setViewPager(mPager);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         bus.unregister(this);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mPager.setAdapter(new LocalMusicFragmentsAdapter(getChildFragmentManager()));
-        mTabs.setViewPager(mPager);
     }
 
     protected void initToolbar() {

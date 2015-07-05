@@ -17,9 +17,8 @@ import app.events.player.service.CurrentSongAvailableEvent
 import app.ui.base.DaggerActivity
 import app.ui.fragment.LocalMusicFragment
 import app.ui.fragment.StationsAroundFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnItemClick
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnItemClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -54,7 +53,6 @@ public class MainActivity extends DaggerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         contentView = R.layout.activity_main
-        SwissKnife.inject this
         bus.register this
         initNavigationDrawer()
 

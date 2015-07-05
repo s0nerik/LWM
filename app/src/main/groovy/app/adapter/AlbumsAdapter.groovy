@@ -1,4 +1,5 @@
 package app.adapter
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,9 @@ import app.R
 import app.Utils
 import app.model.Album
 import app.ui.custom_view.SquareWidthImageView
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import com.bumptech.glide.Glide
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -92,7 +93,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         View mShadow;
 
         ViewHolder(View view) {
-            SwissKnife.inject(this, view);
+            BetterKnife.inject(this, view);
         }
     }
 }

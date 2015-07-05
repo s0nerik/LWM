@@ -1,13 +1,14 @@
 package app.adapter
+
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import app.model.chat.ChatMessage
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import app.R
+import app.model.chat.ChatMessage
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -52,7 +53,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         ViewHolder(View view) {
             super(view);
-            SwissKnife.inject(this, view);
+            BetterKnife.inject(this, view);
         }
     }
 }

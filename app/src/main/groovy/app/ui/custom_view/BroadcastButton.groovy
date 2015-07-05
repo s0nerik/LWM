@@ -11,8 +11,8 @@ import app.Injector
 import app.R
 import app.events.access_point.AccessPointStateEvent
 import app.helper.wifi.WifiAP
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -57,7 +57,7 @@ public class BroadcastButton extends RelativeLayout {
 
     private void init() {
         inflate(getContext(), R.layout.layout_btn_broadcast, this);
-        SwissKnife.inject(this, this);
+        BetterKnife.inject(this, this);
         Injector.inject(this);
         setBroadcastState(wifiAP.isEnabled());
         onClickListener = { wifiAP.toggleWiFiAP() }

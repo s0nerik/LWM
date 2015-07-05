@@ -1,4 +1,5 @@
 package app.adapter
+
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -6,16 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import app.Injector
+import app.R
 import app.Utils
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.model.Artist
 import app.model.ArtistWrapper
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
-import app.R
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -86,7 +87,7 @@ public class ArtistWrappersAdapter extends RecyclerView.Adapter<ArtistWrappersAd
 
         ViewHolder(View view) {
             super(view);
-            SwissKnife.inject(this, view);
+            BetterKnife.inject(this, view);
         }
 
         @OnClick(R.id.itemLayout)

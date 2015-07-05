@@ -1,18 +1,18 @@
 package app.ui.activity
+
 import android.content.Intent
 import android.content.IntentSender
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.OnClick
+import app.R
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.UserRecoverableAuthException
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.plus.Plus
-import app.R
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 
@@ -35,7 +35,6 @@ public class SplashActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        SwissKnife.inject(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

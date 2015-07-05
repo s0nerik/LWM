@@ -7,17 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import app.Injector
-import app.adapter.ArtistWrappersAdapter
-import app.model.ArtistWrapper
-import app.ui.async.MusicLoaderService
-import app.ui.base.DaggerOttoOnCreateFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.joanzapata.android.asyncservice.api.annotation.InjectService
-import com.joanzapata.android.asyncservice.api.annotation.OnMessage
-import com.joanzapata.android.asyncservice.api.internal.AsyncService
 import app.R
+import app.adapter.ArtistWrappersAdapter
+import app.helper.db.ArtistsCursorGetter
+import app.model.ArtistWrapper
+import app.model.ArtistWrapperList
+import app.ui.base.DaggerOttoOnCreateFragment
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnUIThread
+import com.github.s0nerik.betterknife.dsl.AndroidDSL
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -33,12 +31,13 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
-    @InjectService
-    MusicLoaderService musicLoaderService;
+//    @InjectService
+//    MusicLoaderService musicLoaderService;
 
-    public ArtistsListFragment() {
-        Injector.inject(this);
-        AsyncService.inject(this);
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+//        AsyncService.inject(this)
     }
 
     @Override
@@ -46,7 +45,6 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_list_artists, container, false);
-        SwissKnife.inject(this, v);
         return v;
     }
 
@@ -56,13 +54,28 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         mProgress.setVisibility(View.VISIBLE);
-        musicLoaderService.loadAllArtists();
+//        musicLoaderService.loadAllArtists();
+
+        AndroidDSL.async this, {
+            onArtistsLoaded(new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers())
+        }
+
     }
 
-    @OnMessage
-    public void onArtistsLoaded(MusicLoaderService.ArtistsLoadedEvent event) {
+//    @OnMessage
+//    public void onArtistsLoaded(MusicLoaderService.ArtistsLoadedEvent event) {
+//        mProgress.setVisibility(View.GONE);
+//        List<ArtistWrapper> artists = event.getArtists();
+//        if (!artists.isEmpty()) {
+//            initAdapter(artists);
+//        } else {
+//            mEmpty.setVisibility(View.VISIBLE);
+//        }
+//    }
+
+    @OnUIThread
+    public void onArtistsLoaded(List<ArtistWrapper> artists) {
         mProgress.setVisibility(View.GONE);
-        List<ArtistWrapper> artists = event.getArtists();
         if (!artists.isEmpty()) {
             initAdapter(artists);
         } else {

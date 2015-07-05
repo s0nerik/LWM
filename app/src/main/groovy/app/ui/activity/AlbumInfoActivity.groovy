@@ -1,4 +1,5 @@
 package app.ui.activity
+
 import android.annotation.TargetApi
 import android.content.res.Resources
 import android.graphics.Color
@@ -18,11 +19,11 @@ import app.model.Album
 import app.model.Playlist
 import app.model.Song
 import app.player.LocalPlayer
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.Extra
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
 import com.bumptech.glide.Glide
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.Extra
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.melnykov.fab.FloatingActionButton
 import com.nirhart.parallaxscroll.views.ParallaxScrollView
 import com.squareup.otto.Bus
@@ -84,8 +85,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_info);
-        SwissKnife.inject(this);
-        SwissKnife.loadExtras(this);
+        BetterKnife.loadExtras(this);
 
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));
 

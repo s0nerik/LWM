@@ -9,10 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import app.helper.wifi.WifiAP
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import app.R
+import app.helper.wifi.WifiAP
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -36,7 +36,7 @@ public class StationsAdapter extends BaseAdapter {
 
         Resources res = context.getResources();
         signalLevels = res.getInteger(R.integer.wifi_max_level);
-        signalLevelNames = res.getStringArray(R.array.wifi_signal_levels);
+//        signalLevelNames = res.getStringArray(R.array.wifi_signal_levels);
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -92,7 +92,7 @@ public class StationsAdapter extends BaseAdapter {
         TextView mSignal;
 
         ViewHolder(View view) {
-            SwissKnife.inject(this, view);
+            BetterKnife.inject(this, view);
         }
     }
 

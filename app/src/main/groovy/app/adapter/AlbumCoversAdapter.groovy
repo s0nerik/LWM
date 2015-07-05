@@ -1,4 +1,5 @@
 package app.adapter
+
 import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,9 +10,9 @@ import android.widget.TextView
 import app.Injector
 import app.R
 import app.model.Album
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
 import com.bumptech.glide.Glide
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -89,7 +90,7 @@ class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         ViewHolder(View view) {
             super(view);
-            SwissKnife.inject(this, view);
+            BetterKnife.inject(this, view);
         }
     }
 

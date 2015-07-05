@@ -13,12 +13,9 @@ import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
 
 import javax.inject.Inject
 
@@ -27,8 +24,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @InjectView(R.id.twoWayView)
     RecyclerView recycler
-    @InjectView(R.id.fast_scroller)
-    VerticalRecyclerViewFastScroller fastScroller
+//    @InjectView(R.id.fast_scroller)
+//    VerticalRecyclerViewFastScroller fastScroller
     @InjectView(R.id.emptyView)
     View emptyView
 
@@ -52,13 +49,12 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState)
-        SwissKnife.inject(this, view)
+//        BetterKnife.inject(this, view)
         layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recycler.layoutManager = layoutManager
         recycler.hasFixedSize = true
-        fastScroller.recyclerView = recycler
-        recycler.addOnScrollListener(fastScroller.getOnScrollListener())
+//        fastScroller.recyclerView = recycler
+//        recycler.addOnScrollListener(fastScroller.getOnScrollListener())
         loadSongs()
     }
 

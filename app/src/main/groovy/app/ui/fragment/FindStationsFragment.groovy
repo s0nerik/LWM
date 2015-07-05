@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
+import app.R
 import app.adapter.StationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.server.ShouldStartWebSocketClientEvent
@@ -28,11 +30,9 @@ import app.server.StreamServer
 import app.service.StreamPlayerService
 import app.ui.activity.RemotePlaybackActivity
 import app.ui.base.DaggerFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
-import com.arasthel.swissknife.annotations.OnItemClick
-import app.R
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
+import com.github.s0nerik.betterknife.annotations.OnItemClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -79,7 +79,6 @@ public class FindStationsFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.page_stations_around, container, false);
-        SwissKnife.inject(this, v);
 
         mRefreshLayout.setColorSchemeResources(
                 R.color.pull_to_refresh_1,

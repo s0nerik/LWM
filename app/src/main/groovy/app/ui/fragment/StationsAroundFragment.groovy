@@ -1,39 +1,36 @@
-package app.ui.fragment;
+package app.ui.fragment
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.WifiManager;
-import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import com.arasthel.swissknife.SwissKnife;
-import com.arasthel.swissknife.annotations.InjectView;
-import com.arasthel.swissknife.annotations.OnClick;
-import com.astuetz.PagerSlidingTabStrip;
-import app.R;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.wifi.WifiManager
+import android.os.Bundle
+import android.support.v4.view.ViewPager
+import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import app.R
+import app.adapter.PlayersAroundPagerAdapter
+import app.events.wifi.WifiScanResultsAvailableEvent
+import app.events.wifi.WifiStateChangedEvent
+import app.helper.wifi.WifiAP
+import app.service.LocalPlayerService
+import app.ui.base.DaggerFragment
+import com.astuetz.PagerSlidingTabStrip
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
+import com.squareup.otto.Bus
+import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
+import groovy.transform.PackageScopeTarget
+import ru.noties.debug.Debug
 
-import javax.inject.Inject;
-
-import app.adapter.PlayersAroundPagerAdapter;
-import app.events.wifi.WifiScanResultsAvailableEvent;
-import app.events.wifi.WifiStateChangedEvent;
-import app.helper.wifi.WifiAP;
-import app.service.LocalPlayerService;
-import app.ui.base.DaggerFragment;
-import groovy.transform.CompileStatic;
-import ru.noties.debug.Debug;
+import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -82,7 +79,6 @@ public class StationsAroundFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_stations_around, container, false);
-        SwissKnife.inject(this, v);
 
         mToolbar.setTitle(getString(R.string.stations_around));
 

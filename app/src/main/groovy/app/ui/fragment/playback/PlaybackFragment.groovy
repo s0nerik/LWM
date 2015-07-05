@@ -1,4 +1,5 @@
 package app.ui.fragment.playback
+
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
@@ -21,8 +22,8 @@ import app.player.BasePlayer
 import app.player.PlayerUtils
 import app.ui.async.RemoteAlbumArtAsyncGetter
 import app.ui.base.DaggerOttoOnResumeFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
 import com.nvanbenschoten.motion.ParallaxImageView
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
@@ -76,7 +77,7 @@ public abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     View onCreateView(LayoutInflater inflater,
                       @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         def v = inflater.inflate(R.layout.fragment_playback, container, false)
-        SwissKnife.inject(this, v)
+        BetterKnife.inject(this, v)
         return v
     }
 

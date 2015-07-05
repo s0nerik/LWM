@@ -1,4 +1,5 @@
 package app.adapter
+
 import android.content.Context
 import android.graphics.ColorFilter
 import android.os.Build
@@ -12,13 +13,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import app.Injector
+import app.R
 import app.Utils
 import app.model.Song
 import app.player.LocalPlayer
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
-import app.R
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import es.claucookie.miniequalizerlibrary.EqualizerView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -140,7 +141,7 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongsListAdapter.Base
 
         BaseViewHolder(View view) {
             super(view);
-            SwissKnife.inject(this, view);
+            BetterKnife.inject(this, view);
         }
 
         @OnClick(R.id.contextMenu)

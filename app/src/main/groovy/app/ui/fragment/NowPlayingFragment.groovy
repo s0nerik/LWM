@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,10 +14,10 @@ import app.model.Song
 import app.player.LocalPlayer
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.DaggerFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
 import com.bumptech.glide.Glide
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.nineoldandroids.view.ViewHelper
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
@@ -67,7 +68,7 @@ public class NowPlayingFragment extends DaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_now_playing, container, false);
-        SwissKnife.inject(this, v);
+        BetterKnife.inject(this, v);
         return v;
     }
 

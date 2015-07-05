@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import app.R
 import app.ui.async.MusicLoaderService
-import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnClick
-import com.joanzapata.android.asyncservice.api.annotation.InjectService
+import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.joanzapata.android.asyncservice.api.annotation.OnMessage
-import com.joanzapata.android.asyncservice.api.internal.AsyncService
 import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -26,12 +24,12 @@ public final class SongsListFragment extends BaseSongsListFragment {
     @InjectView(R.id.progress)
     ProgressBar progress
 
-    @InjectService
-    MusicLoaderService musicLoaderService;
+//    @InjectService
+//    MusicLoaderService musicLoaderService;
 
-    SongsListFragment() {
-        AsyncService.inject(this);
-    }
+//    SongsListFragment() {
+//        AsyncService.inject(this);
+//    }
 
     @Override
     View onCreateView(LayoutInflater inflater,
@@ -44,7 +42,7 @@ public final class SongsListFragment extends BaseSongsListFragment {
     protected void loadSongs() {
         progress.setVisibility(View.VISIBLE);
         mFab.hide();
-        musicLoaderService.loadAllSongs();
+//        musicLoaderService.loadAllSongs();
     }
 
     @OnClick(R.id.fab)

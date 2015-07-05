@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
+import app.R
 import app.Utils
 import app.model.Artist
 import app.ui.fragment.AlbumsListFragment
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.Extra
-import com.arasthel.swissknife.annotations.InjectView
-import app.R
+import com.github.s0nerik.betterknife.BetterKnife
+import com.github.s0nerik.betterknife.annotations.Extra
+import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -38,8 +38,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_info);
-        SwissKnife.inject(this)
-        SwissKnife.loadExtras(this)
+        BetterKnife.loadExtras(this)
 
         mToolbar.setTitle(utils.getArtistName(artist.getName()));
         mToolbar.setSubtitle("Albums: " + artist.getNumberOfAlbums());

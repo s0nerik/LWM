@@ -13,6 +13,7 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
+    maven { url "http://dl.bintray.com/s0nerik/maven" }
 //    maven { url 'http://repo.grousset.fr/snapshots' }
 }
 
@@ -72,8 +73,10 @@ android {
 dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
+//    compile project(":SwissKnife")
+
     compile 'org.codehaus.groovy:groovy:+:grooid'
-    compile "com.arasthel:swissknife:1.3.0"
+//    compile "com.arasthel:swissknife:1.3.3"
 
     // Support libs
     compile 'com.android.support:appcompat-v7:22.2.0'
@@ -107,7 +110,7 @@ dependencies {
     compile 'com.wada811:android-material-design-colors:2.0.0'
     compile 'com.nvanbenschoten.motion:library:1.0.2'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
-    compile 'xyz.danoz:recyclerviewfastscroller:0.1.2'
+//    compile 'xyz.danoz:recyclerviewfastscroller:0.1.3'
 
     // Networking
     compile 'com.nanohttpd:nanohttpd:2.1.1'
@@ -141,22 +144,6 @@ dependencies {
     // Animations
     compile 'com.daimajia.easing:library:1.0.1@aar'
     compile 'com.daimajia.androidanimations:library:1.1.3@aar'
-}
 
-//// add support for Groovy to existing configurations
-//android.applicationVariants.all {
-//    task "groovy${name}Compile"(type: GroovyCompile) {
-//        source = javaCompile.source + fileTree('src/main/java').include('**/*.groovy')
-//        destinationDir = javaCompile.destinationDir
-//        classpath = javaCompile.classpath
-//        groovyClasspath = classpath
-//        sourceCompatibility = '1.7'
-//        targetCompatibility = '1.7'
-//        doFirst {
-//            def runtimeJars = plugins.findPlugin(com.android.build.gradle.AppPlugin).runtimeJars
-//            classpath = files(runtimeJars) + classpath
-//        }
-//    }
-//    javaCompile.dependsOn("groovy${name}Compile")
-//    javaCompile.enabled = false
-//}
+    compile 'com.github.s0nerik.betterknife:BetterKnife:1.3.8@aar'
+}
