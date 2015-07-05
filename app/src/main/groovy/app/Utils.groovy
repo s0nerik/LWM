@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.MediaStore
@@ -156,6 +158,14 @@ public class Utils {
 
     public static int stripAlpha(int color) {
         return color | 0xFF000000;
+    }
+
+    static Drawable copyDrawable(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            def bm1 = (drawable as BitmapDrawable).getBitmap()
+            return new BitmapDrawable(bm1)
+        }
+        return drawable
     }
 
 }

@@ -1,8 +1,10 @@
 package app.ui.fragment
+
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import android.support.v4.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +14,18 @@ import android.widget.ListAdapter
 import android.widget.ProgressBar
 import app.R
 import app.adapter.AlbumsAdapter
+import app.data_managers.AlbumsManager
 import app.model.Album
 import app.model.Artist
 import app.ui.activity.AlbumInfoActivity
-import app.data_managers.SongsManager
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnItemClick
-import com.joanzapata.android.asyncservice.api.annotation.OnMessage
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+
+import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -34,6 +37,9 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     LinearLayout mEmpty;
     @InjectView(R.id.progress)
     ProgressBar mProgress;
+
+    @Inject
+    AlbumsManager albumsManager
 
 //    @InjectService
 //    SongsManager musicLoaderService;
@@ -63,7 +69,6 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list_albums, container, false);
-
         return v;
     }
 
@@ -71,14 +76,21 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mProgress.setVisibility(View.VISIBLE);
+
+        albumsManager.loadAllAlbums(artist).subscribe this.&onAlbumsLoaded
 //        musicLoaderService.loadAllAlbums(artist);
     }
 
-    @OnMessage
-    public void onAlbumsLoaded(SongsManager.AlbumsLoadedEvent event) {
+//    @OnMessage
+//    public void onAlbumsLoaded(SongsManager.AlbumsLoadedEvent event) {
+//        mProgress.setVisibility(View.GONE);
+//        albums = event.getAlbums();
+//        initAdapter(albums);
+//    }
+
+    private void onAlbumsLoaded(Pair<Artist, List<Album>> albums) {
         mProgress.setVisibility(View.GONE);
-        albums = event.getAlbums();
-        initAdapter(albums);
+        initAdapter(albums.second);
     }
 
     @OnItemClick(R.id.grid)

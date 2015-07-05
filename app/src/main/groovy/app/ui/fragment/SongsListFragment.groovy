@@ -44,25 +44,25 @@ public final class SongsListFragment extends BaseSongsListFragment {
 
     @Override
     protected void loadSongs() {
-        progress.setVisibility(View.VISIBLE);
-        mFab.hide();
-        songsManager.loadAllSongs().subscribe(this.&onSongsLoaded);
+        progress.visibility = View.VISIBLE
+        mFab.hide()
+        songsManager.loadAllSongs().subscribe this.&onSongsLoaded
     }
 
     @OnClick(R.id.fab)
     public void onFabClicked() {
-        shuffleAll();
+        shuffleAll()
     }
 
     private void onSongsLoaded(List<Song> songs) {
-        progress.setVisibility(View.GONE);
+        progress.visibility = View.GONE
         if (!songs.isEmpty()) {
             initAdapter(songs);
             setSelection(currentSong);
             mFab.show(true);
             mFab.attachToRecyclerView(recycler);
         } else {
-            emptyView.setVisibility(View.VISIBLE);
+            emptyView.visibility = View.VISIBLE
         }
     }
 

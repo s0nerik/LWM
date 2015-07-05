@@ -1,49 +1,24 @@
 package app.data_managers
-import android.database.Cursor
-import android.support.annotation.Nullable
-import app.helper.db.AlbumsCursorGetter
+
 import app.helper.db.ArtistsCursorGetter
-import app.helper.db.Order
-import app.helper.db.SongsCursorGetter
-import app.model.*
+import app.model.ArtistWrapper
+import app.model.ArtistWrapperList
 import groovy.transform.CompileStatic
 import rx.Observable
+import rx.subjects.AsyncSubject
 
 @CompileStatic
 public class ArtistsManager {
 
-    public Observable<List<Song>> loadAllSongs() {
-        return Observable.just(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)));
-    }
+    private AsyncSubject<List<ArtistWrapper>> artistsSubject
 
-    public ArtistsLoadedEvent loadAllArtists() {
-        return new ArtistsLoadedEvent(artists: new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers());
-    }
+    public Observable<List<ArtistWrapper>> loadAllArtists() {
+        if (artistsSubject == null) {
+            artistsSubject = AsyncSubject.create();
 
-    public AlbumsLoadedEvent loadAllAlbums(@Nullable Artist artist) {
-        AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter();
-        Cursor albums;
-
-        if (artist == null) {
-            albums = cursorGetter.getAlbumsCursor();
-        } else {
-            albums = cursorGetter.getAlbumsCursorByArtist(artist);
+            Observable.just(new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers())
+                    .subscribe(artistsSubject)
         }
-
-        return new AlbumsLoadedEvent(artist: artist, albums: new AlbumsList(albums).getAlbums());
+        return artistsSubject;
     }
-
-    public static class SongsLoadedEvent {
-        List<Song> songs;
-    }
-
-    public static class ArtistsLoadedEvent {
-        List<ArtistWrapper> artists;
-    }
-
-    public static class AlbumsLoadedEvent {
-        Artist artist;
-        List<Album> albums;
-    }
-
 }

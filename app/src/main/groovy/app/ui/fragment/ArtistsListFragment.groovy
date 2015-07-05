@@ -9,16 +9,15 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
 import app.adapter.ArtistWrappersAdapter
-import app.helper.db.ArtistsCursorGetter
+import app.data_managers.ArtistsManager
 import app.model.ArtistWrapper
-import app.model.ArtistWrapperList
 import app.ui.base.DaggerOttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.github.s0nerik.betterknife.annotations.OnUIThread
-import com.github.s0nerik.betterknife.dsl.AndroidDSL
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+
+import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -30,6 +29,9 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     RecyclerView mRecyclerView;
     @InjectView(R.id.progress)
     ProgressBar mProgress;
+
+    @Inject
+    ArtistsManager artistsManager
 
 //    @InjectService
 //    SongsManager musicLoaderService;
@@ -56,9 +58,10 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
         mProgress.setVisibility(View.VISIBLE);
 //        musicLoaderService.loadAllArtists();
 
-        AndroidDSL.async this, {
-            onArtistsLoaded(new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers())
-        }
+        artistsManager.loadAllArtists().subscribe this.&onArtistsLoaded
+//        AndroidDSL.async this, {
+//            onArtistsLoaded(new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers())
+//        }
 
     }
 
@@ -73,13 +76,13 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 //        }
 //    }
 
-    @OnUIThread
-    public void onArtistsLoaded(List<ArtistWrapper> artists) {
-        mProgress.setVisibility(View.GONE);
+//    @OnUIThread
+    private void onArtistsLoaded(List<ArtistWrapper> artists) {
+        mProgress.visibility = View.GONE
         if (!artists.isEmpty()) {
-            initAdapter(artists);
+            initAdapter(artists)
         } else {
-            mEmpty.setVisibility(View.VISIBLE);
+            mEmpty.visibility = View.VISIBLE
         }
     }
 

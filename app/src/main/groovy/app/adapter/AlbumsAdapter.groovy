@@ -5,16 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
-import android.widget.TextView
 import app.Injector
 import app.R
 import app.Utils
+import app.adapter.view_holders.AlbumViewHolder
 import app.model.Album
-import app.ui.custom_view.SquareWidthImageView
 import com.bumptech.glide.Glide
-import com.github.s0nerik.betterknife.BetterKnife
-import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -44,15 +40,15 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder;
+        AlbumViewHolder holder;
 
         View rowView = convertView;
         if (rowView == null) {
             rowView = inflater.inflate(R.layout.item_albums, parent, false);
-            holder = new ViewHolder(rowView);
+            holder = new AlbumViewHolder(rowView);
             rowView.setTag(holder);
         } else {
-            holder = (ViewHolder) rowView.getTag();
+            holder = (AlbumViewHolder) rowView.getTag();
         }
 
         Album album = albumsList.get(position);
@@ -74,26 +70,4 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         return rowView;
     }
 
-    /**
-     * This class contains all butterknife-injected Views & Layouts from layout file 'item_albums.xml'
-     * for easy to all layout elements.
-     *
-     * @author ButterKnifeZelezny, plugin for Android Studio by Inmite Developers (http://inmite.github.io)
-     */
-    static class ViewHolder {
-        @InjectView(R.id.cover)
-        SquareWidthImageView mCover;
-        @InjectView(R.id.title)
-        TextView mTitle;
-        @InjectView(R.id.subtitle)
-        TextView mSubtitle;
-        @InjectView(R.id.bottom_bar)
-        LinearLayout mBottomBar;
-        @InjectView(R.id.shadow)
-        View mShadow;
-
-        ViewHolder(View view) {
-            BetterKnife.inject(this, view);
-        }
-    }
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import app.R
+import app.Utils
 import app.events.access_point.AccessPointStateEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
@@ -91,7 +92,7 @@ public class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     protected void setCover(Song song) {
 //        mAlbumArtLayout.setAlpha(0f);
-        final Drawable prevDrawable = mCover.getDrawable().getConstantState().newDrawable();
+        final Drawable prevDrawable = Utils.copyDrawable(mCover.drawable)
         Glide.with(this)
                 .load(song.getAlbumArtUri().toString())
                 .centerCrop()
@@ -103,7 +104,7 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 
     @Override
     protected void setBackground(final Song song) {
-        final Drawable prevDrawable = mBackground.getDrawable().getConstantState().newDrawable();
+        final Drawable prevDrawable = Utils.copyDrawable(mBackground.drawable)
         Glide.with(this)
                 .load(song.getAlbumArtUri().toString())
                 .placeholder(prevDrawable)

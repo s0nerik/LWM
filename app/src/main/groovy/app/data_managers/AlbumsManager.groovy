@@ -1,49 +1,49 @@
 package app.data_managers
-import android.database.Cursor
+
 import android.support.annotation.Nullable
+import android.support.v4.util.Pair
 import app.helper.db.AlbumsCursorGetter
-import app.helper.db.ArtistsCursorGetter
-import app.helper.db.Order
-import app.helper.db.SongsCursorGetter
-import app.model.*
+import app.model.Album
+import app.model.AlbumsList
+import app.model.Artist
 import groovy.transform.CompileStatic
 import rx.Observable
+import rx.subjects.AsyncSubject
 
 @CompileStatic
 public class AlbumsManager {
 
-    public Observable<List<Song>> loadAllSongs() {
-        return Observable.just(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)));
-    }
+    private Map<Artist, AsyncSubject<Pair<Artist, List<Album>>>> albumSubjects = new HashMap<>()
 
-    public ArtistsLoadedEvent loadAllArtists() {
-        return new ArtistsLoadedEvent(artists: new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers());
-    }
+    public Observable<Pair<Artist, List<Album>>> loadAllAlbums(@Nullable Artist artist) {
+        if (!albumSubjects[artist]) {
+            albumSubjects[artist] = AsyncSubject.create();
 
-    public AlbumsLoadedEvent loadAllAlbums(@Nullable Artist artist) {
-        AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter();
-        Cursor albums;
+            AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter()
 
-        if (artist == null) {
-            albums = cursorGetter.getAlbumsCursor();
-        } else {
-            albums = cursorGetter.getAlbumsCursorByArtist(artist);
+            Observable.just(new Pair<Artist, List<Album>>(artist,
+                    new AlbumsList(artist ? cursorGetter.getAlbumsCursorByArtist(artist) : cursorGetter.getAlbumsCursor()).getAlbums()
+            )).subscribe(albumSubjects[artist])
         }
-
-        return new AlbumsLoadedEvent(artist: artist, albums: new AlbumsList(albums).getAlbums());
+        return albumSubjects[artist]
     }
 
-    public static class SongsLoadedEvent {
-        List<Song> songs;
-    }
-
-    public static class ArtistsLoadedEvent {
-        List<ArtistWrapper> artists;
-    }
-
-    public static class AlbumsLoadedEvent {
-        Artist artist;
-        List<Album> albums;
-    }
+//    public AlbumsLoadedEvent loadAllAlbums(@Nullable Artist artist) {
+//        AlbumsCursorGetter cursorGetter = new AlbumsCursorGetter();
+//        Cursor albums;
+//
+//        if (artist == null) {
+//            albums = cursorGetter.getAlbumsCursor();
+//        } else {
+//            albums = cursorGetter.getAlbumsCursorByArtist(artist);
+//        }
+//
+//        return new AlbumsLoadedEvent(artist: artist, albums: new AlbumsList(albums).getAlbums());
+//    }
+//
+//    public static class AlbumsLoadedEvent {
+//        Artist artist;
+//        List<Album> albums;
+//    }
 
 }

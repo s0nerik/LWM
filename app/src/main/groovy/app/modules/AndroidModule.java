@@ -24,8 +24,11 @@ import app.adapter.AlbumsAdapter;
 import app.adapter.ArtistWrappersAdapter;
 import app.adapter.LocalMusicFragmentsAdapter;
 import app.adapter.SongsListAdapter;
+import app.adapter.view_holders.ArtistViewHolder;
 import app.adapter.view_holders.OnContextMenuItemClickListener;
 import app.adapter.view_holders.SongViewHolder;
+import app.data_managers.AlbumsManager;
+import app.data_managers.ArtistsManager;
 import app.data_managers.SongsManager;
 import app.events.MainThreadBus;
 import app.helper.db.AlbumsCursorGetter;
@@ -72,6 +75,7 @@ import static android.content.Context.WIFI_SERVICE;
 
 @Module(injects = {
         SongViewHolder.class,
+        ArtistViewHolder.class,
         OnContextMenuItemClickListener.class,
 
 //        ArtistAlbumsBitmapHelper.class,
@@ -256,6 +260,18 @@ public class AndroidModule {
     @Singleton
     SongsManager provideSongsManager() {
         return new SongsManager();
+    }
+
+    @Provides
+    @Singleton
+    AlbumsManager provideAlbumsManager() {
+        return new AlbumsManager();
+    }
+
+    @Provides
+    @Singleton
+    ArtistsManager provideArtistsManager() {
+        return new ArtistsManager();
     }
 
 }
