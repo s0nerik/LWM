@@ -132,7 +132,7 @@ class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
 //        @Override
 //        public void onCompleted(Exception e, ImageViewBitmapInfo result) {
 //            if (i < albums.size() - 1) {
-//                holder.mShadow.setVisibility(View.VISIBLE);
+//                holder.shadow.setVisibility(View.VISIBLE);
 //            } else {
 ////                super.onCompleted(e, result);
 //            }

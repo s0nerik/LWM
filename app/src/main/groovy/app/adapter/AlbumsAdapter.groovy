@@ -63,7 +63,7 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
                 .error(R.drawable.no_cover)
                 .into(holder.mCover)
 //                .withBitmapInfo()
-//                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.mShadow, holder.mTitle, holder.mSubtitle));
+//                .setCallback(new SingleBitmapPaletteInfoCallback(holder.mBottomBar, holder.shadow, holder.title, holder.mSubtitle));
 
         // TODO: generate palette
 
