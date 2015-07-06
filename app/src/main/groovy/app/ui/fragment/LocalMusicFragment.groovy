@@ -5,9 +5,7 @@ import android.os.Parcelable
 import android.support.annotation.Nullable
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import app.PrefManager
 import app.R
 import app.adapter.LocalMusicFragmentsAdapter
@@ -19,7 +17,7 @@ import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
-import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -31,75 +29,67 @@ import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
+@InjectLayout(value = R.layout.fragment_local_music, injectAllViews = true)
 public class LocalMusicFragment extends DaggerFragment {
 
     @Inject
-    PrefManager prefManager;
+    PrefManager prefManager
 
     @Inject
-    WifiAP wifiAP;
+    WifiAP wifiAP
 
     @Inject
-    Bus bus;
+    Bus bus
 
-    @InjectView(R.id.toolbar)
-    Toolbar mToolbar;
-    @InjectView(R.id.tabs)
-    PagerSlidingTabStrip mTabs;
-    @InjectView(R.id.pager)
-    ViewPager mPager;
+    Toolbar toolbar
+    PagerSlidingTabStrip tabs
+    ViewPager pager
 
-    private Intent localPlayerServiceIntent;
-    private Intent streamPlayerServiceIntent;
+    private Intent localPlayerServiceIntent
+    private Intent streamPlayerServiceIntent
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        streamPlayerServiceIntent = new Intent(getActivity(), StreamPlayerService.class);
-        getActivity().stopService(streamPlayerServiceIntent);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_local_music, container, false);
-        return v;
+        streamPlayerServiceIntent = new Intent(activity, StreamPlayerService)
+        activity.stopService streamPlayerServiceIntent
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initToolbar();
-        bus.register(this);
-        mPager.setAdapter(new LocalMusicFragmentsAdapter(getChildFragmentManager()));
-        mTabs.setViewPager(mPager);
+        super.onViewCreated view, savedInstanceState
+        initToolbar()
+        bus.register(this)
+        pager.adapter = new LocalMusicFragmentsAdapter(childFragmentManager)
+        tabs.viewPager = pager
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        bus.unregister(this);
+        super.onDestroyView()
+        bus.unregister this
     }
 
     protected void initToolbar() {
-        mToolbar.setTitle(getString(R.string.local_music));
-        mToolbar.inflateMenu(R.menu.local_broadcast);
+        toolbar.setTitle getString(R.string.local_music)
+        toolbar.inflateMenu R.menu.local_broadcast
     }
 
     @Produce
     public Toolbar produceToolbar() {
-        return mToolbar;
+        return toolbar
     }
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
-        Croutons.messageReceived(getActivity(), event.getMessage());
+        Croutons.messageReceived activity, event.message
     }
 
     @Subscribe
     public void onStartArtistInfoActivity(ShouldStartArtistInfoActivity event) {
-        Intent intent = new Intent(activity, ArtistInfoActivity);
-        intent.putExtra('artist', event.artist as Parcelable)
-        startActivity(intent)
+        Intent intent = new Intent(activity, ArtistInfoActivity)
+        intent.putExtra 'artist', event.artist as Parcelable
+        startActivity intent
     }
 
 }

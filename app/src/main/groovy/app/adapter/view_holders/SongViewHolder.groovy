@@ -2,6 +2,7 @@ package app.adapter.view_holders
 import android.content.Context
 import android.graphics.ColorFilter
 import android.os.Build
+import android.support.v7.internal.view.ContextThemeWrapper
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -54,8 +55,9 @@ class SongViewHolder extends RecyclerView.ViewHolder {
     }
 
     @OnClick(R.id.contextMenu)
-    public void onContextMenuClicked(View view) {
-        PopupMenu menu = new PopupMenu(context, view);
+    public void onContextMenuClicked(View v) {
+        def wrapper = new ContextThemeWrapper(context, R.style.AppTheme)
+        def menu = new PopupMenu(wrapper, v);
 
         if (player.isSongInQueue(songs.get(getAdapterPosition()))) {
             menu.inflate(R.menu.songs_popup_in_queue);
@@ -66,10 +68,10 @@ class SongViewHolder extends RecyclerView.ViewHolder {
         menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(getAdapterPosition(), songs));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            final ImageView v = (ImageView) view;
-            final ColorFilter oldFilter = v.getColorFilter();
-            v.setColorFilter(context.getResources().getColor(R.color.accent));
-            menu.onDismissListener = {PopupMenu m -> v.setColorFilter(oldFilter)}
+            final ImageView imageView = (ImageView) v;
+            final ColorFilter oldFilter = imageView.getColorFilter();
+            imageView.setColorFilter(context.getResources().getColor(R.color.accent));
+            menu.onDismissListener = {PopupMenu m -> imageView.setColorFilter(oldFilter)}
         }
 
         menu.show();
