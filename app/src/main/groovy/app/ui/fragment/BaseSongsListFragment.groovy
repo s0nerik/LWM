@@ -16,107 +16,109 @@ import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
 abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
-    @InjectView(R.id.twoWayView)
-    RecyclerView recycler
+    @InjectView
+    RecyclerView twoWayView
 //    @InjectView(R.id.fast_scroller)
 //    VerticalRecyclerViewFastScroller fastScroller
-    @InjectView(R.id.emptyView)
+    @InjectView
     View emptyView
 
+    @PackageScope
     @Inject
-    protected LocalPlayer player;
+    LocalPlayer player
 
-    protected List<Song> songs;
-    protected Song currentSong;
+    List<Song> songs
+    Song currentSong
 
-    protected SongsListAdapter adapter;
+    SongsListAdapter adapter
 
-    private LinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager
 
-    protected abstract void loadSongs();
+    protected abstract void loadSongs()
 
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        setBusListeners(new BusListener(), this)
+        setBusListeners new BusListener(), this
     }
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
 //        BetterKnife.inject(this, view)
         layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recycler.layoutManager = layoutManager
-        recycler.hasFixedSize = true
+        twoWayView.layoutManager = layoutManager
+        twoWayView.hasFixedSize = true
 //        fastScroller.recyclerView = recycler
 //        recycler.addOnScrollListener(fastScroller.getOnScrollListener())
         loadSongs()
     }
 
     protected void setSelection(Song song) {
-        if (songs != null) {
-            int index = songs.indexOf(song);
+        if (songs) {
+            int index = songs.indexOf song
             if (index >= 0) {
-                setSelection(index);
+                setSelection(index)
             }
         }
     }
 
     protected void setSelection(int position) {
-        int prevSelection = adapter.selection;
-        adapter.setSelection(position);
+        int prevSelection = adapter.selection
+        adapter.selection = position
         if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
                 position > layoutManager.findLastCompletelyVisibleItemPosition()) {
             if (Math.abs(prevSelection - adapter.selection) <= 100) {
-                recycler.smoothScrollToPosition(position);
+                twoWayView.smoothScrollToPosition position
             } else {
-                recycler.scrollToPosition(position);
+                twoWayView.scrollToPosition position
             }
         }
     }
 
     protected void initAdapter(List<Song> songs) {
-        adapter = new SongsListAdapter(getActivity(), songs);
-        recycler.setAdapter(adapter);
+        adapter = new SongsListAdapter(activity, songs)
+        twoWayView.adapter = adapter
     }
 
     protected void shuffleAll() {
-        if (songs != null && !songs.isEmpty()) {
-            List<Song> queue = new ArrayList<>(songs);
-            player.setQueue(queue);
-            player.shuffleQueue();
-            player.play(0);
+        if (songs) {
+            def queue = new ArrayList<>(songs);
+            player.queue = queue
+            player.shuffleQueue()
+            player.play(0)
         } else {
-            Toast.makeText(getActivity(), R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
         }
     }
 
     private class BusListener {
         @Subscribe
         public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-            currentSong = event.getSong();
-            setSelection(currentSong);
+            currentSong = event.song
+            setSelection currentSong
         }
 
         @Subscribe
         public void onSongPlaybackStarted(PlaybackStartedEvent event) {
-            currentSong = event.getSong();
-            setSelection(currentSong);
+            currentSong = event.song
+            setSelection currentSong
         }
 
         @Subscribe
         public void onSongPlaybackPaused(PlaybackPausedEvent event) {
-            adapter.updateEqualizerState();
+            adapter.updateEqualizerState()
         }
 
         @Subscribe
         public void onShuffleSongs(ShouldShuffleSongsEvent event) {
-            shuffleAll();
+            shuffleAll()
         }
 
     }
