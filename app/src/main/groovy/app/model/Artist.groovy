@@ -8,8 +8,8 @@ import groovy.transform.builder.Builder;
 
 @CompileStatic
 @Builder
-@Parcelable
-public final class Artist {
+@Parcelable(exclude = {metaClass})
+public class Artist {
     long id;
     int numberOfAlbums;
     int numberOfSongs;

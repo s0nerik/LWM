@@ -8,18 +8,21 @@ import app.ui.Croutons;
 import app.ui.base.DaggerActivity;
 import app.websocket.entities.ClientInfo;
 import com.squareup.otto.Bus
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
 @CompileStatic
+@PackageScope(PackageScopeTarget.FIELDS)
 public abstract class BaseLocalActivity extends DaggerActivity {
 
     @Inject
-    protected LocalPlayer player;
+    LocalPlayer player;
 
     @Inject
-    protected Bus bus;
+    Bus bus;
 
     @Inject
     AudioManager audioManager;
