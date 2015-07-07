@@ -6,7 +6,7 @@ import groovy.transform.builder.Builder;
 
 @CompileStatic
 @Builder
-@Parcelable
+@Parcelable(exclude = {metaClass})
 public final class Album {
     int id;
     int year;
