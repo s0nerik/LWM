@@ -23,8 +23,14 @@
     </style>
 
     <style name="AppTheme.StartActivity" parent="AppTheme">
-        <item name="actionBarStyle">@style/Widget.ActionBar.Custom</item>
-        <item name="android:actionBarStyle">@style/Widget.ActionBar.Custom</item>
+        <!--<item name="actionBarStyle">@style/Widget.ActionBar.Custom</item>-->
+        <!--<item name="android:actionBarStyle">@style/Widget.ActionBar.Custom</item>-->
+        <!--<item name="windowTranslucentStatus">true</item>-->
+        <!--<item name="windowDrawsSystemBarBackgrounds">true</item>-->
+        <!--<item name="statusBarColor">@android:color/transparent</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@drawable/background_main_activity</item>
     </style>
 
