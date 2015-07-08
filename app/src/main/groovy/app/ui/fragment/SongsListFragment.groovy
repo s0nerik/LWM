@@ -38,6 +38,7 @@ public final class SongsListFragment extends BaseSongsListFragment {
 
     private void onSongsLoaded(List<Song> songs) {
         progress.visibility = View.GONE
+        this.songs = songs
         if (songs) {
             initAdapter songs
             selection = currentSong
