@@ -1,9 +1,8 @@
-package app.events.chat;
+package app.events.chat
+import app.model.chat.ChatMessage
+import groovy.transform.CompileStatic
 
-import app.model.chat.ChatMessage;
-
-import java.util.List;
-
+@CompileStatic
 public class ChatMessagesAvailableEvent {
 
     private List<ChatMessage> messages;

@@ -73,7 +73,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.WIFI_SERVICE;
 
-@Module(injects = {
+@Module(injects = [
         SongViewHolder.class,
         ArtistViewHolder.class,
         OnContextMenuItemClickListener.class,
@@ -144,7 +144,7 @@ import static android.content.Context.WIFI_SERVICE;
         ArtistInfoActivity.class,
         MainActivity.class,
 
-        },
+        ],
         library = true)
 @CompileStatic
 public class AndroidModule {

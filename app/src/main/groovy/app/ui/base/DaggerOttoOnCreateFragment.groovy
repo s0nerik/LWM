@@ -2,13 +2,15 @@ package app.ui.base;
 
 import android.os.Bundle;
 
-import com.squareup.otto.Bus;
+import com.squareup.otto.Bus
+import groovy.transform.CompileStatic;
 
 import javax.inject.Inject;
 
+@CompileStatic
 public abstract class DaggerOttoOnCreateFragment extends DaggerFragment {
 
-    private Object[] busListeners = { this };
+    private Object[] busListeners = [ this ]
 
     @Inject
     protected Bus bus;

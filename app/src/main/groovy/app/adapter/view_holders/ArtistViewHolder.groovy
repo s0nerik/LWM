@@ -12,10 +12,12 @@ import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
+@CompileStatic
 class ArtistViewHolder extends RecyclerView.ViewHolder {
     @InjectView(R.id.title)
     TextView mTitle;

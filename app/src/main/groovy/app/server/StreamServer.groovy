@@ -4,12 +4,10 @@ import app.Injector
 import app.player.LocalPlayer
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 public class StreamServer {
 
     public static final String PORT = "8888";
@@ -28,7 +26,8 @@ public class StreamServer {
     }
 
     @Inject
-    ContentResolver contentResolver;
+    @PackageScope
+    ContentResolver contentResolver
 
     private LocalPlayer player;
 

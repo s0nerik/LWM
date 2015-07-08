@@ -1,10 +1,12 @@
-package app.websocket;
+package app.websocket
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
+import com.google.gson.Gson
+import com.google.gson.annotations.Expose
+import groovy.transform.CompileStatic
 
-public class SocketMessage {
-    public static enum Message {
+@CompileStatic
+class SocketMessage {
+    static enum Message {
         START_FROM, SEEK_TO,
         CURRENT_POSITION, IS_PLAYING,
         OK, ERROR,
@@ -13,36 +15,36 @@ public class SocketMessage {
         MESSAGE, CLIENT_INFO
     }
 
-    public static enum Type {
+    static enum Type {
         GET, POST
     }
 
     @Expose
-    Type type;
+    Type type
 
     @Expose
-    Message message;
+    Message message
 
     @Expose
-    String body;
+    String body
 
-    public SocketMessage(Type type, Message message) {
-        this.type = type;
-        this.message = message;
+    SocketMessage(Type type, Message message) {
+        this.type = type
+        this.message = message
     }
 
-    public SocketMessage(Type type, Message message, String body) {
-        this.type = type;
-        this.message = message;
-        this.body = body;
+    SocketMessage(Type type, Message message, String body) {
+        this.type = type
+        this.message = message
+        this.body = body
     }
 
-    public String toJson() {
-        return new Gson().toJson(this);
+    String toJson() {
+        return new Gson().toJson(this)
     }
 
-    public static SocketMessage fromJson(String json) {
-        return new Gson().fromJson(json, SocketMessage.class);
+    static SocketMessage fromJson(String json) {
+        return new Gson().fromJson(json, SocketMessage.class)
     }
 
 }
