@@ -6,4 +6,11 @@
     <dimen name="padding_grid">1dp</dimen>
 
     <dimen name="toolbar_padding_top">0dp</dimen>
+
+    <dimen name="fastscroller_handle_corner">20dp</dimen>
+    <dimen name="fastscroller_handle_size">50dp</dimen>
+    <dimen name="fastscroller_reack_corner">3dp</dimen>
+    <dimen name="fastscroller_track_height">30dp</dimen>
+    <dimen name="fastscroller_track_width">6dp</dimen>
+    <dimen name="fastscroller_track_padding">8dp</dimen>
 </resources>
