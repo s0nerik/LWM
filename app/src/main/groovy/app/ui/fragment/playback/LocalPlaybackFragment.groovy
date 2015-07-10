@@ -1,5 +1,4 @@
 package app.ui.fragment.playback
-
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.annotation.Nullable
@@ -25,89 +24,88 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 import static app.events.access_point.AccessPointStateEvent.State.ENABLED
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public class LocalPlaybackFragment extends PlaybackFragment {
+class LocalPlaybackFragment extends PlaybackFragment {
 
     @Inject
-    LocalPlayer player;
+    @PackageScope
+    LocalPlayer player
 
     @Inject
-    WifiAP wifiAP;
+    @PackageScope
+    WifiAP wifiAP
 
     @Inject
-    WindowManager windowManager;
+    @PackageScope
+    WindowManager windowManager
 
-    private View chatButton;
+    private View chatButton
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mSeekBar.onSeekBarChangeListener = new PlayerProgressOnSeekBarChangeListener()
-        initToolbar();
+    void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState)
+        seekBar.onSeekBarChangeListener = new PlayerProgressOnSeekBarChangeListener()
+        initToolbar()
     }
 
     private void initToolbar() {
-        mToolbar.inflateMenu(R.menu.playback_local);
-        chatButton = mToolbar.findViewById(R.id.action_chat);
-        setChatButtonVisibility(wifiAP.isEnabled());
+        toolbar.inflateMenu R.menu.playback_local
+        chatButton = toolbar.findViewById(R.id.action_chat)
+        chatButtonVisibility = wifiAP.enabled
     }
 
     private void setChatButtonVisibility(boolean show) {
-        chatButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        chatButton.visibility = show ? View.VISIBLE : View.GONE
     }
 
     @OnClick([R.id.btnPlayPause, R.id.btnNext, R.id.btnPrev, R.id.btnShuffle, R.id.btnRepeat])
-    public void onClickControls(View btn) {
+    void onClickControls(View btn) {
         switch (btn.getId()) {
             case R.id.btnNext:
-                player.nextSong();
+                player.nextSong()
                 break;
             case R.id.btnPrev:
-                player.prevSong();
+                player.prevSong()
                 break;
             case R.id.btnPlayPause:
-                player.togglePause();
+                player.togglePause()
                 break;
             case R.id.btnShuffle:
-                player.shuffleQueueExceptPlayed();
+                player.shuffleQueueExceptPlayed()
                 break;
             case R.id.btnRepeat:
-                player.setRepeat(!player.isRepeat());
+                player.repeat = !player.repeat
                 break;
         }
     }
 
     @Override
-    protected BasePlayer getPlayer() {
-        return player;
-    }
+    protected BasePlayer getPlayer() { player }
 
     @Override
-    protected void setCover(Song song) {
-//        mAlbumArtLayout.setAlpha(0f);
-        final Drawable prevDrawable = Utils.copyDrawable(mCover.drawable)
+    protected void setSongInfo(Song song) {
+        super.setSongInfo(song)
+
+        // Load cover into cover view
+        final Drawable prevDrawable = Utils.copyDrawable(cover.drawable)
         Glide.with(this)
                 .load(song.getAlbumArtUri().toString())
                 .centerCrop()
                 .placeholder(prevDrawable)
                 .error(R.drawable.no_cover)
                 .crossFade()
-                .into(mCover)
-    }
+                .into(cover)
 
-    @Override
-    protected void setBackground(final Song song) {
-        final Drawable prevDrawable = Utils.copyDrawable(mBackground.drawable)
+        // Load blurred cover into background view
+        final Drawable prevBgDrawable = Utils.copyDrawable(background.drawable)
         Glide.with(this)
                 .load(song.getAlbumArtUri().toString())
-                .placeholder(prevDrawable)
+                .placeholder(prevBgDrawable)
                 .centerCrop()
 //                .transform(new BitmapTransformation(activity) {
 //                    @Override
@@ -121,61 +119,47 @@ public class LocalPlaybackFragment extends PlaybackFragment {
 //                    }
 //                })
                 .crossFade()
-                .into(mBackground)
-//                .setCallback(new FutureCallback<ImageView>() {
-//                    @Override
-//                    public void onCompleted(Exception e, ImageView result) {
-//                        if (e != null) {
-//                            Ion.with(mBackground)
-//                                    .placeholder(prevDrawable)
-//                                    .crossfade(true)
-//                                    .smartSize(true)
-//                                    .load("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.no_cover_blurred);
-//                        }
-//                    }
-//                });
-
-        // TODO: blur background
+                .into(background)
     }
 
     @Subscribe
-    public void onAccessPointStateChanged(AccessPointStateEvent event) {
-        setChatButtonVisibility(event.getState() == ENABLED);
+    void onAccessPointStateChanged(AccessPointStateEvent event) {
+        chatButtonVisibility = event.state == ENABLED
     }
 
     @Subscribe
     @Override
-    public void onSongChanged(SongChangedEvent event) {
+    void onSongChanged(SongChangedEvent event) {
         super.onSongChanged(event);
     }
 
     @Subscribe
     @Override
-    public void onPlaybackStarted(PlaybackStartedEvent event) {
+    void onPlaybackStarted(PlaybackStartedEvent event) {
         super.onPlaybackStarted(event);
     }
 
     @Subscribe
     @Override
-    public void onPlaybackPaused(PlaybackPausedEvent event) {
+    void onPlaybackPaused(PlaybackPausedEvent event) {
         super.onPlaybackPaused(event);
     }
 
     @Subscribe
     @Override
-    public void onSongPlaying(SongPlayingEvent event) {
+    void onSongPlaying(SongPlayingEvent event) {
         super.onSongPlaying(event);
     }
 
     @Subscribe
     @Override
-    public void onQueueShuffled(QueueShuffledEvent event) {
+    void onQueueShuffled(QueueShuffledEvent event) {
         super.onQueueShuffled(event);
     }
 
     @Subscribe
     @Override
-    public void onRepeatStateChanged(RepeatStateChangedEvent event) {
+    void onRepeatStateChanged(RepeatStateChangedEvent event) {
         super.onRepeatStateChanged(event);
     }
 
@@ -184,18 +168,18 @@ public class LocalPlaybackFragment extends PlaybackFragment {
         PlayerProgressOnSeekBarChangeListener() {}
 
         @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (fromUser) {
-                player.seekTo(PlayerUtils.convertSeekBarToProgress(progress));
+                player.seekTo PlayerUtils.convertSeekBarToProgress(progress)
             }
         }
 
         @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
+        void onStartTrackingTouch(SeekBar seekBar) {
         }
 
         @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
+        void onStopTrackingTouch(SeekBar seekBar) {
         }
     }
 }

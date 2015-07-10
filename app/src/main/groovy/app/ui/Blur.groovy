@@ -1,31 +1,28 @@
-package app.ui;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
-
+package app.ui
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.support.v8.renderscript.Allocation
+import android.support.v8.renderscript.Element
+import android.support.v8.renderscript.RenderScript
+import android.support.v8.renderscript.ScriptIntrinsicBlur
 import app.Daggered
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 public class Blur extends Daggered {
 
-    public static final int RADIUS = 16;
+    static final int RADIUS = 16
 
     @Inject
-    Context context;
+    @PackageScope
+    Context context
 
     @SuppressLint("NewApi")
-    public Bitmap blur(Bitmap input) {
+    Bitmap blur(Bitmap input) {
         try {
             RenderScript rs = RenderScript.create(context);
             Allocation alloc = Allocation.createFromBitmap(rs, input);

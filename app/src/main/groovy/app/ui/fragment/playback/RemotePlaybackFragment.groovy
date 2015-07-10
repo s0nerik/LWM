@@ -1,5 +1,4 @@
 package app.ui.fragment.playback
-
 import android.os.Bundle
 import android.view.View
 import app.R
@@ -17,51 +16,49 @@ import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public class RemotePlaybackFragment extends PlaybackFragment {
+class RemotePlaybackFragment extends PlaybackFragment {
 
     @Inject
-    StreamPlayer player;
+    @PackageScope
+    StreamPlayer player
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mControls.setVisibility(View.GONE);
-        mSeekBar.setEnabled(false);
-        mSeekBar.setBackgroundResource(R.drawable.background_seekbar_no_controls);
+    void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState)
+        controls.visibility = View.GONE
+        seekBar.enabled = false
+        seekBar.backgroundResource = R.drawable.background_seekbar_no_controls
     }
 
     @Override
-    protected BasePlayer getPlayer() {
-        return player;
-    }
+    protected BasePlayer getPlayer() { player }
 
     @Override
-    protected void setCover(Song song) {
+    protected void setSongInfo(Song song) {
+        super.setSongInfo(song)
+
+        // Load song cover into cover view
         Glide.with(this)
-                .load(StreamServer.Url.CURRENT_ALBUMART + "?" + UUID.randomUUID())
+                .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
                 .centerCrop()
                 .crossFade()
                 .placeholder(R.drawable.no_cover)
                 .error(R.drawable.no_cover)
-                .into(mCover)
-    }
+                .into(cover)
 
-    @Override
-    protected void setBackground(final Song song) {
+        // Load blurred song cover into background view
         Glide.with(this)
                 .load(StreamServer.Url.CURRENT_ALBUMART)
                 .placeholder(R.drawable.no_cover_blurred)
                 .error(R.drawable.no_cover_blurred)
                 .crossFade()
                 .centerCrop()
-                .into(mBackground)
+                .into(background)
 //                .transform(new Transform() {
 //                    @Override
 //                    public Bitmap transform(Bitmap b) {
@@ -73,44 +70,43 @@ public class RemotePlaybackFragment extends PlaybackFragment {
 //                        return song.getTitle();
 //                    }
 //                })
-        // TODO: blur background
     }
 
     @Subscribe
     @Override
-    public void onSongChanged(SongChangedEvent event) {
-        Debug.d("RemotePlaybackFragment: onSongChanged");
+    void onSongChanged(SongChangedEvent event) {
+        Debug.d "RemotePlaybackFragment: onSongChanged"
     }
 
     @Subscribe
     @Override
-    public void onPlaybackStarted(PlaybackStartedEvent event) {
-        setSongInfo(event.getSong());
-        Debug.d("RemotePlaybackFragment: onPlaybackStarted");
+    void onPlaybackStarted(PlaybackStartedEvent event) {
+        songInfo = event.song
+        Debug.d "RemotePlaybackFragment: onPlaybackStarted"
     }
 
     @Subscribe
     @Override
-    public void onPlaybackPaused(PlaybackPausedEvent event) {
-        Debug.d("RemotePlaybackFragment: onPlaybackPaused");
+    void onPlaybackPaused(PlaybackPausedEvent event) {
+        Debug.d "RemotePlaybackFragment: onPlaybackPaused"
     }
 
     @Subscribe
     @Override
-    public void onSongPlaying(SongPlayingEvent event) {
-        super.onSongPlaying(event);
+    void onSongPlaying(SongPlayingEvent event) {
+        super.onSongPlaying(event)
     }
 
     @Subscribe
     @Override
-    public void onQueueShuffled(QueueShuffledEvent event) {
-        Debug.d("RemotePlaybackFragment: onQueueShuffled");
+    void onQueueShuffled(QueueShuffledEvent event) {
+        Debug.d "RemotePlaybackFragment: onQueueShuffled"
     }
 
     @Subscribe
     @Override
-    public void onRepeatStateChanged(RepeatStateChangedEvent event) {
-        Debug.d("RemotePlaybackFragment: onRepeatStateChanged");
+    void onRepeatStateChanged(RepeatStateChangedEvent event) {
+        Debug.d "RemotePlaybackFragment: onRepeatStateChanged"
     }
 
 }
