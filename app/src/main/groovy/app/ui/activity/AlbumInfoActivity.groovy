@@ -118,7 +118,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
                 .into(mCover)
 //                .withBitmapInfo()
 //                .setCallback(SingleBitmapPaletteInfoCallback.builder()
-//                                    .floatingActionButton(mFab)
+//                                    .fab(mFab)
 //                                    .build()
 //                );
 

@@ -23,6 +23,8 @@ class AlbumViewHolder {
     LinearLayout mBottomBar;
     @InjectView(R.id.shadow)
     View mShadow;
+    @InjectView(R.id.layout)
+    View mLayout;
 
     AlbumViewHolder(View view) {
         BetterKnife.inject(this, view);
