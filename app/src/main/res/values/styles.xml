@@ -31,7 +31,7 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/background_main_activity</item>
+        <item name="android:windowBackground">@drawable/splash_rubber</item>
     </style>
 
     <style name="AppTheme.LocalSongChooserActivity" parent="AppTheme.NoActionBar">
