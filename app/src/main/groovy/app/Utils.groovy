@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.MediaStore
@@ -164,6 +165,10 @@ public class Utils {
         if (drawable instanceof BitmapDrawable) {
             def bm1 = (drawable as BitmapDrawable).getBitmap()
             return new BitmapDrawable(bm1)
+        }
+        if (drawable instanceof TransitionDrawable) {
+            def bm1 = (drawable as TransitionDrawable).getDrawable(1)
+            return bm1
         }
         return drawable
     }

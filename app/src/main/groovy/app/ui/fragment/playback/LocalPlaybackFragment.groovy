@@ -1,12 +1,13 @@
 package app.ui.fragment.playback
-import android.graphics.drawable.Drawable
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import app.R
-import app.Utils
 import app.events.access_point.AccessPointStateEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
@@ -19,11 +20,12 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.LocalPlayer
 import app.player.PlayerUtils
-import com.bumptech.glide.Glide
+import app.ui.Blur
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -43,6 +45,10 @@ class LocalPlaybackFragment extends PlaybackFragment {
     @Inject
     @PackageScope
     WindowManager windowManager
+
+    @Inject
+    @PackageScope
+    ContentResolver contentResolver
 
     private View chatButton
 
@@ -88,38 +94,38 @@ class LocalPlaybackFragment extends PlaybackFragment {
     protected BasePlayer getPlayer() { player }
 
     @Override
-    protected void setSongInfo(Song song) {
-        super.setSongInfo(song)
+    protected Observable<Bitmap> getCoverBitmap(Song song) {
+        try {
+            Observable.just(
+                    BitmapFactory.decodeFileDescriptor(
+                            contentResolver.openFileDescriptor(song.albumArtUri, "r").fileDescriptor
+                    )
+            )
+        } catch (FileNotFoundException e) {
+            Observable.just(BitmapFactory.decodeResource(resources, R.drawable.no_cover))
+        }
+    }
 
-        // Load cover into cover view
-        final Drawable prevDrawable = Utils.copyDrawable(cover.drawable)
-        Glide.with(this)
-                .load(song.getAlbumArtUri().toString())
-                .centerCrop()
-                .placeholder(prevDrawable)
-                .error(R.drawable.no_cover)
-                .crossFade()
-                .into(cover)
-
-        // Load blurred cover into background view
-        final Drawable prevBgDrawable = Utils.copyDrawable(background.drawable)
-        Glide.with(this)
-                .load(song.getAlbumArtUri().toString())
-                .placeholder(prevBgDrawable)
-                .centerCrop()
-//                .transform(new BitmapTransformation(activity) {
-//                    @Override
-//                    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-//                        return new Blur().blur(toTransform);
-//                    }
-//
-//                    @Override
-//                    String getId() {
-//                        return "blur_bg_" + song.getTitle()
-//                    }
-//                })
-                .crossFade()
-                .into(background)
+    @Override
+    protected Observable<Bitmap> getBgBitmap(Song song) {
+        def options = new BitmapFactory.Options()
+        options.inSampleSize = 8
+        def blur = new Blur()
+        try {
+            Observable.just(
+                    blur.blur(
+                            BitmapFactory.decodeFileDescriptor(
+                                    contentResolver.openFileDescriptor(song.albumArtUri, "r").fileDescriptor
+                            )
+                    )
+            )
+        } catch (FileNotFoundException e) {
+            Observable.just(
+                    blur.blur(
+                        BitmapFactory.decodeResource(resources, R.drawable.no_cover)
+                    )
+            )
+        }
     }
 
     @Subscribe

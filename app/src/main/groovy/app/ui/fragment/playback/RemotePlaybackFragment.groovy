@@ -1,4 +1,6 @@
 package app.ui.fragment.playback
+
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import app.R
@@ -12,11 +14,13 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.StreamPlayer
 import app.server.StreamServer
-import com.bumptech.glide.Glide
+import app.ui.Blur
+import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -39,37 +43,25 @@ class RemotePlaybackFragment extends PlaybackFragment {
     protected BasePlayer getPlayer() { player }
 
     @Override
-    protected void setSongInfo(Song song) {
-        super.setSongInfo(song)
+    protected Observable<Bitmap> getCoverBitmap(Song song) {
+        Observable.just(
+            Ion.with(this)
+                    .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
+                    .asBitmap()
+                    .get()
+        )
+    }
 
-        // Load song cover into cover view
-        Glide.with(this)
-                .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
-                .centerCrop()
-                .crossFade()
-                .placeholder(R.drawable.no_cover)
-                .error(R.drawable.no_cover)
-                .into(cover)
-
-        // Load blurred song cover into background view
-        Glide.with(this)
-                .load(StreamServer.Url.CURRENT_ALBUMART)
-                .placeholder(R.drawable.no_cover_blurred)
-                .error(R.drawable.no_cover_blurred)
-                .crossFade()
-                .centerCrop()
-                .into(background)
-//                .transform(new Transform() {
-//                    @Override
-//                    public Bitmap transform(Bitmap b) {
-//                        return new Blur().blur(b);
-//                    }
-//
-//                    @Override
-//                    public String key() {
-//                        return song.getTitle();
-//                    }
-//                })
+    @Override
+    protected Observable<Bitmap> getBgBitmap(Song song) {
+        Observable.just(
+                new Blur().blur(
+                    Ion.with(this)
+                            .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
+                            .asBitmap()
+                            .get()
+                )
+        )
     }
 
     @Subscribe

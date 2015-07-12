@@ -1,5 +1,4 @@
 package app.player
-
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -18,6 +17,7 @@ import app.events.server.StartClientsEvent
 import app.model.Song
 import app.server.MusicServer
 import app.service.LocalPlayerService
+import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -147,11 +147,14 @@ class LocalPlayer extends BasePlayer {
         }
     }
 
+    @Profile
     public void play(int position) {
         queue.moveTo(position);
         play();
     }
 
+    @Profile
+//    @OnBackground
     public void play() {
         reset();
         try {

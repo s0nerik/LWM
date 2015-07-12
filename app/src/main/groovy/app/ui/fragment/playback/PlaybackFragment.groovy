@@ -1,6 +1,13 @@
 package app.ui.fragment.playback
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.net.Uri
+import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.widget.*
 import app.R
@@ -21,6 +28,7 @@ import com.nvanbenschoten.motion.ParallaxImageView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -48,7 +56,26 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     ProgressBar progressBar
     Toolbar toolbar
 
+    TransitionDrawable bgDrawable
+    TransitionDrawable coverDrawable
+
     protected abstract BasePlayer getPlayer()
+    protected abstract Observable<Bitmap> getCoverBitmap(Song song)
+    protected abstract Observable<Bitmap> getBgBitmap(Song song)
+
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        if (!savedInstanceState) {
+            def blackDrawables = [new ColorDrawable(Color.BLACK)] * 2 as Drawable[]
+
+            coverDrawable = new TransitionDrawable(blackDrawables)
+            coverDrawable.crossFadeEnabled = true
+
+            bgDrawable = new TransitionDrawable(blackDrawables)
+            bgDrawable.crossFadeEnabled = true
+        }
+    }
 
     @Override
     void onResume() {
@@ -97,6 +124,18 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
         seekBar.max = PlayerUtils.calculateProgressForSeekBar song.duration
         endTime.text = song.durationString
+
+        getCoverBitmap(song).subscribe { Bitmap b ->
+            coverDrawable = new TransitionDrawable([coverDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
+            cover.imageDrawable = coverDrawable
+            coverDrawable.startTransition 1000
+        }
+
+        getBgBitmap(song).subscribe { Bitmap b ->
+            bgDrawable = new TransitionDrawable([bgDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
+            background.imageDrawable = bgDrawable
+            bgDrawable.startTransition 1000
+        }
     }
 
     protected void setAlbumArtFromUri(Uri uri) {

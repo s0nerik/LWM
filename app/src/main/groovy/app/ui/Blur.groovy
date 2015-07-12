@@ -1,11 +1,9 @@
 package app.ui
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.support.v8.renderscript.Allocation
-import android.support.v8.renderscript.Element
-import android.support.v8.renderscript.RenderScript
-import android.support.v8.renderscript.ScriptIntrinsicBlur
+import android.support.v8.renderscript.*
 import app.Daggered
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -15,7 +13,7 @@ import javax.inject.Inject
 @CompileStatic
 public class Blur extends Daggered {
 
-    static final int RADIUS = 16
+    static final int RADIUS = 25
 
     @Inject
     @PackageScope
