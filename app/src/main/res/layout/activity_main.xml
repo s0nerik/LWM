@@ -18,6 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <View
+            android:layout_above="@+id/nowPlayingFrame"
+            android:background="@drawable/shadow_now_playing_fragment_up"
+            android:layout_width="match_parent"
+            android:layout_height="4dp" />
+
         <FrameLayout
             tools:visibility="visible"
             android:layout_alignParentBottom="true"

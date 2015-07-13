@@ -1,6 +1,5 @@
 package app.ui.fragment
 import android.content.Intent
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import app.R
@@ -14,7 +13,6 @@ import app.ui.base.DaggerFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.nineoldandroids.view.ViewHelper
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -38,8 +36,6 @@ public class NowPlayingFragment extends DaggerFragment {
     ImageView cover
     TextView title
     TextView artist
-    View nowPlayingLayout
-    View shadow
 
     @Override
     public void onResume() {
@@ -68,9 +64,6 @@ public class NowPlayingFragment extends DaggerFragment {
 
         artist.text = utils.getArtistName(song.artist)
         title.text = song.title
-
-        ViewHelper.setAlpha(shadow, 0.9f);
-        ViewHelper.setAlpha(nowPlayingLayout, 0.9f);
     }
 
     @OnClick([R.id.layout, R.id.cover])
