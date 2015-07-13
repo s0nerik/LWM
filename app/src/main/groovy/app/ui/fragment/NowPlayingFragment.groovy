@@ -8,6 +8,7 @@ import app.Utils
 import app.events.player.playback.SongChangedEvent
 import app.model.Song
 import app.player.LocalPlayer
+import app.ui.BlurTransformation
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.DaggerFragment
 import com.bumptech.glide.Glide
@@ -59,16 +60,14 @@ public class NowPlayingFragment extends DaggerFragment {
     public void setSongInfo(Song song) {
         Glide.with(cover.context)
                 .load(song.getAlbumArtUri().toString())
-                .centerCrop()
-                .placeholder(R.drawable.no_cover)
-                .error(R.drawable.no_cover)
-//                .withBitmapInfo()
-//                .setCallback(new SingleBitmapPaletteInfoCallback(nowPlayingLayout, shadow, title, artist));
+                .bitmapTransform(new BlurTransformation(activity, Glide.get(activity).getBitmapPool()))
+                .placeholder(android.R.color.black)
+                .error(R.drawable.no_cover_blurred)
+                .crossFade()
+                .into(cover)
 
-        // TODO: generate palette
-
-        artist.setText(utils.getArtistName(song.getArtist()));
-        title.setText(song.getTitle());
+        artist.text = utils.getArtistName(song.artist)
+        title.text = song.title
 
         ViewHelper.setAlpha(shadow, 0.9f);
         ViewHelper.setAlpha(nowPlayingLayout, 0.9f);

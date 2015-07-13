@@ -3,6 +3,7 @@ package app.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
@@ -71,6 +72,17 @@ public class BlurTransformation implements Transformation<Bitmap> {
         rs.destroy();
 
         return BitmapResource.obtain(bitmap, mBitmapPool);
+    }
+
+    private ColorMatrix getDimMatrix(float contrast, float brightness) {
+        ColorMatrix cm = new ColorMatrix(new float[]
+                {
+                        contrast, 0,        0,        0, brightness,
+                        0,        contrast, 0,        0, brightness,
+                        0,        0,        contrast, 0, brightness,
+                        0,        0,        0,        1, 0
+                });
+        return cm;
     }
 
     @Override

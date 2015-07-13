@@ -9,12 +9,10 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 @InjectLayout(value = R.layout.fragment_list_songs, injectAllViews = true)
 public final class SongsListFragment extends BaseSongsListFragment {
 
@@ -22,6 +20,7 @@ public final class SongsListFragment extends BaseSongsListFragment {
     ProgressBar progress
 
     @Inject
+    @PackageScope
     SongsManager songsManager
 
     @Override
