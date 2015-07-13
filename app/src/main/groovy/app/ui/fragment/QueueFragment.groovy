@@ -1,72 +1,65 @@
 package app.ui.fragment
-import android.os.Bundle
-import android.support.annotation.Nullable
-import android.view.LayoutInflater
+
 import android.view.View
-import android.view.ViewGroup
 import app.R
 import app.events.player.queue.PlaylistAddedToQueueEvent
 import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.player.LocalPlayer
+import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
+@InjectLayout(R.layout.fragment_list_queue)
 public final class QueueFragment extends BaseSongsListFragment {
 
     @Inject
-    LocalPlayer player;
+    @PackageScope
+    LocalPlayer player
 
     @Override
     protected void loadSongs() {
-        songs = player.getQueue();
-        if (!songs.isEmpty()) {
-            initAdapter(songs);
-            setSelection(currentSong);
+        songs = player.queue
+        if (!songs) {
+            emptyView.visibility = View.VISIBLE
+            fastScroller.visibility = View.GONE
         } else {
-            emptyView.setVisibility(View.VISIBLE);
+            initAdapter songs
+            selection = currentSong
+            fastScroller.visibility = View.VISIBLE
         }
-    }
-
-    @Override
-    View onCreateView(LayoutInflater inflater,
-                      @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        def v = inflater.inflate(R.layout.fragment_list_queue, container, false)
-        return v
     }
 
     @Subscribe
     public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
-        int startIndex = songs.size();
-        songs.addAll(event.getAppendedSongs());
+        int startIndex = songs.size()
+        songs.addAll event.appendedSongs
 
-        adapter.notifyItemRangeInserted(startIndex, event.getAppendedSongs().size());
+        adapter.notifyItemRangeInserted startIndex, event.appendedSongs.size()
     }
 
     @Subscribe
     public void onQueueShuffled(QueueShuffledEvent event) {
-        songs.clear();
-        songs.addAll(event.getQueue());
-        adapter.notifyDataSetChanged();
+        songs.clear()
+        songs.addAll event.queue
+        adapter.notifyDataSetChanged()
     }
 
     @Subscribe
     public void onSongAddedToQueue(SongAddedToQueueEvent event) {
-        songs.add(event.getSong());
-        adapter.notifyItemInserted(songs.size() - 1);
+        songs.add event.song
+        adapter.notifyItemInserted songs.size() - 1
     }
 
     @Subscribe
     public void onSongRemovedFromQueue(SongRemovedFromQueueEvent event) {
-        songs.remove(event.getSong());
-        adapter.notifyItemRemoved(songs.size());
+        songs.remove event.song
+        adapter.notifyItemRemoved songs.size()
     }
 
 }

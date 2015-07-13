@@ -14,7 +14,7 @@ import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
 import app.ui.custom_view.FastScroller
-import app.ui.custom_view.ScrollingLinearLayoutManager
+
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -53,13 +53,13 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
-        layoutManager = new ScrollingLinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false, 2)
-//        layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
         fastScroller.recyclerView = twoWayView
-//        twoWayView.addOnScrollListener(fastScroller.getOnScrollListener())
-        loadSongs()
+        if (!savedInstanceState) {
+            loadSongs()
+        }
     }
 
     protected void setSelection(Song song) {

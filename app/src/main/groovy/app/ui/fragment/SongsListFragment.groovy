@@ -27,6 +27,7 @@ public final class SongsListFragment extends BaseSongsListFragment {
     @Override
     protected void loadSongs() {
         progress.visibility = View.VISIBLE
+        fastScroller.visibility = View.GONE
         fab.hide()
         songsManager.loadAllSongs().subscribe this.&onSongsLoaded
     }
@@ -44,8 +45,10 @@ public final class SongsListFragment extends BaseSongsListFragment {
             selection = currentSong
             fab.show true
             fab.attachToRecyclerView twoWayView
+            fastScroller.visibility = View.VISIBLE
         } else {
             emptyView.visibility = View.VISIBLE
+            fastScroller.visibility = View.GONE
         }
     }
 
