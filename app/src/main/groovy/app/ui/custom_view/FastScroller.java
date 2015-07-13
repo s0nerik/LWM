@@ -18,9 +18,11 @@ import app.R;
 import static android.support.v7.widget.RecyclerView.OnScrollListener;
 
 public class FastScroller extends LinearLayout {
+    private static final int SCROLLER_ANIM_DURATION = 1000;
     private static final int HANDLE_HIDE_DELAY = 1000;
     private static final int HANDLE_ANIMATION_DURATION = 100;
     private static final int TRACK_SNAP_RANGE = 5;
+    private static final String TRANSLATION_X = "translationX";
     private static final String SCALE_X = "scaleX";
     private static final String SCALE_Y = "scaleY";
     private static final String ALPHA = "alpha";
@@ -68,14 +70,14 @@ public class FastScroller extends LinearLayout {
             if (currentAnimator != null) {
                 currentAnimator.cancel();
             }
-            getHandler().removeCallbacks(handleHider);
-            if (handle.getVisibility() == INVISIBLE) {
-                showHandle();
-            }
+//            getHandler().removeCallbacks(handleHider);
+//            if (handle.getVisibility() == INVISIBLE) {
+//                showHandle();
+//            }
             setRecyclerViewPosition(event.getY());
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            getHandler().postDelayed(handleHider, HANDLE_HIDE_DELAY);
+//            getHandler().postDelayed(handleHider, HANDLE_HIDE_DELAY);
             return true;
         }
         return super.onTouchEvent(event);
@@ -158,6 +160,20 @@ public class FastScroller extends LinearLayout {
         public void run() {
             hideHandle();
         }
+    }
+
+    private void showScroller() {
+        currentAnimator = new AnimatorSet();
+        Animator shrinkerX = ObjectAnimator.ofFloat(this, TRANSLATION_X, (float) getWidth(), 0f).setDuration(SCROLLER_ANIM_DURATION);
+        currentAnimator.playTogether(shrinkerX);
+        currentAnimator.start();
+    }
+
+    private void hideScroller() {
+        currentAnimator = new AnimatorSet();
+        Animator shrinkerX = ObjectAnimator.ofFloat(this, TRANSLATION_X, 0f, (float) getWidth()).setDuration(SCROLLER_ANIM_DURATION);
+        currentAnimator.playTogether(shrinkerX);
+        currentAnimator.start();
     }
 
     private class ScrollListener extends OnScrollListener {
