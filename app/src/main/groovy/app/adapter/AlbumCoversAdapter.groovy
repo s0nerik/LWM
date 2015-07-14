@@ -119,10 +119,10 @@ class AlbumCoversAdapter extends RecyclerView.Adapter<ViewHolder> {
 //    static class BitmapPaletteInfoCallback extends SingleBitmapPaletteInfoCallback {
 //
 //        private int i;
-//        private ViewHolder holder;
+//        private WifiP2pDeviceViewHolder holder;
 //        private List<Album> albums
 //
-//        private BitmapPaletteInfoCallback(int i, ViewHolder holder, View textLayout, List<Album> albums, TextView title, TextView subtitle) {
+//        private BitmapPaletteInfoCallback(int i, WifiP2pDeviceViewHolder holder, View textLayout, List<Album> albums, TextView title, TextView subtitle) {
 //            super(textLayout, title, subtitle)
 //            this.i = i
 //            this.holder = holder

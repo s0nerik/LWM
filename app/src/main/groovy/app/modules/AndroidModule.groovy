@@ -7,6 +7,9 @@ import android.content.res.Resources
 import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
+import android.net.wifi.p2p.WifiP2pManager
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
 import app.App
@@ -17,6 +20,7 @@ import app.adapter.*
 import app.adapter.view_holders.ArtistViewHolder
 import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.adapter.view_holders.SongViewHolder
+import app.adapter.view_holders.WifiP2pDeviceViewHolder
 import app.data_managers.AlbumsManager
 import app.data_managers.ArtistsManager
 import app.data_managers.SongsManager
@@ -30,6 +34,7 @@ import app.player.LocalPlayer
 import app.player.StreamPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.receiver.PendingIntentReceiver
+import app.receiver.WiFiDirectBroadcastReceiver
 import app.server.MusicServer
 import app.server.StreamServer
 import app.service.LocalPlayerService
@@ -57,6 +62,10 @@ import static android.content.Context.*
 @Module(injects = [
         Daggered,
         PaletteApplier,
+        WiFiP2pDevicesAdapter,
+        WiFiDirectBroadcastReceiver,
+        WifiP2pDeviceViewHolder,
+
 
         SongViewHolder.class,
         ArtistViewHolder.class,
@@ -151,6 +160,12 @@ public class AndroidModule {
 
     @Provides
     @Singleton
+    WifiP2pManager provideWifiP2pManager() {
+        return (WifiP2pManager) application.getSystemService(WIFI_P2P_SERVICE);
+    }
+
+    @Provides
+    @Singleton
     LayoutInflater provideLayoutInflater() {
         return (LayoutInflater) application.getSystemService(LAYOUT_INFLATER_SERVICE);
     }
@@ -171,6 +186,12 @@ public class AndroidModule {
     @Singleton
     Resources provideResources() {
         return application.getResources();
+    }
+
+    @Provides
+    @Singleton
+    Handler provideHandler() {
+        return new Handler(Looper.getMainLooper());
     }
 
     @Provides

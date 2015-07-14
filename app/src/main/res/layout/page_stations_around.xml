@@ -12,8 +12,17 @@
         android:layout_height="match_parent"
         tools:visibility="visible">
 
-        <ListView
-            android:id="@+id/twoWayView"
+        <!--<ListView-->
+            <!--android:id="@+id/twoWayView"-->
+            <!--style="@style/MaterialList"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:clipToPadding="false"-->
+            <!--android:paddingTop="28dp"-->
+            <!--tools:listitem="@layout/list_item_players_around" />-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
             style="@style/MaterialList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

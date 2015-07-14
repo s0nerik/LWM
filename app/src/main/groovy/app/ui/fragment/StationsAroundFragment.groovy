@@ -1,18 +1,14 @@
 package app.ui.fragment
-import android.content.BroadcastReceiver
-import android.content.Context
+
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.LinearLayout
 import app.R
 import app.adapter.PlayersAroundPagerAdapter
-import app.events.wifi.WifiScanResultsAvailableEvent
 import app.events.wifi.WifiStateChangedEvent
 import app.helper.wifi.WifiAP
 import app.service.LocalPlayerService
@@ -25,42 +21,42 @@ import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
-import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 @InjectLayout(value = R.layout.fragment_stations_around, injectAllViews = true)
 class StationsAroundFragment extends DaggerFragment {
 
     @Inject
+    @PackageScope
     Bus bus
 
     @Inject
+    @PackageScope
     WifiManager wifiManager
 
     @Inject
+    @PackageScope
     WifiAP wifiAP
 
     Toolbar toolbar
     PagerSlidingTabStrip tabs
     ViewPager pager
-    LinearLayout noWifiFrame
+    View noWifiFrame
 
-    private BroadcastReceiver onBroadcast = { Context context, Intent i ->
-        switch (i.action) {
-            case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
-                Debug.d "SCAN_RESULTS_AVAILABLE_ACTION"
-                bus.post new WifiScanResultsAvailableEvent(wifiManager.scanResults)
-                break
-            case WifiManager.WIFI_STATE_CHANGED_ACTION:
-                Debug.d "WIFI_STATE_CHANGED_ACTION"
-                bus.post new WifiStateChangedEvent(wifiManager)
-                break
-        }
-    } as BroadcastReceiver
+//    private BroadcastReceiver onBroadcast = { Context context, Intent i ->
+//        switch (i.action) {
+//            case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
+//                Debug.d "SCAN_RESULTS_AVAILABLE_ACTION"
+//                bus.post new WifiScanResultsAvailableEvent(wifiManager.scanResults)
+//                break
+//            case WifiManager.WIFI_STATE_CHANGED_ACTION:
+//                Debug.d "WIFI_STATE_CHANGED_ACTION"
+//                bus.post new WifiStateChangedEvent(wifiManager)
+//                break
+//        }
+//    } as BroadcastReceiver
 
     @Override
     void onCreate(Bundle savedInstanceState) {
@@ -79,8 +75,8 @@ class StationsAroundFragment extends DaggerFragment {
     @Override
     void onResume() {
         super.onResume()
-        activity.registerReceiver onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        activity.registerReceiver onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+//        activity.registerReceiver onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+//        activity.registerReceiver onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
         bus.register this
         toggleNoWifiFrame()
     }
@@ -88,7 +84,7 @@ class StationsAroundFragment extends DaggerFragment {
     @Override
     void onPause() {
         super.onPause()
-        activity.unregisterReceiver onBroadcast
+//        activity.unregisterReceiver onBroadcast
         bus.unregister this
     }
 
