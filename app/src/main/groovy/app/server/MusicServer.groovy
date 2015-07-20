@@ -1,5 +1,5 @@
 package app.server
-import app.Injector
+import app.Daggered
 import app.events.chat.*
 import app.events.server.*
 import app.model.chat.ChatMessage
@@ -17,64 +17,52 @@ import org.java_websocket.WebSocket
 import javax.inject.Inject
 
 @CompileStatic
-public class MusicServer {
+class MusicServer extends Daggered {
 
-    private WebSocketMessageServer webSocketMessageServer;
-
-    private StreamServer streamServer;
-
-    private LocalPlayer player;
+    private WebSocketMessageServer webSocketMessageServer
+    private StreamServer streamServer
+    private LocalPlayer player
 
     @Inject
     @PackageScope
     Bus bus
 
-    public MusicServer(LocalPlayer player) {
-        this.player = player;
-        Injector.inject(this);
-    }
+    @Inject
+    @PackageScope
+    LocalPlayer player
 
-    private List<ChatMessage> chatMessages = new ArrayList<>();
-    private int unreadMessages = 0;
+    private List<ChatMessage> chatMessages = new ArrayList<>()
+    private int unreadMessages = 0
 
-    private boolean started = false;
+    boolean started = false
 
-    public void start() {
-        bus.register(this);
-        streamServer = new StreamServer(player);
+    void start() {
+        bus.register this
+        streamServer = new StreamServer(player)
         try {
-//            streamServer.start();
+            streamServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                webSocketMessageServer = new WebSocketMessageServer(new InetSocketAddress(8080), player);
-                webSocketMessageServer.start();
-            }
-        }).start();
-        started = true;
+        webSocketMessageServer = new WebSocketMessageServer(new InetSocketAddress(8080), player)
+        webSocketMessageServer.start()
+        started = true
     }
 
     public void stop() {
-        bus.unregister(this);
-//        streamServer.stop();
+        bus.unregister this
+        streamServer.stop()
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    webSocketMessageServer.stop();
+                    webSocketMessageServer.stop()
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }).start();
-        started = false;
-    }
-
-    public boolean isStarted() {
-        return started;
+        }).start()
+        started = false
     }
 
     @Subscribe

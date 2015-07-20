@@ -48,7 +48,7 @@ class LocalPlayer extends BasePlayer {
     public LocalPlayer() {
         super();
 
-        server = new MusicServer(this);
+        server = new MusicServer();
 
         onCompletionListener = {
             Log.d("LWM", "LocalPlayer: onCompletion");

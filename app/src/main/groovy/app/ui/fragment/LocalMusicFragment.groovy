@@ -11,7 +11,6 @@ import app.R
 import app.adapter.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.ui.ShouldStartArtistInfoActivity
-import app.helper.wifi.WifiAP
 import app.service.StreamPlayerService
 import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
@@ -34,9 +33,6 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Inject
     PrefManager prefManager
-
-    @Inject
-    WifiAP wifiAP
 
     @Inject
     Bus bus

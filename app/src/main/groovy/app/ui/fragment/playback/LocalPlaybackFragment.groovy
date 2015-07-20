@@ -8,14 +8,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import app.R
-import app.events.access_point.AccessPointStateEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.events.player.queue.QueueShuffledEvent
-import app.helper.wifi.WifiAP
 import app.model.Song
 import app.player.BasePlayer
 import app.player.LocalPlayer
@@ -29,8 +27,6 @@ import rx.Observable
 
 import javax.inject.Inject
 
-import static app.events.access_point.AccessPointStateEvent.State.ENABLED
-
 @CompileStatic
 class LocalPlaybackFragment extends PlaybackFragment {
 
@@ -38,9 +34,9 @@ class LocalPlaybackFragment extends PlaybackFragment {
     @PackageScope
     LocalPlayer player
 
-    @Inject
-    @PackageScope
-    WifiAP wifiAP
+//    @Inject
+//    @PackageScope
+//    WifiAP wifiAP
 
     @Inject
     @PackageScope
@@ -62,7 +58,7 @@ class LocalPlaybackFragment extends PlaybackFragment {
     private void initToolbar() {
         toolbar.inflateMenu R.menu.playback_local
         chatButton = toolbar.findViewById(R.id.action_chat)
-        chatButtonVisibility = wifiAP.enabled
+//        chatButtonVisibility = wifiAP.enabled
     }
 
     private void setChatButtonVisibility(boolean show) {
@@ -128,10 +124,10 @@ class LocalPlaybackFragment extends PlaybackFragment {
         }
     }
 
-    @Subscribe
-    void onAccessPointStateChanged(AccessPointStateEvent event) {
-        chatButtonVisibility = event.state == ENABLED
-    }
+//    @Subscribe
+//    void onAccessPointStateChanged(MusicStationStateEvent event) {
+//        chatButtonVisibility = event.state == ENABLED
+//    }
 
     @Subscribe
     @Override

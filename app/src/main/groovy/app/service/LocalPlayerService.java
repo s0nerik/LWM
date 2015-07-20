@@ -6,8 +6,13 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.IBinder;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Produce;
+import com.squareup.otto.Subscribe;
+
+import javax.inject.Inject;
+
 import app.Injector;
-import app.events.access_point.AccessPointStateEvent;
 import app.events.player.playback.PlaybackPausedEvent;
 import app.events.player.playback.PlaybackStartedEvent;
 import app.events.player.playback.control.ChangeSongEvent;
@@ -15,15 +20,9 @@ import app.events.player.service.CurrentSongAvailableEvent;
 import app.events.server.AllClientsReadyEvent;
 import app.events.server.PauseClientsEvent;
 import app.events.server.StartClientsEvent;
-import app.helper.wifi.WifiAP;
 import app.player.LocalPlayer;
 import app.receiver.MediaButtonIntentReceiver;
 import app.ui.notification.NowPlayingNotification;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
-
-import javax.inject.Inject;
 
 public class LocalPlayerService extends Service {
 
@@ -34,9 +33,6 @@ public class LocalPlayerService extends Service {
     LocalPlayer player;
 
     @Inject
-    WifiAP wifiAP;
-
-    @Inject
     AudioManager audioManager;
 
     ComponentName mediaButtonsReceiver;
@@ -44,10 +40,6 @@ public class LocalPlayerService extends Service {
     @Override
     public void onCreate() {
         Injector.inject(this);
-
-        if (wifiAP.isEnabled()) {
-            startServer();
-        }
 
         bus.register(this);
 
@@ -124,18 +116,6 @@ public class LocalPlayerService extends Service {
                 break;
             case TOGGLE_PAUSE:
                 player.togglePause();
-                break;
-        }
-    }
-
-    @Subscribe
-    public void onApStateChanged(AccessPointStateEvent event) {
-        switch (event.getState()) {
-            case DISABLED:
-                stopServer();
-                break;
-            case ENABLED:
-                startServer();
                 break;
         }
     }

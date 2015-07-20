@@ -6,8 +6,11 @@ import android.net.NetworkInfo
 import android.net.wifi.ScanResult
 import android.net.wifi.WpsInfo
 import android.net.wifi.p2p.*
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -28,6 +31,7 @@ import app.ui.activity.RemotePlaybackActivity
 import app.ui.base.DaggerFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -36,11 +40,7 @@ import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
-import static android.net.wifi.p2p.WifiP2pManager.EXTRA_NETWORK_INFO
-import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION
-import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION
-import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION
-import static android.net.wifi.p2p.WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION
+import static android.net.wifi.p2p.WifiP2pManager.*
 
 @CompileStatic
 @InjectLayout(R.layout.page_stations_around)
@@ -86,7 +86,7 @@ public class FindStationsFragment extends DaggerFragment {
     private List<ScanResult> scanResults
     private StationsAdapter stationsAdapter
 
-    private WifiP2pManager.Channel channel
+    private Channel channel
     private WiFiDirectBroadcastReceiver receiver
     private List<WifiP2pDevice> peers = new ArrayList<>()
 
@@ -127,7 +127,6 @@ public class FindStationsFragment extends DaggerFragment {
                 R.color.pull_to_refresh_3,
                 R.color.pull_to_refresh_4
         )
-
 //        mRefreshLayout.onRefreshListener = { startScanningStations true }
 //
 //        if (!savedInstanceState) {
@@ -141,10 +140,11 @@ public class FindStationsFragment extends DaggerFragment {
         receiver = new WiFiDirectBroadcastReceiver()
         activity.registerReceiver receiver, intentFilter
 
-        manager.discoverPeers channel, [
-                onSuccess: { Debug.d "discoverPeers onSuccess" },
-                onFailure: { int reason -> Debug.d "discoverPeers onFailure (${reason})" }
-        ] as WifiP2pManager.ActionListener
+        manager.discoverPeers channel,
+                [onSuccess: { Debug.d "discoverPeers onSuccess" },
+                 onFailure: { int reason ->
+                     Debug.d "discoverPeers onFailure (${reason})"
+                 }] as ActionListener
     }
 
     @Override
@@ -212,6 +212,84 @@ public class FindStationsFragment extends DaggerFragment {
         Intent intent = new Intent(activity, RemotePlaybackActivity)
         activity.startActivity intent
     }
+
+    private void startRegistration() {
+        //  Create a string map containing information about your service.
+        def record = [listen_port: "8080",
+                      station_name : "station",
+                      current_song : "Asking Alexandria - Closure"]
+
+        // Service information.  Pass it an instance name, service type
+        // _protocol._transportlayer , and the map containing
+        // information other devices will want once they connect to this one.
+        def serviceInfo =
+                WifiP2pDnsSdServiceInfo.newInstance "_test", "_presence._tcp", record
+
+        // Add the local service, sending the service info, network channel,
+        // and listener that will be used to indicate success or failure of
+        // the request.
+        manager.addLocalService channel, serviceInfo,
+                [onSuccess: {
+                    Snackbar.make(view, "addLocalService onSuccess", Snackbar.LENGTH_LONG).show()
+                    Debug.d "addLocalService onSuccess"
+                },
+                 onFailure: {int arg0 -> Debug.d "addLocalService onFailure" }] as ActionListener
+    }
+
+    private void discoverService() {
+        def buddies = [:]
+
+        def txtListener = { String fullDomain, Map record, WifiP2pDevice device ->
+            /* Callback includes:
+             * fullDomain: full domain name: e.g "printer._ipp._tcp.local."
+             * record: TXT record dta as a map of key/value pairs.
+             * device: The device running the advertised service.
+             */
+
+            Snackbar.make(view, "DnsSdTxtRecord available: ${record}", Snackbar.LENGTH_LONG).show()
+            Debug.d "DnsSdTxtRecord available: ${record}"
+            buddies[device.deviceAddress] = record["buddyname"]
+        } as DnsSdTxtRecordListener
+
+
+        def servListener = { String instanceName, String registrationType, WifiP2pDevice resourceType ->
+
+            // Update the device name with the human-friendly version from
+            // the DnsTxtRecord, assuming one arrived.
+            resourceType.deviceName = buddies[resourceType.deviceAddress] ?: resourceType.deviceName
+
+//            // Add to the custom adapter defined specifically for showing
+//            // wifi devices.
+//            WiFiDirectServicesList fragment = (WiFiDirectServicesList) getFragmentManager()
+//                    .findFragmentById(R.id.frag_peerlist);
+//            WiFiDevicesAdapter adapter = ((WiFiDevicesAdapter) fragment
+//                    .getListAdapter());
+//
+//            adapter.add(resourceType);
+//            adapter.notifyDataSetChanged();
+//            Snackbar.make(view, "onBonjourServiceAvailable: ${instanceName}", Snackbar.LENGTH_LONG).show()
+            Debug.d "onBonjourServiceAvailable: ${instanceName}"
+        } as DnsSdServiceResponseListener
+
+        manager.setDnsSdResponseListeners channel, servListener, txtListener
+
+
+        def serviceRequest = WifiP2pDnsSdServiceRequest.newInstance()
+        manager.addServiceRequest channel, serviceRequest,
+                [onSuccess: { Debug.d "serviceRequest onSuccess" },
+                 onFailure: { int code ->
+                     // Command failed. Check for P2P_UNSUPPORTED, ERROR, or BUSY
+                     Debug.d "serviceRequest onFailure, code: ${code}"
+                 }] as ActionListener
+
+        manager.discoverServices channel,
+                [onSuccess: { Debug.d "discoverServices onSuccess" },
+                 onFailure: { int code ->
+                     // Command failed. Check for P2P_UNSUPPORTED, ERROR, or BUSY
+                     Debug.d "discoverServices onFailure, code: ${code}"
+                 }] as ActionListener
+    }
+
 
 //    private void startScanningStations(boolean isPulled) {
 //        wifiManager.startScan()
@@ -393,6 +471,16 @@ public class FindStationsFragment extends DaggerFragment {
         }
     }
 
+    @OnClick(R.id.btn_discover)
+    void discoverClicked() {
+        discoverService()
+    }
+
+    @OnClick(R.id.btn_register)
+    void registerClicked() {
+        startRegistration()
+    }
+
     private void connect(int index) {
         // Picking the first device found on the network.
         WifiP2pDevice device = peers[index]
@@ -403,8 +491,8 @@ public class FindStationsFragment extends DaggerFragment {
 
         manager.connect channel, config, [
                 onSuccess: { Debug.d("MANAGER: joined") },
-                onFailure: { int reason -> Toast.makeText(getActivity(), "Connect failed. (${reason})", Toast.LENGTH_SHORT).show() }
-        ] as WifiP2pManager.ActionListener
+                onFailure: { int reason -> Toast.makeText(activity, "Connect failed. (${reason})", Toast.LENGTH_SHORT).show() }
+        ] as ActionListener
     }
 
     private void initIntentFilter() {

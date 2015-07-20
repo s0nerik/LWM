@@ -1,4 +1,6 @@
 package app.modules
+
+import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
@@ -28,7 +30,6 @@ import app.events.MainThreadBus
 import app.helper.db.AlbumsCursorGetter
 import app.helper.db.ArtistsCursorGetter
 import app.helper.db.SongsCursorGetter
-import app.helper.wifi.WifiAP
 import app.helper.wifi.WifiUtils
 import app.player.LocalPlayer
 import app.player.StreamPlayer
@@ -36,8 +37,10 @@ import app.receiver.MediaButtonIntentReceiver
 import app.receiver.PendingIntentReceiver
 import app.receiver.WiFiDirectBroadcastReceiver
 import app.server.MusicServer
+import app.server.MusicStation
 import app.server.StreamServer
 import app.service.LocalPlayerService
+import app.service.MusicStationService
 import app.service.StreamPlayerService
 import app.ui.Blur
 import app.ui.PaletteApplier
@@ -49,6 +52,7 @@ import app.ui.fragment.playback.RemotePlaybackFragment
 import app.ui.notification.NowPlayingNotification
 import app.websocket.WebSocketMessageClient
 import app.websocket.WebSocketMessageServer
+import com.google.gson.Gson
 import com.squareup.otto.Bus
 import com.squareup.otto.ThreadEnforcer
 import dagger.Module
@@ -59,82 +63,72 @@ import javax.inject.Singleton
 
 import static android.content.Context.*
 
-@Module(injects = [
-        Daggered,
-        PaletteApplier,
-        WiFiP2pDevicesAdapter,
-        WiFiDirectBroadcastReceiver,
-        WifiP2pDeviceViewHolder,
+@Module(injects =
+        [
+                Daggered,
+                PaletteApplier,
+                WiFiP2pDevicesAdapter,
+                WiFiDirectBroadcastReceiver,
+                MusicStation,
+
+                // ViewHolders
+                SongViewHolder,
+                ArtistViewHolder,
+                WifiP2pDeviceViewHolder,
+                OnContextMenuItemClickListener,
+
+                // WebSocket
+                WebSocketMessageServer,
+                WebSocketMessageClient,
 
 
-        SongViewHolder.class,
-        ArtistViewHolder.class,
-        OnContextMenuItemClickListener.class,
+                NowPlayingNotification,
+                BroadcastButton,
 
-//        ArtistAlbumsBitmapHelper.class,
+                // DB Helpers
+                AlbumsCursorGetter, SongsCursorGetter, ArtistsCursorGetter,
 
-        WebSocketMessageServer.class,
-        WebSocketMessageClient.class,
+                // Utils
+                Utils, WifiUtils, Blur,
 
-//        AlbumCoversAdapter.BitmapPaletteInfoCallback.class,
+                // Players
+                LocalPlayer, StreamPlayer,
 
-        NowPlayingNotification.class,
+                // Servers
+                StreamServer, MusicServer,
 
-        BroadcastButton.class,
+                // Services
+                LocalPlayerService, StreamPlayerService, MusicStationService,
 
-        // DB Helpers
-        AlbumsCursorGetter.class,
-        SongsCursorGetter.class,
-        ArtistsCursorGetter.class,
+                // Intent receivers
+                PendingIntentReceiver, MediaButtonIntentReceiver,
 
-        // Utils
-        Utils.class,
-        WifiUtils.class,
-        WifiAP.class,
-        Blur.class,
+                // Adapters
+                SongsListAdapter,
+                AlbumsAdapter,
+                ArtistWrappersAdapter,
+                AlbumCoversAdapter,
+                LocalMusicFragmentsAdapter,
 
-        // Players
-        LocalPlayer.class,
-        StreamPlayer.class,
+                // Fragments
+                QueueFragment,
+                NowPlayingFragment,
+                SongsListFragment,
+                ArtistsListFragment,
+                LocalPlaybackFragment,
+                RemotePlaybackFragment,
+                StationsAroundFragment,
+                AlbumsListFragment,
+                FindStationsFragment,
+                LocalMusicFragment,
 
-        // Servers
-        StreamServer.class,
-        MusicServer.class,
-
-        // Playback services
-        LocalPlayerService.class,
-        StreamPlayerService.class,
-
-        // Intent receivers
-        PendingIntentReceiver.class,
-        MediaButtonIntentReceiver.class,
-
-        // Adapters
-        SongsListAdapter.class,
-        AlbumsAdapter.class,
-        ArtistWrappersAdapter.class,
-        AlbumCoversAdapter.class,
-        LocalMusicFragmentsAdapter.class,
-
-        // Fragments
-        QueueFragment.class,
-        NowPlayingFragment.class,
-        SongsListFragment.class,
-        ArtistsListFragment.class,
-        LocalPlaybackFragment.class,
-        RemotePlaybackFragment.class,
-        StationsAroundFragment.class,
-        AlbumsListFragment.class,
-        FindStationsFragment.class,
-        LocalMusicFragment.class,
-
-        // Activities
-        LocalMusicFragment.class,
-        AlbumInfoActivity.class,
-        LocalPlaybackActivity.class,
-        RemotePlaybackActivity.class,
-        ArtistInfoActivity.class,
-        MainActivity.class,
+                // Activities
+                LocalMusicFragment,
+                AlbumInfoActivity,
+                LocalPlaybackActivity,
+                RemotePlaybackActivity,
+                ArtistInfoActivity,
+                MainActivity,
 
         ],
         library = true)
@@ -179,7 +173,7 @@ public class AndroidModule {
     @Provides
     @Singleton
     NotificationManager provideNotificationManager() {
-        return (NotificationManager) application.getSystemService(Context.NOTIFICATION_SERVICE);
+        return (NotificationManager) application.getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Provides
@@ -208,8 +202,20 @@ public class AndroidModule {
 
     @Provides
     @Singleton
+    ActivityManager provideActivityManager() {
+        return (ActivityManager) application.getSystemService(ACTIVITY_SERVICE);
+    }
+
+    @Provides
+    @Singleton
     Bus provideBus() {
         return new MainThreadBus(ThreadEnforcer.ANY);
+    }
+
+    @Provides
+    @Singleton
+    Gson provideGson() {
+        return new Gson();
     }
 
     @Provides
@@ -226,8 +232,8 @@ public class AndroidModule {
 
     @Provides
     @Singleton
-    WifiAP provideWifiAP() {
-        return new WifiAP();
+    MusicStation provideMusicStation() {
+        return new MusicStation();
     }
 
     @Provides

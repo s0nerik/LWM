@@ -58,6 +58,9 @@
         <service
             android:name="app.service.StreamPlayerService" />
 
+        <service
+            android:name="app.service.MusicStationService" />
+
         <activity
             android:screenOrientation="portrait"
             android:name=".ui.activity.StartActivity"

@@ -1,105 +1,111 @@
 package app.ui.custom_view
-
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.util.AttributeSet
-import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import app.Injector
 import app.R
-import app.events.access_point.AccessPointStateEvent
-import app.helper.wifi.WifiAP
+import app.server.MusicStation
+import app.server.MusicStation.StateChangedEvent
+import app.service.MusicStationService
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
+import static app.server.MusicStation.StateChangedEvent.State.*
+
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public class BroadcastButton extends RelativeLayout {
+class BroadcastButton extends RelativeLayout {
 
     @Inject
-    Bus bus;
+    @PackageScope
+    Bus bus
 
     @Inject
-    WifiAP wifiAP;
+    @PackageScope
+    MusicStation musicStation
 
     @Inject
-    Resources resources;
+    @PackageScope
+    Resources resources
 
     @InjectView(R.id.icon)
-    ImageView mIcon;
+    ImageView mIcon
     @InjectView(R.id.progress)
-    ProgressBar mProgress;
+    ProgressBar mProgress
 
-    public BroadcastButton(Context context) {
-        super(context);
-        init();
+    BroadcastButton(Context context) {
+        super(context)
+        init()
     }
 
-    public BroadcastButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    BroadcastButton(Context context, AttributeSet attrs) {
+        super(context, attrs)
+        init()
     }
 
-    public BroadcastButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
+    BroadcastButton(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr)
+        init()
     }
 
     private void init() {
-        inflate(getContext(), R.layout.layout_btn_broadcast, this);
-        BetterKnife.inject(this, this);
-        Injector.inject(this);
-        setBroadcastState(wifiAP.isEnabled());
-        onClickListener = { wifiAP.toggleWiFiAP() }
+        inflate context, R.layout.layout_btn_broadcast, this
+        BetterKnife.inject this, this
+        Injector.inject this
+        broadcastState = musicStation.enabled
+        onClickListener = {
+            context.startService new Intent(context, MusicStationService)
+//            musicStation.toggleEnabledState()
+        }
     }
 
     private void setProgressVisibility(boolean show) {
-        mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-        mIcon.setVisibility(show ? View.GONE : View.VISIBLE);
+        mProgress.visibility = show ? VISIBLE : GONE
+        mIcon.visibility = show ? GONE : VISIBLE
     }
 
     private void setBroadcastState(boolean isBroadcasting) {
-        mIcon.setImageResource(isBroadcasting ? R.drawable.ic_ap_on : R.drawable.ic_ap_off);
+        mIcon.imageResource = isBroadcasting ? R.drawable.ic_ap_on : R.drawable.ic_ap_off
     }
 
     @Override
     protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Debug.d("BroadcastButton onAttachedToWindow");
-        bus.register(this);
+        super.onAttachedToWindow()
+        Debug.d "BroadcastButton onAttachedToWindow"
+        bus.register this
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Debug.d("BroadcastButton onDetachedFromWindow");
-        bus.unregister(this);
+        super.onDetachedFromWindow()
+        Debug.d "BroadcastButton onDetachedFromWindow"
+        bus.unregister this
     }
 
     @Subscribe
-    public void onAccessPointStateEvent(AccessPointStateEvent event) {
-        switch (event.getState()) {
-            case AccessPointStateEvent.State.CHANGING:
-                setProgressVisibility(true);
-                break;
-            case AccessPointStateEvent.State.DISABLED:
-                setProgressVisibility(false);
-                setBroadcastState(false);
-                break;
-            case AccessPointStateEvent.State.ENABLED:
-                setProgressVisibility(false);
-                setBroadcastState(true);
-                break;
+    void onMusicStationStateChangedEvent(StateChangedEvent event) {
+        switch (event.state) {
+            case CHANGING:
+                progressVisibility = true
+                break
+            case DISABLED:
+                progressVisibility = false
+                broadcastState = false
+                break
+            case ENABLED:
+                progressVisibility = false
+                broadcastState = true
+                break
         }
     }
 }

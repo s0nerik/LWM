@@ -32,6 +32,21 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <Button
+        android:id="@+id/btn_discover"
+        android:text="Discover"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:text="Register"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/btn_discover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:progressBarStyleLarge"

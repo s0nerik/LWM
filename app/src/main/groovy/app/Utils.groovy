@@ -1,4 +1,6 @@
 package app
+
+import android.app.ActivityManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.res.Resources
@@ -25,17 +27,16 @@ import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
-public class Utils {
+class Utils extends Daggered {
 
     @Inject
-    Resources resources;
+    Resources resources
 
     @Inject
-    WindowManager windowManager;
+    WindowManager windowManager
 
-    public Utils() {
-        Injector.inject(this);
-    }
+    @Inject
+    ActivityManager activityManager
 
     public String getArtistName(String name) {
         if ("<unknown>".equals(name)) {
@@ -171,6 +172,15 @@ public class Utils {
             return bm1
         }
         return drawable
+    }
+
+    boolean isServiceRunning(Class<?> serviceClass) {
+        activityManager.getRunningServices(Integer.MAX_VALUE).each { ActivityManager.RunningServiceInfo service ->
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
 }

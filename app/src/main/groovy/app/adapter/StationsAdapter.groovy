@@ -10,13 +10,13 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import app.R
-import app.helper.wifi.WifiAP
+//import app.helper.wifi.WifiAP
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 
 @CompileStatic
-public class StationsAdapter extends BaseAdapter {
+class StationsAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private Context context;
@@ -26,13 +26,7 @@ public class StationsAdapter extends BaseAdapter {
     private String[] signalLevelNames;
 
     public StationsAdapter(Context context, List<ScanResult> stations) {
-        this.stations = new ArrayList<>();
-
-        for (ScanResult station : stations) {
-            if (station.SSID.matches(WifiAP.AP_NAME_REGEXP)) {
-                this.stations.add(station);
-            }
-        }
+        this.stations = stations
 
         Resources res = context.getResources();
         signalLevels = res.getInteger(R.integer.wifi_max_level);
@@ -69,8 +63,6 @@ public class StationsAdapter extends BaseAdapter {
 
         ScanResult result = getItem(position);
 
-        holder.mName.text = result.SSID.replaceAll(WifiAP.AP_NAME_REGEXP, '$1')
-
         int signalLevel = WifiManager.calculateSignalLevel(getItem(position).level, signalLevels);
         String signal = signalLevelNames[signalLevel];
 
@@ -92,7 +84,7 @@ public class StationsAdapter extends BaseAdapter {
         TextView mSignal;
 
         ViewHolder(View view) {
-            BetterKnife.inject(this, view);
+            BetterKnife.inject this, view
         }
     }
 

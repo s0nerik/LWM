@@ -8,9 +8,9 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.View
 import app.R
+import app.Utils
 import app.adapter.PlayersAroundPagerAdapter
 import app.events.wifi.WifiStateChangedEvent
-import app.helper.wifi.WifiAP
 import app.service.LocalPlayerService
 import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
@@ -38,7 +38,7 @@ class StationsAroundFragment extends DaggerFragment {
 
     @Inject
     @PackageScope
-    WifiAP wifiAP
+    Utils utils
 
     Toolbar toolbar
     PagerSlidingTabStrip tabs
@@ -110,11 +110,12 @@ class StationsAroundFragment extends DaggerFragment {
 
     @OnClick(R.id.no_wifi_frame)
     void onNoWifiClicked() {
-        if (wifiAP.enabled) {
-            wifiAP.toggleWiFiAP()
-        } else {
-            wifiManager.wifiEnabled = true
-        }
+        wifiManager.wifiEnabled = true
+//        if (wifiAP.enabled) {
+//            wifiAP.toggleWiFiAP()
+//        } else {
+//            wifiManager.wifiEnabled = true
+//        }
     }
 
 }
