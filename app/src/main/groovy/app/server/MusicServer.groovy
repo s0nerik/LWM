@@ -6,6 +6,7 @@ import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.websocket.SocketMessage
 import app.websocket.WebSocketMessageServer
+import com.github.s0nerik.betterknife.annotations.Profile
 import com.google.gson.Gson
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
@@ -36,6 +37,7 @@ class MusicServer extends Daggered {
 
     boolean started = false
 
+    @Profile
     void start() {
         bus.register this
         streamServer = new StreamServer(player)

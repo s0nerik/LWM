@@ -37,21 +37,20 @@ class MusicStation extends Daggered {
     private WifiP2pDnsSdServiceInfo serviceInfo
 
     private void startServiceRegistration() {
-        channel = manager.initialize context, context.mainLooper, null
-
-        //  Create a string map containing information about your service.
         def record = [listen_port: StreamServer.PORT,
                       station_name : "station",
                       current_song : "Asking Alexandria - Closure"]
 
-        // Service information.  Pass it an instance name, service type
-        // _protocol._transportlayer , and the map containing
-        // information other devices will want once they connect to this one.
-        serviceInfo = WifiP2pDnsSdServiceInfo.newInstance "LWM", "_ws._tcp", record
+        serviceInfo = WifiP2pDnsSdServiceInfo.newInstance "_test", "_presence._tcp", record
 
-        // Add the local service, sending the service info, network channel,
-        // and listener that will be used to indicate success or failure of
-        // the request.
+        channel = manager.initialize context, context.mainLooper, { Debug.d "Channel disconnected" }
+
+        manager.discoverPeers channel,
+                [onSuccess: { Debug.d "discoverPeers onSuccess" },
+                 onFailure: { int reason ->
+                     Debug.d "discoverPeers onFailure (${reason})"
+                 }] as WifiP2pManager.ActionListener
+
         manager.addLocalService channel, serviceInfo, [
                 onSuccess: { Debug.d "addLocalService onSuccess" },
                 onFailure: { int arg0 -> Debug.d "addLocalService onFailure: ${arg0}" }

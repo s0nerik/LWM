@@ -5,6 +5,9 @@ import app.model.Song
 import app.player.LocalPlayer
 import com.google.gson.Gson
 import fi.iki.elonen.NanoHTTPD
+import fi.iki.elonen.NanoHTTPD.Response
+import fi.iki.elonen.NanoHTTPD.ResponseException
+import fi.iki.elonen.NanoHTTPD.IHTTPSession
 //import fi.iki.elonen.NanoHTTPD.*
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope

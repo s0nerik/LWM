@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.IBinder
 import app.Injector
 import app.server.MusicStation
+import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -19,6 +20,7 @@ class MusicStationService extends Service {
 
     private MusicStation musicStation = new MusicStation()
 
+    @Profile
     @Override
     public void onCreate() {
         Injector.inject this
@@ -27,6 +29,7 @@ class MusicStationService extends Service {
         musicStation.enable()
     }
 
+    @Profile
     @Override
     public void onDestroy() {
         bus.unregister this
