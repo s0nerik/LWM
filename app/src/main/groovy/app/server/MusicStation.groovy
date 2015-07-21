@@ -1,14 +1,17 @@
 package app.server
 import android.content.Context
+import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import app.Daggered
 import app.player.LocalPlayer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
+import groovy.transform.Immutable
 import groovy.transform.PackageScope
 import groovy.transform.TupleConstructor
 import ru.noties.debug.Debug
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -45,16 +48,38 @@ class MusicStation extends Daggered {
 
         channel = manager.initialize context, context.mainLooper, { Debug.d "Channel disconnected" }
 
-        manager.discoverPeers channel,
-                [onSuccess: { Debug.d "discoverPeers onSuccess" },
-                 onFailure: { int reason ->
-                     Debug.d "discoverPeers onFailure (${reason})"
-                 }] as WifiP2pManager.ActionListener
+        def listener = { String methodName ->
+            [
+                    onSuccess: { Debug.d "${methodName} onSuccess" },
+                    onFailure: { int reason ->
+                        Debug.d "${methodName} onFailure (${reason})"
+                    }
+            ] as WifiP2pManager.ActionListener
+        }
 
-        manager.addLocalService channel, serviceInfo, [
-                onSuccess: { Debug.d "addLocalService onSuccess" },
-                onFailure: { int arg0 -> Debug.d "addLocalService onFailure: ${arg0}" }
-        ] as WifiP2pManager.ActionListener
+        manager.discoverPeers channel, listener("discoverPeers")
+        manager.addLocalService channel, serviceInfo, listener("addLocalService")
+        manager.requestConnectionInfo channel, { WifiP2pInfo info ->
+            if (info.groupFormed) {
+                if (info.isGroupOwner) {
+                    def l = [
+                            onSuccess: {
+                                Debug.d "requestConnectionInfo onSuccess"
+                                manager.createGroup channel, listener("createGroup")
+                            },
+                            onFailure: { int reason ->
+                                Debug.d "requestConnectionInfo onFailure (${reason})"
+                            }
+                    ] as WifiP2pManager.ActionListener
+                    manager.removeGroup channel, l
+                } else {
+                    Debug.e "info.groupFormed == true, info.isGroupOwner == false"
+                }
+            } else {
+                Debug.d "info.groupFormed == false"
+                manager.createGroup channel, listener("createGroup")
+            }
+        } as WifiP2pManager.ConnectionInfoListener
     }
 
     private void removeServiceRegistration() {

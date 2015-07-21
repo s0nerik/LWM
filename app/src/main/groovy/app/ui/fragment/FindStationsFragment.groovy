@@ -163,11 +163,12 @@ public class FindStationsFragment extends DaggerFragment {
         def txtListener = { String fullDomain, Map record, WifiP2pDevice device ->
             Snackbar.make(view, "DnsSdTxtRecord available: ${record}", Snackbar.LENGTH_LONG).show()
             Debug.d "DnsSdTxtRecord available: ${record}"
-            buddies[device.deviceAddress] = record["buddyname"]
+//            buddies[device.deviceAddress] = record["buddyname"]
         } as DnsSdTxtRecordListener
 
 
         def servListener = { String instanceName, String registrationType, WifiP2pDevice resourceType ->
+            Snackbar.make(view, "DnsSdTxtRecord available: ${resourceType}", Snackbar.LENGTH_LONG).show()
             resourceType.deviceName = buddies[resourceType.deviceAddress] ?: resourceType.deviceName
             Debug.d "onBonjourServiceAvailable: ${instanceName}"
         } as DnsSdServiceResponseListener
