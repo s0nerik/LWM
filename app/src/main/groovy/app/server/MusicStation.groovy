@@ -55,6 +55,11 @@ class MusicStation extends Daggered {
                 onSuccess: { Debug.d "addLocalService onSuccess" },
                 onFailure: { int arg0 -> Debug.d "addLocalService onFailure: ${arg0}" }
         ] as WifiP2pManager.ActionListener
+
+        manager.createGroup channel, [
+                onSuccess: { Debug.d "createGroup onSuccess" },
+                onFailure: { int arg0 -> Debug.d "createGroup onFailure: ${arg0}" }
+        ] as WifiP2pManager.ActionListener
     }
 
     private void removeServiceRegistration() {
