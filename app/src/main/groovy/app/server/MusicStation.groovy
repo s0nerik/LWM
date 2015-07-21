@@ -1,5 +1,6 @@
 package app.server
 import android.content.Context
+import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import app.Daggered
