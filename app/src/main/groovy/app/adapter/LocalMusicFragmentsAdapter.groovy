@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -18,13 +19,18 @@ import app.ui.fragment.QueueFragment
 import app.ui.fragment.SongsListFragment
 
 @CompileStatic
-public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
+class LocalMusicFragmentsAdapter extends FragmentStatePagerAdapter {
 
     @Inject
     @PackageScope
     Resources resources
 
     private String[] names
+
+    private Fragment[] fragments = [new SongsListFragment(),
+                                    new ArtistsListFragment(),
+                                    new AlbumsListFragment(),
+                                    new QueueFragment()] as Fragment[]
 
     LocalMusicFragmentsAdapter(FragmentManager fm) {
         super(fm)
@@ -33,27 +39,11 @@ public class LocalMusicFragmentsAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    CharSequence getPageTitle(int position) {
-        names[position]
-    }
+    CharSequence getPageTitle(int position) { names[position] }
 
     @Override
-    Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return new SongsListFragment()
-            case 1:
-                return new ArtistsListFragment()
-            case 2:
-                return new AlbumsListFragment()
-            case 3:
-                return new QueueFragment()
-        }
-        return null
-    }
+    Fragment getItem(int position) { fragments[position] }
 
     @Override
-    int getCount() {
-        names.length
-    }
+    int getCount() { names.length }
 }

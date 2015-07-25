@@ -16,50 +16,61 @@ import app.ui.base.DaggerOttoOnResumeFragment
 import app.ui.custom_view.FastScroller
 
 import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.Profile
+import com.melnykov.fab.FloatingActionButton
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.Observable
 
 import javax.inject.Inject
 
 @CompileStatic
 abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
-    @InjectView
+    @InjectView(R.id.twoWayView)
     RecyclerView twoWayView
     @InjectView(R.id.fast_scroller)
     FastScroller fastScroller
-    @InjectView
+    @InjectView(R.id.emptyView)
     View emptyView
+    @InjectView(R.id.progress)
+    View progress
+    @InjectView(R.id.fab)
+    FloatingActionButton fab
 
     @PackageScope
     @Inject
     LocalPlayer player
 
-    List<Song> songs
+    List<Song> songs = new ArrayList<>()
     Song currentSong
 
     SongsListAdapter adapter
 
     private LinearLayoutManager layoutManager
 
-    protected abstract void loadSongs()
+    protected abstract Observable<List<Song>> loadSongs()
 
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         setBusListeners new BusListener(), this
+        adapter = new SongsListAdapter(activity, songs)
     }
 
+    @Profile
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState)
+
+        twoWayView.adapter = adapter
         layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
         fastScroller.recyclerView = twoWayView
-        if (!savedInstanceState) {
-            loadSongs()
-        }
+
+        loadSongs().subscribe this.&onSongsLoaded
     }
 
     protected void setSelection(Song song) {
@@ -84,11 +95,6 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         }
     }
 
-    protected void initAdapter(List<Song> songs) {
-        adapter = new SongsListAdapter(activity, songs)
-        twoWayView.adapter = adapter
-    }
-
     protected void shuffleAll() {
         if (songs) {
             def queue = new ArrayList<>(songs);
@@ -97,6 +103,24 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
             player.play(0)
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    protected void onSongsLoaded(List<Song> loadedSongs) {
+        songs.clear()
+        songs.addAll loadedSongs
+
+        progress.hide()
+        if (songs) {
+            adapter.notifyDataSetChanged()
+            selection = currentSong
+            fab?.show true
+            fab?.attachToRecyclerView twoWayView
+            fastScroller.show()
+            twoWayView.show()
+        } else {
+            emptyView.show()
+            fastScroller.hide()
         }
     }
 

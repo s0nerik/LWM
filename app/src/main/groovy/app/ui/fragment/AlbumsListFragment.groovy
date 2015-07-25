@@ -38,6 +38,8 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     Artist artist
 
+    private List<Album> albums = new ArrayList<>();
+
     public static Fragment create(Artist artist) {
         def fragment = new AlbumsListFragment()
         def bundle = new Bundle()
@@ -45,8 +47,6 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         fragment.arguments = bundle
         fragment
     }
-
-    private List<Album> albums = new ArrayList<>();
 
     @Override
     void onCreate(Bundle savedInstanceState) {
@@ -57,15 +57,29 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
-        progress.visibility = View.VISIBLE
+        grid.adapter = new AlbumsAdapter(activity, albums)
 
+        loadAlbums()
+    }
+
+    private void loadAlbums() {
+        grid.hide()
+        progress.show()
         albumsManager.loadAllAlbums(artist).subscribe this.&onAlbumsLoaded
     }
 
-    private void onAlbumsLoaded(Pair<Artist, List<Album>> albums) {
-        progress.visibility = View.GONE
-        this.albums = albums.second
-        initAdapter albums.second
+    private void onAlbumsLoaded(Pair<Artist, List<Album>> loadedAlbums) {
+        progress.hide()
+
+        albums.clear()
+        albums.addAll loadedAlbums.second
+
+        if (albums) {
+            grid.show()
+        } else {
+            grid.hide()
+            empty.show()
+        }
     }
 
     @OnItemClick(R.id.grid)
@@ -74,17 +88,5 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         intent.putExtra "album", albums.get(position) as Parcelable
         startActivity intent
         activity.overridePendingTransition R.anim.slide_in_right, R.anim.slide_out_left_long_alpha
-    }
-
-    private void initAdapter(List<Album> albums) {
-        ListAdapter adapter = new AlbumsAdapter(activity, albums)
-
-        if (adapter.count > 0) {
-            grid.visibility = View.VISIBLE
-            grid.adapter = adapter
-        } else {
-            grid.visibility = View.GONE
-            empty.visibility = View.VISIBLE
-        }
     }
 }

@@ -6,11 +6,11 @@ import app.Injector
 import groovy.transform.CompileStatic;
 
 @CompileStatic
-public abstract class DaggerFragment extends BaseFragment {
+abstract class DaggerFragment extends BaseFragment {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        Injector.inject(this)
+        Injector.inject this
     }
 }

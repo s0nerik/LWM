@@ -1,35 +1,37 @@
 package app.ui.base;
 
 import com.squareup.otto.Bus
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope;
 
 import javax.inject.Inject;
 
 @CompileStatic
-public abstract class DaggerOttoOnResumeFragment extends DaggerFragment {
+abstract class DaggerOttoOnResumeFragment extends DaggerFragment {
 
-    private Object[] busListeners = [ this ];
+    private Object[] busListeners = [ this ]
 
     @Inject
-    protected Bus bus;
+    @PackageScope
+    Bus bus
 
     @Override
-    public void onResume() {
-        super.onResume();
+    void onResume() {
+        super.onResume()
         for (Object o : busListeners) {
-            bus.register(o);
+            bus.register(o)
         }
     }
 
     @Override
-    public void onPause() {
+    void onPause() {
         for (Object o : busListeners) {
-            bus.unregister(o);
+            bus.unregister(o)
         }
-        super.onPause();
+        super.onPause()
     }
 
-    public void setBusListeners(Object... busListeners) {
-        this.busListeners = busListeners;
+    void setBusListeners(Object... busListeners) {
+        this.busListeners = busListeners
     }
 }

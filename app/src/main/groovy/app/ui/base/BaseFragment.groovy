@@ -4,5 +4,5 @@ import android.support.v4.app.Fragment
 import groovy.transform.CompileStatic
 
 @CompileStatic
-public abstract class BaseFragment extends Fragment {
+abstract class BaseFragment extends Fragment {
 }

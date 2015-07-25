@@ -28,16 +28,17 @@ import groovy.transform.PackageScopeTarget
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 public class AlbumsAdapter extends ArrayAdapter<Album> {
 
-    private final Context context;
-    private List<Album> albumsList;
+    private final Context context
+    private List<Album> albumsList
 
     @Inject
+    @PackageScope
     Utils utils;
 
     @Inject
+    @PackageScope
     LayoutInflater inflater;
 
     public AlbumsAdapter(final Context context, List<Album> albums) {

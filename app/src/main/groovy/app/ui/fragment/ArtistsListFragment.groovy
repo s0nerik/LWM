@@ -12,6 +12,7 @@ import app.adapter.ArtistWrappersAdapter
 import app.data_managers.ArtistsManager
 import app.model.ArtistWrapper
 import app.ui.base.DaggerOttoOnCreateFragment
+import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -20,7 +21,7 @@ import groovy.transform.PackageScopeTarget
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
+@InjectLayout(R.layout.fragment_list_artists)
 public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @InjectView(R.id.empty)
@@ -31,65 +32,42 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     ProgressBar mProgress;
 
     @Inject
+    @PackageScope
     ArtistsManager artistsManager
 
-//    @InjectService
-//    SongsManager musicLoaderService;
+    private List<ArtistWrapper> artists = new ArrayList<>()
 
-    @Override
-    void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState)
-//        AsyncService.inject(this)
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View v = inflater.inflate(R.layout.fragment_list_artists, container, false);
-        return v;
-    }
+    private ArtistWrappersAdapter adapter
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
 
-        mProgress.setVisibility(View.VISIBLE);
-//        musicLoaderService.loadAllArtists();
+        adapter = new ArtistWrappersAdapter(activity, artists)
+        mRecyclerView.adapter = this.adapter
+        mRecyclerView.hasFixedSize = true
 
+        loadArtists()
+    }
+
+    private loadArtists() {
+        mRecyclerView.hide()
+        mProgress.show()
         artistsManager.loadAllArtists().subscribe this.&onArtistsLoaded
-//        AndroidDSL.async this, {
-//            onArtistsLoaded(new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers())
-//        }
-
     }
 
-//    @OnMessage
-//    public void onArtistsLoaded(SongsManager.ArtistsLoadedEvent event) {
-//        mProgress.setVisibility(View.GONE);
-//        List<ArtistWrapper> artists = event.getArtists();
-//        if (!artists.isEmpty()) {
-//            initAdapter(artists);
-//        } else {
-//            mEmpty.setVisibility(View.VISIBLE);
-//        }
-//    }
-
-//    @OnUIThread
     private void onArtistsLoaded(List<ArtistWrapper> artists) {
-        mProgress.visibility = View.GONE
-        if (!artists.isEmpty()) {
-            initAdapter(artists)
-        } else {
-            mEmpty.visibility = View.VISIBLE
-        }
-    }
+        mProgress.hide()
 
-    private void initAdapter(List<ArtistWrapper> list) {
-        ArtistWrappersAdapter adapter = new ArtistWrappersAdapter(getActivity(), list);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setHasFixedSize(true);
+        this.artists.clear()
+        this.artists.addAll artists
+        if (artists) {
+            adapter.notifyDataSetChanged()
+            mRecyclerView.show()
+        } else {
+            mEmpty.show()
+        }
     }
 
 }

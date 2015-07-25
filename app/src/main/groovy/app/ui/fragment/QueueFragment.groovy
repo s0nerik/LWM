@@ -6,11 +6,14 @@ import app.events.player.queue.PlaylistAddedToQueueEvent
 import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
+import app.model.Song
 import app.player.LocalPlayer
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -21,19 +24,6 @@ public final class QueueFragment extends BaseSongsListFragment {
     @Inject
     @PackageScope
     LocalPlayer player
-
-    @Override
-    protected void loadSongs() {
-        songs = player.queue
-        if (!songs) {
-            emptyView.visibility = View.VISIBLE
-            fastScroller.visibility = View.GONE
-        } else {
-            initAdapter songs
-            selection = currentSong
-            fastScroller.visibility = View.VISIBLE
-        }
-    }
 
     @Subscribe
     public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
@@ -62,4 +52,8 @@ public final class QueueFragment extends BaseSongsListFragment {
         adapter.notifyItemRemoved songs.size()
     }
 
+    @Override
+    protected Observable<List<Song>> loadSongs() {
+        Observable.just(player.queue)
+    }
 }
