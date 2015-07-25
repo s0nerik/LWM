@@ -68,8 +68,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
-        fastScroller.recyclerView = twoWayView
 
+        fastScroller.hide()
         loadSongs().subscribe this.&onSongsLoaded
     }
 
@@ -114,10 +114,14 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         if (songs) {
             adapter.notifyDataSetChanged()
             selection = currentSong
-            fab?.show true
-            fab?.attachToRecyclerView twoWayView
-            fastScroller.show()
+
             twoWayView.show()
+
+            fab?.attachToRecyclerView twoWayView
+            fab?.show true
+
+            fastScroller.recyclerView = twoWayView
+            fastScroller.show()
         } else {
             emptyView.show()
             fastScroller.hide()
