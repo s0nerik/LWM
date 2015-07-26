@@ -7,13 +7,13 @@ import app.Daggered
 import app.player.LocalPlayer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.Immutable
 import groovy.transform.PackageScope
 import groovy.transform.TupleConstructor
 import ru.noties.debug.Debug
-import rx.Observable
 
 import javax.inject.Inject
+
+import static java.lang.reflect.Modifier.*
 
 @CompileStatic
 class MusicStation extends Daggered {
@@ -34,59 +34,80 @@ class MusicStation extends Daggered {
     @PackageScope
     Bus bus
 
+    public static final String INSTANCE_NAME = "_LWM";
+    public static final String SERVICE_TYPE = "_http._tcp";
+
     boolean enabled = false
 
     private WifiP2pManager.Channel channel
     private WifiP2pDnsSdServiceInfo serviceInfo
 
-    private void startServiceRegistration() {
-        def record = [listen_port: StreamServer.PORT,
-                      station_name : "station",
-                      current_song : "Asking Alexandria - Closure"]
+    private MusicServer server = new MusicServer()
 
-        serviceInfo = WifiP2pDnsSdServiceInfo.newInstance "_test", "_presence._tcp", record
+    private String getCause(int code) {
+        manager.class.declaredFields.find {
+            it.modifiers == (PUBLIC | STATIC | FINAL) && it.get(manager) == code
+        }.name
+    }
+
+    WifiP2pManager.ActionListener debugP2PActionListener(String methodName) {
+        [
+                onSuccess: { Debug.d "${methodName} success." },
+                onFailure: { int code ->
+                    Debug.e "${methodName} failure. Error: ${getCause(code)}."
+                    disable()
+                }
+        ] as WifiP2pManager.ActionListener
+    }
+
+    WifiP2pManager.ActionListener groupCreationListener = [
+            onSuccess: {
+                Debug.d "createGroup success."
+                enabled = true
+                bus.post(new StateChangedEvent(StateChangedEvent.State.ENABLED))
+            },
+            onFailure: { int code ->
+                Debug.e "createGroup failure. Error: ${getCause(code)}."
+                disable()
+            }
+    ] as WifiP2pManager.ActionListener
+
+    private void startServiceRegistration() {
+        def record = [port: StreamServer.PORT,
+                      name : "station",
+                      currentSong : "Asking Alexandria - Closure"]
+
+        serviceInfo = WifiP2pDnsSdServiceInfo.newInstance INSTANCE_NAME, SERVICE_TYPE, record
 
         channel = manager.initialize context, context.mainLooper, { Debug.d "Channel disconnected" }
 
-        def listener = { String methodName ->
-            [
-                    onSuccess: { Debug.d "${methodName} onSuccess" },
-                    onFailure: { int reason ->
-                        Debug.d "${methodName} onFailure (${reason})"
-                    }
-            ] as WifiP2pManager.ActionListener
-        }
-
-        manager.discoverPeers channel, listener("discoverPeers")
-        manager.addLocalService channel, serviceInfo, listener("addLocalService")
+        manager.addLocalService channel, serviceInfo, debugP2PActionListener("addLocalService")
         manager.requestConnectionInfo channel, { WifiP2pInfo info ->
             if (info.groupFormed) {
                 if (info.isGroupOwner) {
-                    def l = [
+                    manager.removeGroup channel, [
                             onSuccess: {
-                                Debug.d "requestConnectionInfo onSuccess"
-                                manager.createGroup channel, listener("createGroup")
+                                Debug.d "removeGroup success."
+                                manager.createGroup channel, groupCreationListener
                             },
-                            onFailure: { int reason ->
-                                Debug.d "requestConnectionInfo onFailure (${reason})"
+                            onFailure: { int code ->
+                                Debug.e "removeGroup failure. Error: ${getCause(code)}."
+                                disable()
                             }
                     ] as WifiP2pManager.ActionListener
-                    manager.removeGroup channel, l
                 } else {
                     Debug.e "info.groupFormed == true, info.isGroupOwner == false"
                 }
             } else {
                 Debug.d "info.groupFormed == false"
-                manager.createGroup channel, listener("createGroup")
+                manager.createGroup channel, debugP2PActionListener("createGroup")
             }
         } as WifiP2pManager.ConnectionInfoListener
+        manager.discoverPeers channel, debugP2PActionListener("discoverPeers")
     }
 
     private void removeServiceRegistration() {
-        manager.removeLocalService channel, serviceInfo, [
-                onSuccess: { Debug.d "removeLocalService onSuccess" },
-                onFailure: { int arg0 -> Debug.d "removeLocalService onFailure: ${arg0}" }
-        ] as WifiP2pManager.ActionListener
+        manager.removeLocalService channel, serviceInfo, debugP2PActionListener("removeLocalService")
     }
 
     void toggleEnabledState() {
@@ -95,13 +116,12 @@ class MusicStation extends Daggered {
     }
 
     void enable() {
-        new MusicServer().start()
+        server.start()
         startServiceRegistration()
-        enabled = true
-        bus.post(new StateChangedEvent(StateChangedEvent.State.ENABLED))
     }
 
     void disable() {
+        server.stop()
         removeServiceRegistration()
         enabled = false
         bus.post(new StateChangedEvent(StateChangedEvent.State.DISABLED))

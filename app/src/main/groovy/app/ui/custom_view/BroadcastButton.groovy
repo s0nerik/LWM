@@ -1,6 +1,5 @@
 package app.ui.custom_view
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.widget.ImageView
@@ -8,34 +7,36 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import app.Injector
 import app.R
+import app.Utils
 import app.server.MusicStation
 import app.server.MusicStation.StateChangedEvent
-import app.service.MusicStationService
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 import static app.server.MusicStation.StateChangedEvent.State.*
 
+@PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
 class BroadcastButton extends RelativeLayout {
 
     @Inject
-    @PackageScope
     Bus bus
 
     @Inject
-    @PackageScope
     MusicStation musicStation
 
     @Inject
-    @PackageScope
+    Utils utils
+
+    @Inject
     Resources resources
 
     @InjectView(R.id.icon)
@@ -64,8 +65,7 @@ class BroadcastButton extends RelativeLayout {
         Injector.inject this
         broadcastState = musicStation.enabled
         onClickListener = {
-            context.startService new Intent(context, MusicStationService)
-//            musicStation.toggleEnabledState()
+            musicStation.toggleEnabledState()
         }
     }
 

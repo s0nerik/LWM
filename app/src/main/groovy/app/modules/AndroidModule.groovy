@@ -27,6 +27,7 @@ import app.data_managers.AlbumsManager
 import app.data_managers.ArtistsManager
 import app.data_managers.SongsManager
 import app.events.MainThreadBus
+import app.helper.StationsExplorer
 import app.helper.db.AlbumsCursorGetter
 import app.helper.db.ArtistsCursorGetter
 import app.helper.db.SongsCursorGetter
@@ -67,7 +68,7 @@ import static android.content.Context.*
         [
                 Daggered,
                 PaletteApplier,
-                WiFiP2pDevicesAdapter,
+                WiFiP2pStationsAdapter,
                 WiFiDirectBroadcastReceiver,
                 MusicStation,
 
@@ -87,6 +88,9 @@ import static android.content.Context.*
 
                 // DB Helpers
                 AlbumsCursorGetter, SongsCursorGetter, ArtistsCursorGetter,
+
+                // Helpers
+                StationsExplorer,
 
                 // Utils
                 Utils, WifiUtils, Blur,
@@ -282,6 +286,12 @@ public class AndroidModule {
     @Singleton
     ArtistsManager provideArtistsManager() {
         return new ArtistsManager();
+    }
+
+    @Provides
+    @Singleton
+    StationsExplorer provideStationsExplorer() {
+        return new StationsExplorer();
     }
 
 }

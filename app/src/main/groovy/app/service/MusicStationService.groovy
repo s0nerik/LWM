@@ -25,15 +25,12 @@ class MusicStationService extends Service {
     public void onCreate() {
         Injector.inject this
         bus.register this
-
-        musicStation.enable()
     }
 
     @Profile
     @Override
     public void onDestroy() {
         bus.unregister this
-        musicStation.disable()
     }
 
     @Override
