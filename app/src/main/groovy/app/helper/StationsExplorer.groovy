@@ -12,7 +12,7 @@ import app.events.p2p.StationsListUpdatedEvent
 import app.model.Station
 import app.model.StationInfo
 import app.receiver.WiFiDirectBroadcastReceiver
-import app.websocket.WebSocketMessageClient
+import app.service.StreamPlayerService
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -25,6 +25,7 @@ import javax.inject.Inject
 import static android.net.wifi.p2p.WifiP2pManager.*
 import static app.server.MusicStation.INSTANCE_NAME
 import static app.server.MusicStation.SERVICE_TYPE
+import static com.github.s0nerik.betterknife.dsl.AndroidContextDSL.intent
 import static java.lang.reflect.Modifier.*
 
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -47,7 +48,6 @@ class StationsExplorer extends Daggered {
 
     StationsExplorer() {
         super()
-        bus.register this
         initIntentFilter()
     }
 
@@ -56,17 +56,25 @@ class StationsExplorer extends Daggered {
 
     private Channel channel
 
+    private boolean discoveryStarted = false
+
     List<Station> stations = []
 
     void startStationsDiscovery() {
+        if (discoveryStarted) return
+        bus.register this
         context.registerReceiver receiver, intentFilter
         init()
         rediscover()
+        discoveryStarted = true
     }
 
     void stopStationsDiscovery() {
+        if (!discoveryStarted) return
+        bus.unregister this
         context.unregisterReceiver receiver
         manager.stopPeerDiscovery channel, debugP2PActionListener("stopPeerDiscovery")
+        discoveryStarted = false
     }
 
     ActionListener debugP2PActionListener(String methodName) {
@@ -171,7 +179,9 @@ class StationsExplorer extends Daggered {
 
                     manager.requestConnectionInfo channel, { WifiP2pInfo info ->
                         Debug.d "onConnectionInfoAvailable: ${info}"
-                        new WebSocketMessageClient(URI.create(info.groupOwnerAddress.hostAddress)).connect()
+
+                        def uri = "ws://${info.groupOwnerAddress.hostAddress}:8080"
+                        context.startService intent(context, StreamPlayerService).putExtra('uri', uri)
                     }
                 }
                 break

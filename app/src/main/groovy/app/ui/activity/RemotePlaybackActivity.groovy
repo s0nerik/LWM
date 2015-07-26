@@ -7,7 +7,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import app.R;
+import app.R
+import app.service.StreamPlayerService;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -19,7 +20,6 @@ import javax.inject.Inject;
 import app.events.chat.ChatMessageReceivedEvent;
 import app.events.chat.SetUnreadMessagesEvent;
 import app.events.client.SocketClosedEvent;
-import app.events.server.StopWebSocketClientEvent;
 import app.model.Song;
 import app.player.StreamPlayer;
 import app.ui.Croutons;
@@ -117,7 +117,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
         if(player.isPlaying()) {
             player.stop();
         }
-        bus.post(new StopWebSocketClientEvent());
+        stopService intent(StreamPlayerService)
         super.onDestroy();
     }
 }
