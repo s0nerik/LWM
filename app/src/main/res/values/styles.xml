@@ -170,13 +170,19 @@
 
     <style name="GridItemText.Title">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">2</item>
         <item name="fontPath">@string/FONT_ROBOTO_REGULAR</item>
     </style>
 
     <style name="GridItemText.Subtitle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#ddd</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">2</item>
         <item name="fontPath">@string/FONT_ROBOTO_LIGHT</item>
     </style>
 

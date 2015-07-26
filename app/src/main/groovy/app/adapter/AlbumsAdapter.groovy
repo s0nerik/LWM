@@ -1,13 +1,14 @@
 package app.adapter
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.support.v7.graphics.Palette
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.TextView
 import app.Injector
 import app.R
 import app.Utils
@@ -18,28 +19,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
-import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.ImageViewTarget
 import com.bumptech.glide.util.Util
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
-public class AlbumsAdapter extends ArrayAdapter<Album> {
+class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private final Context context
     private List<Album> albumsList
 
     @Inject
     @PackageScope
-    Utils utils;
+    Utils utils
 
     @Inject
     @PackageScope
-    LayoutInflater inflater;
+    LayoutInflater inflater
+
+    private PaletteApplier paletteApplier = new PaletteApplier(0.75f)
 
     public AlbumsAdapter(final Context context, List<Album> albums) {
         super(context, R.layout.item_songs, albums);
@@ -65,42 +66,90 @@ public class AlbumsAdapter extends ArrayAdapter<Album> {
         Album album = albumsList.get(position);
         holder.mTitle.setText(album.getTitle());
         holder.mSubtitle.setText(utils.getArtistName(album.getArtist()));
-        holder.mBottomBar.setBackgroundResource(R.color.grid_item_default_bg);
+//        holder.mBottomBar.setBackgroundResource(R.color.grid_item_default_bg);
 
+        String url = "file://${album.albumArtPath}"
         Glide.with(holder.mCover.context)
-                .load("file://" + album.getAlbumArtPath())
-                .asBitmap()
-                .transcode(new PaletteBitmapTranscoder(holder.mCover.context), PaletteBitmap.class)
+                .load(url)
                 .centerCrop()
                 .error(R.drawable.no_cover)
                 .placeholder(R.color.grid_item_default_bg)
-                .into(new PaletteBitmapImageViewTarget(holder.mCover) {
-                    @Override
-                    public void onResourceReady(PaletteBitmap bitmap, GlideAnimation anim) {
-                        setResource(bitmap)
-                        new PaletteApplier(
-                                resources: context.resources,
-                                bitmap: bitmap.bitmap,
-                                title: holder.mTitle,
-                                subtitle: holder.mSubtitle,
-                                layout: holder.mBottomBar
-                        ).apply(bitmap.palette)
-//                        MaterialImageLoading.animate(holder.mCover).setDuration(2000).start()
-                    }
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        new PaletteApplier(
-                                resources: context.resources,
-                                title: holder.mTitle,
-                                subtitle: holder.mSubtitle,
-                                layout: holder.mBottomBar
-                        ).apply(null)
-                        holder.mCover.imageDrawable = errorDrawable
-//                        MaterialImageLoading.animate(holder.mCover).setDuration(2000).start()
-                    }
-                })
+                .crossFade()
+//                .listener(GlidePalette.with(url)
+//                        .intoCallBack({ Palette palette ->
+//                            applyPalette(palette,
+//                                    context.resources,
+//                                    holder.mTitle,
+//                                    holder.mSubtitle,
+//                                    holder.mBottomBar)
+////                            new PaletteApplier(
+////                                    resources: context.resources,
+////                                    title: holder.mTitle,
+////                                    subtitle: holder.mSubtitle,
+////                                    layout: holder.mBottomBar
+////                            ).apply(bitmap.palette)
+//                        })
+////                        .use(MUTED)
+////                        .intoBackground(holder.mBottomBar, RGB)
+////                        .intoTextColor(holder.mTitle, TITLE_TEXT_COLOR)
+////                        .intoTextColor(holder.mSubtitle, BODY_TEXT_COLOR)
+//                )
+                .into(holder.mCover)
+
+//        Glide.with(holder.mCover.context)
+//                .load("file://" + album.getAlbumArtPath())
+//                .asBitmap()
+//                .transcode(new PaletteBitmapTranscoder(holder.mCover.context), PaletteBitmap)
+//                .centerCrop()
+//                .error(R.drawable.no_cover)
+//                .placeholder(R.color.grid_item_default_bg)
+//                .into(new PaletteBitmapImageViewTarget(holder.mCover) {
+//                    @Override
+//                    public void onResourceReady(PaletteBitmap bitmap, GlideAnimation anim) {
+//                        setResource(bitmap)
+////                            applyPalette(bitmap.palette,
+////                                    context.resources,
+////                                    holder.mTitle,
+////                                    holder.mSubtitle,
+////                                    holder.mBottomBar)
+//
+////                        new PaletteApplier(
+////                                resources: context.resources,
+////                                bitmap: bitmap.bitmap,
+////                                title: holder.mTitle,
+////                                subtitle: holder.mSubtitle,
+////                                layout: holder.mBottomBar
+////                        ).apply(bitmap.palette)
+////                        MaterialImageLoading.animate(holder.mCover).setDuration(2000).start()
+//                    }
+//                    @Override
+//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+////                        applyPalette(null,
+////                                context.resources,
+////                                holder.mTitle,
+////                                holder.mSubtitle,
+////                                holder.mBottomBar)
+//
+////                        new PaletteApplier(
+////                                resources: context.resources,
+////                                title: holder.mTitle,
+////                                subtitle: holder.mSubtitle,
+////                                layout: holder.mBottomBar
+////                        ).apply(null)
+//                        holder.mCover.imageDrawable = errorDrawable
+////                        MaterialImageLoading.animate(holder.mCover).setDuration(2000).start()
+//                    }
+//                })
 
         return rowView;
+    }
+
+    private void applyPalette(Palette palette, Resources resources, TextView title, TextView subtitle, View layout) {
+        paletteApplier.resources = resources
+        paletteApplier.title = title
+        paletteApplier.subtitle = subtitle
+//        paletteApplier.layout = layout
+        paletteApplier.apply(palette)
     }
 
     private static class PaletteBitmap {

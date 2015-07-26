@@ -1,7 +1,5 @@
 package app.ui
-
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.v7.graphics.Palette
 import android.view.View
@@ -11,20 +9,23 @@ import app.R
 import app.Utils
 import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
+import groovy.transform.InheritConstructors
 import groovy.transform.PackageScope
-import groovy.transform.TupleConstructor
 
 import javax.inject.Inject
 
+@InheritConstructors
 @CompileStatic
-@TupleConstructor(callSuper = true)
 class PaletteApplier extends Daggered {
 
     @Inject
     @PackageScope
     Resources resources
 
-    Bitmap bitmap
+    PaletteApplier(float bgAlpha) {
+        super()
+        this.bgAlpha = bgAlpha
+    }
 
     View layout
     View layoutShadow
@@ -32,24 +33,34 @@ class PaletteApplier extends Daggered {
     TextView subtitle
     FloatingActionButton fab
 
+    Palette.Swatch[] swatches = new Palette.Swatch[6]
+
+    private float bgAlpha = 1.0f;
+
     void apply(Palette palette) {
         if (palette) {
-            def swatches = new Palette.Swatch[6]
-
-            swatches[0] = palette.getVibrantSwatch()
-            swatches[1] = palette.getDarkVibrantSwatch()
-            swatches[2] = palette.getMutedSwatch()
-            swatches[3] = palette.getDarkMutedSwatch()
-            swatches[4] = palette.getLightVibrantSwatch()
-            swatches[5] = palette.getLightMutedSwatch()
+            swatches = [
+                    palette.vibrantSwatch,
+                    palette.mutedSwatch,
+                    palette.lightMutedSwatch,
+                    palette.lightVibrantSwatch,
+                    palette.darkMutedSwatch,
+                    palette.darkVibrantSwatch
+            ] as Palette.Swatch[]
+//            swatches[0] = palette.mutedSwatch
+//            swatches[1] = palette.vibrantSwatch
+//            swatches[2] = palette.lightMutedSwatch
+//            swatches[3] = palette.lightVibrantSwatch
+//            swatches[4] = palette.darkMutedSwatch
+//            swatches[5] = palette.darkVibrantSwatch
 
             for (Palette.Swatch swatch : swatches) {
                 if (swatch) {
                     applyStyle(
-                            swatch.getRgb(),
-                            Utils.darkerColor(swatch.getRgb(), 0.8f),
-                            swatch.getTitleTextColor(),
-                            swatch.getTitleTextColor()
+                            Utils.adjustAlpha(swatch.rgb, bgAlpha),
+                            Utils.darkerColor(swatch.rgb, 0.8f),
+                            Utils.stripAlpha(swatch.titleTextColor),
+                            Utils.stripAlpha(swatch.bodyTextColor)
                     )
                     return
                 }
@@ -63,7 +74,7 @@ class PaletteApplier extends Daggered {
 
     private void applyDefaultStyle() {
         applyStyle(
-                resources.getColor(R.color.grid_item_no_cover_bg),
+                Utils.adjustAlpha(resources.getColor(R.color.grid_item_no_cover_bg), bgAlpha),
                 Utils.darkerColor(resources.getColor(R.color.grid_item_no_cover_bg), 0.8f),
                 Color.WHITE,
                 Color.WHITE
@@ -71,7 +82,7 @@ class PaletteApplier extends Daggered {
     }
 
     private void applyStyle(int bgColor, int shadowColor, int titleColor, int subtitleColor) {
-        layout?.setBackgroundColor(bgColor)
+//        layout?.setBackgroundColor(bgColor)
 //        fab?.setColorNormal(shadowColor)
         fab?.setColorNormal(bgColor)
         layoutShadow?.setBackgroundColor(shadowColor)
