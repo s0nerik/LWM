@@ -40,9 +40,9 @@ class BroadcastButton extends RelativeLayout {
     Resources resources
 
     @InjectView(R.id.icon)
-    ImageView mIcon
+    ImageView icon
     @InjectView(R.id.progress)
-    ProgressBar mProgress
+    ProgressBar progress
 
     BroadcastButton(Context context) {
         super(context)
@@ -70,12 +70,12 @@ class BroadcastButton extends RelativeLayout {
     }
 
     private void setProgressVisibility(boolean show) {
-        mProgress.visibility = show ? VISIBLE : GONE
-        mIcon.visibility = show ? GONE : VISIBLE
+        progress.visibility = show ? VISIBLE : GONE
+        icon.visibility = show ? GONE : VISIBLE
     }
 
     private void setBroadcastState(boolean isBroadcasting) {
-        mIcon.imageResource = isBroadcasting ? R.drawable.ic_ap_on : R.drawable.ic_ap_off
+        icon.imageResource = isBroadcasting ? R.drawable.ic_ap_on : R.drawable.ic_ap_off
     }
 
     @Override

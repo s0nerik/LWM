@@ -64,7 +64,7 @@ class MusicStation extends Daggered {
             onSuccess: {
                 Debug.d "createGroup success."
                 enabled = true
-                bus.post(new StateChangedEvent(StateChangedEvent.State.ENABLED))
+                bus.post new StateChangedEvent(StateChangedEvent.State.ENABLED)
             },
             onFailure: { int code ->
                 Debug.e "createGroup failure. Error: ${getCause(code)}."
@@ -72,7 +72,18 @@ class MusicStation extends Daggered {
             }
     ] as WifiP2pManager.ActionListener
 
-    private void startServiceRegistration() {
+    WifiP2pManager.ActionListener groupRemovingListener = [
+            onSuccess: {
+                Debug.d "removeGroup success."
+                enabled = false
+                bus.post new StateChangedEvent(StateChangedEvent.State.DISABLED)
+            },
+            onFailure: { int code ->
+                Debug.e "removeGroup failure. Error: ${getCause(code)}."
+            }
+    ] as WifiP2pManager.ActionListener
+
+    private void startServiceRegistrationAndCreateGroup() {
         def record = [port: StreamServer.PORT,
                       name : "station",
                       currentSong : "Asking Alexandria - Closure"]
@@ -96,18 +107,20 @@ class MusicStation extends Daggered {
                             }
                     ] as WifiP2pManager.ActionListener
                 } else {
-                    Debug.e "info.groupFormed == true, info.isGroupOwner == false"
+                    Debug.w "info.groupFormed == true, info.isGroupOwner == false"
+                    manager.createGroup channel, groupCreationListener
                 }
             } else {
                 Debug.d "info.groupFormed == false"
-                manager.createGroup channel, debugP2PActionListener("createGroup")
+                manager.createGroup channel, groupCreationListener
             }
         } as WifiP2pManager.ConnectionInfoListener
         manager.discoverPeers channel, debugP2PActionListener("discoverPeers")
     }
 
-    private void removeServiceRegistration() {
+    private void removeServiceRegistrationAndGroup() {
         manager.removeLocalService channel, serviceInfo, debugP2PActionListener("removeLocalService")
+        manager.removeGroup channel, groupRemovingListener
     }
 
     void toggleEnabledState() {
@@ -116,15 +129,15 @@ class MusicStation extends Daggered {
     }
 
     void enable() {
+        bus.post new StateChangedEvent(StateChangedEvent.State.CHANGING)
         server.start()
-        startServiceRegistration()
+        startServiceRegistrationAndCreateGroup()
     }
 
     void disable() {
+        bus.post new StateChangedEvent(StateChangedEvent.State.CHANGING)
         server.stop()
-        removeServiceRegistration()
-        enabled = false
-        bus.post(new StateChangedEvent(StateChangedEvent.State.DISABLED))
+        removeServiceRegistrationAndGroup()
     }
 
     @TupleConstructor
