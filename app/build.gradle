@@ -131,6 +131,7 @@ dependencies {
     compile ('com.github.florent37:materialimageloading:1.0.1@aar'){
         transitive = true
     }
+    compile 'com.github.florent37:glidepalette:1.0.2@aar'
 
     // Networking
     compile 'com.nanohttpd:nanohttpd:2.1.1'
