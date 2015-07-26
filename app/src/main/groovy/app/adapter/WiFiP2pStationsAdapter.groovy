@@ -33,7 +33,7 @@ public class WiFiP2pStationsAdapter extends RecyclerView.Adapter<WifiP2pDeviceVi
 
     @Override
     public WifiP2pDeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WifiP2pDeviceViewHolder(layoutInflater.inflate(R.layout.item_join_game, null), stations)
+        return new WifiP2pDeviceViewHolder(layoutInflater.inflate(R.layout.item_stations, null), stations)
     }
 
     @Override

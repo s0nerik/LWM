@@ -65,7 +65,6 @@ class StationsExplorer extends Daggered {
     }
 
     void stopStationsDiscovery() {
-        bus.unregister this
         context.unregisterReceiver receiver
         manager.stopPeerDiscovery channel, debugP2PActionListener("stopPeerDiscovery")
     }
