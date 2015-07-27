@@ -2,6 +2,7 @@ package app.websocket
 import android.content.SharedPreferences
 import android.os.Build
 import app.Injector
+import app.Utils
 import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SendReadyEvent
@@ -10,7 +11,6 @@ import app.events.client.SocketOpenedEvent
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
 import app.websocket.entities.ClientInfo
-import com.google.gson.Gson
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -23,16 +23,7 @@ import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
-import static app.websocket.SocketMessage.Message.CLIENT_INFO
-import static app.websocket.SocketMessage.Message.CURRENT_POSITION
-import static app.websocket.SocketMessage.Message.IS_PLAYING
-import static app.websocket.SocketMessage.Message.MESSAGE
-import static app.websocket.SocketMessage.Message.PAUSE
-import static app.websocket.SocketMessage.Message.PREPARE
-import static app.websocket.SocketMessage.Message.READY
-import static app.websocket.SocketMessage.Message.SEEK_TO
-import static app.websocket.SocketMessage.Message.START
-import static app.websocket.SocketMessage.Message.START_FROM
+import static app.websocket.SocketMessage.Message.*
 import static app.websocket.SocketMessage.Type.GET
 import static app.websocket.SocketMessage.Type.POST
 
@@ -47,8 +38,6 @@ public class WebSocketMessageClient extends WebSocketClient {
     Bus bus
     @Inject
     SharedPreferences sharedPreferences
-    @Inject
-    Gson gson
 
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
@@ -72,8 +61,8 @@ public class WebSocketMessageClient extends WebSocketClient {
     public void onMessage(String message) {
         Debug.d "$message"
 
-        SocketMessage socketMessage = SocketMessage.fromJson(message);
-        String body = socketMessage.getBody();
+        SocketMessage socketMessage = Utils.fromJson message
+        String body = socketMessage.body
 
         if (socketMessage.type == GET) {
             switch (socketMessage.message) {
@@ -86,7 +75,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     send new SocketMessage(POST, IS_PLAYING, isPlaying).toJson()
                     break
                 case CLIENT_INFO:
-                    String info = gson.toJson clientInfo, ClientInfo
+                    String info = Utils.toJson clientInfo
                     send new SocketMessage(POST, CLIENT_INFO, info).toJson()
                     break
                 default:
@@ -110,11 +99,11 @@ public class WebSocketMessageClient extends WebSocketClient {
                     startFrom body as int
                     break
                 case MESSAGE:
-                    ChatMessage chatMessage = gson.fromJson body, ChatMessage
+                    ChatMessage chatMessage = Utils.fromJson body
                     bus.post new ChatMessageReceivedEvent(chatMessage, connection)
                     break
                 case CLIENT_INFO:
-                    ClientInfo clientInfo = gson.fromJson body, ClientInfo
+                    ClientInfo clientInfo = Utils.fromJson body
                     bus.post new ClientInfoReceivedEvent(connection, clientInfo)
                     break
                 default:
@@ -164,7 +153,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Subscribe
     void onSendChatMessage(SendChatMessageEvent event) {
         ChatMessage message = event.message
-        send new SocketMessage(POST, MESSAGE, gson.toJson(message)).toJson()
+        send new SocketMessage(POST, MESSAGE, Utils.toJson(message)).toJson()
         chatMessages << message
         bus.post new NotifyMessageAddedEvent(message)
     }

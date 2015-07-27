@@ -1,5 +1,6 @@
 package app.websocket
 import app.Injector
+import app.Utils
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.server.AllClientsReadyEvent
 import app.events.server.ClientConnectedEvent
@@ -8,7 +9,6 @@ import app.events.server.ClientReadyEvent
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.websocket.entities.ClientInfo
-import com.google.gson.Gson
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -41,9 +41,6 @@ class WebSocketMessageServer extends WebSocketServer {
     @Inject
     Bus bus
 
-    @Inject
-    Gson gson
-
     WebSocketMessageServer(InetSocketAddress address, LocalPlayer player) {
         super(address)
         this.player = player
@@ -66,7 +63,7 @@ class WebSocketMessageServer extends WebSocketServer {
     void onMessage(WebSocket conn, String message) {
         Debug.d "$message"
 
-        SocketMessage socketMessage = SocketMessage.fromJson message
+        SocketMessage socketMessage = Utils.fromJson message
         String body = socketMessage.body
 
         if (socketMessage.type == GET) {
@@ -88,10 +85,10 @@ class WebSocketMessageServer extends WebSocketServer {
                     processReadiness(conn)
                     break
                 case CLIENT_INFO:
-                    processClientInfo conn, gson.fromJson(body, ClientInfo)
+                    processClientInfo conn, Utils.<ClientInfo>fromJson(body)
                     break
                 case MESSAGE:
-                    ChatMessage chatMessage = gson.fromJson(body, ChatMessage)
+                    ChatMessage chatMessage = Utils.fromJson body
                     bus.post new ChatMessageReceivedEvent(chatMessage, conn)
                     break
                 default:

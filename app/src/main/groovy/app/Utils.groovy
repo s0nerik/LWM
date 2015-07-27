@@ -18,6 +18,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import app.model.Song
 import app.player.LocalPlayer
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -189,6 +191,14 @@ class Utils extends Daggered {
             }
         }
         return false
+    }
+
+    public static <T> T fromJson(String json) {
+        new JsonSlurper().parseText(json) as T
+    }
+
+    public static String toJson(Object obj) {
+        JsonOutput.toJson(obj)
     }
 
 }

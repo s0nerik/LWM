@@ -1,15 +1,18 @@
 package app.server
+
 import android.content.ContentResolver
 import app.Injector
+import app.Utils
 import app.model.Song
 import app.player.LocalPlayer
-import com.google.gson.Gson
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.Response
 import fi.iki.elonen.NanoHTTPD.ResponseException
 import fi.iki.elonen.NanoHTTPD.IHTTPSession
 //import fi.iki.elonen.NanoHTTPD.*
 import groovy.transform.CompileStatic
+
+//import fi.iki.elonen.NanoHTTPD.*
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 
@@ -40,10 +43,6 @@ class StreamServer extends NanoHTTPD {
     @Inject
     @PackageScope
     ContentResolver contentResolver
-
-    @Inject
-    @PackageScope
-    Gson gson
 
     private LocalPlayer player
 
@@ -100,7 +99,7 @@ class StreamServer extends NanoHTTPD {
         return res
     }
 
-    private Response currentInfo(Song song) {
+    private static Response currentInfo(Song song) {
         Debug.d "StreamServer: CURRENT_INFO"
         return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song))
     }
@@ -114,6 +113,6 @@ class StreamServer extends NanoHTTPD {
         return new Response(Response.Status.OK, "image", is)
     }
 
-    private String getSongInfoJSON(Song song) { gson.toJson(song) }
+    private static String getSongInfoJSON(Song song) { Utils.toJson song }
 
 }

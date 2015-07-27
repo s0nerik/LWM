@@ -78,6 +78,9 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/DISCLAIMER'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
     lintOptions {
         abortOnError false
@@ -88,7 +91,9 @@ dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
     compile 'org.codehaus.groovy:groovy:+:grooid'
-    compile 'org.codehaus.groovy:groovy-json:2.4.4'
+    compile('org.codehaus.groovy:groovy-json:2.4.4') {
+        transitive = false
+    }
 
     // Support libs
     compile 'com.android.support:appcompat-v7:22.2.1'
