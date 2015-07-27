@@ -23,159 +23,173 @@ import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
+import static app.websocket.SocketMessage.Message.CLIENT_INFO
+import static app.websocket.SocketMessage.Message.CURRENT_POSITION
+import static app.websocket.SocketMessage.Message.IS_PLAYING
+import static app.websocket.SocketMessage.Message.MESSAGE
+import static app.websocket.SocketMessage.Message.PAUSE
+import static app.websocket.SocketMessage.Message.PREPARE
+import static app.websocket.SocketMessage.Message.READY
+import static app.websocket.SocketMessage.Message.SEEK_TO
+import static app.websocket.SocketMessage.Message.START
+import static app.websocket.SocketMessage.Message.START_FROM
+import static app.websocket.SocketMessage.Type.GET
+import static app.websocket.SocketMessage.Type.POST
+
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
 public class WebSocketMessageClient extends WebSocketClient {
 
+    @Delegate(includes=["seekTo", "start", "pause"])
     @Inject
-    StreamPlayer player;
+    StreamPlayer player
     @Inject
-    Bus bus;
+    Bus bus
     @Inject
-    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences
+    @Inject
+    Gson gson
 
-    private List<ChatMessage> chatMessages = new ArrayList<>();
-    private int unreadMessages = 0;
+    private List<ChatMessage> chatMessages = new ArrayList<>()
+    private int unreadMessages = 0
 
-    private ClientInfo clientInfo;
+    private ClientInfo clientInfo
 
     public WebSocketMessageClient(URI serverURI) {
         super(serverURI);
-        Injector.inject(this);
-        clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL));
+        Injector.inject this
+        clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL))
     }
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        Debug.d("WebSocketMessageClient: opened with handshake:"
-                + "\nStatus: " + handshakedata.getHttpStatus()
-                + "\nMessage: " + handshakedata.getHttpStatusMessage());
-        bus.register(this);
-        bus.post(new SocketOpenedEvent());
+        Debug.d "Status: $handshakedata.httpStatus, Message: $handshakedata.httpStatusMessage"
+        bus.register this
+        bus.post new SocketOpenedEvent()
     }
 
     @Override
     public void onMessage(String message) {
-        Debug.d("WebSocketMessageClient: \"" + message + "\"");
+        Debug.d "$message"
 
         SocketMessage socketMessage = SocketMessage.fromJson(message);
         String body = socketMessage.getBody();
 
-        if (socketMessage.getType() == SocketMessage.Type.GET) {
-            switch (socketMessage.getMessage()) {
-                case SocketMessage.Message.CURRENT_POSITION:
-                    String pos = String.valueOf(player.getCurrentPosition());
-                    send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CURRENT_POSITION, pos).toJson());
-                    break;
-                case SocketMessage.Message.IS_PLAYING:
-                    String isPlaying = String.valueOf(player.isPlaying());
-                    send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.IS_PLAYING, isPlaying).toJson());
-                    break;
-                case SocketMessage.Message.CLIENT_INFO:
-                    String info = new Gson().toJson(clientInfo, ClientInfo.class);
-                    send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.CLIENT_INFO, info).toJson());
-                    break;
+        if (socketMessage.type == GET) {
+            switch (socketMessage.message) {
+                case CURRENT_POSITION:
+                    String pos = player.currentPosition as String
+                    send new SocketMessage(POST, CURRENT_POSITION, pos).toJson()
+                    break
+                case IS_PLAYING:
+                    String isPlaying = player.playing as String
+                    send new SocketMessage(POST, IS_PLAYING, isPlaying).toJson()
+                    break
+                case CLIENT_INFO:
+                    String info = gson.toJson clientInfo, ClientInfo
+                    send new SocketMessage(POST, CLIENT_INFO, info).toJson()
+                    break
                 default:
-                    Debug.e("Can't process message: "+socketMessage.getMessage().name());
+                    Debug.e "Can't process message: ${socketMessage.message.name()}"
             }
-        } else if (socketMessage.getType() == SocketMessage.Type.POST) {
-            switch (socketMessage.getMessage()) {
-                case SocketMessage.Message.START:
-                    start();
-                    break;
-                case SocketMessage.Message.PAUSE:
-                    pause();
-                    break;
-                case SocketMessage.Message.PREPARE:
-                    prepare();
-                    break;
-                case SocketMessage.Message.SEEK_TO:
-                    seekTo(Integer.valueOf(body));
-                    break;
-                case SocketMessage.Message.START_FROM:
-                    startFrom(Integer.valueOf(body));
-                    break;
-                case SocketMessage.Message.MESSAGE:
-                    ChatMessage chatMessage = new Gson().fromJson(body, ChatMessage.class);
-                    bus.post(new ChatMessageReceivedEvent(chatMessage, getConnection()));
-                    break;
-                case SocketMessage.Message.CLIENT_INFO:
-                    ClientInfo clientInfo = new Gson().fromJson(body, ClientInfo.class);
-                    bus.post(new ClientInfoReceivedEvent(getConnection(), clientInfo));
-                    break;
+        } else if (socketMessage.type == POST) {
+            switch (socketMessage.message) {
+                case START:
+                    start()
+                    break
+                case PAUSE:
+                    pause()
+                    break
+                case PREPARE:
+                    prepare()
+                    break
+                case SEEK_TO:
+                    seekTo body as int
+                    break
+                case START_FROM:
+                    startFrom body as int
+                    break
+                case MESSAGE:
+                    ChatMessage chatMessage = gson.fromJson body, ChatMessage
+                    bus.post new ChatMessageReceivedEvent(chatMessage, connection)
+                    break
+                case CLIENT_INFO:
+                    ClientInfo clientInfo = gson.fromJson body, ClientInfo
+                    bus.post new ClientInfoReceivedEvent(connection, clientInfo)
+                    break
                 default:
-                    Debug.e("Can't process message: "+socketMessage.getMessage().name());
+                    Debug.e "Can't process message: ${socketMessage.message.name()}"
             }
         }
     }
 
     @Override
-    public void onClose(int code, String reason, boolean remote) {
-        Debug.d("WebSocketMessageClient: closed:\nCode: "+code+" Reason: "+reason);
-        bus.post(new SocketClosedEvent());
-        bus.unregister(this);
+    void onClose(int code, String reason, boolean remote) {
+        Debug.d "Code: $code, Reason: $reason"
+        bus.post new SocketClosedEvent()
+        bus.unregister this
     }
 
     @Override
-    public void onError(Exception ex) {
-        Debug.d("WebSocketMessageClient: error:\n" + ex);
+    void onError(Exception ex) {
+        Debug.e ex as String
     }
 
     private void startFrom(int pos) {
-        player.seekTo(pos);
-        player.start();
+        player.seekTo(pos)
+        player.start()
     }
 
-    private void seekTo(int pos) {
-        player.seekTo(pos);
-    }
+//    private void seekTo(int pos) {
+//        player.seekTo(pos)
+//    }
 
-    private void start() {
-        player.start();
-    }
+//    private void start() {
+//        player.start()
+//    }
 
-    private void pause() {
-        player.pause();
-    }
+//    private void pause() {
+//        player.pause()
+//    }
 
     private void prepare() {
-        player.prepareNewSong();
+        player.prepareNewSong()
     }
 
     @Subscribe
-    public void onSendReadyEvent(SendReadyEvent event) {
-        send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.READY).toJson());
+    void onSendReadyEvent(SendReadyEvent event) {
+        send new SocketMessage(POST, READY).toJson()
     }
 
     @Subscribe
-    public void onSendChatMessage(SendChatMessageEvent event) {
-        ChatMessage message = event.getMessage();
-        send(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(message)).toJson());
-        chatMessages.add(message);
-        bus.post(new NotifyMessageAddedEvent(message));
+    void onSendChatMessage(SendChatMessageEvent event) {
+        ChatMessage message = event.message
+        send new SocketMessage(POST, MESSAGE, gson.toJson(message)).toJson()
+        chatMessages << message
+        bus.post new NotifyMessageAddedEvent(message)
     }
 
     @Subscribe
-    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
-        unreadMessages += 1;
-        ChatMessage msg = event.getMessage();
-        chatMessages.add(msg);
-        bus.post(new NotifyMessageAddedEvent(msg));
+    void onChatMessageReceived(ChatMessageReceivedEvent event) {
+        unreadMessages += 1
+        ChatMessage msg = event.message;
+        chatMessages << msg
+        bus.post new NotifyMessageAddedEvent(msg)
     }
 
     @Subscribe
-    public void onResetUnreadMessages(ResetUnreadMessagesEvent event) {
-        unreadMessages = 0;
+    void onResetUnreadMessages(ResetUnreadMessagesEvent event) {
+        unreadMessages = 0
     }
 
     @Produce
-    public ChatMessagesAvailableEvent produceChatMessages() {
-        return new ChatMessagesAvailableEvent(chatMessages);
+    ChatMessagesAvailableEvent produceChatMessages() {
+        new ChatMessagesAvailableEvent(chatMessages)
     }
 
     @Produce
-    public SetUnreadMessagesEvent produceUnreadMessages() {
-        return new SetUnreadMessagesEvent(unreadMessages);
+    SetUnreadMessagesEvent produceUnreadMessages() {
+        new SetUnreadMessagesEvent(unreadMessages)
     }
 
 }
