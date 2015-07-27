@@ -51,6 +51,7 @@ import app.ui.fragment.*
 import app.ui.fragment.playback.LocalPlaybackFragment
 import app.ui.fragment.playback.RemotePlaybackFragment
 import app.ui.notification.NowPlayingNotification
+import app.websocket.SocketMessage
 import app.websocket.WebSocketMessageClient
 import app.websocket.WebSocketMessageServer
 import com.google.gson.Gson
@@ -71,6 +72,7 @@ import static android.content.Context.*
                 WiFiP2pStationsAdapter,
                 WiFiDirectBroadcastReceiver,
                 MusicStation,
+                SocketMessage,
 
                 // ViewHolders
                 SongViewHolder,

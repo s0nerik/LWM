@@ -88,6 +88,7 @@ dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
     compile 'org.codehaus.groovy:groovy:+:grooid'
+    compile 'org.codehaus.groovy:groovy-json:2.4.4'
 
     // Support libs
     compile 'com.android.support:appcompat-v7:22.2.1'
