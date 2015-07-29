@@ -70,17 +70,6 @@ abstract class BasePlayer extends MediaPlayer {
 //        Debug.d "onAudioFocusChange: ${event}"
 //    } as OnAudioFocusChangeListener
 
-    private TimerTask playbackNotifierTask = new TimerTask() {
-        @Override
-        void run() {
-            if (getCurrentSong()) bus.post new SongPlayingEvent(getCurrentPosition(), getCurrentSong().duration)
-        }
-    }
-
-//    private TimerTask playbackNotifierTask = {
-//        if (getCurrentSong()) bus.post new SongPlayingEvent(getCurrentPosition(), getCurrentSong().duration)
-//    } as TimerTask
-
     private Timer playbackProgressNotifierTimer
 
     BasePlayer() {
@@ -108,14 +97,17 @@ abstract class BasePlayer extends MediaPlayer {
 
     protected void startNotifyingPlaybackProgress() {
         playbackProgressNotifierTimer = new Timer()
-        playbackProgressNotifierTimer.schedule playbackNotifierTask, 0, NOTIFY_INTERVAL
+        playbackProgressNotifierTimer.schedule(new TimerTask() {
+            @Override
+            void run() {
+                if (getCurrentSong()) bus.post new SongPlayingEvent(getCurrentPosition(), getCurrentSong().duration)
+            }
+        }, 0, NOTIFY_INTERVAL)
     }
 
     protected void stopNotifyingPlaybackProgress() {
-        if (playbackProgressNotifierTimer) {
-            playbackProgressNotifierTimer.cancel()
-            playbackProgressNotifierTimer = null
-        }
+        playbackProgressNotifierTimer?.cancel()
+        playbackProgressNotifierTimer = null
     }
 
 }
