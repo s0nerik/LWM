@@ -4,7 +4,6 @@ import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import app.Daggered
-import app.player.LocalPlayer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -18,6 +17,8 @@ import static java.lang.reflect.Modifier.*
 @CompileStatic
 class MusicStation extends Daggered {
 
+    enum State { CHANGING, DISABLED, ENABLED }
+
     @Inject
     @PackageScope
     WifiP2pManager manager
@@ -28,21 +29,19 @@ class MusicStation extends Daggered {
 
     @Inject
     @PackageScope
-    LocalPlayer player
+    Bus bus
 
     @Inject
     @PackageScope
-    Bus bus
+    MusicServer server
 
     public static final String INSTANCE_NAME = "_LWM";
     public static final String SERVICE_TYPE = "_http._tcp";
 
-    boolean enabled = false
-
     private WifiP2pManager.Channel channel
     private WifiP2pDnsSdServiceInfo serviceInfo
 
-    private MusicServer server = new MusicServer()
+    State state = State.DISABLED
 
     private String getCause(int code) {
         manager.class.declaredFields.find {
@@ -63,23 +62,22 @@ class MusicStation extends Daggered {
     WifiP2pManager.ActionListener groupCreationListener = [
             onSuccess: {
                 Debug.d "createGroup success."
-                enabled = true
-                bus.post new StateChangedEvent(StateChangedEvent.State.ENABLED)
+                setState State.ENABLED
             },
             onFailure: { int code ->
                 Debug.e "createGroup failure. Error: ${getCause(code)}."
-                disable()
+                setState State.DISABLED
             }
     ] as WifiP2pManager.ActionListener
 
     WifiP2pManager.ActionListener groupRemovingListener = [
             onSuccess: {
                 Debug.d "removeGroup success."
-                enabled = false
-                bus.post new StateChangedEvent(StateChangedEvent.State.DISABLED)
+                setState State.DISABLED
             },
             onFailure: { int code ->
                 Debug.e "removeGroup failure. Error: ${getCause(code)}."
+                setState State.ENABLED
             }
     ] as WifiP2pManager.ActionListener
 
@@ -118,31 +116,45 @@ class MusicStation extends Daggered {
         manager.discoverPeers channel, debugP2PActionListener("discoverPeers")
     }
 
+    private void setState(State newState) {
+        state = newState
+        bus.post new StateChangedEvent(newState)
+    }
+
     private void removeServiceRegistrationAndGroup() {
         manager.removeLocalService channel, serviceInfo, debugP2PActionListener("removeLocalService")
         manager.removeGroup channel, groupRemovingListener
     }
 
     void toggleEnabledState() {
-        if (enabled) disable()
-        else enable()
+        switch (state) {
+            case State.CHANGING:
+                break
+            case State.DISABLED:
+                enable()
+                break
+            case State.ENABLED:
+                disable()
+                break
+        }
     }
 
     void enable() {
-        bus.post new StateChangedEvent(StateChangedEvent.State.CHANGING)
+        if (server.started) return
+        setState State.CHANGING
         server.start()
         startServiceRegistrationAndCreateGroup()
     }
 
     void disable() {
-        bus.post new StateChangedEvent(StateChangedEvent.State.CHANGING)
+        if (!server.started) return
+        setState State.CHANGING
         server.stop()
         removeServiceRegistrationAndGroup()
     }
 
     @TupleConstructor
     static class StateChangedEvent {
-        enum State { CHANGING, DISABLED, ENABLED }
         State state
     }
 

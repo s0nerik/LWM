@@ -257,13 +257,13 @@ public class AndroidModule {
     @Provides
     @Singleton
     ConnectivityManager provideConnectivityManager() {
-        return (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (ConnectivityManager) application.getSystemService(CONNECTIVITY_SERVICE);
     }
 
     @Provides
     @Singleton
     WindowManager provideWindowManager() {
-        return (WindowManager) application.getSystemService(Context.WINDOW_SERVICE);
+        return (WindowManager) application.getSystemService(WINDOW_SERVICE);
     }
 
     @Provides
@@ -294,6 +294,12 @@ public class AndroidModule {
     @Singleton
     StationsExplorer provideStationsExplorer() {
         return new StationsExplorer();
+    }
+
+    @Provides
+    @Singleton
+    MusicServer provideMusicServer() {
+        return new MusicServer()
     }
 
 }

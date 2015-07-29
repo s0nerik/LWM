@@ -55,7 +55,6 @@ public class LocalPlayerService extends Service {
             player.pause();
         }
 
-        stopServer();
         bus.unregister(this);
 
         audioManager.unregisterMediaButtonEventReceiver(mediaButtonsReceiver);
@@ -78,16 +77,6 @@ public class LocalPlayerService extends Service {
         startForeground(1337,
                 new NowPlayingNotification(player.getCurrentSong()).create(isPlaying)
         );
-    }
-
-    private void stopServer() {
-        if (player.getServer().isStarted()) {
-            player.stopServer();
-        }
-    }
-
-    private void startServer() {
-        player.startServer();
     }
 
     @Produce

@@ -1,286 +1,274 @@
 package app.player
-import android.app.NotificationManager
+
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
-import android.util.Log
 import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
 import app.events.player.queue.*
-import app.events.server.PauseClientsEvent
-import app.events.server.PrepareClientsEvent
-import app.events.server.SeekToClientsEvent
-import app.events.server.StartClientsEvent
+import app.events.server.*
 import app.model.Song
-import app.server.MusicServer
 import app.service.LocalPlayerService
 import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
+import static app.events.server.MusicServerStateChangedEvent.State.STARTED
+
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 class LocalPlayer extends BasePlayer {
 
     @Inject
-    Bus bus;
+    @PackageScope
+    Context context
+
     @Inject
-    Context context;
-    @Inject
-    NotificationManager notificationManager;
+    @PackageScope
+    Bus bus
 
-    private boolean prepared = true;
+    private boolean serverStarted = false
+    private boolean prepared = true
+    private boolean repeat = false
+    private boolean active = false
+    private Queue queue = new Queue()
 
-    private boolean repeat = false;
-    private boolean active = false;
-    private Queue queue = new Queue();
-
-    private MusicServer server;
-
-    public LocalPlayer() {
-        super();
-
-        server = new MusicServer();
+    LocalPlayer() {
+        super()
+        bus.register this
 
         onCompletionListener = {
-            Log.d("LWM", "LocalPlayer: onCompletion");
+            Debug.d()
 
             if (prepared) {
-                int currentPosition = getCurrentPosition();
-                int duration = getDuration() - 1000;
+                int currentPosition = currentPosition
+                int duration = duration - 1000
 
                 if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
                     if (isRepeat()) {
-                        play();
+                        play()
                     } else {
-                        nextSong();
+                        nextSong()
                     }
                 }
             }
         }
         onSeekCompleteListener = {
-            start();
+            start()
         }
         onPreparedListener = {
-            prepared = true;
-            active = true;
+            prepared = true
+            active = true
 
-            bus.post(new SongChangedEvent(getCurrentSong()));
+            bus.post new SongChangedEvent(currentSong)
 
-            if (server.isStarted()) {
-                bus.post(new PrepareClientsEvent());
+            if (serverStarted) {
+                bus.post new PrepareClientsEvent()
             } else {
-                start();
+                start()
             }
         }
         onErrorListener = { MediaPlayer mp, int what, int extra ->
-            Debug.e("onError: " + what + ", " + extra)
+            Debug.e "onError: $what, $extra"
             prepared = true
             return true
         }
     }
 
-    public void shuffleQueue() {
-        queue.shuffle();
-        bus.post(new QueueShuffledEvent(queue: getQueue()));
+    void shuffleQueue() {
+        queue.shuffle()
+        bus.post new QueueShuffledEvent(queue: getQueue())
     }
 
-    public List<Song> getQueue() {
-        return queue.getQueue();
+    List<Song> getQueue() {
+        return queue.queue
     }
 
-    public void setQueue(List<Song> songs) {
-        queue = new Queue(songs);
+    void setQueue(List<Song> songs) {
+        queue = new Queue(songs)
     }
 
-    public void shuffleQueueExceptPlayed() {
-        queue.shuffleExceptPlayed();
-        bus.post(new QueueShuffledEvent(queue: getQueue()));
+    void shuffleQueueExceptPlayed() {
+        queue.shuffleExceptPlayed()
+        bus.post(new QueueShuffledEvent(queue: getQueue()))
     }
 
-    public void addToQueue(List<Song> songs) {
-        queue.addSongs(songs);
-        bus.post(new PlaylistAddedToQueueEvent(getQueue(), songs));
+    void addToQueue(List<Song> songs) {
+        queue.addSongs(songs)
+        bus.post(new PlaylistAddedToQueueEvent(getQueue(), songs))
     }
 
-    public void addToQueue(Song song) {
-        queue.addSong(song);
-        bus.post(new SongAddedToQueueEvent(getQueue(), song));
+    void addToQueue(Song song) {
+        queue.addSong(song)
+        bus.post(new SongAddedToQueueEvent(getQueue(), song))
     }
 
-    public void removeFromQueue(Song song) {
-        queue.removeSong(song);
-        bus.post(new SongRemovedFromQueueEvent(getQueue(), song));
+    void removeFromQueue(Song song) {
+        queue.removeSong(song)
+        bus.post(new SongRemovedFromQueueEvent(getQueue(), song))
     }
 
-    public void removeFromQueue(List<Song> songs) {
-        queue.removeSongs(songs);
-        bus.post(new PlaylistRemovedFromQueueEvent(getQueue(), songs));
+    void removeFromQueue(List<Song> songs) {
+        queue.removeSongs(songs)
+        bus.post new PlaylistRemovedFromQueueEvent(getQueue(), songs)
     }
 
-    public Song getCurrentSong() {
-        return queue.getSong();
-    }
-
-    @Override
-    public void stop() throws IllegalStateException {
-        stopNotifyingPlaybackProgress();
-        super.stop();
+    Song getCurrentSong() {
+        return queue.song
     }
 
     @Override
-    public void seekTo(int msec) throws IllegalStateException {
-        Debug.d("LocalPlayer: seekTo(%s)", msec);
+    void stop() throws IllegalStateException {
+        stopNotifyingPlaybackProgress()
+        super.stop()
+    }
+
+    @Override
+    void seekTo(int msec) throws IllegalStateException {
+        Debug.d "seekTo(${msec})"
         if (prepared) {
-            if (server.isStarted()) {
-                bus.post(new SeekToClientsEvent(msec));
+            if (serverStarted) {
+                bus.post new SeekToClientsEvent(msec)
             }
-            super.seekTo(msec);
+            super.seekTo msec
         }
     }
 
     @Profile
-    public void play(int position) {
-        queue.moveTo(position);
-        play();
+    void play(int position) {
+        queue.moveTo position
+        play()
     }
 
     @Profile
 //    @OnBackground
-    public void play() {
-        reset();
+    void play() {
+        reset()
         try {
-            assert queue != null : "queue == null";
-            FileInputStream fis = new FileInputStream(queue.getSong().getSource());
-            setDataSource(fis.getFD());
-            prepareAsync();
-            prepared = false;
+            assert queue : "queue == null"
+            FileInputStream fis = new FileInputStream(queue.song.source)
+            setDataSource(fis.FD)
+            prepareAsync()
+            prepared = false
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
     }
 
-    public boolean hasCurrentSong() {
-        return active && queue.getSong() != null;
+    boolean hasCurrentSong() {
+        return active && queue.song
     }
 
     @Override
-    public void reset() {
-        stopNotifyingPlaybackProgress();
-        super.reset();
+    void reset() {
+        stopNotifyingPlaybackProgress()
+        super.reset()
     }
 
     @Override
-    public void nextSong() {
-        Debug.d("LocalPlayer: nextSong");
+    void nextSong() {
+        Debug.d("LocalPlayer: nextSong")
 
         if (queue.moveToNext()) {
-            play();
+            play()
         } else {
-            Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show()
         }
 
     }
 
     @Override
-    public void prevSong() {
-        Debug.d("LocalPlayer: prevSong");
+    void prevSong() {
+        Debug.d("LocalPlayer: prevSong")
 
         if (queue.moveToPrev()) {
-            play();
+            play()
         } else {
-            Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show()
         }
 
     }
 
     @Override
-    public void togglePause() {
-        if (isPlaying()) {
-            if (server.isStarted()) {
-                bus.post(new PauseClientsEvent());
+    void togglePause() {
+        if (playing) {
+            if (serverStarted) {
+                bus.post new PauseClientsEvent()
             } else {
-                pause();
+                pause()
             }
         } else {
-            if (server.isStarted()) {
-                bus.post(new StartClientsEvent());
+            if (serverStarted) {
+                bus.post new StartClientsEvent()
             } else {
-                start();
+                start()
             }
         }
     }
 
     @Override
-    public void pause() throws IllegalStateException {
+    void pause() throws IllegalStateException {
         if (prepared) {
-            stopNotifyingPlaybackProgress();
-            super.pause();
+            stopNotifyingPlaybackProgress()
+            super.pause()
 
-            bus.post(new PlaybackPausedEvent(queue.getSong(), getCurrentPosition()));
+            bus.post new PlaybackPausedEvent(queue.song, currentPosition)
         }
     }
 
     @Override
-    public void start() throws IllegalStateException {
+    void start() throws IllegalStateException {
         if (prepared) {
-            super.start();
-            startNotifyingPlaybackProgress();
+            super.start()
+            startNotifyingPlaybackProgress()
 
-            bus.post(new PlaybackStartedEvent(queue.getSong(), getCurrentPosition()));
-            context.startService(new Intent(context, LocalPlayerService.class));
+            bus.post new PlaybackStartedEvent(queue.song, currentPosition)
+            context.startService new Intent(context, LocalPlayerService)
         }
     }
 
 //    @Override
-//    public void reset() {
+//    void reset() {
 //        context.stopService(new Intent(context, LocalPlayerService.class));
 //        super.reset();
 //    }
 
-    public boolean isShuffle() {
-        return queue.isShuffled();
+    boolean isShuffle() {
+        return queue.shuffled
     }
 
-    public boolean isRepeat() {
-        return repeat;
+    @Override
+    boolean isRepeat() {
+        return repeat
     }
 
-    public void setRepeat(boolean flag) {
-        repeat = flag;
-        bus.post(new RepeatStateChangedEvent(flag));
+    void setRepeat(boolean flag) {
+        repeat = flag
+        bus.post new RepeatStateChangedEvent(flag)
     }
 
-    public void startServer() {
-        server.start();
+    int getCurrentQueuePosition() {
+        return queue.getCurrentIndex()
     }
 
-    public void stopServer() {
-        server.stop();
+    int getQueueSize() {
+        return queue.getSize()
     }
 
-    public MusicServer getServer() {
-        return server;
+    boolean isSongInQueue(Song song) {
+        return queue.contains(song)
     }
 
-    public int getCurrentQueuePosition() {
-        return queue.getCurrentIndex();
-    }
-
-    public int getQueueSize() {
-        return queue.getSize();
-    }
-
-    public boolean isSongInQueue(Song song) {
-        return queue.contains(song);
+    @Subscribe
+    void onMusicServerStateChanged(MusicServerStateChangedEvent event) {
+        serverStarted = event.state == STARTED
     }
 
 }

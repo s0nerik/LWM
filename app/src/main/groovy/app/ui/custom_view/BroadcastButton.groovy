@@ -21,7 +21,7 @@ import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
-import static app.server.MusicStation.StateChangedEvent.State.*
+import static app.server.MusicStation.State.*
 
 @PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
@@ -63,7 +63,7 @@ class BroadcastButton extends RelativeLayout {
         inflate context, R.layout.layout_btn_broadcast, this
         BetterKnife.inject this, this
         Injector.inject this
-        broadcastState = musicStation.enabled
+        broadcastState = musicStation.state
         onClickListener = {
             musicStation.toggleEnabledState()
         }
@@ -74,8 +74,13 @@ class BroadcastButton extends RelativeLayout {
         icon.visibility = show ? GONE : VISIBLE
     }
 
-    private void setBroadcastState(boolean isBroadcasting) {
-        icon.imageResource = isBroadcasting ? R.drawable.ic_ap_on : R.drawable.ic_ap_off
+    private void setBroadcastState(MusicStation.State state) {
+        if (state == CHANGING) {
+            setProgressVisibility true
+        } else {
+            setProgressVisibility false
+            icon.imageResource = state == ENABLED ? R.drawable.ic_ap_on : R.drawable.ic_ap_off
+        }
     }
 
     @Override
@@ -94,18 +99,6 @@ class BroadcastButton extends RelativeLayout {
 
     @Subscribe
     void onMusicStationStateChangedEvent(StateChangedEvent event) {
-        switch (event.state) {
-            case CHANGING:
-                progressVisibility = true
-                break
-            case DISABLED:
-                progressVisibility = false
-                broadcastState = false
-                break
-            case ENABLED:
-                progressVisibility = false
-                broadcastState = true
-                break
-        }
+        broadcastState = event.state
     }
 }

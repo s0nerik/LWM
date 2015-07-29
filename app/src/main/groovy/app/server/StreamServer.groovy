@@ -1,18 +1,17 @@
 package app.server
-
 import android.content.ContentResolver
 import app.Injector
 import app.Utils
+import app.events.player.playback.SongChangedEvent
+import app.events.player.service.CurrentSongAvailableEvent
 import app.model.Song
-import app.player.LocalPlayer
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.Response
 import fi.iki.elonen.NanoHTTPD.ResponseException
 import fi.iki.elonen.NanoHTTPD.IHTTPSession
-//import fi.iki.elonen.NanoHTTPD.*
 import groovy.transform.CompileStatic
-
-//import fi.iki.elonen.NanoHTTPD.*
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 
@@ -40,16 +39,31 @@ class StreamServer extends NanoHTTPD {
         static String STREAM = SERVER_ADDRESS + Method.STREAM
     }
 
+    private Song song
+
     @Inject
     @PackageScope
     ContentResolver contentResolver
 
-    private LocalPlayer player
+    @Inject
+    @PackageScope
+    Bus bus
 
-    StreamServer(LocalPlayer player) {
+    StreamServer() {
         super(8888)
-        this.player = player
         Injector.inject this
+    }
+
+    @Override
+    void start() throws IOException {
+        super.start()
+        bus.register this
+    }
+
+    @Override
+    void stop() {
+        bus.unregister this
+        super.stop()
     }
 
     @Override
@@ -72,7 +86,6 @@ class StreamServer extends NanoHTTPD {
 
         switch(method) {
             case GET: // Outcoming info
-                Song song = player.currentSong
                 switch (uri) {
                     case Method.STREAM:
                         return stream(song)
@@ -114,5 +127,15 @@ class StreamServer extends NanoHTTPD {
     }
 
     private static String getSongInfoJSON(Song song) { Utils.toJson song }
+
+    @Subscribe
+    void onSongChanged(SongChangedEvent event) {
+        song = event.song
+    }
+
+    @Subscribe
+    void onSongAvailable(CurrentSongAvailableEvent event) {
+        song = event.song
+    }
 
 }

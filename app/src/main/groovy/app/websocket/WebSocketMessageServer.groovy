@@ -12,7 +12,6 @@ import app.websocket.entities.ClientInfo
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
@@ -24,7 +23,6 @@ import static app.websocket.SocketMessage.Message.*
 import static app.websocket.SocketMessage.Type.GET
 import static app.websocket.SocketMessage.Type.POST
 
-@PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
 class WebSocketMessageServer extends WebSocketServer {
 
@@ -36,14 +34,16 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private long lastMessageTime = -1
 
-    private LocalPlayer player
+    @Inject
+    @PackageScope
+    LocalPlayer player
 
     @Inject
+    @PackageScope
     Bus bus
 
-    WebSocketMessageServer(InetSocketAddress address, LocalPlayer player) {
+    WebSocketMessageServer(InetSocketAddress address) {
         super(address)
-        this.player = player
         Injector.inject this
     }
 

@@ -17,12 +17,15 @@ import org.java_websocket.WebSocket
 
 import javax.inject.Inject
 
+import static app.events.server.MusicServerStateChangedEvent.State.STARTED
+import static app.events.server.MusicServerStateChangedEvent.State.STOPPED
+
 @CompileStatic
 class MusicServer extends Daggered {
 
-    private WebSocketMessageServer webSocketMessageServer
-    private StreamServer streamServer
-    private LocalPlayer player
+    @Inject
+    @PackageScope
+    StreamServer streamServer
 
     @Inject
     @PackageScope
@@ -32,6 +35,8 @@ class MusicServer extends Daggered {
     @PackageScope
     LocalPlayer player
 
+    private WebSocketMessageServer webSocketMessageServer
+
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
 
@@ -40,15 +45,14 @@ class MusicServer extends Daggered {
     @Profile
     void start() {
         bus.register this
-        streamServer = new StreamServer(player)
         try {
-            streamServer.start();
+            streamServer.start()
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
-        webSocketMessageServer = new WebSocketMessageServer(new InetSocketAddress(8080), player)
+        webSocketMessageServer = new WebSocketMessageServer(new InetSocketAddress(8080))
         webSocketMessageServer.start()
-        started = true
+        setStarted true
     }
 
     public void stop() {
@@ -60,82 +64,92 @@ class MusicServer extends Daggered {
                 try {
                     webSocketMessageServer.stop()
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    e.printStackTrace()
                 }
             }
         }).start()
-        started = false
+        setStarted false
+    }
+
+    private void setStarted(boolean state) {
+        started = state
+        bus.post new MusicServerStateChangedEvent(started ? STARTED : STOPPED)
     }
 
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (webSocketMessageServer.connections().size() != 0) {
-            sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson());
+            sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson())
         } else {
-            bus.post(new AllClientsReadyEvent());
+            bus.post(new AllClientsReadyEvent())
         }
     }
 
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
-        String pos = String.valueOf(player.getCurrentPosition());
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START_FROM, pos).toJson());
+        String pos = String.valueOf(player.currentPosition)
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START_FROM, pos).toJson())
     }
 
     @Subscribe
     public void startClients(StartClientsEvent event) {
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START).toJson());
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START).toJson())
     }
 
     @Subscribe
     public void pauseClients(PauseClientsEvent event) {
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PAUSE).toJson());
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PAUSE).toJson())
     }
 
     @Subscribe
     public void seekToClients(SeekToClientsEvent event) {
-        String pos = String.valueOf(event.getPosition());
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.SEEK_TO, pos).toJson());
+        String pos = String.valueOf(event.position)
+        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.SEEK_TO, pos).toJson())
     }
 
     @Produce
     public ChatMessagesAvailableEvent produceMessages() {
-        return new ChatMessagesAvailableEvent(chatMessages);
+        return new ChatMessagesAvailableEvent(chatMessages)
     }
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
-        unreadMessages += 1;
-        ChatMessage msg = event.getMessage();
-        chatMessages.add(msg);
-        sendAllExcept(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(msg)).toJson(), event.getWebSocket());
-        bus.post(new NotifyMessageAddedEvent(msg));
+        unreadMessages += 1
+        ChatMessage msg = event.getMessage()
+        chatMessages.add(msg)
+        sendAllExcept(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(msg)).toJson(), event.getWebSocket())
+        bus.post(new NotifyMessageAddedEvent(msg))
     }
 
     @Subscribe
     public void onResetUnreadMessages(ResetUnreadMessagesEvent event) {
-        unreadMessages = 0;
+        unreadMessages = 0
     }
 
     @Subscribe
     public void onSendChatMessage(SendChatMessageEvent event) {
-        onChatMessageReceived(new ChatMessageReceivedEvent(event.getMessage(), null));
+        onChatMessageReceived(new ChatMessageReceivedEvent(event.getMessage(), null))
     }
 
     @Produce
     public SetUnreadMessagesEvent produceUnreadMessages() {
-        return new SetUnreadMessagesEvent(unreadMessages);
+        return new SetUnreadMessagesEvent(unreadMessages)
+    }
+
+    @Produce
+    public MusicServerStateChangedEvent produceMusicServerState() {
+        return new MusicServerStateChangedEvent(started ? STARTED : STOPPED)
     }
 
     private void sendAll(String message) {
         for (WebSocket conn : webSocketMessageServer.connections()) {
-            conn.send(message);
+            conn.send(message)
         }
     }
 
     private void sendAllExcept(String message, WebSocket socket) {
         for (WebSocket conn : webSocketMessageServer.connections()) {
-            if (!conn.equals(socket)) conn.send(message);
+            if (!conn.equals(socket)) conn.send(message)
         }
     }
 
