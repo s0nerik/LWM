@@ -1,15 +1,11 @@
 package app.events.player.playback
 
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 
+@Canonical
 @CompileStatic
 public class SongPlayingEvent {
-
-    int progress;
-    int duration;
-
-    public SongPlayingEvent(int progress, int duration) {
-        this.progress = progress;
-        this.duration = duration;
-    }
+    long progress
+    int duration
 }

@@ -1,17 +1,12 @@
 package app.events.player.playback;
 
 import app.model.Song
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 
+@Canonical
 @CompileStatic
-public class PlaybackPausedEvent {
-
-    int time;
-    Song song;
-
-    public PlaybackPausedEvent(Song song, int time) {
-        this.song = song;
-        this.time = time;
-    }
-
+class PlaybackPausedEvent {
+    Song song
+    long time
 }

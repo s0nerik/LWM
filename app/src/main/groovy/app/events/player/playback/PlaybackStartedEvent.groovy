@@ -1,16 +1,12 @@
 package app.events.player.playback;
 
 import app.model.Song
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 
+@Canonical
 @CompileStatic
-public class PlaybackStartedEvent {
-
-    int time;
-    Song song;
-
-    public PlaybackStartedEvent(Song song, int time) {
-        this.song = song;
-        this.time = time;
-    }
+class PlaybackStartedEvent {
+    Song song
+    long time
 }

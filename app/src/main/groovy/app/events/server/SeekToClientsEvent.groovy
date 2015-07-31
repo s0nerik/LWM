@@ -1,13 +1,10 @@
 package app.events.server
 
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 
+@Canonical
 @CompileStatic
-public class SeekToClientsEvent {
-    int position;
-
-    public SeekToClientsEvent(int position) {
-        this.position = position;
-    }
-
+class SeekToClientsEvent {
+    long position
 }

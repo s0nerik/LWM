@@ -13,3 +13,8 @@ buildscript {
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.1.1'
     }
 }
+
+//ext {
+//    compileSdkVersion = 22       // depending on your sdk version
+//    buildToolsVersion = "22.0.1" // depending on your build tools version
+//}

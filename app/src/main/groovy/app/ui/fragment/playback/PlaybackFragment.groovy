@@ -91,7 +91,7 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     }
 
     protected void onSongPlaying(SongPlayingEvent event) {
-        seekBar.progress = PlayerUtils.calculateProgressForSeekBar event.progress
+        seekBar.progress = PlayerUtils.calculateProgressForSeekBar event.progress as int
         currentTime.text = player.currentPositionInMinutes
     }
 
@@ -166,7 +166,7 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     private void initView() {
         setSongInfo player.currentSong
         currentTime.text = player.currentPositionInMinutes
-        seekBar.progress = PlayerUtils.calculateProgressForSeekBar player.currentPosition
+        seekBar.progress = PlayerUtils.calculateProgressForSeekBar player.currentPosition as int
         setPlayButton player.playing
         setShuffleButton player.shuffle
         setRepeatButton player.repeat
