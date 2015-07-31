@@ -33,42 +33,22 @@ abstract class BasePlayer extends MediaPlayer {
 
     static final int NOTIFY_INTERVAL = 1000
 
-    private OnAudioFocusChangeListener afListener = new OnAudioFocusChangeListener() {
-        @Override
-        void onAudioFocusChange(int focusChange) {
-            String event = ""
-            switch (focusChange) {
-                case AUDIOFOCUS_LOSS:
-                case AUDIOFOCUS_LOSS_TRANSIENT:
-                case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                    event = "AUDIOFOCUS_LOSS || AUDIOFOCUS_LOSS_TRANSIENT || AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK"
-                    setVolume 0f, 0f
-                    break
-                case AUDIOFOCUS_GAIN:
-                    event = "AUDIOFOCUS_GAIN"
-                    setVolume 1f, 1f
-                    break
-            }
-            Debug.d "onAudioFocusChange: ${event}"
+    private OnAudioFocusChangeListener afListener = { int focusChange ->
+        String event = ""
+        switch (focusChange) {
+            case AUDIOFOCUS_LOSS:
+            case AUDIOFOCUS_LOSS_TRANSIENT:
+            case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                event = "AUDIOFOCUS_LOSS || AUDIOFOCUS_LOSS_TRANSIENT || AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK"
+                setVolume 0f, 0f
+                break
+            case AUDIOFOCUS_GAIN:
+                event = "AUDIOFOCUS_GAIN"
+                setVolume 1f, 1f
+                break
         }
-    }
-
-//    private OnAudioFocusChangeListener afListener = { int focusChange ->
-//        String event = ""
-//        switch (focusChange) {
-//            case AUDIOFOCUS_LOSS:
-//            case AUDIOFOCUS_LOSS_TRANSIENT:
-//            case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-//                event = "AUDIOFOCUS_LOSS || AUDIOFOCUS_LOSS_TRANSIENT || AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK"
-//                setVolume 0f, 0f
-//                break
-//            case AUDIOFOCUS_GAIN:
-//                event = "AUDIOFOCUS_GAIN"
-//                setVolume 1f, 1f
-//                break
-//        }
-//        Debug.d "onAudioFocusChange: ${event}"
-//    } as OnAudioFocusChangeListener
+        Debug.d "onAudioFocusChange: ${event}"
+    } as OnAudioFocusChangeListener
 
     private Timer playbackProgressNotifierTimer
 
