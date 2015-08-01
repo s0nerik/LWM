@@ -1,9 +1,7 @@
 package app.player
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Handler
 import app.Injector
-import app.events.client.SendReadyEvent
 import app.model.Song
 import app.server.StreamServer
 import com.squareup.otto.Bus
@@ -33,27 +31,27 @@ public class StreamPlayer extends BasePlayer {
         super();
         Injector.inject(this);
         handler = new Handler(context.getMainLooper());
-        onSeekCompleteListener = { MediaPlayer mediaPlayer ->
-            Debug.d("StreamPlayer: onSeekComplete");
-            start();
-        }
-        onPreparedListener = { MediaPlayer mediaPlayer ->
-            Debug.d("StreamPlayer: onPrepared");
-            bus.post(new SendReadyEvent());
-        }
-        onBufferingUpdateListener = { MediaPlayer mp, int percent ->
-            Debug.d("Buffered: "+percent);
-        }
+//        onSeekCompleteListener = { MediaPlayer mediaPlayer ->
+//            Debug.d("StreamPlayer: onSeekComplete");
+//            start();
+//        }
+//        onPreparedListener = { MediaPlayer mediaPlayer ->
+//            Debug.d("StreamPlayer: onPrepared");
+//            bus.post(new SendReadyEvent());
+//        }
+//        onBufferingUpdateListener = { MediaPlayer mp, int percent ->
+//            Debug.d("Buffered: "+percent);
+//        }
     }
 
     public void prepareNewSong(){
         reset();
-        try {
-            setDataSource(STREAM_PATH);
-            prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            setDataSource(STREAM_PATH);
+//            prepareAsync();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

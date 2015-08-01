@@ -1,8 +1,7 @@
 package app.player
-
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
+import android.net.Uri
 import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
@@ -13,6 +12,7 @@ import app.events.server.*
 import app.model.Song
 import app.service.LocalPlayerService
 import com.github.s0nerik.betterknife.annotations.Profile
+import com.google.android.exoplayer.ExoPlaybackException
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -35,51 +35,52 @@ class LocalPlayer extends BasePlayer {
     Bus bus
 
     private boolean serverStarted = false
-    private boolean prepared = true
     private boolean repeat = false
     private boolean active = false
     private Queue queue = new Queue()
+
+    @Override
+    void onPlaybackComplete() {
+        Debug.d()
+
+        if (ready) {
+            int currentPosition = currentPosition
+            int duration = duration - 1000
+
+            if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
+                if (isRepeat()) {
+                    play()
+                } else {
+                    nextSong()
+                }
+            }
+        }
+    }
+
+    @Override
+    void onReady() {
+        active = true
+
+        bus.post new SongChangedEvent(currentSong)
+
+        if (serverStarted)
+            bus.post new PrepareClientsEvent()
+        else
+            start()
+    }
+
+    @Override
+    void onError(ExoPlaybackException e) {
+        Debug.e e
+    }
 
     LocalPlayer() {
         super()
         bus.register this
 
-        onCompletionListener = {
-            Debug.d()
-
-            if (prepared) {
-                int currentPosition = currentPosition
-                int duration = duration - 1000
-
-                if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
-                    if (isRepeat()) {
-                        play()
-                    } else {
-                        nextSong()
-                    }
-                }
-            }
-        }
-        onSeekCompleteListener = {
-            start()
-        }
-        onPreparedListener = {
-            prepared = true
-            active = true
-
-            bus.post new SongChangedEvent(currentSong)
-
-            if (serverStarted) {
-                bus.post new PrepareClientsEvent()
-            } else {
-                start()
-            }
-        }
-        onErrorListener = { MediaPlayer mp, int what, int extra ->
-            Debug.e "onError: $what, $extra"
-            prepared = true
-            return true
-        }
+//        onSeekCompleteListener = {
+//            start()
+//        }
     }
 
     void shuffleQueue() {
@@ -125,15 +126,9 @@ class LocalPlayer extends BasePlayer {
     }
 
     @Override
-    void stop() throws IllegalStateException {
-        stopNotifyingPlaybackProgress()
-        super.stop()
-    }
-
-    @Override
-    void seekTo(int msec) throws IllegalStateException {
+    void seekTo(int msec) {
         Debug.d "seekTo(${msec})"
-        if (prepared) {
+        if (ready) {
             if (serverStarted) {
                 bus.post new SeekToClientsEvent(msec)
             }
@@ -151,14 +146,9 @@ class LocalPlayer extends BasePlayer {
 //    @OnBackground
     void play() {
         reset()
-        try {
-            assert queue : "queue == null"
-            FileInputStream fis = new FileInputStream(queue.song.source)
-            setDataSource(fis.FD)
-            prepareAsync()
-            prepared = false
-        } catch (IOException e) {
-            e.printStackTrace()
+        assert queue : "queue == null"
+        while (!prepare(Uri.parse("file://${queue.song.source}"))) {
+            queue.moveToNext(true)
         }
     }
 
@@ -214,24 +204,20 @@ class LocalPlayer extends BasePlayer {
     }
 
     @Override
-    void pause() throws IllegalStateException {
-        if (prepared) {
-            stopNotifyingPlaybackProgress()
-            super.pause()
+    void pause() {
+        stopNotifyingPlaybackProgress()
+        super.pause()
 
-            bus.post new PlaybackPausedEvent(queue.song, currentPosition)
-        }
+        bus.post new PlaybackPausedEvent(queue.song, currentPosition)
     }
 
     @Override
-    void start() throws IllegalStateException {
-        if (prepared) {
-            super.start()
-            startNotifyingPlaybackProgress()
+    void start() {
+        super.start()
+        startNotifyingPlaybackProgress()
 
-            bus.post new PlaybackStartedEvent(queue.song, currentPosition)
-            context.startService new Intent(context, LocalPlayerService)
-        }
+        bus.post new PlaybackStartedEvent(queue.song, currentPosition)
+        context.startService new Intent(context, LocalPlayerService)
     }
 
 //    @Override

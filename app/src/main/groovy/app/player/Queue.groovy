@@ -81,13 +81,14 @@ public class Queue {
      *
      * @return true if successfully moved to the next song, else returns false
      */
-    public boolean moveToNext() {
+    public boolean moveToNext(boolean circular = false) {
         try {
             currentSong = queue.get(currentIndex + 1);
             played.push(currentSong);
             currentIndex++;
             return true;
         } catch (IndexOutOfBoundsException e) {
+            if (circular) currentIndex = currentIndex % queue.size()
             currentSong = queue.get(currentIndex);
             return false;
         }
