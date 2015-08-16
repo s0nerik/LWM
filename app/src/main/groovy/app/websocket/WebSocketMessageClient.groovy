@@ -31,7 +31,7 @@ import static app.websocket.SocketMessage.Type.POST
 @PackageScope(PackageScopeTarget.FIELDS)
 public class WebSocketMessageClient extends WebSocketClient {
 
-    @Delegate(includes=["seekTo", "start", "pause"])
+    @Delegate(includes=["seekTo", "unpause", "pause"])
     @Inject
     StreamPlayer player
     @Inject
@@ -84,7 +84,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         } else if (socketMessage.type == POST) {
             switch (socketMessage.message) {
                 case START:
-                    start()
+                    unpause()
                     break
                 case PAUSE:
                     pause()
@@ -126,7 +126,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private void startFrom(int pos) {
         player.seekTo(pos)
-        player.start()
+        player.unpause()
     }
 
 //    private void seekTo(int pos) {

@@ -5,10 +5,11 @@ import android.net.Uri
 import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
-import app.events.player.playback.PlaybackStartedEvent
-import app.events.player.playback.SongChangedEvent
 import app.events.player.queue.*
-import app.events.server.*
+import app.events.server.MusicServerStateChangedEvent
+import app.events.server.PauseClientsEvent
+import app.events.server.SeekToClientsEvent
+import app.events.server.StartClientsEvent
 import app.model.Song
 import app.service.LocalPlayerService
 import com.github.s0nerik.betterknife.annotations.Profile
@@ -36,38 +37,28 @@ class LocalPlayer extends BasePlayer {
 
     private boolean serverStarted = false
     private boolean repeat = false
-    private boolean active = false
     private Queue queue = new Queue()
 
     @Override
     void onPlaybackComplete() {
         Debug.d()
 
-        if (ready) {
-            int currentPosition = currentPosition
-            int duration = duration - 1000
-
-            if (currentPosition > 0 && duration > 0 && currentPosition > duration) {
-                if (isRepeat()) {
-                    play()
-                } else {
-                    nextSong()
-                }
-            }
+        if (isRepeat()) {
+            play()
+        } else {
+            nextSong()
         }
     }
 
-    @Override
-    void onReady() {
-        active = true
-
-        bus.post new SongChangedEvent(currentSong)
-
-        if (serverStarted)
-            bus.post new PrepareClientsEvent()
-        else
-            start()
-    }
+//    @Override
+//    void onReady(boolean playWhenReady) {
+//        bus.post new SongChangedEvent(currentSong)
+//
+//        if (serverStarted)
+//            bus.post new PrepareClientsEvent()
+//        else
+//            start()
+//    }
 
     @Override
     void onError(ExoPlaybackException e) {
@@ -93,7 +84,8 @@ class LocalPlayer extends BasePlayer {
     }
 
     void setQueue(List<Song> songs) {
-        queue = new Queue(songs)
+        queue.clear()
+        queue.addSongs songs
     }
 
     void shuffleQueueExceptPlayed() {
@@ -145,21 +137,15 @@ class LocalPlayer extends BasePlayer {
     @Profile
 //    @OnBackground
     void play() {
-        reset()
-        assert queue : "queue == null"
-        while (!prepare(Uri.parse("file://${queue.song.source}"))) {
-            queue.moveToNext(true)
+        stop()
+        innerPlayer.playWhenReady = true
+        while (!prepareNew(Uri.parse("file://${queue.song?.source}"))) {
+            queue.moveToNext true
         }
     }
 
     boolean hasCurrentSong() {
-        return active && queue.song
-    }
-
-    @Override
-    void reset() {
-        stopNotifyingPlaybackProgress()
-        super.reset()
+        return queue.song
     }
 
     @Override
@@ -188,7 +174,7 @@ class LocalPlayer extends BasePlayer {
 
     @Override
     void togglePause() {
-        if (playing) {
+        if (innerPlayer.playWhenReady) {
             if (serverStarted) {
                 bus.post new PauseClientsEvent()
             } else {
@@ -198,25 +184,20 @@ class LocalPlayer extends BasePlayer {
             if (serverStarted) {
                 bus.post new StartClientsEvent()
             } else {
-                start()
+                unpause()
             }
         }
     }
 
     @Override
     void pause() {
-        stopNotifyingPlaybackProgress()
         super.pause()
 
         bus.post new PlaybackPausedEvent(queue.song, currentPosition)
     }
 
     @Override
-    void start() {
-        super.start()
-        startNotifyingPlaybackProgress()
-
-        bus.post new PlaybackStartedEvent(queue.song, currentPosition)
+    void startService() {
         context.startService new Intent(context, LocalPlayerService)
     }
 

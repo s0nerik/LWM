@@ -4,9 +4,14 @@ buildscript {
         jcenter()
         mavenCentral()
         maven { url 'http://download.crashlytics.com/maven' }
+        maven {
+            url 'https://repos.zeroturnaround.com/nexus/content/repositories/zt-public-releases'
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:1.2.3"
+        // This does not break the build when Android Studio is missing the JRebel for Android plugin.
+        classpath 'com.zeroturnaround.jrebel.android:jr-android-gradle:0.8.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.7'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'

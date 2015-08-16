@@ -45,7 +45,7 @@ public class StreamPlayer extends BasePlayer {
     }
 
     public void prepareNewSong(){
-        reset();
+//        reset();
 //        try {
 //            setDataSource(STREAM_PATH);
 //            prepareAsync();
@@ -68,11 +68,16 @@ public class StreamPlayer extends BasePlayer {
 
     @Override
     public void togglePause(){
-        if (isPlaying()){
+        if (innerPlayer.playWhenReady){
             pause();
         }else{
-            start();
+            unpause();
         }
+    }
+
+    @Override
+    void startService() {
+
     }
 
     @Override
@@ -93,11 +98,11 @@ public class StreamPlayer extends BasePlayer {
         stopNotifyingPlaybackProgress();
     }
 
-    @Override
-    public void start() throws IllegalStateException {
-        super.start();
-        updateSongInfo();
-    }
+//    @Override
+//    public void start() throws IllegalStateException {
+//        super.start();
+//        updateSongInfo();
+//    }
 
     private void updateSongInfo() {
         // TODO: make it work

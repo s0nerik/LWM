@@ -101,12 +101,12 @@ class LocalPlayerService extends Service {
                 player.prevSong()
                 break
             case PLAY:
-                if (!player.isPlaying()) {
-                    player.start()
+                if (!player.playing) {
+                    player.unpause()
                 }
                 break
             case PAUSE:
-                if (player.isPlaying()) {
+                if (player.playing) {
                     player.pause()
                 }
                 break
@@ -128,12 +128,12 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void allClientsReady(AllClientsReadyEvent event) {
-        player.start()
+        player.unpause()
     }
 
     @Subscribe
     void onStartClients(StartClientsEvent event) {
-        player.start()
+        player.unpause()
     }
 
     @Subscribe

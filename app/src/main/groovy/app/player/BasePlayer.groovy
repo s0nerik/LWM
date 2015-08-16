@@ -3,6 +3,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import app.Injector
+import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.model.Song
 import com.google.android.exoplayer.ExoPlaybackException
@@ -23,7 +24,10 @@ import ru.noties.debug.Debug
 import javax.inject.Inject
 
 import static android.media.AudioManager.*
-
+/**
+ * Stop means pause.
+ * To start any song from the beginning the "seekTo(0)" should be called.
+ */
 @CompileStatic
 abstract class BasePlayer {
 
@@ -42,28 +46,37 @@ abstract class BasePlayer {
     @PackageScope
     Context context
 
-    @Delegate(excludes = ["pause", "start", "seekTo"])
     private PlayerControl playerControl
 
-    private ExoPlayer innerPlayer
+    protected ExoPlayer innerPlayer
     private MediaCodecAudioTrackRenderer renderer
 
     abstract void nextSong()
     abstract void prevSong()
     abstract void togglePause()
+    abstract void startService()
     abstract boolean isShuffle()
     abstract boolean isRepeat()
     abstract Song getCurrentSong()
 
     void onPlaybackComplete() {}
     void onStartedBuffering() {}
-    void onBecameIdle() {}
+    void onBecameIdle() {
+        stopNotifyingPlaybackProgress()
+    }
     void onStartedPreparing() {}
-    void onReady() {}
+    void onReady(boolean playWhenReady) {
+        if (playWhenReady) {
+            bus.post new PlaybackStartedEvent(currentSong, currentPosition)
+            startNotifyingPlaybackProgress()
+            startService()
+        }
+    }
     void onError(ExoPlaybackException e) {}
 
     private ExoPlayer.Listener listener = [
             onPlayerStateChanged    : { boolean playWhenReady, int playbackState ->
+                Debug.d playbackState as String
                 switch (playbackState) {
                     case ExoPlayer.STATE_ENDED:
                         onPlaybackComplete()
@@ -78,7 +91,7 @@ abstract class BasePlayer {
                         onStartedPreparing()
                         break
                     case ExoPlayer.STATE_READY:
-                        onReady()
+                        onReady(playWhenReady)
                         break
                 }
             },
@@ -121,34 +134,49 @@ abstract class BasePlayer {
     }
 
     String getCurrentPositionInMinutes() {
-        int seconds = getCurrentPosition() / 1000 as int
+        int seconds = currentPosition / 1000 as int
         int minutes = seconds / 60 as int
         seconds -= minutes*60
         return "${minutes}:${String.format('%02d', seconds)}"
     }
 
     void pause() {
+        innerPlayer.playWhenReady = false
         innerPlayer.stop()
-        playerControl.pause()
-        audioManager.abandonAudioFocus afListener
+        abandonAudioFocus()
     }
 
-    void start() {
-        audioManager.requestAudioFocus afListener, STREAM_MUSIC, AUDIOFOCUS_GAIN
-        playerControl.start()
+    void unpause() {
+        gainAudioFocus()
+        innerPlayer.playWhenReady = true
+        prepareOld()
     }
 
     void stop() {
+        innerPlayer.playWhenReady = false
         innerPlayer.stop()
-    }
-
-    void reset() {
-        innerPlayer.stop()
-        innerPlayer.seekTo(0)
+        seekTo 0
+        abandonAudioFocus()
     }
 
     void seekTo(int msec) {
-        playerControl.seekTo(msec)
+        playerControl.seekTo msec
+    }
+
+    boolean isPlaying() {
+        innerPlayer.playWhenReady
+    }
+
+    int getCurrentPosition() {
+        playerControl.currentPosition
+    }
+
+    void gainAudioFocus() {
+        audioManager.requestAudioFocus afListener, STREAM_MUSIC, AUDIOFOCUS_GAIN
+    }
+
+    void abandonAudioFocus() {
+        audioManager.abandonAudioFocus afListener
     }
 
     protected void startNotifyingPlaybackProgress() {
@@ -188,7 +216,7 @@ abstract class BasePlayer {
             return null
     }
 
-    boolean prepare(Uri uri) {
+    boolean prepareNew(Uri uri) {
         def ext = getExtension uri.encodedSchemeSpecificPart
         def extractor = getExtractor(ext)
         if (ext && extractor) {
@@ -204,6 +232,11 @@ abstract class BasePlayer {
         } else {
             return false
         }
+    }
+
+    boolean prepareOld() {
+        innerPlayer.prepare(renderer)
+        return true
     }
 
 }

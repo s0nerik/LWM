@@ -97,10 +97,9 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     protected void shuffleAll() {
         if (songs) {
-            def queue = new ArrayList<>(songs);
-            player.queue = queue
+            player.queue = songs
             player.shuffleQueue()
-            player.play(0)
+            player.play 0
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
         }
