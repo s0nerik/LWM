@@ -63,6 +63,7 @@ abstract class BasePlayer {
     void onPlaybackEnded() {
         Debug.d()
         playing = false
+        abandonAudioFocus()
     }
     void onStartedBuffering() {
         Debug.d()
@@ -76,6 +77,7 @@ abstract class BasePlayer {
     }
     void onReady(boolean playWhenReady) {
         if (playWhenReady) {
+            gainAudioFocus()
             bus.post new PlaybackStartedEvent(currentSong, currentPosition)
             startNotifyingPlaybackProgress()
             startService()
@@ -84,6 +86,7 @@ abstract class BasePlayer {
     }
     void onError(ExoPlaybackException e) {
         Debug.e e
+        abandonAudioFocus()
     }
 
     private ExoPlayer.Listener listener = [
@@ -107,15 +110,7 @@ abstract class BasePlayer {
                         break
                 }
             },
-            onPlayWhenReadyCommitted: {
-//                if (innerPlayer.playWhenReady) { // Unpaused
-//                    gainAudioFocus()
-//                    prepareOld()
-//                } else {  // Paused
-//                    innerPlayer.stop()
-//                    abandonAudioFocus()
-//                }
-            },
+            onPlayWhenReadyCommitted: {},
             onPlayerError           : { ExoPlaybackException e -> onError e }
     ] as ExoPlayer.Listener
 
@@ -162,7 +157,6 @@ abstract class BasePlayer {
         innerPlayer.playWhenReady = false
         innerPlayer.stop()
         seekTo 0
-        abandonAudioFocus()
     }
 
     void seekTo(int msec) {

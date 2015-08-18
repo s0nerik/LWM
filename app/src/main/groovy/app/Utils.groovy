@@ -79,12 +79,7 @@ class Utils extends Daggered {
     }
 
     public static int getCurrentSongPosition(LocalPlayer player, List<Song> songList) {
-        int pos = -1;
-        if (player.hasCurrentSong()) {
-            Song song = player.getCurrentSong();
-            pos = songList.indexOf(song);
-        }
-        return pos;
+        return player.currentSong ? songList.indexOf(player.currentSong) : -1
     }
 
     public static void setSongAsRingtone(Context context, Song song) {

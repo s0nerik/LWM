@@ -74,7 +74,7 @@ class LocalPlayerService extends Service {
 
     @Override
     int onStartCommand(Intent intent, int flags, int startId) {
-        if (player.hasCurrentSong()) {
+        if (player.currentSong) {
             makeForeground(player.isPlaying())
         }
         return START_NOT_STICKY

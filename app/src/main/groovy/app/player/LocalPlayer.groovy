@@ -1,9 +1,11 @@
 package app.player
+
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.SongChangedEvent
 import app.events.player.queue.*
 import app.events.server.MusicServerStateChangedEvent
 import app.model.Song
@@ -100,6 +102,7 @@ class LocalPlayer extends BasePlayer {
         bus.post new PlaylistRemovedFromQueueEvent(getQueue(), songs)
     }
 
+    @Override
     Song getCurrentSong() {
         return queue.song
     }
@@ -111,7 +114,6 @@ class LocalPlayer extends BasePlayer {
     }
 
     @Profile
-//    @OnBackground
     void play() {
         Debug.d()
         stop()
@@ -119,10 +121,7 @@ class LocalPlayer extends BasePlayer {
         while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
-    }
-
-    boolean hasCurrentSong() {
-        return queue.song
+        bus.post new SongChangedEvent(currentSong)
     }
 
     @Override
