@@ -36,4 +36,8 @@ public final class Song {
         return ContentUris.withAppendedId(artworkUri, albumId);
     }
 
+    Uri getSourceUri() {
+        Uri.parse("file://$source")
+    }
+
 }

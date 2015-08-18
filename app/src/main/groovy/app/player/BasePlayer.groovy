@@ -15,7 +15,6 @@ import com.google.android.exoplayer.extractor.mp3.Mp3Extractor
 import com.google.android.exoplayer.extractor.mp4.Mp4Extractor
 import com.google.android.exoplayer.extractor.ts.AdtsExtractor
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
-import com.google.android.exoplayer.util.PlayerControl
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -46,40 +45,53 @@ abstract class BasePlayer {
     @PackageScope
     Context context
 
-    private PlayerControl playerControl
+    boolean playing = false
+    boolean repeat = false
+    boolean shuffle = false
+    Song currentSong
+
+    Uri playbackUri
 
     protected ExoPlayer innerPlayer
-    private MediaCodecAudioTrackRenderer renderer
+    protected MediaCodecAudioTrackRenderer renderer
 
     abstract void nextSong()
     abstract void prevSong()
     abstract void togglePause()
     abstract void startService()
-    abstract boolean isShuffle()
-    abstract boolean isRepeat()
-    abstract Song getCurrentSong()
 
-    void onPlaybackComplete() {}
-    void onStartedBuffering() {}
+    void onPlaybackEnded() {
+        Debug.d()
+        playing = false
+    }
+    void onStartedBuffering() {
+        Debug.d()
+    }
     void onBecameIdle() {
+        Debug.d()
         stopNotifyingPlaybackProgress()
     }
-    void onStartedPreparing() {}
+    void onStartedPreparing() {
+        Debug.d()
+    }
     void onReady(boolean playWhenReady) {
         if (playWhenReady) {
             bus.post new PlaybackStartedEvent(currentSong, currentPosition)
             startNotifyingPlaybackProgress()
             startService()
+            playing = true
         }
     }
-    void onError(ExoPlaybackException e) {}
+    void onError(ExoPlaybackException e) {
+        Debug.e e
+    }
 
     private ExoPlayer.Listener listener = [
             onPlayerStateChanged    : { boolean playWhenReady, int playbackState ->
                 Debug.d playbackState as String
                 switch (playbackState) {
                     case ExoPlayer.STATE_ENDED:
-                        onPlaybackComplete()
+                        onPlaybackEnded()
                         break
                     case ExoPlayer.STATE_BUFFERING:
                         onStartedBuffering()
@@ -95,27 +107,31 @@ abstract class BasePlayer {
                         break
                 }
             },
-            onPlayWhenReadyCommitted: {},
+            onPlayWhenReadyCommitted: {
+//                if (innerPlayer.playWhenReady) { // Unpaused
+//                    gainAudioFocus()
+//                    prepareOld()
+//                } else {  // Paused
+//                    innerPlayer.stop()
+//                    abandonAudioFocus()
+//                }
+            },
             onPlayerError           : { ExoPlaybackException e -> onError e }
     ] as ExoPlayer.Listener
 
     static final int NOTIFY_INTERVAL = 1000
 
     private OnAudioFocusChangeListener afListener = { int focusChange ->
-        String event = ""
         switch (focusChange) {
             case AUDIOFOCUS_LOSS:
             case AUDIOFOCUS_LOSS_TRANSIENT:
             case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                event = "AUDIOFOCUS_LOSS || AUDIOFOCUS_LOSS_TRANSIENT || AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK"
-                innerPlayer.sendMessage(renderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 0f)
+                innerPlayer.sendMessage renderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 0f
                 break
             case AUDIOFOCUS_GAIN:
-                event = "AUDIOFOCUS_GAIN"
-                innerPlayer.sendMessage(renderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 1f)
+                innerPlayer.sendMessage renderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 1f
                 break
         }
-        Debug.d "onAudioFocusChange: ${event}"
     } as OnAudioFocusChangeListener
 
     private Timer playbackProgressNotifierTimer
@@ -125,31 +141,21 @@ abstract class BasePlayer {
 
         innerPlayer = ExoPlayer.Factory.newInstance 1, 1000, 5000
         innerPlayer.addListener(listener)
-
-        playerControl = new PlayerControl(innerPlayer)
-    }
-
-    boolean isReady() {
-        return innerPlayer.playbackState == ExoPlayer.STATE_READY
     }
 
     String getCurrentPositionInMinutes() {
-        int seconds = currentPosition / 1000 as int
-        int minutes = seconds / 60 as int
-        seconds -= minutes*60
+        int seconds = (currentPosition / 1000) as int
+        int minutes = (seconds / 60) as int
+        seconds -= minutes * 60
         return "${minutes}:${String.format('%02d', seconds)}"
     }
 
     void pause() {
         innerPlayer.playWhenReady = false
-        innerPlayer.stop()
-        abandonAudioFocus()
     }
 
     void unpause() {
-        gainAudioFocus()
         innerPlayer.playWhenReady = true
-        prepareOld()
     }
 
     void stop() {
@@ -160,15 +166,11 @@ abstract class BasePlayer {
     }
 
     void seekTo(int msec) {
-        playerControl.seekTo msec
-    }
-
-    boolean isPlaying() {
-        innerPlayer.playWhenReady
+        innerPlayer.seekTo msec
     }
 
     int getCurrentPosition() {
-        playerControl.currentPosition
+        innerPlayer.currentPosition
     }
 
     void gainAudioFocus() {
@@ -216,7 +218,7 @@ abstract class BasePlayer {
             return null
     }
 
-    boolean prepareNew(Uri uri) {
+    private boolean prepareInternal(Uri uri) {
         def ext = getExtension uri.encodedSchemeSpecificPart
         def extractor = getExtractor(ext)
         if (ext && extractor) {
@@ -228,15 +230,20 @@ abstract class BasePlayer {
                     )
             )
             innerPlayer.prepare(renderer)
+            playbackUri = uri
             return true
         } else {
             return false
         }
     }
 
-    boolean prepareOld() {
+    private boolean prepareOld() {
         innerPlayer.prepare(renderer)
         return true
+    }
+
+    boolean prepare(Uri uri) {
+        return uri == playbackUri ? prepareOld() : prepareInternal(uri)
     }
 
 }

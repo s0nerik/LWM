@@ -100,13 +100,13 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     }
 
     protected void onPlaybackStarted(PlaybackStartedEvent event) {
-        Debug.d "onPlaybackStarted"
-        setPlayButton player.playing
+        Debug.d()
+        setPlayButton true
     }
 
     protected void onPlaybackPaused(PlaybackPausedEvent event) {
-        Debug.d "onPlaybackPaused"
-        setPlayButton player.playing
+        Debug.d()
+        setPlayButton false
     }
 
     protected void onQueueShuffled(QueueShuffledEvent event) {

@@ -1,15 +1,11 @@
 package app.player
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.queue.*
 import app.events.server.MusicServerStateChangedEvent
-import app.events.server.PauseClientsEvent
-import app.events.server.SeekToClientsEvent
-import app.events.server.StartClientsEvent
 import app.model.Song
 import app.service.LocalPlayerService
 import com.github.s0nerik.betterknife.annotations.Profile
@@ -35,30 +31,25 @@ class LocalPlayer extends BasePlayer {
     @PackageScope
     Bus bus
 
+    private static final float SONG_END_GAP = 0.25f;
+
     private boolean serverStarted = false
-    private boolean repeat = false
     private Queue queue = new Queue()
 
     @Override
-    void onPlaybackComplete() {
-        Debug.d()
+    void onPlaybackEnded() {
+        super.onPlaybackEnded()
 
-        if (isRepeat()) {
+        // Check whether the song has actually completed playing
+        if (!innerPlayer.playWhenReady
+                || innerPlayer.currentPosition < innerPlayer.duration - SONG_END_GAP) return
+
+        if (repeat) {
             play()
         } else {
             nextSong()
         }
     }
-
-//    @Override
-//    void onReady(boolean playWhenReady) {
-//        bus.post new SongChangedEvent(currentSong)
-//
-//        if (serverStarted)
-//            bus.post new PrepareClientsEvent()
-//        else
-//            start()
-//    }
 
     @Override
     void onError(ExoPlaybackException e) {
@@ -68,10 +59,6 @@ class LocalPlayer extends BasePlayer {
     LocalPlayer() {
         super()
         bus.register this
-
-//        onSeekCompleteListener = {
-//            start()
-//        }
     }
 
     void shuffleQueue() {
@@ -117,17 +104,6 @@ class LocalPlayer extends BasePlayer {
         return queue.song
     }
 
-    @Override
-    void seekTo(int msec) {
-        Debug.d "seekTo(${msec})"
-        if (ready) {
-            if (serverStarted) {
-                bus.post new SeekToClientsEvent(msec)
-            }
-            super.seekTo msec
-        }
-    }
-
     @Profile
     void play(int position) {
         queue.moveTo position
@@ -137,9 +113,10 @@ class LocalPlayer extends BasePlayer {
     @Profile
 //    @OnBackground
     void play() {
+        Debug.d()
         stop()
         innerPlayer.playWhenReady = true
-        while (!prepareNew(Uri.parse("file://${queue.song?.source}"))) {
+        while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
     }
@@ -150,7 +127,7 @@ class LocalPlayer extends BasePlayer {
 
     @Override
     void nextSong() {
-        Debug.d("LocalPlayer: nextSong")
+        Debug.d()
 
         if (queue.moveToNext()) {
             play()
@@ -162,7 +139,7 @@ class LocalPlayer extends BasePlayer {
 
     @Override
     void prevSong() {
-        Debug.d("LocalPlayer: prevSong")
+        Debug.d()
 
         if (queue.moveToPrev()) {
             play()
@@ -175,17 +152,9 @@ class LocalPlayer extends BasePlayer {
     @Override
     void togglePause() {
         if (innerPlayer.playWhenReady) {
-            if (serverStarted) {
-                bus.post new PauseClientsEvent()
-            } else {
-                pause()
-            }
+            pause()
         } else {
-            if (serverStarted) {
-                bus.post new StartClientsEvent()
-            } else {
-                unpause()
-            }
+            unpause()
         }
     }
 
@@ -201,19 +170,8 @@ class LocalPlayer extends BasePlayer {
         context.startService new Intent(context, LocalPlayerService)
     }
 
-//    @Override
-//    void reset() {
-//        context.stopService(new Intent(context, LocalPlayerService.class));
-//        super.reset();
-//    }
-
     boolean isShuffle() {
         return queue.shuffled
-    }
-
-    @Override
-    boolean isRepeat() {
-        return repeat
     }
 
     void setRepeat(boolean flag) {

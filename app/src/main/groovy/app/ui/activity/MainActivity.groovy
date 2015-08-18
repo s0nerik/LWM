@@ -94,7 +94,7 @@ public class MainActivity extends DaggerActivity {
 //
 //        MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource)
 //        player.setRendererEnabled(0, true)
-//        player.prepareNew(audioRenderer)
+//        player.prepare(audioRenderer)
 //        player.setPlayWhenReady(true)
 //        player.addListener(new ExoPlayer.Listener() {
 //            @Override

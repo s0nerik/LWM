@@ -2,7 +2,6 @@ package app.player
 import android.content.Context
 import android.os.Handler
 import app.Injector
-import app.model.Song
 import app.server.StreamServer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -16,21 +15,25 @@ import javax.inject.Inject
 @PackageScope(PackageScopeTarget.FIELDS)
 public class StreamPlayer extends BasePlayer {
 
-    @Inject Context context;
+    @Inject
+    @PackageScope
+    Context context
 
-    private static boolean active = false;
-    private Song currentSong;
+    @Inject
+    @PackageScope
+    Bus bus
 
-    private Handler handler;
+    @Inject
+    @PackageScope
+    Handler handler
 
-    @Inject Bus bus;
+    static boolean active = false
 
     public static final String STREAM_PATH = StreamServer.Url.STREAM;
 
     public StreamPlayer() {
-        super();
-        Injector.inject(this);
-        handler = new Handler(context.getMainLooper());
+        super()
+        Injector.inject this
 //        onSeekCompleteListener = { MediaPlayer mediaPlayer ->
 //            Debug.d("StreamPlayer: onSeekComplete");
 //            start();
@@ -56,46 +59,28 @@ public class StreamPlayer extends BasePlayer {
 
     @Override
     public void nextSong() {
-        Debug.d("StreamPlayer: nextSong");
-        prepareNewSong();
+        Debug.d()
+        prepareNewSong()
     }
 
     @Override
     public void prevSong() {
-        Debug.d("StreamPlayer: prevSong");
-        prepareNewSong();
+        Debug.d()
+        prepareNewSong()
     }
 
     @Override
-    public void togglePause(){
-        if (innerPlayer.playWhenReady){
-            pause();
-        }else{
-            unpause();
+    public void togglePause() {
+        if (innerPlayer.playWhenReady) {
+            pause()
+        } else {
+            unpause()
         }
     }
 
     @Override
     void startService() {
 
-    }
-
-    @Override
-    public boolean isShuffle() {
-        // TODO: return shuffle
-        return false;
-    }
-
-    @Override
-    public boolean isRepeat() {
-        // TODO: return repeat
-        return false;
-    }
-
-    @Override
-    public void pause() throws IllegalStateException {
-        super.pause();
-        stopNotifyingPlaybackProgress();
     }
 
 //    @Override
@@ -122,18 +107,5 @@ public class StreamPlayer extends BasePlayer {
 //                        }
 //                    }
 //                });
-    }
-
-
-    public static boolean isActive(){
-        return active;
-    }
-
-    public Song getCurrentSong() {
-        return currentSong;
-    }
-
-    public void setCurrentSong(Song currentSong) {
-        this.currentSong = currentSong;
     }
 }
