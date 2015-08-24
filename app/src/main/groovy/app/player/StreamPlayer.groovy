@@ -1,19 +1,18 @@
 package app.player
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
-import app.Injector
-import app.server.StreamServer
+import app.events.client.SendReadyEvent
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
-import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
-public class StreamPlayer extends BasePlayer {
+class StreamPlayer extends BasePlayer {
 
     @Inject
     @PackageScope
@@ -27,50 +26,33 @@ public class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
-    static boolean active = false
-
-    public static final String STREAM_PATH = StreamServer.Url.STREAM;
-
-    public StreamPlayer() {
+    StreamPlayer() {
         super()
-        Injector.inject this
-//        onSeekCompleteListener = { MediaPlayer mediaPlayer ->
-//            Debug.d("StreamPlayer: onSeekComplete");
-//            start();
-//        }
-//        onPreparedListener = { MediaPlayer mediaPlayer ->
-//            Debug.d("StreamPlayer: onPrepared");
-//            bus.post(new SendReadyEvent());
-//        }
-//        onBufferingUpdateListener = { MediaPlayer mp, int percent ->
-//            Debug.d("Buffered: "+percent);
-//        }
+        playbackUri = Uri.parse "http://192.168.49.1:8888/stream"
     }
 
-    public void prepareNewSong(){
-//        reset();
-//        try {
-//            setDataSource(STREAM_PATH);
-//            prepareAsync();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+    void prepare() {
+        prepare playbackUri, true
     }
 
     @Override
-    public void nextSong() {
-        Debug.d()
-        prepareNewSong()
+    void onReady(boolean playWhenReady) {
+//        super.onReady(playWhenReady)
+        bus.post new SendReadyEvent()
     }
 
     @Override
-    public void prevSong() {
-        Debug.d()
-        prepareNewSong()
+    void nextSong() {
+
     }
 
     @Override
-    public void togglePause() {
+    void prevSong() {
+
+    }
+
+    @Override
+    void togglePause() {
         if (innerPlayer.playWhenReady) {
             pause()
         } else {
@@ -83,11 +65,10 @@ public class StreamPlayer extends BasePlayer {
 
     }
 
-//    @Override
-//    public void start() throws IllegalStateException {
-//        super.start();
-//        updateSongInfo();
-//    }
+    @Override
+    protected String getExtension(String fileName) {
+        return "mp3"
+    }
 
     private void updateSongInfo() {
         // TODO: make it work

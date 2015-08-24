@@ -5,16 +5,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.media.AudioManager
 import android.os.IBinder
-
-import com.squareup.otto.Bus
-import com.squareup.otto.Produce
-import com.squareup.otto.Subscribe
-import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
-
-import javax.inject.Inject
-
 import app.Injector
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -26,6 +16,15 @@ import app.events.server.StartClientsEvent
 import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.ui.notification.NowPlayingNotification
+import com.squareup.otto.Bus
+import com.squareup.otto.Produce
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
+import ru.noties.debug.Debug
+
+import javax.inject.Inject
 
 import static app.events.player.playback.control.ChangeSongEvent.Type.*
 
@@ -75,7 +74,7 @@ class LocalPlayerService extends Service {
     @Override
     int onStartCommand(Intent intent, int flags, int startId) {
         if (player.currentSong) {
-            makeForeground(player.isPlaying())
+            makeForeground(player.playing)
         }
         return START_NOT_STICKY
     }
@@ -93,6 +92,7 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void onChangeSongEvent(ChangeSongEvent event) {
+        Debug.d event as String
         switch (event.type) {
             case NEXT:
                 player.nextSong()
@@ -118,26 +118,31 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void onPlaybackStarted(PlaybackStartedEvent event) {
+        Debug.d()
         makeForeground(true)
     }
 
     @Subscribe
     void onPlaybackPaused(PlaybackPausedEvent event) {
+        Debug.d()
         makeForeground(false)
     }
 
     @Subscribe
     void allClientsReady(AllClientsReadyEvent event) {
-        player.unpause()
+        Debug.d()
+        player.togglePause()
     }
 
     @Subscribe
     void onStartClients(StartClientsEvent event) {
-        player.unpause()
+        Debug.d()
+//        player.unpause()
     }
 
     @Subscribe
     void onPauseClients(PauseClientsEvent event) {
+        Debug.d()
         player.pause()
     }
 

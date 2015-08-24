@@ -204,7 +204,7 @@ abstract class BasePlayer {
         return null
     }
 
-    private static String getExtension(String fileName) {
+    protected String getExtension(String fileName) {
         def extStartIndex = fileName.lastIndexOf(".") + 1
         if (extStartIndex && extStartIndex < fileName.length() - 1)
             return fileName[extStartIndex..-1]
@@ -236,8 +236,8 @@ abstract class BasePlayer {
         return true
     }
 
-    boolean prepare(Uri uri) {
-        return uri == playbackUri ? prepareOld() : prepareInternal(uri)
+    boolean prepare(Uri uri, boolean prepareAgain = false) {
+        return uri == playbackUri && !prepareAgain ? prepareOld() : prepareInternal(uri)
     }
 
 }

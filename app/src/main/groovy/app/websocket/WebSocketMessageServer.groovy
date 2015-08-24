@@ -120,9 +120,9 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
-//        if (player.playing) {
-//            conn.send new SocketMessage(POST, PREPARE).toJson()
-//        }
+        if (player.playing) {
+            conn.send new SocketMessage(POST, PREPARE).toJson()
+        }
         bus.post new ClientConnectedEvent(info)
     }
 
