@@ -65,11 +65,6 @@ class StreamPlayer extends BasePlayer {
 
     }
 
-    @Override
-    protected String getExtension(String fileName) {
-        return "mp3"
-    }
-
     private void updateSongInfo() {
         // TODO: make it work
 //        Ion.with(context)

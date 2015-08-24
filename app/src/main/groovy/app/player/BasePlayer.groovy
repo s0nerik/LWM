@@ -9,11 +9,7 @@ import app.model.Song
 import com.google.android.exoplayer.ExoPlaybackException
 import com.google.android.exoplayer.ExoPlayer
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer
-import com.google.android.exoplayer.extractor.Extractor
 import com.google.android.exoplayer.extractor.ExtractorSampleSource
-import com.google.android.exoplayer.extractor.mp3.Mp3Extractor
-import com.google.android.exoplayer.extractor.mp4.Mp4Extractor
-import com.google.android.exoplayer.extractor.ts.AdtsExtractor
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -190,43 +186,18 @@ abstract class BasePlayer {
         playbackProgressNotifierTimer = null
     }
 
-    private static Extractor getExtractor(String type) {
-        switch (type?.toLowerCase()) {
-            case "m4a": // There are no file format differences between M4A and MP4.
-            case "mp4":
-                return new Mp4Extractor()
-            case "mp3":
-                return new Mp3Extractor()
-            case "aac":
-                return new AdtsExtractor()
-        }
-        Debug.i "Unsupported type: ${type}"
-        return null
-    }
-
-    protected String getExtension(String fileName) {
-        def extStartIndex = fileName.lastIndexOf(".") + 1
-        if (extStartIndex && extStartIndex < fileName.length() - 1)
-            return fileName[extStartIndex..-1]
-        else
-            return null
-    }
-
     private boolean prepareInternal(Uri uri) {
-        def ext = getExtension uri.encodedSchemeSpecificPart
-        def extractor = getExtractor(ext)
-        if (ext && extractor) {
+        try {
             renderer = new MediaCodecAudioTrackRenderer(
                     new ExtractorSampleSource(uri,
                             new DefaultUriDataSource(context, "LWM"),
-                            extractor,
                             BUFFER_SEGMENT_SIZE * BUFFER_SEGMENT_COUNT
                     )
             )
             innerPlayer.prepare(renderer)
             playbackUri = uri
             return true
-        } else {
+        } catch (IllegalStateException e) {
             return false
         }
     }
