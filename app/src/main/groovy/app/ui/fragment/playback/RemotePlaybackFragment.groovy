@@ -1,6 +1,6 @@
 package app.ui.fragment.playback
-
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import app.R
@@ -13,9 +13,6 @@ import app.events.player.queue.QueueShuffledEvent
 import app.model.Song
 import app.player.BasePlayer
 import app.player.StreamPlayer
-import app.server.StreamServer
-import app.ui.Blur
-import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -45,22 +42,24 @@ class RemotePlaybackFragment extends PlaybackFragment {
     @Override
     protected Observable<Bitmap> getCoverBitmap(Song song) {
         Observable.just(
-            Ion.with(this)
-                    .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
-                    .asBitmap()
-                    .get()
+                (resources.getDrawable(R.drawable.no_cover) as BitmapDrawable).bitmap
+//            Ion.with(this)
+//                    .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
+//                    .asBitmap()
+//                    .get()
         )
     }
 
     @Override
     protected Observable<Bitmap> getBgBitmap(Song song) {
         Observable.just(
-                new Blur().blur(
-                    Ion.with(this)
-                            .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
-                            .asBitmap()
-                            .get()
-                )
+                (resources.getDrawable(R.drawable.no_cover_blurred) as BitmapDrawable).bitmap
+//                new Blur().blur(
+//                    Ion.with(this)
+//                            .load("${StreamServer.Url.CURRENT_ALBUMART}?${UUID.randomUUID()}")
+//                            .asBitmap()
+//                            .get()
+//                )
         )
     }
 

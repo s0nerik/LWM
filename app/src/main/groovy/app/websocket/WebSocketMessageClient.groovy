@@ -1,5 +1,6 @@
 package app.websocket
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import app.Injector
 import app.Utils
@@ -10,6 +11,7 @@ import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
+import app.server.StreamServer
 import app.websocket.entities.ClientInfo
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
@@ -38,13 +40,16 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Inject
     SharedPreferences sharedPreferences
 
+    private final Uri STREAM_URI =
+            Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.STREAM}"
+
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
 
     private ClientInfo clientInfo
 
     public WebSocketMessageClient(URI serverURI) {
-        super(serverURI);
+        super(serverURI)
         Injector.inject this
         clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL))
     }
@@ -83,10 +88,10 @@ public class WebSocketMessageClient extends WebSocketClient {
         } else if (socketMessage.type == POST) {
             switch (socketMessage.message) {
                 case START:
-                    start()
+                    player.paused = false
                     break
                 case PAUSE:
-                    pause()
+                    player.paused = true
                     break
                 case PREPARE:
                     prepare()
@@ -125,24 +130,18 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private void startFrom(int pos) {
         player.seekTo(pos)
-        player.unpause()
+        player.prepare STREAM_URI
+        player.paused = false
     }
 
     private void seekTo(int pos) {
+        player.paused = true
         player.seekTo(pos)
     }
 
-    private void start() {
-        player.unpause()
-    }
-
-    private void pause() {
-        player.pause()
-    }
-
     private void prepare() {
-        player.pause()
-        player.prepare()
+        player.stop()
+        player.prepare STREAM_URI, true
     }
 
     @Subscribe

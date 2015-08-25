@@ -32,13 +32,6 @@ class StreamServer extends NanoHTTPD {
         static String STREAM = "/stream"
     }
 
-    static class Url {
-        static String SERVER_ADDRESS = "http://192.168.43.1:${PORT}"
-        static String CURRENT_INFO = SERVER_ADDRESS + Method.CURRENT_INFO
-        static String CURRENT_ALBUMART = SERVER_ADDRESS + Method.CURRENT_ALBUMART
-        static String STREAM = SERVER_ADDRESS + Method.STREAM
-    }
-
     private Song song
 
     @Inject

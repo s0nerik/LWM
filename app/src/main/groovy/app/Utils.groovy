@@ -1,10 +1,13 @@
 package app
 
 import android.app.ActivityManager
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -40,12 +43,34 @@ class Utils extends Daggered {
     @Inject
     ActivityManager activityManager
 
+    @Inject
+    ContentResolver contentResolver
+
     public String getArtistName(String name) {
         if ("<unknown>".equals(name)) {
             return resources.getString(R.string.unknown_artist);
         } else {
             return name;
         }
+    }
+
+    public String getRealImagePathFromUri(Uri contentUri) {
+        Cursor cursor = null
+        try {
+            String[] proj = [MediaStore.Images.Media.DATA]
+            cursor = contentResolver.query contentUri, proj, null, null, null
+            int column_index = cursor.getColumnIndexOrThrow MediaStore.Images.Media.DATA
+            cursor.moveToFirst()
+            return cursor.getString(column_index)
+        } catch(Exception ignored) {
+            return null
+        } finally {
+            cursor?.close()
+        }
+    }
+
+    public Bitmap getNoCoverBitmap() {
+        BitmapFactory.decodeResource(resources, R.drawable.no_cover)
     }
 
     public static void setAlbumArtFromUri(Context context, ImageView view, Uri uri) {

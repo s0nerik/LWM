@@ -1,11 +1,8 @@
 package app.player
-
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
-import app.events.player.playback.PlaybackPausedEvent
-import app.events.player.playback.SongChangedEvent
 import app.events.player.queue.*
 import app.events.server.MusicServerStateChangedEvent
 import app.model.Song
@@ -68,9 +65,7 @@ class LocalPlayer extends BasePlayer {
         bus.post new QueueShuffledEvent(queue: getQueue())
     }
 
-    List<Song> getQueue() {
-        return queue.queue
-    }
+    List<Song> getQueue() { queue.queue }
 
     void setQueue(List<Song> songs) {
         queue.clear()
@@ -117,11 +112,10 @@ class LocalPlayer extends BasePlayer {
     void play() {
         Debug.d()
         stop()
-        innerPlayer.playWhenReady = true
         while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
-        bus.post new SongChangedEvent(currentSong)
+        paused = false
     }
 
     @Override
@@ -149,46 +143,22 @@ class LocalPlayer extends BasePlayer {
     }
 
     @Override
-    void togglePause() {
-        if (innerPlayer.playWhenReady) {
-            pause()
-        } else {
-            unpause()
-        }
-    }
-
-    @Override
-    void pause() {
-        super.pause()
-
-        bus.post new PlaybackPausedEvent(queue.song, currentPosition)
-    }
-
-    @Override
     void startService() {
         context.startService new Intent(context, LocalPlayerService)
     }
 
-    boolean isShuffle() {
-        return queue.shuffled
-    }
+    boolean isShuffle() { queue.shuffled }
 
     void setRepeat(boolean flag) {
         repeat = flag
         bus.post new RepeatStateChangedEvent(flag)
     }
 
-    int getCurrentQueuePosition() {
-        return queue.getCurrentIndex()
-    }
+    int getCurrentQueuePosition() { queue.currentIndex }
 
-    int getQueueSize() {
-        return queue.getSize()
-    }
+    int getQueueSize() { queue.size }
 
-    boolean isSongInQueue(Song song) {
-        return queue.contains(song)
-    }
+    boolean isSongInQueue(Song song) { queue.contains song }
 
     @Subscribe
     void onMusicServerStateChanged(MusicServerStateChangedEvent event) {

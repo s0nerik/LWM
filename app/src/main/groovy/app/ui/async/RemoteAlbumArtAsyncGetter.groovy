@@ -8,12 +8,9 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.AsyncTask
 import android.widget.ImageView
 import app.R
-import app.server.StreamServer
 import app.ui.Blur
 import groovy.transform.CompileStatic
-import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
-import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 
 @CompileStatic
@@ -27,7 +24,7 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
     private Bitmap background;
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetAlbumArt = new HttpGet(StreamServer.Url.CURRENT_ALBUMART);
+//    HttpGet httpGetAlbumArt = new HttpGet(StreamServer.Url.CURRENT_ALBUMART);
 
     public RemoteAlbumArtAsyncGetter(Context context, ImageView albumArt, ImageView bg){
         this.albumArt = albumArt;
@@ -39,9 +36,10 @@ public class RemoteAlbumArtAsyncGetter extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... nothing) {
         try {
-            HttpResponse response = httpclient.execute(httpGetAlbumArt);
-            InputStream is = response.getEntity().getContent();
-            cover = BitmapFactory.decodeStream(is);
+//            HttpResponse response = httpclient.execute(httpGetAlbumArt);
+//            InputStream is = response.getEntity().getContent();
+//            cover = BitmapFactory.decodeStream(is);
+            cover = (context.resources.getDrawable(R.drawable.no_cover) as BitmapDrawable).bitmap
             if(cover == null){
                 cover = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_cover);
             }

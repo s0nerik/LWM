@@ -3,7 +3,9 @@ import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import app.Injector
+import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.model.Song
 import com.google.android.exoplayer.ExoPlaybackException
@@ -41,9 +43,9 @@ abstract class BasePlayer {
     @PackageScope
     Context context
 
-    boolean playing = false
     boolean repeat = false
     boolean shuffle = false
+    boolean paused = true
     Song currentSong
 
     Uri playbackUri
@@ -53,31 +55,24 @@ abstract class BasePlayer {
 
     abstract void nextSong()
     abstract void prevSong()
-    abstract void togglePause()
     abstract void startService()
 
     void onPlaybackEnded() {
         Debug.d()
-        playing = false
         abandonAudioFocus()
     }
-    void onStartedBuffering() {
-        Debug.d()
-    }
+    void onStartedBuffering() { Debug.d() }
     void onBecameIdle() {
         Debug.d()
         stopNotifyingPlaybackProgress()
     }
-    void onStartedPreparing() {
-        Debug.d()
-    }
+    void onStartedPreparing() { Debug.d() }
     void onReady(boolean playWhenReady) {
         if (playWhenReady) {
             gainAudioFocus()
             bus.post new PlaybackStartedEvent(currentSong, currentPosition)
             startNotifyingPlaybackProgress()
             startService()
-            playing = true
         }
     }
     void onError(ExoPlaybackException e) {
@@ -131,7 +126,7 @@ abstract class BasePlayer {
         Injector.inject this
 
         innerPlayer = ExoPlayer.Factory.newInstance 1, 1000, 5000
-        innerPlayer.addListener(listener)
+        innerPlayer.addListener listener
     }
 
     String getCurrentPositionInMinutes() {
@@ -141,35 +136,33 @@ abstract class BasePlayer {
         return "${minutes}:${String.format('%02d', seconds)}"
     }
 
-    void pause() {
-        innerPlayer.playWhenReady = false
+    void setPaused(boolean flag) {
+        innerPlayer.playWhenReady = !flag
+
+        if (flag) innerPlayer.stop()
+        else prepareOld()
+
+        bus.post new PlaybackPausedEvent(currentSong, currentPosition)
     }
 
-    void unpause() {
-        innerPlayer.playWhenReady = true
-    }
+    boolean isPaused() { !innerPlayer.playWhenReady }
+
+    void togglePause() { paused = !paused }
+
+    boolean isPlaying() { !paused && innerPlayer.playbackState == ExoPlayer.STATE_READY }
 
     void stop() {
-        innerPlayer.playWhenReady = false
-        innerPlayer.stop()
+        paused = true
         seekTo 0
     }
 
-    void seekTo(int msec) {
-        innerPlayer.seekTo msec
-    }
+    void seekTo(int msec) { innerPlayer.seekTo msec }
 
-    int getCurrentPosition() {
-        innerPlayer.currentPosition
-    }
+    int getCurrentPosition() { innerPlayer.currentPosition }
 
-    void gainAudioFocus() {
-        audioManager.requestAudioFocus afListener, STREAM_MUSIC, AUDIOFOCUS_GAIN
-    }
+    void gainAudioFocus() { audioManager.requestAudioFocus afListener, STREAM_MUSIC, AUDIOFOCUS_GAIN }
 
-    void abandonAudioFocus() {
-        audioManager.abandonAudioFocus afListener
-    }
+    void abandonAudioFocus() { audioManager.abandonAudioFocus afListener }
 
     protected void startNotifyingPlaybackProgress() {
         playbackProgressNotifierTimer = new Timer()
@@ -196,6 +189,7 @@ abstract class BasePlayer {
             )
             innerPlayer.prepare(renderer)
             playbackUri = uri
+            bus.post new SongChangedEvent(currentSong)
             return true
         } catch (IllegalStateException e) {
             return false

@@ -1,6 +1,5 @@
 package app.player
 import android.content.Context
-import android.net.Uri
 import android.os.Handler
 import app.events.client.SendReadyEvent
 import com.squareup.otto.Bus
@@ -26,19 +25,10 @@ class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
-    StreamPlayer() {
-        super()
-        playbackUri = Uri.parse "http://192.168.49.1:8888/stream"
-    }
-
-    void prepare() {
-        prepare playbackUri, true
-    }
-
     @Override
     void onReady(boolean playWhenReady) {
-//        super.onReady(playWhenReady)
-        bus.post new SendReadyEvent()
+        if (!playing)
+            bus.post new SendReadyEvent()
     }
 
     @Override
@@ -49,15 +39,6 @@ class StreamPlayer extends BasePlayer {
     @Override
     void prevSong() {
 
-    }
-
-    @Override
-    void togglePause() {
-        if (innerPlayer.playWhenReady) {
-            pause()
-        } else {
-            unpause()
-        }
     }
 
     @Override

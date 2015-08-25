@@ -29,18 +29,12 @@ class MusicStationService extends Service {
 
     @Profile
     @Override
-    public void onDestroy() {
-        bus.unregister this
-    }
+    public void onDestroy() { bus.unregister this }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null
-    }
+    public IBinder onBind(Intent intent) { null }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_NOT_STICKY
-    }
+    public int onStartCommand(Intent intent, int flags, int startId) { START_NOT_STICKY }
 
 }

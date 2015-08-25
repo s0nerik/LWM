@@ -45,50 +45,40 @@ class LocalPlayerService extends Service {
 
     @Override
     void onCreate() {
-        Injector.inject(this)
+        Injector.inject this
 
-        bus.register(this)
+        bus.register this
 
-        mediaButtonsReceiver = new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getCanonicalName())
-        audioManager.registerMediaButtonEventReceiver(mediaButtonsReceiver)
+        mediaButtonsReceiver = new ComponentName(packageName, MediaButtonIntentReceiver.canonicalName)
+        audioManager.registerMediaButtonEventReceiver mediaButtonsReceiver
     }
 
     @Override
     void onDestroy() {
-        stopForeground(true)
+        stopForeground true
 
-        if (player.isPlaying()) {
-            player.pause()
-        }
+        player.stop()
 
-        bus.unregister(this)
+        bus.unregister this
 
-        audioManager.unregisterMediaButtonEventReceiver(mediaButtonsReceiver)
+        audioManager.unregisterMediaButtonEventReceiver mediaButtonsReceiver
     }
 
     @Override
-    IBinder onBind(Intent intent) {
-        return null
-    }
+    IBinder onBind(Intent intent) { null }
 
     @Override
     int onStartCommand(Intent intent, int flags, int startId) {
-        if (player.currentSong) {
-            makeForeground(player.playing)
-        }
+        makeForeground player.playing
         return START_NOT_STICKY
     }
 
     private void makeForeground(boolean isPlaying) {
-        startForeground(1337,
-                new NowPlayingNotification(player.getCurrentSong()).create(isPlaying)
-        )
+        startForeground 1337, new NowPlayingNotification(player.currentSong).create(isPlaying)
     }
 
     @Produce
-    CurrentSongAvailableEvent produceCurrentSong() {
-        return new CurrentSongAvailableEvent(player.getCurrentSong())
-    }
+    CurrentSongAvailableEvent produceCurrentSong() { new CurrentSongAvailableEvent(player.currentSong) }
 
     @Subscribe
     void onChangeSongEvent(ChangeSongEvent event) {
@@ -101,15 +91,7 @@ class LocalPlayerService extends Service {
                 player.prevSong()
                 break
             case PLAY:
-                if (!player.playing) {
-                    player.unpause()
-                }
-                break
             case PAUSE:
-                if (player.playing) {
-                    player.pause()
-                }
-                break
             case TOGGLE_PAUSE:
                 player.togglePause()
                 break
@@ -119,13 +101,13 @@ class LocalPlayerService extends Service {
     @Subscribe
     void onPlaybackStarted(PlaybackStartedEvent event) {
         Debug.d()
-        makeForeground(true)
+        makeForeground true
     }
 
     @Subscribe
     void onPlaybackPaused(PlaybackPausedEvent event) {
         Debug.d()
-        makeForeground(false)
+        makeForeground false
     }
 
     @Subscribe
@@ -137,13 +119,13 @@ class LocalPlayerService extends Service {
     @Subscribe
     void onStartClients(StartClientsEvent event) {
         Debug.d()
-//        player.unpause()
+        player.paused = false
     }
 
     @Subscribe
     void onPauseClients(PauseClientsEvent event) {
         Debug.d()
-        player.pause()
+        player.paused = true
     }
 
 }

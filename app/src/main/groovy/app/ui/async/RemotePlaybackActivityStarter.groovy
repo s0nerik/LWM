@@ -3,16 +3,12 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
-import app.server.StreamServer
 import app.ui.activity.RemotePlaybackActivity
 import groovy.transform.CompileStatic
 import org.apache.http.client.HttpClient
 import org.apache.http.client.ResponseHandler
-import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.DefaultHttpClient
-import org.json.JSONException
-import org.json.JSONObject
 
 @CompileStatic
 public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
@@ -28,7 +24,7 @@ public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
     String tag;
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpGet httpGetInfo = new HttpGet(StreamServer.Url.CURRENT_INFO);
+//    HttpGet httpGetInfo = new HttpGet(StreamServer.Url.CURRENT_INFO);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
     ProgressDialog progressDialog;
@@ -46,16 +42,16 @@ public class RemotePlaybackActivityStarter extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        try {
-            JSONObject jsonObject = new JSONObject(httpclient.execute(httpGetInfo, responseHandler));
-            artist = jsonObject.getString("artist");
-            title = jsonObject.getString("title");
-            album = jsonObject.getString("album");
-            durationString = jsonObject.getString("duration_minutes");
-            duration = jsonObject.getInt("duration");
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            JSONObject jsonObject = new JSONObject(httpclient.execute(httpGetInfo, responseHandler));
+//            artist = jsonObject.getString("artist");
+//            title = jsonObject.getString("title");
+//            album = jsonObject.getString("album");
+//            durationString = jsonObject.getString("duration_minutes");
+//            duration = jsonObject.getInt("duration");
+//        } catch (JSONException | IOException e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 
