@@ -113,7 +113,7 @@ class LocalPlayerService extends Service {
     @Subscribe
     void allClientsReady(AllClientsReadyEvent event) {
         Debug.d()
-        player.togglePause()
+        player.paused = false
     }
 
     @Subscribe

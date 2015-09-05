@@ -94,7 +94,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     player.paused = true
                     break
                 case PREPARE:
-                    prepare()
+                    prepare body as int
                     break
                 case SEEK_TO:
                     seekTo body as int
@@ -130,7 +130,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private void startFrom(int pos) {
         player.seekTo(pos)
-        player.prepare STREAM_URI
+//        player.prepare STREAM_URI
         player.paused = false
     }
 
@@ -139,9 +139,10 @@ public class WebSocketMessageClient extends WebSocketClient {
         player.seekTo(pos)
     }
 
-    private void prepare() {
-        player.stop()
+    private void prepare(int position) {
+        player.paused = true
         player.prepare STREAM_URI, true
+        player.seekTo position
     }
 
     @Subscribe

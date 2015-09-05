@@ -30,6 +30,10 @@ import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
+import static java.lang.reflect.Modifier.FINAL
+import static java.lang.reflect.Modifier.PUBLIC
+import static java.lang.reflect.Modifier.STATIC
+
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
 class Utils extends Daggered {
@@ -219,6 +223,12 @@ class Utils extends Daggered {
 
     public static String toJson(Object obj) {
         JsonOutput.toJson(obj)
+    }
+
+    public static String getConstantName(Class c, Object constant) {
+        c.declaredFields.find {
+            it.modifiers == (PUBLIC | STATIC | FINAL) && it.get(null) == constant
+        }.name
     }
 
 }

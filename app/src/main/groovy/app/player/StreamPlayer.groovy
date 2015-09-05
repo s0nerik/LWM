@@ -2,6 +2,7 @@ package app.player
 import android.content.Context
 import android.os.Handler
 import app.events.client.SendReadyEvent
+import app.model.Song
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -27,7 +28,7 @@ class StreamPlayer extends BasePlayer {
 
     @Override
     void onReady(boolean playWhenReady) {
-        if (!playing)
+        if (paused)
             bus.post new SendReadyEvent()
     }
 
@@ -44,6 +45,11 @@ class StreamPlayer extends BasePlayer {
     @Override
     void startService() {
 
+    }
+
+    @Override
+    Song getCurrentSong() {
+        return new Song()
     }
 
     private void updateSongInfo() {

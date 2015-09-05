@@ -114,6 +114,11 @@ class WebSocketMessageServer extends WebSocketServer {
 
         if(ready.size() == connections().size()) {
             bus.post new AllClientsReadyEvent()
+
+            connections().each {
+                it.send new SocketMessage(POST, START_FROM, player.currentPosition as String).toJson()
+            }
+
             ready = null
         }
     }
@@ -121,7 +126,7 @@ class WebSocketMessageServer extends WebSocketServer {
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
         if (player.playing) {
-            conn.send new SocketMessage(POST, PREPARE).toJson()
+            conn.send new SocketMessage(POST, PREPARE, player.currentPosition as String).toJson()
         }
         bus.post new ClientConnectedEvent(info)
     }

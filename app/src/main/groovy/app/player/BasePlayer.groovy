@@ -3,6 +3,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import app.Injector
+import app.Utils
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
@@ -45,8 +46,6 @@ abstract class BasePlayer {
 
     boolean repeat = false
     boolean shuffle = false
-    boolean paused = true
-    Song currentSong
 
     Uri playbackUri
 
@@ -56,21 +55,20 @@ abstract class BasePlayer {
     abstract void nextSong()
     abstract void prevSong()
     abstract void startService()
+    abstract Song getCurrentSong()
 
-    void onPlaybackEnded() {
-        Debug.d()
-        abandonAudioFocus()
-    }
-    void onStartedBuffering() { Debug.d() }
+    void onPlaybackEnded() { abandonAudioFocus() }
+    void onStartedBuffering() {}
     void onBecameIdle() {
-        Debug.d()
+        abandonAudioFocus()
         stopNotifyingPlaybackProgress()
     }
-    void onStartedPreparing() { Debug.d() }
+    void onStartedPreparing() {}
     void onReady(boolean playWhenReady) {
+        bus.post new SongChangedEvent(getCurrentSong())
         if (playWhenReady) {
             gainAudioFocus()
-            bus.post new PlaybackStartedEvent(currentSong, currentPosition)
+            bus.post new PlaybackStartedEvent(getCurrentSong(), currentPosition)
             startNotifyingPlaybackProgress()
             startService()
         }
@@ -82,7 +80,6 @@ abstract class BasePlayer {
 
     private ExoPlayer.Listener listener = [
             onPlayerStateChanged    : { boolean playWhenReady, int playbackState ->
-                Debug.d playbackState as String
                 switch (playbackState) {
                     case ExoPlayer.STATE_ENDED:
                         onPlaybackEnded()
@@ -100,8 +97,13 @@ abstract class BasePlayer {
                         onReady(playWhenReady)
                         break
                 }
+                Debug.d Utils.getConstantName(ExoPlayer, playbackState)
             },
-            onPlayWhenReadyCommitted: {},
+            onPlayWhenReadyCommitted: {
+                if (!innerPlayer.playWhenReady) {
+                    bus.post new PlaybackPausedEvent(getCurrentSong(), currentPosition)
+                }
+            },
             onPlayerError           : { ExoPlaybackException e -> onError e }
     ] as ExoPlayer.Listener
 
@@ -125,8 +127,10 @@ abstract class BasePlayer {
     BasePlayer() {
         Injector.inject this
 
-        innerPlayer = ExoPlayer.Factory.newInstance 1, 1000, 5000
+        innerPlayer = ExoPlayer.Factory.newInstance 1, 10000, 20000
         innerPlayer.addListener listener
+
+        paused = true
     }
 
     String getCurrentPositionInMinutes() {
@@ -138,25 +142,25 @@ abstract class BasePlayer {
 
     void setPaused(boolean flag) {
         innerPlayer.playWhenReady = !flag
-
-        if (flag) innerPlayer.stop()
-        else prepareOld()
-
-        bus.post new PlaybackPausedEvent(currentSong, currentPosition)
     }
 
     boolean isPaused() { !innerPlayer.playWhenReady }
 
     void togglePause() { paused = !paused }
 
-    boolean isPlaying() { !paused && innerPlayer.playbackState == ExoPlayer.STATE_READY }
+    boolean isPlaying() { !paused && ready }
+
+    boolean isReady() { innerPlayer.playbackState == ExoPlayer.STATE_READY }
 
     void stop() {
         paused = true
         seekTo 0
     }
 
-    void seekTo(int msec) { innerPlayer.seekTo msec }
+    void seekTo(int msec) {
+        if (msec >= innerPlayer.duration) onPlaybackEnded()
+        else innerPlayer.seekTo msec
+    }
 
     int getCurrentPosition() { innerPlayer.currentPosition }
 
@@ -189,7 +193,6 @@ abstract class BasePlayer {
             )
             innerPlayer.prepare(renderer)
             playbackUri = uri
-            bus.post new SongChangedEvent(currentSong)
             return true
         } catch (IllegalStateException e) {
             return false
@@ -201,8 +204,12 @@ abstract class BasePlayer {
         return true
     }
 
-    boolean prepare(Uri uri, boolean prepareAgain = false) {
-        return uri == playbackUri && !prepareAgain ? prepareOld() : prepareInternal(uri)
+    boolean prepare(Uri uri, boolean reprepare = false) {
+        if (uri == playbackUri && !reprepare) {
+            prepareOld()
+        } else {
+            prepareInternal uri
+        }
     }
 
 }

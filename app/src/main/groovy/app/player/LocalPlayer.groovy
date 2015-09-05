@@ -13,7 +13,6 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
@@ -30,18 +29,12 @@ class LocalPlayer extends BasePlayer {
     @PackageScope
     Bus bus
 
-    private static final float SONG_END_GAP = 0.25f;
-
     private boolean serverStarted = false
     private Queue queue = new Queue()
 
     @Override
     void onPlaybackEnded() {
         super.onPlaybackEnded()
-
-        // Check whether the song has actually completed playing
-        if (!innerPlayer.playWhenReady
-                || innerPlayer.currentPosition < innerPlayer.duration - SONG_END_GAP) return
 
         if (repeat) {
             play()
@@ -52,7 +45,8 @@ class LocalPlayer extends BasePlayer {
 
     @Override
     void onError(ExoPlaybackException e) {
-        Debug.e e
+        super.onError(e)
+        nextSong()
     }
 
     LocalPlayer() {
@@ -110,36 +104,29 @@ class LocalPlayer extends BasePlayer {
 
     @Profile
     void play() {
-        Debug.d()
-        stop()
         while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
+        seekTo 0
         paused = false
     }
 
     @Override
     void nextSong() {
-        Debug.d()
-
         if (queue.moveToNext()) {
             play()
         } else {
             Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     @Override
     void prevSong() {
-        Debug.d()
-
         if (queue.moveToPrev()) {
             play()
         } else {
             Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     @Override
