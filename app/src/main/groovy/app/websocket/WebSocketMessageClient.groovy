@@ -72,15 +72,15 @@ public class WebSocketMessageClient extends WebSocketClient {
             switch (socketMessage.message) {
                 case CURRENT_POSITION:
                     String pos = player.currentPosition as String
-                    send new SocketMessage(POST, CURRENT_POSITION, pos).toJson()
+                    sendMessage POST, CURRENT_POSITION, pos
                     break
                 case IS_PLAYING:
                     String isPlaying = player.playing as String
-                    send new SocketMessage(POST, IS_PLAYING, isPlaying).toJson()
+                    sendMessage POST, IS_PLAYING, isPlaying
                     break
                 case CLIENT_INFO:
                     String info = Utils.toJson clientInfo
-                    send new SocketMessage(POST, CLIENT_INFO, info).toJson()
+                    sendMessage POST, CLIENT_INFO, info
                     break
                 default:
                     Debug.e "Can't process message: ${socketMessage.message.name()}"
@@ -116,6 +116,10 @@ public class WebSocketMessageClient extends WebSocketClient {
         }
     }
 
+    private sendMessage(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+        send new SocketMessage(type, msg, body).toJson()
+    }
+
     @Override
     void onClose(int code, String reason, boolean remote) {
         Debug.d "Code: $code, Reason: $reason"
@@ -147,13 +151,13 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Subscribe
     void onSendReadyEvent(SendReadyEvent event) {
-        send new SocketMessage(POST, READY).toJson()
+        sendMessage POST, READY
     }
 
     @Subscribe
     void onSendChatMessage(SendChatMessageEvent event) {
         ChatMessage message = event.message
-        send new SocketMessage(POST, MESSAGE, Utils.toJson(message)).toJson()
+        sendMessage POST, MESSAGE, Utils.toJson(message)
         chatMessages << message
         bus.post new NotifyMessageAddedEvent(message)
     }
