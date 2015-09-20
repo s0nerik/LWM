@@ -32,6 +32,12 @@ class StreamPlayer extends BasePlayer {
             bus.post new ReadyToStartPlaybackEvent()
     }
 
+//    @Override
+//    void seekTo(int msec) {
+//        super.seekTo(msec)
+//
+//    }
+
     @Override
     void nextSong() {
 

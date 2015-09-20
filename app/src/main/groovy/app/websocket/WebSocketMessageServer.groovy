@@ -70,11 +70,11 @@ class WebSocketMessageServer extends WebSocketServer {
             switch (socketMessage.message) {
                 case CURRENT_POSITION:
                     String pos = player.currentPosition as String
-                    conn.send(new SocketMessage(POST, CURRENT_POSITION, pos).toJson())
+                    sendMessage conn, POST, CURRENT_POSITION, pos
                     break
                 case IS_PLAYING:
                     String isPlaying = player.playing as String
-                    conn.send new SocketMessage(POST, IS_PLAYING, isPlaying).toJson()
+                    sendMessage conn, POST, IS_PLAYING, isPlaying
                     break
                 default:
                     Debug.e "Can't process message: ${socketMessage.message.name()}"
@@ -82,7 +82,7 @@ class WebSocketMessageServer extends WebSocketServer {
         } else if (socketMessage.type == POST) {
             switch (socketMessage.message) {
                 case READY:
-                    processReadiness(conn)
+                    processReadiness conn
                     break
                 case CLIENT_INFO:
                     processClientInfo conn, Utils.<ClientInfo>fromJson(body)
@@ -104,6 +104,10 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.e ex
     }
 
+    private void sendMessage(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+        conn.send(new SocketMessage(type, msg, body).toJson())
+    }
+
     private void processReadiness(WebSocket conn) {
         ready << conn
 
@@ -113,7 +117,7 @@ class WebSocketMessageServer extends WebSocketServer {
             bus.post new AllClientsReadyEvent()
 
             connections().each {
-                it.send new SocketMessage(POST, START_FROM, player.currentPosition as String).toJson()
+                sendMessage it, POST, START_FROM, player.currentPosition as String
             }
 
             ready.clear()

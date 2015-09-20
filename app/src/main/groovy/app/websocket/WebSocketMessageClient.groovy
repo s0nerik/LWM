@@ -133,9 +133,9 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     private void startFrom(int pos) {
+        player.paused = false
         player.seekTo(pos)
 //        player.prepare STREAM_URI
-        player.paused = false
     }
 
     private void seekTo(int pos) {
@@ -144,7 +144,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     private void prepare(int position) {
-        player.paused = true
+        player.stop()
         player.prepare STREAM_URI, true
         player.seekTo position
     }
