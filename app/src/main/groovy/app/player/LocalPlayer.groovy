@@ -5,6 +5,7 @@ import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.events.server.MusicServerStateChangedEvent
+import app.events.server.PrepareClientsEvent
 import app.model.Song
 import app.service.LocalPlayerService
 import com.github.s0nerik.betterknife.annotations.Profile
@@ -108,7 +109,11 @@ class LocalPlayer extends BasePlayer {
             queue.moveToNext true
         }
         seekTo 0
-        paused = false
+
+        if (serverStarted)
+            bus.post new PrepareClientsEvent(0)
+        else
+            paused = false
     }
 
     @Override

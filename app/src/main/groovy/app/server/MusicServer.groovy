@@ -79,9 +79,9 @@ class MusicServer extends Daggered {
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (webSocketMessageServer.connections().size() != 0) {
-            sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE).toJson())
+            sendAll new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE, event.position as String).toJson()
         } else {
-            bus.post(new AllClientsReadyEvent())
+            bus.post new AllClientsReadyEvent()
         }
     }
 

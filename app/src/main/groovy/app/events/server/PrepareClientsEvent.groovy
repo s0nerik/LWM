@@ -1,7 +1,10 @@
 package app.events.server
 
-import groovy.transform.CompileStatic;
+import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 
+@Canonical
 @CompileStatic
-public class PrepareClientsEvent {
+class PrepareClientsEvent {
+    int position
 }
