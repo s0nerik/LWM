@@ -78,7 +78,7 @@ class MusicServer extends Daggered {
 
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
-        if (webSocketMessageServer.connections().size() != 0) {
+        if (!webSocketMessageServer.connections().empty) {
             sendAll new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE, event.position as String).toJson()
         } else {
             bus.post new AllClientsReadyEvent()
@@ -87,7 +87,7 @@ class MusicServer extends Daggered {
 
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
-        String pos = String.valueOf(player.currentPosition)
+        String pos = player.currentPosition as String
         sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START_FROM, pos).toJson())
     }
 

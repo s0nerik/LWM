@@ -1,5 +1,6 @@
 package app.player
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import app.events.client.ReadyToStartPlaybackEvent
 import app.model.Song
@@ -26,16 +27,27 @@ class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
+    private int positionToPrepare = -1
+
     @Override
     void onReady(boolean playWhenReady) {
-        if (paused)
+        if (positionToPrepare >= 0) {
+            def pos = positionToPrepare
+            positionToPrepare = -1
+            seekTo pos
+        } else if (paused) {
             bus.post new ReadyToStartPlaybackEvent()
+        }
+    }
+
+    void prepareForPosition(Uri uri, int pos) {
+        positionToPrepare = pos
+        prepare uri, true
     }
 
 //    @Override
 //    void seekTo(int msec) {
-//        super.seekTo(msec)
-//
+//        paused = true
 //    }
 
     @Override

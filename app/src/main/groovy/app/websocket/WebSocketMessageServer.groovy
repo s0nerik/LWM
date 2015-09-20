@@ -114,11 +114,13 @@ class WebSocketMessageServer extends WebSocketServer {
         bus.post new ClientReadyEvent(conn)
 
         if(ready.size() == connections().size()) {
-            bus.post new AllClientsReadyEvent()
+            Debug.d "Everyone's ready to play!"
 
             connections().each {
                 sendMessage it, POST, START_FROM, player.currentPosition as String
             }
+
+            bus.post new AllClientsReadyEvent()
 
             ready.clear()
         }

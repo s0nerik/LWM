@@ -6,7 +6,6 @@ import app.Injector
 import app.Utils
 import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
-import app.events.client.ReadyToStartPlaybackEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
 import app.model.chat.ChatMessage
@@ -145,8 +144,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private void prepare(int position) {
         player.stop()
-        player.prepare STREAM_URI, true
-        player.seekTo position
+        player.prepareForPosition STREAM_URI, position
     }
 
     @Subscribe
