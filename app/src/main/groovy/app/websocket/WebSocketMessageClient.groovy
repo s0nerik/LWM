@@ -48,21 +48,21 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private ClientInfo clientInfo
 
-    public WebSocketMessageClient(URI serverURI) {
+    WebSocketMessageClient(URI serverURI) {
         super(serverURI)
         Injector.inject this
         clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL))
     }
 
     @Override
-    public void onOpen(ServerHandshake handshakedata) {
+    void onOpen(ServerHandshake handshakedata) {
         Debug.d "Status: $handshakedata.httpStatus, Message: $handshakedata.httpStatusMessage"
         bus.register this
         bus.post new SocketOpenedEvent()
     }
 
     @Override
-    public void onMessage(String message) {
+    void onMessage(String message) {
         Debug.d "$message"
 
         SocketMessage socketMessage = Utils.fromJson message
@@ -116,7 +116,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         }
     }
 
-    private sendMessage(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+    void sendMessage(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
         send new SocketMessage(type, msg, body).toJson()
     }
 
@@ -147,11 +147,6 @@ public class WebSocketMessageClient extends WebSocketClient {
         player.paused = true
         player.prepare STREAM_URI, true
         player.seekTo position
-    }
-
-    @Subscribe
-    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
-        sendMessage POST, READY
     }
 
     @Subscribe

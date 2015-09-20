@@ -3,13 +3,18 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import app.Injector
+import app.events.client.ReadyToStartPlaybackEvent
 import app.websocket.WebSocketMessageClient
 import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
+
+import static app.websocket.SocketMessage.Message.READY
+import static app.websocket.SocketMessage.Type.POST
 
 @PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
@@ -53,5 +58,10 @@ class StreamPlayerService extends Service {
 
         webSocketMessageClient = new WebSocketMessageClient(URI.create(uri))
         webSocketMessageClient.connect()
+    }
+
+    @Subscribe
+    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
+        webSocketMessageClient.sendMessage POST, READY
     }
 }
