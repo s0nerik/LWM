@@ -153,13 +153,12 @@ abstract class BasePlayer {
     boolean isReady() { innerPlayer.playbackState == ExoPlayer.STATE_READY }
 
     void stop() {
-        paused = true
+        innerPlayer.stop()
         seekTo 0
     }
 
     void seekTo(int msec) {
-        if (msec >= innerPlayer.duration) onPlaybackEnded()
-        else innerPlayer.seekTo msec
+        innerPlayer.seekTo msec
     }
 
     int getCurrentPosition() { innerPlayer.currentPosition }
@@ -208,6 +207,7 @@ abstract class BasePlayer {
         if (uri == playbackUri && !reprepare) {
             prepareOld()
         } else {
+//            innerPlayer.stop()
             prepareInternal uri
         }
     }

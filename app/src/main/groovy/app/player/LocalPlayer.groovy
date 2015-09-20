@@ -97,23 +97,22 @@ class LocalPlayer extends BasePlayer {
         return queue.song
     }
 
-    @Profile
     void play(int position) {
         queue.moveTo position
         play()
     }
 
-    @Profile
     void play() {
+        if (serverStarted)
+            bus.post new PrepareClientsEvent(0)
+
+        stop()
+
         while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
-        seekTo 0
 
-        if (serverStarted)
-            bus.post new PrepareClientsEvent(0)
-        else
-            paused = false
+        paused = false
     }
 
     @Override
