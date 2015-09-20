@@ -6,7 +6,7 @@ import app.Injector
 import app.Utils
 import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
-import app.events.client.SendReadyEvent
+import app.events.client.ReadyToStartPlaybackEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
 import app.model.chat.ChatMessage
@@ -150,7 +150,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     @Subscribe
-    void onSendReadyEvent(SendReadyEvent event) {
+    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
         sendMessage POST, READY
     }
 
