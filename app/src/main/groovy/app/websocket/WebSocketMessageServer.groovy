@@ -28,7 +28,7 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private static final int TIMEOUT = 10 * 1000 // 10 seconds
 
-    private Set<WebSocket> ready
+    private Set<WebSocket> ready = new HashSet<>()
 
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<WebSocket, ClientInfo>()
 
@@ -105,9 +105,6 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void processReadiness(WebSocket conn) {
-        if (ready == null) {
-            ready = new HashSet<WebSocket>();
-        }
         ready << conn
 
         bus.post new ClientReadyEvent(conn)
@@ -119,7 +116,7 @@ class WebSocketMessageServer extends WebSocketServer {
                 it.send new SocketMessage(POST, START_FROM, player.currentPosition as String).toJson()
             }
 
-            ready = null
+            ready.clear()
         }
     }
 
