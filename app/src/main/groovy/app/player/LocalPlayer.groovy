@@ -103,16 +103,16 @@ class LocalPlayer extends BasePlayer {
     }
 
     void play() {
-        if (serverStarted)
-            bus.post new PrepareClientsEvent(0)
-
         stop()
 
         while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
 
-        paused = false
+        if (serverStarted)
+            bus.post new PrepareClientsEvent(0)
+        else
+            paused = false
     }
 
     @Override
