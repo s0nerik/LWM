@@ -18,7 +18,9 @@ class MusicStationService extends Service {
     @PackageScope
     Bus bus
 
-    private MusicStation musicStation = new MusicStation()
+    @Inject
+    @PackageScope
+    MusicStation musicStation
 
     @Profile
     @Override

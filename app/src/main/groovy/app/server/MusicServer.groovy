@@ -1,5 +1,6 @@
 package app.server
 import app.Daggered
+import app.Utils
 import app.events.chat.*
 import app.events.server.*
 import app.model.chat.ChatMessage
@@ -19,6 +20,13 @@ import javax.inject.Inject
 
 import static app.events.server.MusicServerStateChangedEvent.State.STARTED
 import static app.events.server.MusicServerStateChangedEvent.State.STOPPED
+import static app.websocket.SocketMessage.Message.MESSAGE
+import static app.websocket.SocketMessage.Message.PAUSE
+import static app.websocket.SocketMessage.Message.PREPARE
+import static app.websocket.SocketMessage.Message.SEEK_TO
+import static app.websocket.SocketMessage.Message.START
+import static app.websocket.SocketMessage.Message.START_FROM
+import static app.websocket.SocketMessage.Type.POST
 
 @CompileStatic
 class MusicServer extends Daggered {
@@ -79,7 +87,7 @@ class MusicServer extends Daggered {
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (!webSocketMessageServer.connections().empty) {
-            sendAll new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PREPARE, event.position as String).toJson()
+            sendAll new SocketMessage(POST, PREPARE, event.position as String).toJson()
         } else {
             bus.post new AllClientsReadyEvent()
         }
@@ -88,23 +96,18 @@ class MusicServer extends Daggered {
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
         String pos = player.currentPosition as String
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START_FROM, pos).toJson())
-    }
-
-    @Subscribe
-    public void startClients(StartClientsEvent event) {
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.START).toJson())
+        sendAll(new SocketMessage(POST, START_FROM, pos).toJson())
     }
 
     @Subscribe
     public void pauseClients(PauseClientsEvent event) {
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.PAUSE).toJson())
+        sendAll(new SocketMessage(POST, PAUSE).toJson())
     }
 
     @Subscribe
     public void seekToClients(SeekToClientsEvent event) {
         String pos = String.valueOf(event.position)
-        sendAll(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.SEEK_TO, pos).toJson())
+        sendAll(new SocketMessage(POST, SEEK_TO, pos).toJson())
     }
 
     @Produce
@@ -117,7 +120,7 @@ class MusicServer extends Daggered {
         unreadMessages += 1
         ChatMessage msg = event.getMessage()
         chatMessages.add(msg)
-        sendAllExcept(new SocketMessage(SocketMessage.Type.POST, SocketMessage.Message.MESSAGE, new Gson().toJson(msg)).toJson(), event.getWebSocket())
+        sendAllExcept(new SocketMessage(POST, MESSAGE, Utils.toJson(msg)).toJson(), event.getWebSocket())
         bus.post(new NotifyMessageAddedEvent(msg))
     }
 

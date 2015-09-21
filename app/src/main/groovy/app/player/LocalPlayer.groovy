@@ -6,6 +6,7 @@ import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.events.player.service.CurrentSongAvailableEvent
 import app.events.server.MusicServerStateChangedEvent
+import app.events.server.PauseClientsEvent
 import app.events.server.PrepareClientsEvent
 import app.model.Song
 import app.service.LocalPlayerService
@@ -96,6 +97,18 @@ class LocalPlayer extends BasePlayer {
     @Override
     Song getCurrentSong() {
         return queue.song
+    }
+
+    void setPaused(boolean flag, boolean ignoreServerStarted = false) {
+        if (serverStarted && !ignoreServerStarted) {
+            if (flag) {
+                bus.post new PauseClientsEvent()
+            } else {
+                bus.post new PrepareClientsEvent(currentPosition)
+            }
+        } else {
+            super.setPaused flag
+        }
     }
 
     void play(int position) {

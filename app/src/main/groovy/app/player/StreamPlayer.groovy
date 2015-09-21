@@ -28,14 +28,18 @@ class StreamPlayer extends BasePlayer {
     Handler handler
 
     private int positionToPrepare = -1
+    private boolean seekingToPosition = false
 
     @Override
     void onReady(boolean playWhenReady) {
         if (positionToPrepare >= 0) {
             def pos = positionToPrepare
             positionToPrepare = -1
+
+            seekingToPosition = true
             seekTo pos
-        } else if (paused) {
+        } else if (seekingToPosition && paused) {
+            seekingToPosition = false
             bus.post new ReadyToStartPlaybackEvent()
         }
     }

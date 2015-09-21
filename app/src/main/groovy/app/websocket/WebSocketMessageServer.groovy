@@ -6,10 +6,12 @@ import app.events.server.AllClientsReadyEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.events.server.ClientReadyEvent
+import app.events.server.PauseClientsEvent
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.websocket.entities.ClientInfo
 import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.java_websocket.WebSocket
@@ -132,6 +134,14 @@ class WebSocketMessageServer extends WebSocketServer {
             conn.send new SocketMessage(POST, PREPARE, player.currentPosition as String).toJson()
         }
         bus.post new ClientConnectedEvent(info)
+    }
+
+    @Subscribe
+    void onPauseClients(PauseClientsEvent event) {
+        Debug.d()
+        connections().each {
+            sendMessage it, POST, PAUSE
+        }
     }
 
 }

@@ -12,7 +12,6 @@ import app.events.player.playback.control.ChangeSongEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.events.server.AllClientsReadyEvent
 import app.events.server.PauseClientsEvent
-import app.events.server.StartClientsEvent
 import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.ui.notification.NowPlayingNotification
@@ -113,19 +112,13 @@ class LocalPlayerService extends Service {
     @Subscribe
     void allClientsReady(AllClientsReadyEvent event) {
         Debug.d()
-        player.paused = false
-    }
-
-    @Subscribe
-    void onStartClients(StartClientsEvent event) {
-        Debug.d()
-        player.paused = false
+        player.setPaused false, true
     }
 
     @Subscribe
     void onPauseClients(PauseClientsEvent event) {
         Debug.d()
-        player.paused = true
+        player.setPaused true, true
     }
 
 }
