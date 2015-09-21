@@ -27,6 +27,7 @@ import app.data_managers.AlbumsManager
 import app.data_managers.ArtistsManager
 import app.data_managers.SongsManager
 import app.events.MainThreadBus
+import app.events.RxBus
 import app.helper.StationsExplorer
 import app.helper.db.AlbumsCursorGetter
 import app.helper.db.ArtistsCursorGetter
@@ -216,6 +217,12 @@ public class AndroidModule {
     @Singleton
     Bus provideBus() {
         return new MainThreadBus(ThreadEnforcer.ANY);
+    }
+
+    @Provides
+    @Singleton
+    RxBus provideRxBus() {
+        return new RxBus();
     }
 
     @Provides

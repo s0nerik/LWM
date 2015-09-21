@@ -8,7 +8,7 @@ import android.os.IBinder
 import app.Injector
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
-import app.events.player.playback.control.ChangeSongEvent
+import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.events.server.AllClientsReadyEvent
 import app.events.server.PauseClientsEvent
@@ -25,7 +25,7 @@ import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
-import static app.events.player.playback.control.ChangeSongEvent.Type.*
+import static ControlButtonEvent.Type.*
 
 @PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
@@ -80,7 +80,7 @@ class LocalPlayerService extends Service {
     CurrentSongAvailableEvent produceCurrentSong() { new CurrentSongAvailableEvent(player.currentSong) }
 
     @Subscribe
-    void onChangeSongEvent(ChangeSongEvent event) {
+    void onControlButton(ControlButtonEvent event) {
         Debug.d event as String
         switch (event.type) {
             case NEXT:
