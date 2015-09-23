@@ -27,11 +27,15 @@ class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
+    private Song currentSong
+
     private int positionToPrepare = -1
     private boolean seekingToPosition = false
 
     @Override
     void onReady(boolean playWhenReady) {
+        super.onReady(playWhenReady)
+
         if (positionToPrepare >= 0) {
             def pos = positionToPrepare
             positionToPrepare = -1
@@ -69,28 +73,13 @@ class StreamPlayer extends BasePlayer {
 
     }
 
-    @Override
-    Song getCurrentSong() {
-        return new Song()
+    void setCurrentSong(Song s) {
+        currentSong = s
     }
 
-    private void updateSongInfo() {
-        // TODO: make it work
-//        Ion.with(context)
-//                .load(StreamServer.Url.CURRENT_INFO)
-//                .as(Song.class)
-//                .withResponse()
-//                .setCallback(new FutureCallback<Response<Song>>() {
-//                    @Override
-//                    public void onCompleted(Exception e, Response<Song> result) {
-//                        if (e == null) {
-//                            setCurrentSong(result.getResult());
-//                            bus.post(new PlaybackStartedEvent(result.getResult(), getCurrentPosition()));
-//                            startNotifyingPlaybackProgress();
-//                        } else {
-//                            Debug.e("Error getting song info", e);
-//                        }
-//                    }
-//                });
+    @Override
+    Song getCurrentSong() {
+        return currentSong
     }
+
 }

@@ -1,4 +1,6 @@
 package app.websocket
+
+import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
@@ -8,10 +10,12 @@ import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
+import app.model.Song
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
 import app.server.StreamServer
 import app.websocket.entities.ClientInfo
+import com.koushikdutta.ion.Ion
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -21,6 +25,7 @@ import groovy.transform.PackageScopeTarget
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import ru.noties.debug.Debug
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -33,6 +38,8 @@ import static app.websocket.SocketMessage.Type.POST
 public class WebSocketMessageClient extends WebSocketClient {
 
     @Inject
+    Context context
+    @Inject
     StreamPlayer player
     @Inject
     Bus bus
@@ -41,6 +48,12 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private final Uri STREAM_URI =
             Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.STREAM}"
+
+    private final Uri ALBUMART_URI =
+            Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.CURRENT_ALBUMART}"
+
+    private final Uri SONG_INFO_URI =
+            Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.CURRENT_INFO}"
 
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
@@ -143,8 +156,12 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     private void prepare(int position) {
-        player.stop()
-        player.prepareForPosition STREAM_URI, position
+        Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
+        .subscribe {
+            player.currentSong = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
+            player.stop()
+            player.prepareForPosition STREAM_URI, position
+        }
     }
 
     @Subscribe

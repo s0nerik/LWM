@@ -73,6 +73,13 @@ class Utils extends Daggered {
         }
     }
 
+    Uri resourceToUri (int resID) {
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                resources.getResourcePackageName(resID) + '/' +
+                resources.getResourceTypeName(resID) + '/' +
+                resources.getResourceEntryName(resID) );
+    }
+
     public Bitmap getNoCoverBitmap() {
         BitmapFactory.decodeResource(resources, R.drawable.no_cover)
     }

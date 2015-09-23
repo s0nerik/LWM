@@ -21,6 +21,7 @@ import app.events.player.queue.QueueShuffledEvent
 import app.model.Song
 import app.player.BasePlayer
 import app.player.PlayerUtils
+import app.ui.Blur
 import app.ui.async.RemoteAlbumArtAsyncGetter
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
@@ -29,6 +30,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 import javax.inject.Inject
 
@@ -61,7 +64,6 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     protected abstract BasePlayer getPlayer()
     protected abstract Observable<Bitmap> getCoverBitmap(Song song)
-    protected abstract Observable<Bitmap> getBgBitmap(Song song)
 
     @Override
     void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,13 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     void onPause() {
         super.onPause()
         background.unregisterSensorManager()
+    }
+
+    protected Observable<Bitmap> getBgBitmap(Song song) {
+        getCoverBitmap(song)
+        .map {
+            return new Blur().blur(it)
+        }
     }
 
     protected void onSongPlaying(SongPlayingEvent event) {
@@ -125,26 +134,23 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
         seekBar.max = PlayerUtils.calculateProgressForSeekBar song.duration
         endTime.text = song.durationString
 
-        getCoverBitmap(song).subscribe { Bitmap b ->
+        getCoverBitmap(song)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { Bitmap b ->
             coverDrawable = new TransitionDrawable([coverDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
             cover.imageDrawable = coverDrawable
             coverDrawable.startTransition 1000
         }
 
-        getBgBitmap(song).subscribe { Bitmap b ->
+        getBgBitmap(song)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { Bitmap b ->
             bgDrawable = new TransitionDrawable([bgDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
             background.imageDrawable = bgDrawable
             bgDrawable.startTransition 1000
         }
-    }
-
-    protected void setAlbumArtFromUri(Uri uri) {
-        Utils.setAlbumArtFromUri activity, cover, uri
-    }
-
-    public void setRemoteAlbumArt() {
-        RemoteAlbumArtAsyncGetter remoteAlbumArtAsyncGetter = new RemoteAlbumArtAsyncGetter(activity, cover, background)
-        remoteAlbumArtAsyncGetter.execute()
     }
 
     private void setPlayButton(boolean playing) {

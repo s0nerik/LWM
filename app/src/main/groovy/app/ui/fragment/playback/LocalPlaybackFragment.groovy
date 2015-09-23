@@ -8,6 +8,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import app.R
+import app.Utils
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -20,12 +21,19 @@ import app.player.LocalPlayer
 import app.player.PlayerUtils
 import app.ui.Blur
 import com.github.s0nerik.betterknife.annotations.OnClick
+import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import rx.Observable
+import rx.Subscriber
 
 import javax.inject.Inject
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Future
+import java.util.concurrent.FutureTask
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 @CompileStatic
 class LocalPlaybackFragment extends PlaybackFragment {
@@ -33,6 +41,10 @@ class LocalPlaybackFragment extends PlaybackFragment {
     @Inject
     @PackageScope
     LocalPlayer player
+
+    @Inject
+    @PackageScope
+    Utils utils
 
 //    @Inject
 //    @PackageScope
@@ -91,37 +103,20 @@ class LocalPlaybackFragment extends PlaybackFragment {
 
     @Override
     protected Observable<Bitmap> getCoverBitmap(Song song) {
-        try {
-            Observable.just(
-                    BitmapFactory.decodeFileDescriptor(
-                            contentResolver.openFileDescriptor(song.albumArtUri, "r").fileDescriptor
-                    )
-            )
-        } catch (FileNotFoundException e) {
-            Observable.just(BitmapFactory.decodeResource(resources, R.drawable.no_cover))
-        }
-    }
-
-    @Override
-    protected Observable<Bitmap> getBgBitmap(Song song) {
-        def options = new BitmapFactory.Options()
-        options.inSampleSize = 8
-        def blur = new Blur()
-        try {
-            Observable.just(
-                    blur.blur(
-                            BitmapFactory.decodeFileDescriptor(
-                                    contentResolver.openFileDescriptor(song.albumArtUri, "r").fileDescriptor
-                            )
-                    )
-            )
-        } catch (FileNotFoundException e) {
-            Observable.just(
-                    blur.blur(
-                        BitmapFactory.decodeResource(resources, R.drawable.no_cover)
-                    )
-            )
-        }
+        Observable.create({ Subscriber<Bitmap> subscriber ->
+            Bitmap bmp
+            try {
+                def is = contentResolver.openInputStream song.albumArtUri
+                is.withStream {
+                    bmp = BitmapFactory.decodeStream(it)
+                }
+            } catch (ignored) {
+                bmp = utils.noCoverBitmap
+            }
+            if (subscriber.unsubscribed) return
+            subscriber.onNext bmp
+            subscriber.onCompleted()
+        } as Observable.OnSubscribe<Bitmap>)
     }
 
 //    @Subscribe

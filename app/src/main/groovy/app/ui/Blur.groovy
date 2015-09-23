@@ -7,6 +7,7 @@ import android.support.v8.renderscript.*
 import app.Daggered
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -18,6 +19,10 @@ public class Blur extends Daggered {
     @Inject
     @PackageScope
     Context context
+
+    Observable<Bitmap> blurAsObservable(Bitmap input) {
+        Observable.just(blur(input))
+    }
 
     @SuppressLint("NewApi")
     Bitmap blur(Bitmap input) {

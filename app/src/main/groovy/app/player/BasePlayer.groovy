@@ -22,10 +22,7 @@ import ru.noties.debug.Debug
 import javax.inject.Inject
 
 import static android.media.AudioManager.*
-/**
- * Stop means pause.
- * To start any song from the beginning the "seekTo(0)" should be called.
- */
+
 @CompileStatic
 abstract class BasePlayer {
 
@@ -57,6 +54,8 @@ abstract class BasePlayer {
     abstract void startService()
     abstract Song getCurrentSong()
 
+    private Song lastSong
+
     void onPlaybackEnded() { abandonAudioFocus() }
     void onStartedBuffering() {}
     void onBecameIdle() {
@@ -65,7 +64,11 @@ abstract class BasePlayer {
     }
     void onStartedPreparing() {}
     void onReady(boolean playWhenReady) {
-        bus.post new SongChangedEvent(getCurrentSong())
+        if (getCurrentSong() != lastSong) {
+            lastSong = getCurrentSong()
+            bus.post new SongChangedEvent(getCurrentSong())
+        }
+
         if (playWhenReady) {
             gainAudioFocus()
             bus.post new PlaybackStartedEvent(getCurrentSong(), currentPosition)

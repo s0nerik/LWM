@@ -2,16 +2,18 @@ package app.model
 
 import android.content.ContentUris
 import android.net.Uri
+import android.util.JsonWriter
 import com.github.s0nerik.betterknife.annotations.Parcelable
+import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
 
 @CompileStatic
 @Builder
 @Parcelable
-public final class Song {
+class Song {
 
-    private static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart")
+    protected static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart")
 
     long songId
     long artistId
@@ -25,19 +27,35 @@ public final class Song {
 
     int duration
 
-    public String getDurationString() {
-        int seconds = duration / 1000 as int;
-        int minutes = seconds / 60 as int;
-        seconds -= minutes * 60;
-        return minutes + ":" + String.format("%02d", seconds);
+    String getDurationString() {
+        int seconds = duration / 1000 as int
+        int minutes = seconds / 60 as int
+        seconds -= minutes * 60
+        minutes + ":" + String.format("%02d", seconds)
     }
 
-    public Uri getAlbumArtUri() {
-        return ContentUris.withAppendedId(artworkUri, albumId);
+    Uri getAlbumArtUri() {
+        ContentUris.withAppendedId(artworkUri, albumId)
     }
 
     Uri getSourceUri() {
         Uri.parse("file://$source")
+    }
+
+    String toJson() {
+        JsonOutput.toJson([
+                title: title,
+                artist: artist,
+                album: album,
+                source: source,
+                lyrics: lyrics,
+                duration: duration,
+                albumArtUri: albumArtUri.toString()
+        ])
+    }
+
+    RemoteSong toRemoteSong(String serverUrl) {
+        new RemoteSong(this, serverUrl)
     }
 
 }

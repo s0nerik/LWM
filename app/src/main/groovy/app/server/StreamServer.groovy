@@ -1,6 +1,9 @@
 package app.server
 import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import app.Injector
+import app.R
 import app.Utils
 import app.events.player.playback.SongChangedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -41,6 +44,10 @@ class StreamServer extends NanoHTTPD {
     @Inject
     @PackageScope
     Bus bus
+
+    @Inject
+    @PackageScope
+    Utils utils
 
     StreamServer() {
         super(8888)
@@ -113,13 +120,23 @@ class StreamServer extends NanoHTTPD {
     private Response currentAlbumArt(Song song) {
         Debug.d "StreamServer: CURRENT_ALBUMART"
         InputStream is = null
+
         try {
             is = contentResolver.openInputStream song.albumArtUri
-        } catch (ignore) {}
-        return new Response(Response.Status.OK, "image", is)
+        } catch (ignore) {
+            is = contentResolver.openInputStream utils.resourceToUri(R.drawable.no_cover)
+        }
+
+        def os = new ByteArrayOutputStream()
+        is.withStream {
+            BitmapFactory.decodeStream(it).compress(Bitmap.CompressFormat.WEBP, 80, os)
+        }
+
+        is = new ByteArrayInputStream(os.toByteArray())
+        return new Response(Response.Status.OK, "image/webp", is)
     }
 
-    private static String getSongInfoJSON(Song song) { Utils.toJson song }
+    private static String getSongInfoJSON(Song song) { song.toJson() }
 
     @Subscribe
     void onSongChanged(SongChangedEvent event) {
