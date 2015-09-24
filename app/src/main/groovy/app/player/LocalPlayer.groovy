@@ -8,6 +8,7 @@ import app.events.player.service.CurrentSongAvailableEvent
 import app.events.server.MusicServerStateChangedEvent
 import app.events.server.PauseClientsEvent
 import app.events.server.PrepareClientsEvent
+import app.events.server.SeekToClientsEvent
 import app.model.Song
 import app.service.LocalPlayerService
 import com.github.s0nerik.betterknife.annotations.Profile
@@ -63,6 +64,15 @@ class LocalPlayer extends BasePlayer {
     }
 
     List<Song> getQueue() { queue.queue }
+
+    @Override
+    void seekTo(int msec) {
+        super.seekTo(msec)
+        if (serverStarted) {
+            paused = true
+            bus.post new SeekToClientsEvent(msec)
+        }
+    }
 
     void setQueue(List<Song> songs) {
         queue.clear()
