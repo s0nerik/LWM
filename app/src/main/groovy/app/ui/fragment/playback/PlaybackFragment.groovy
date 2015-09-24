@@ -6,12 +6,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.widget.*
 import app.R
-import app.Utils
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -22,7 +20,6 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.PlayerUtils
 import app.ui.Blur
-import app.ui.async.RemoteAlbumArtAsyncGetter
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.nvanbenschoten.motion.ParallaxImageView

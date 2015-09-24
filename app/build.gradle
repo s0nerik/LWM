@@ -29,15 +29,15 @@ project.androidGroovy {
 }
 
 android {
-    compileSdkVersion "android-22"
-    buildToolsVersion "22.0.1"
+    compileSdkVersion "android-23"
+    buildToolsVersion "23.0.1"
     defaultConfig {
         applicationId "com.lwm.app"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 4
         versionName '0.7'
-        renderscriptTargetApi 22
+        renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
         multiDexEnabled true
     }
@@ -65,7 +65,7 @@ android {
         }
         prod {
             dimension "type"
-            minSdkVersion 14
+            minSdkVersion 16
         }
 
         withCrashlytics {
@@ -87,6 +87,16 @@ android {
     lintOptions {
         abortOnError false
     }
+//    signingConfigs {
+//        debug {
+//            storeFile file("debug.keystore")
+//            storePassword 'android'
+//            keyAlias 'androiddebugkey'
+//            keyPassword 'android'
+//        }
+//    }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -106,17 +116,17 @@ dependencies {
     }
 
     // Support libs
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.android.support:palette-v7:22.2.1'
-    compile 'com.android.support:design:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.android.support:cardview-v7:23.0.1'
+    compile 'com.android.support:palette-v7:23.0.1'
+    compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:multidex:1.0.1'
 
     // GMS
-    compile 'com.google.android.gms:play-services-plus:7.5.0'
-    compile 'com.google.android.gms:play-services-identity:7.5.0'
+    compile 'com.google.android.gms:play-services-plus:8.1.0'
+    compile 'com.google.android.gms:play-services-identity:8.1.0'
 
     // Compatibility
     compile 'com.afollestad:material-dialogs:0.7.2.8'
@@ -152,10 +162,10 @@ dependencies {
     // Networking
     compile 'com.nanohttpd:nanohttpd:2.1.1'
     compile 'org.java-websocket:Java-WebSocket:1.3.0'
-    compile 'com.koushikdutta.ion:ion:2.1.6'
+    compile 'com.koushikdutta.ion:ion:+'
 
     // Crash reports
-    compile 'com.crashlytics.android:crashlytics:1.1.13'
+    compile 'com.crashlytics.android:crashlytics:+'
 
     // Thanks, Square!
     compile 'com.squareup.dagger:dagger:1.2.2'

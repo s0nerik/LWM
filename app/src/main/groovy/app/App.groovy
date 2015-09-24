@@ -1,4 +1,7 @@
 package app
+
+import android.content.Context
+import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import app.modules.AndroidModule
 import com.crashlytics.android.Crashlytics
@@ -16,15 +19,12 @@ final class App extends MultiDexApplication {
 
         Debug.init BuildConfig.DEBUG
 
-//        Vitamio.initialize this
-//        IjkMediaPlayer.loadLibrariesOnce null
-
         Injector.init new AndroidModule(this)
     }
 
-//    @Override
-//    protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(base)
-//        MultiDex.install(this)
-//    }
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
 }
