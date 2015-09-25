@@ -19,7 +19,7 @@ import app.events.player.queue.QueueShuffledEvent
 import app.model.Song
 import app.player.BasePlayer
 import app.player.PlayerUtils
-import app.ui.Blur
+import app.ui.Blurer
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.nvanbenschoten.motion.ParallaxImageView
@@ -39,6 +39,10 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     @Inject
     @PackageScope
     Resources res
+
+    @Inject
+    @PackageScope
+    Blurer blurer
 
     ParallaxImageView background
     ImageView cover
@@ -92,7 +96,7 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     protected Observable<Bitmap> getBgBitmap(Song song) {
         getCoverBitmap(song)
         .map {
-            return new Blur().blur(it)
+            return blurer.blur(it)
         }
     }
 

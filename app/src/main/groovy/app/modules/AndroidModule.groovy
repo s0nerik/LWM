@@ -44,7 +44,7 @@ import app.server.StreamServer
 import app.service.LocalPlayerService
 import app.service.MusicStationService
 import app.service.StreamPlayerService
-import app.ui.Blur
+import app.ui.Blurer
 import app.ui.PaletteApplier
 import app.ui.activity.*
 import app.ui.custom_view.BroadcastButton
@@ -96,7 +96,7 @@ import static android.content.Context.*
                 StationsExplorer,
 
                 // Utils
-                Utils, WifiUtils, Blur,
+                Utils, WifiUtils, Blurer,
 
                 // Players
                 LocalPlayer, StreamPlayer,
@@ -223,6 +223,12 @@ public class AndroidModule {
     @Singleton
     RxBus provideRxBus() {
         return new RxBus();
+    }
+
+    @Provides
+    @Singleton
+    Blurer provideBlurer() {
+        return new Blurer();
     }
 
     @Provides

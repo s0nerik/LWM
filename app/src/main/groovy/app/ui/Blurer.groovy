@@ -12,17 +12,13 @@ import rx.Observable
 import javax.inject.Inject
 
 @CompileStatic
-public class Blur extends Daggered {
+class Blurer extends Daggered {
 
     static final int RADIUS = 25
 
     @Inject
     @PackageScope
     Context context
-
-    Observable<Bitmap> blurAsObservable(Bitmap input) {
-        Observable.just(blur(input))
-    }
 
     @SuppressLint("NewApi")
     Bitmap blur(Bitmap input) {

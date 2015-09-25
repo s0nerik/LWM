@@ -19,9 +19,7 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.LocalPlayer
 import app.player.PlayerUtils
-import app.ui.Blur
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -29,11 +27,6 @@ import rx.Observable
 import rx.Subscriber
 
 import javax.inject.Inject
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.Future
-import java.util.concurrent.FutureTask
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 @CompileStatic
 class LocalPlaybackFragment extends PlaybackFragment {
