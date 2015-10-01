@@ -10,6 +10,8 @@ import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
+import app.helper.PingMeasurer
+import app.helper.PingResult
 import app.model.Song
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
@@ -93,6 +95,9 @@ public class WebSocketMessageClient extends WebSocketClient {
                 case CLIENT_INFO:
                     String info = Utils.toJson clientInfo
                     sendMessage POST, CLIENT_INFO, info
+                    break
+                case PING:
+                    sendMessage POST, PONG, System.currentTimeMillis() as String
                     break
                 default:
                     Debug.e "Can't process message: ${socketMessage.message.name()}"

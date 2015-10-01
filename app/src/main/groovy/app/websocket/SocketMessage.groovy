@@ -13,7 +13,8 @@ class SocketMessage {
         OK, ERROR,
         PAUSE, UNPAUSE, START,
         PREPARE, READY,
-        MESSAGE, CLIENT_INFO
+        MESSAGE, CLIENT_INFO,
+        PING, PONG
     }
 
     static enum Type {

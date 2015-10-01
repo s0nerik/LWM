@@ -8,6 +8,7 @@ import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
+import app.helper.DelayMeasurer
 import app.model.Song
 import com.google.android.exoplayer.ExoPlaybackException
 import com.google.android.exoplayer.ExoPlayer
@@ -56,6 +57,8 @@ abstract class BasePlayer {
 
     private Song lastSong
 
+    protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer()
+
     void onPlaybackEnded() { abandonAudioFocus() }
     void onStartedBuffering() {}
     void onBecameIdle() {
@@ -97,6 +100,7 @@ abstract class BasePlayer {
                         onStartedPreparing()
                         break
                     case ExoPlayer.STATE_READY:
+                        prepareTimeMeasurer.stop()
                         onReady(playWhenReady)
                         break
                 }
@@ -212,6 +216,7 @@ abstract class BasePlayer {
         } else {
 //            innerPlayer.stop()
             prepareInternal uri
+            prepareTimeMeasurer.start()
         }
     }
 

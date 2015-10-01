@@ -7,6 +7,8 @@ import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.events.server.ClientReadyEvent
 import app.events.server.PauseClientsEvent
+import app.helper.PingMeasurer
+import app.helper.PingResult
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.websocket.entities.ClientInfo
@@ -34,6 +36,8 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<WebSocket, ClientInfo>()
 
+    private Map<WebSocket, PingMeasurer> pingMeasurers = new HashMap<WebSocket, PingMeasurer>()
+
     private long lastMessageTime = -1
 
     @Inject
@@ -53,12 +57,18 @@ class WebSocketMessageServer extends WebSocketServer {
     void onOpen(WebSocket conn, ClientHandshake handshake) {
         Debug.d "connections.size() = ${connections().size()}"
         conn.send new SocketMessage(GET, CLIENT_INFO).toJson()
+
+        pingMeasurers[conn] = new PingMeasurer({ sendMessage conn, GET, PING })
+        pingMeasurers[conn].start()
     }
 
     @Override
     void onClose(WebSocket conn, int code, String reason, boolean remote) {
         Debug.d "connections.size() = ${connections().size()}"
         bus.post new ClientDisconnectedEvent(clientInfoMap[conn])
+
+        pingMeasurers[conn].stop()
+        pingMeasurers.remove(conn)
     }
 
     @Override
@@ -85,6 +95,9 @@ class WebSocketMessageServer extends WebSocketServer {
             switch (socketMessage.message) {
                 case READY:
                     processReadiness conn
+                    break
+                case PONG:
+                    pingMeasurers[conn].pongReceived new PingResult(body as long)
                     break
                 case CLIENT_INFO:
                     processClientInfo conn, Utils.<ClientInfo>fromJson(body)
