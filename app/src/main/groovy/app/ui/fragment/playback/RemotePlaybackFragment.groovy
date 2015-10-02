@@ -9,6 +9,7 @@ import app.events.player.playback.SongPlayingEvent
 import app.model.Song
 import app.player.BasePlayer
 import app.player.StreamPlayer
+import app.ui.Blurer
 import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -24,6 +25,11 @@ class RemotePlaybackFragment extends PlaybackFragment {
     @Inject
     @PackageScope
     StreamPlayer player
+
+    // TODO: remove this when error in Groovy is fixed
+    @Inject
+    @PackageScope
+    Blurer blurer
 
     @Inject
     @PackageScope

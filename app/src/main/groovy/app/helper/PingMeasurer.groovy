@@ -6,6 +6,7 @@ import org.apache.commons.collections4.queue.CircularFifoQueue
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.Subscription
+import rx.functions.Action1
 
 import java.util.concurrent.LinkedBlockingDeque
 import java.util.concurrent.TimeUnit
@@ -27,7 +28,7 @@ class PingMeasurer {
     private static final int PERIOD = 1000
     private static final int DEQUE_LIMIT = 10
 
-    private final Closure pingPerformer
+    private final Action1<Long> pingPerformer
 
     private CircularFifoQueue<PingResult> pings = new CircularFifoQueue<PingResult>(DEQUE_LIMIT)
 
@@ -35,14 +36,13 @@ class PingMeasurer {
 
     Subscription pingWorker
 
-    PingMeasurer(Closure pingPerformer) {
+    PingMeasurer(Action1<Long> pingPerformer) {
         this.pingPerformer = pingPerformer
     }
 
     void start() {
         pingWorker = Observable.interval(PERIOD, TimeUnit.MILLISECONDS)
-                               .doOnNext { pingPerformer() }
-                               .subscribe()
+                               .subscribe pingPerformer
     }
 
     void pongReceived(PingResult result) {
