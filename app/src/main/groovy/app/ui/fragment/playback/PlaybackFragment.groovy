@@ -95,9 +95,7 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
 
     protected Observable<Bitmap> getBgBitmap(Song song) {
         getCoverBitmap(song)
-        .map {
-            return blurer.blur(it)
-        }
+        .map { blurer.blur it }
     }
 
     protected void onSongPlaying(SongPlayingEvent event) {
@@ -139,19 +137,19 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { Bitmap b ->
-            coverDrawable = new TransitionDrawable([coverDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
-            cover.imageDrawable = coverDrawable
-            coverDrawable.startTransition 1000
-        }
+                    coverDrawable = new TransitionDrawable([coverDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
+                    cover.imageDrawable = coverDrawable
+                    coverDrawable.startTransition 1000
+                }
 
         getBgBitmap(song)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { Bitmap b ->
-            bgDrawable = new TransitionDrawable([bgDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
-            background.imageDrawable = bgDrawable
-            bgDrawable.startTransition 1000
-        }
+                    bgDrawable = new TransitionDrawable([bgDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
+                    background.imageDrawable = bgDrawable
+                    bgDrawable.startTransition 1000
+                }
     }
 
     private void setPlayButton(boolean playing) {

@@ -1,5 +1,6 @@
 package app
 
+import android.app.Application
 import android.content.Context
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
@@ -10,6 +11,7 @@ import ru.noties.debug.Debug
 
 @CompileStatic
 final class App extends MultiDexApplication {
+//final class App extends Application {
 
     @Override
     void onCreate() {

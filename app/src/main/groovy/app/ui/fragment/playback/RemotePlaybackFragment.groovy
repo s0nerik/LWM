@@ -43,16 +43,16 @@ class RemotePlaybackFragment extends PlaybackFragment {
     @Override
     protected Observable<Bitmap> getCoverBitmap(Song song) {
         Observable.create({ Subscriber<Bitmap> subscriber ->
-            Bitmap bmp
+            Bitmap bmp = null
             try {
                 bmp = Ion.with(this)
                             .load("${player.currentSong.albumArtUri}?${UUID.randomUUID()}")
                             .asBitmap()
                             .get()
-            } catch (ignored) {
-                bmp = utils.noCoverBitmap
-            }
-            if (subscriber.unsubscribed) return
+            } catch (ignored) {}
+
+            bmp = bmp ?: utils.noCoverBitmap
+
             subscriber.onNext bmp
             subscriber.onCompleted()
         } as Observable.OnSubscribe<Bitmap>)

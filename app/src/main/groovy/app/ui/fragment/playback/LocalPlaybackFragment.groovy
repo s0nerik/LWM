@@ -19,6 +19,7 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.LocalPlayer
 import app.player.PlayerUtils
+import app.ui.Blurer
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -42,6 +43,11 @@ class LocalPlaybackFragment extends PlaybackFragment {
 //    @Inject
 //    @PackageScope
 //    WifiAP wifiAP
+
+    // TODO: Remove this when error with non-existing blurer property problem in LocalPlaybackFragment is gone
+    @Inject
+    @PackageScope
+    Blurer blurer
 
     @Inject
     @PackageScope
@@ -97,16 +103,16 @@ class LocalPlaybackFragment extends PlaybackFragment {
     @Override
     protected Observable<Bitmap> getCoverBitmap(Song song) {
         Observable.create({ Subscriber<Bitmap> subscriber ->
-            Bitmap bmp
+            Bitmap bmp = null
             try {
                 def is = contentResolver.openInputStream song.albumArtUri
                 is.withStream {
                     bmp = BitmapFactory.decodeStream(it)
                 }
-            } catch (ignored) {
-                bmp = utils.noCoverBitmap
-            }
-            if (subscriber.unsubscribed) return
+            } catch (ignored) {}
+
+            bmp = bmp ?: utils.noCoverBitmap
+
             subscriber.onNext bmp
             subscriber.onCompleted()
         } as Observable.OnSubscribe<Bitmap>)

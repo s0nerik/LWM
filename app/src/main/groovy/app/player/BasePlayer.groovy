@@ -214,9 +214,9 @@ abstract class BasePlayer {
         if (uri == playbackUri && !reprepare) {
             prepareOld()
         } else {
+            prepareTimeMeasurer.start()
 //            innerPlayer.stop()
             prepareInternal uri
-            prepareTimeMeasurer.start()
         }
     }
 

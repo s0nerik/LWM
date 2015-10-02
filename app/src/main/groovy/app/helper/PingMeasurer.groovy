@@ -2,6 +2,7 @@ package app.helper
 
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
+import org.apache.commons.collections4.queue.CircularFifoQueue
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.Subscription
@@ -28,7 +29,7 @@ class PingMeasurer {
 
     private final Closure pingPerformer
 
-    private Deque<PingResult> pings = new LinkedBlockingDeque<PingResult>(DEQUE_LIMIT)
+    private CircularFifoQueue<PingResult> pings = new CircularFifoQueue<PingResult>(DEQUE_LIMIT)
 
     int average = 0
 

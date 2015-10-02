@@ -102,16 +102,8 @@ android {
 dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
-//    compile project(':libs:vitamio')
-
-//    compile project(':libs:ijkplayer:player-java')
-//    compile project(':libs:ijkplayer:player-armv7a')
-//    compile project(':libs:ijkplayer:player-arm64')
-//    compile project(':libs:ijkplayer:player-x86')
-//    compile project(':libs:ijkplayer:player-armv5')
-
-    compile 'org.codehaus.groovy:groovy:+:grooid'
-    compile('org.codehaus.groovy:groovy-json:2.4.4') {
+    compile 'org.codehaus.groovy:groovy:2.4.5:grooid'
+    compile('org.codehaus.groovy:groovy-json:2.4.5') {
         transitive = false
     }
 
@@ -172,10 +164,13 @@ dependencies {
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.squareup:otto:1.3.6'
 
+    // Thanks, Apache!
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'org.apache.commons:commons-collections4:4.0'
+
     // Misc
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
-    compile 'org.apache.commons:commons-lang3:3.3.2'
     compile 'ru.noties:debug:1.1.3'
 
     // Animations
