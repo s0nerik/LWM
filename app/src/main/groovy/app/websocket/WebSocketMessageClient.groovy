@@ -149,9 +149,10 @@ public class WebSocketMessageClient extends WebSocketClient {
         Debug.e ex as String
     }
 
+    // TODO: remove this
     private void startFrom(int pos) {
         player.paused = false
-        player.seekTo(pos)
+//        player.seekTo(pos)
 //        player.prepare STREAM_URI
     }
 
@@ -164,10 +165,10 @@ public class WebSocketMessageClient extends WebSocketClient {
         if (!seeking) {
             Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
                     .subscribe {
-                player.currentSong = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
-                player.stop()
-                player.prepareForPosition STREAM_URI, position
-            }
+                        player.currentSong = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
+                        player.stop()
+                        player.prepareForPosition STREAM_URI, position
+                    }
         } else {
             player.stop()
             player.prepareForPosition STREAM_URI, position
