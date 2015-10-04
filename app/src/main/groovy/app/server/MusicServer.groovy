@@ -66,16 +66,13 @@ class MusicServer extends Daggered {
     public void stop() {
         bus.unregister this
         streamServer.stop()
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    webSocketMessageServer.stop()
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace()
-                }
+        Thread.start {
+            try {
+                webSocketMessageServer.stop()
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace()
             }
-        }).start()
+        }
         setStarted false
     }
 
@@ -96,7 +93,7 @@ class MusicServer extends Daggered {
     @Subscribe
     public void allClientsReady(AllClientsReadyEvent event) {
         String pos = player.currentPosition as String
-        sendAll(new SocketMessage(POST, START_FROM, pos).toJson())
+        sendAll(new SocketMessage(POST, START, pos).toJson())
     }
 
     @Subscribe
@@ -106,8 +103,7 @@ class MusicServer extends Daggered {
 
     @Subscribe
     public void seekToClients(SeekToClientsEvent event) {
-        String pos = String.valueOf(event.position)
-        sendAll(new SocketMessage(POST, SEEK_TO, pos).toJson())
+        sendAll(new SocketMessage(POST, SEEK_TO, event.position as String).toJson())
     }
 
     @Produce

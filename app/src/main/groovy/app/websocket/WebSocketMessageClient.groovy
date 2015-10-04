@@ -114,10 +114,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     prepare body as int
                     break
                 case SEEK_TO:
-                    prepare body as int, true
-                    break
-                case START_FROM:
-                    startFrom body as int
+                    seekTo body as int
                     break
                 case MESSAGE:
                     ChatMessage chatMessage = Utils.fromJson body
@@ -149,28 +146,20 @@ public class WebSocketMessageClient extends WebSocketClient {
         Debug.e ex as String
     }
 
-    // TODO: remove this
-    private void startFrom(int pos) {
-        player.paused = false
-//        player.seekTo(pos)
-//        player.prepare STREAM_URI
-    }
-
     private void seekTo(int pos) {
-        player.paused = true
-        player.seekTo(pos)
+        prepare pos, true
     }
 
     private void prepare(int position, boolean seeking = false) {
+        player.stop()
+
         if (!seeking) {
             Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
                     .subscribe {
                         player.currentSong = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
-                        player.stop()
                         player.prepareForPosition STREAM_URI, position
                     }
         } else {
-            player.stop()
             player.prepareForPosition STREAM_URI, position
         }
     }
