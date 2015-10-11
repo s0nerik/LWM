@@ -6,11 +6,11 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.IBinder
 import app.Injector
+import app.commands.StartPlaybackCommand
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
-import app.events.server.AllClientsReadyEvent
 import app.events.server.PauseClientsEvent
 import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
@@ -22,8 +22,10 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
+import rx.Observable
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 import static ControlButtonEvent.Type.*
 
@@ -110,9 +112,11 @@ class LocalPlayerService extends Service {
     }
 
     @Subscribe
-    void allClientsReady(AllClientsReadyEvent event) {
-        Debug.d()
-        player.setPaused false, true
+    void onStartPlayback(StartPlaybackCommand cmd) {
+        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                  .subscribe {
+                      player.setPaused false, true
+                  }
     }
 
     @Subscribe

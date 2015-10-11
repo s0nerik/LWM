@@ -27,7 +27,7 @@ class AveragingCollection<T extends Number> extends CircularFifoQueue<T> {
     @Override
     boolean add(T element) {
         def result = super.add(itemGetter ? itemGetter(element) : element)
-        average = (sum() as T).intdiv(size()) as T
+        average = sum { T it -> it.intdiv size() } as T
         return result
     }
 }

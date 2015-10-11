@@ -3,15 +3,19 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import app.Injector
+import app.commands.StartPlaybackCommand
 import app.events.client.ReadyToStartPlaybackEvent
+import app.player.StreamPlayer
 import app.websocket.WebSocketMessageClient
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+import rx.Observable
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 import static app.websocket.SocketMessage.Message.READY
 import static app.websocket.SocketMessage.Type.POST
@@ -22,6 +26,9 @@ class StreamPlayerService extends Service {
 
     @Inject
     Bus bus
+
+    @Inject
+    StreamPlayer player
 
     private WebSocketMessageClient webSocketMessageClient
 
@@ -64,4 +71,13 @@ class StreamPlayerService extends Service {
     void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
         webSocketMessageClient.sendMessage POST, READY
     }
+
+    @Subscribe
+    void onStartPlaybackCommand(StartPlaybackCommand cmd) {
+        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                .subscribe {
+                    player.paused = false
+                }
+    }
+
 }

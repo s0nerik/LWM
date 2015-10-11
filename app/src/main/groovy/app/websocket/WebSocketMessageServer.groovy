@@ -1,8 +1,8 @@
 package app.websocket
 import app.Injector
 import app.Utils
+import app.commands.StartPlaybackCommand
 import app.events.chat.ChatMessageReceivedEvent
-import app.events.server.AllClientsReadyEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.events.server.ClientReadyEvent
@@ -129,13 +129,20 @@ class WebSocketMessageServer extends WebSocketServer {
 
         bus.post new ClientReadyEvent(conn)
 
-        if(ready.size() == connections().size()) {
-            Debug.d "Everyone's ready to play!"
+        if(ready.size() == connections().size())
+            onEveryoneReady()
+    }
 
-            bus.post new AllClientsReadyEvent()
+    private void onEveryoneReady() {
+        def startTime = System.currentTimeMillis() + pingMeasurers.values().max { PingMeasurer it -> it.average }.average + 250
 
-            ready.clear()
+        bus.post new StartPlaybackCommand(startTime)
+
+        connections().each {
+            sendMessage(it, POST, START, startTime as String)
         }
+
+        ready.clear()
     }
 
     private void processClientInfo(WebSocket conn, ClientInfo info) {
@@ -151,6 +158,18 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.d()
         connections().each {
             sendMessage it, POST, PAUSE
+        }
+    }
+
+    void sendAll(String message) {
+        for (WebSocket conn : connections()) {
+            conn.send(message)
+        }
+    }
+
+    void sendAllExcept(String message, WebSocket socket) {
+        for (WebSocket conn : connections()) {
+            if (!conn.equals(socket)) conn.send(message)
         }
     }
 

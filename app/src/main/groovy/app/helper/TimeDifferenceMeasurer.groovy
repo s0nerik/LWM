@@ -5,15 +5,20 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class TimeDifferenceMeasurer {
 
-    private AveragingCollection<Long> times
+    private AveragingCollection<Long> differences
 
     TimeDifferenceMeasurer() {
-        times = new AveragingCollection<>({ long it -> System.currentTimeMillis() - it })
+        differences = new AveragingCollection<>({ long it -> System.currentTimeMillis() - it })
     }
 
     void add(long item) {
-        times << item
+        differences << item
     }
 
-    long getDifference() { times.average }
+    long getDifference() { differences.average }
+
+    long toLocalTime(long time) {
+        time + differences.average
+    }
+
 }

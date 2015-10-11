@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import app.Injector
 import app.Utils
+import app.commands.StartPlaybackCommand
 import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
@@ -108,7 +109,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         } else if (socketMessage.type == POST) {
             switch (socketMessage.message) {
                 case START:
-                    player.paused = false
+                    bus.post new StartPlaybackCommand(timeDifferenceMeasurer.toLocalTime(body as long))
                     break
                 case PAUSE:
                     player.paused = true

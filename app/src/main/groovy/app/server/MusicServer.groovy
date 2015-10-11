@@ -1,6 +1,7 @@
 package app.server
 import app.Daggered
 import app.Utils
+import app.commands.StartPlaybackCommand
 import app.events.chat.*
 import app.events.server.*
 import app.model.chat.ChatMessage
@@ -84,26 +85,20 @@ class MusicServer extends Daggered {
     @Subscribe
     public void prepareClients(PrepareClientsEvent event) {
         if (!webSocketMessageServer.connections().empty) {
-            sendAll new SocketMessage(POST, PREPARE, event.position as String).toJson()
+            webSocketMessageServer.sendAll new SocketMessage(POST, PREPARE, event.position as String).toJson()
         } else {
-            bus.post new AllClientsReadyEvent()
+            bus.post new StartPlaybackCommand()
         }
     }
 
     @Subscribe
-    public void allClientsReady(AllClientsReadyEvent event) {
-        String pos = player.currentPosition as String
-        sendAll(new SocketMessage(POST, START, pos).toJson())
-    }
-
-    @Subscribe
     public void pauseClients(PauseClientsEvent event) {
-        sendAll(new SocketMessage(POST, PAUSE).toJson())
+        webSocketMessageServer.sendAll(new SocketMessage(POST, PAUSE).toJson())
     }
 
     @Subscribe
     public void seekToClients(SeekToClientsEvent event) {
-        sendAll(new SocketMessage(POST, SEEK_TO, event.position as String).toJson())
+        webSocketMessageServer.sendAll(new SocketMessage(POST, SEEK_TO, event.position as String).toJson())
     }
 
     @Produce
@@ -116,7 +111,7 @@ class MusicServer extends Daggered {
         unreadMessages += 1
         ChatMessage msg = event.getMessage()
         chatMessages.add(msg)
-        sendAllExcept(new SocketMessage(POST, MESSAGE, Utils.toJson(msg)).toJson(), event.getWebSocket())
+        webSocketMessageServer.sendAllExcept(new SocketMessage(POST, MESSAGE, Utils.toJson(msg)).toJson(), event.getWebSocket())
         bus.post(new NotifyMessageAddedEvent(msg))
     }
 
@@ -138,18 +133,6 @@ class MusicServer extends Daggered {
     @Produce
     public MusicServerStateChangedEvent produceMusicServerState() {
         return new MusicServerStateChangedEvent(started ? STARTED : STOPPED)
-    }
-
-    private void sendAll(String message) {
-        for (WebSocket conn : webSocketMessageServer.connections()) {
-            conn.send(message)
-        }
-    }
-
-    private void sendAllExcept(String message, WebSocket socket) {
-        for (WebSocket conn : webSocketMessageServer.connections()) {
-            if (!conn.equals(socket)) conn.send(message)
-        }
     }
 
 }
