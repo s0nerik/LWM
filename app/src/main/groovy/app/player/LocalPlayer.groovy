@@ -6,12 +6,9 @@ import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.events.player.service.CurrentSongAvailableEvent
 import app.events.server.MusicServerStateChangedEvent
-import app.events.server.PauseClientsEvent
-import app.events.server.PrepareClientsEvent
-import app.events.server.SeekToClientsEvent
+import app.commands.PrepareClientsCommand
 import app.model.Song
 import app.service.LocalPlayerService
-import com.github.s0nerik.betterknife.annotations.Profile
 import com.google.android.exoplayer.ExoPlaybackException
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
@@ -33,7 +30,6 @@ class LocalPlayer extends BasePlayer {
     @PackageScope
     Bus bus
 
-    private boolean serverStarted = false
     private Queue queue = new Queue()
 
     @Override
@@ -64,15 +60,6 @@ class LocalPlayer extends BasePlayer {
     }
 
     List<Song> getQueue() { queue.queue }
-
-    @Override
-    void seekTo(int msec) {
-        super.seekTo(msec)
-        if (serverStarted) {
-            paused = true
-            bus.post new SeekToClientsEvent(msec)
-        }
-    }
 
     void setQueue(List<Song> songs) {
         queue.clear()
@@ -109,18 +96,6 @@ class LocalPlayer extends BasePlayer {
         return queue.song
     }
 
-    void setPaused(boolean flag, boolean ignoreServerStarted = false) {
-        if (serverStarted && !ignoreServerStarted) {
-            if (flag) {
-                bus.post new PauseClientsEvent()
-            } else {
-                bus.post new PrepareClientsEvent(currentPosition)
-            }
-        } else {
-            super.setPaused flag
-        }
-    }
-
     void play(int position) {
         queue.moveTo position
         play()
@@ -135,7 +110,7 @@ class LocalPlayer extends BasePlayer {
 
         if (serverStarted) {
             bus.post new CurrentSongAvailableEvent(currentSong)
-            bus.post new PrepareClientsEvent(0)
+            bus.post new PrepareClientsCommand(0)
         } else {
             paused = false
         }
@@ -176,10 +151,5 @@ class LocalPlayer extends BasePlayer {
     int getQueueSize() { queue.size }
 
     boolean isSongInQueue(Song song) { queue.contains song }
-
-    @Subscribe
-    void onMusicServerStateChanged(MusicServerStateChangedEvent event) {
-        serverStarted = event.state == STARTED
-    }
 
 }

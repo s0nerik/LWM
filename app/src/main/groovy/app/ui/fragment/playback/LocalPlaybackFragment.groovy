@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import app.R
 import app.Utils
+import app.commands.SeekToCommand
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -166,7 +167,7 @@ class LocalPlaybackFragment extends PlaybackFragment {
         @Override
         void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (fromUser) {
-                player.seekTo PlayerUtils.convertSeekBarToProgress(progress)
+                bus.post new SeekToCommand(PlayerUtils.convertSeekBarToProgress(progress))
             }
         }
 

@@ -9,85 +9,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import app.Injector
 import app.R
 import app.Utils
 import app.model.Song
 import app.player.LocalPlayer
 import es.claucookie.miniequalizerlibrary.EqualizerView
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+
+import javax.inject.Inject
 
 @CompileStatic
-public class SimpleSongsListAdapter extends ArrayAdapter<Song> {
+class SimpleSongsListAdapter extends ArrayAdapter<Song> {
 
-    private final Context context
     private List<Song> songsList
 
     private int checked = -1
 
-    private LocalPlayer player
+    @Inject
+    @PackageScope
+    LocalPlayer player
 
-    private LayoutInflater inflater
+    @Inject
+    @PackageScope
+    LayoutInflater inflater
 
-//    private class OnContextButtonClickListener implements View.OnClickListener {
-//        private int position
-//
-//        OnContextButtonClickListener(int pos) {
-//            position = pos
-//        }
-//
-//        @Override
-//        public void onClick(View view) {
-//            PopupMenu menu = new PopupMenu(context, view)
-//
-//            if (player.isSongInQueue(songsList.get(position))) {
-//                menu.inflate(R.menu.songs_popup_in_queue)
-//            } else {
-//                menu.inflate(R.menu.songs_popup)
-//            }
-//
-//            menu.onMenuItemClickListener = {
-//                switch (it.getItemId()){
-//                    case R.id.action_remove_from_queue:
-//                        player.removeFromQueue(songsList.get(position));
-//                        Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
-//                        toast.show();
-//                        return true;
-//                    case R.id.action_add_to_queue:
-//                        player.addToQueue(songsList.get(position));
-//                        Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
-//                        toast.show();
-//                        return true;
-//                    case R.id.set_as_ringtone:
-//                        Utils.setSongAsRingtone(context, songsList.get(position));
-//                        return true;
-//                    default:
-//                        return false;
-//                }
-//            }
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                final ImageView v = (ImageView) view;
-//                final ColorFilter oldFilter = v.getColorFilter();
-//                v.setColorFilter(Color.parseColor("#33b5e5"));
-//                menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-//                    @Override
-//                    public void onDismiss(PopupMenu popupMenu) {
-//                        v.setColorFilter(oldFilter);
-//                    }
-//                });
-//            }
-//
-//            menu.show();
-//        }
-//
-//    }
-
-    public SimpleSongsListAdapter(Context context, LocalPlayer player, List<Song> playlist) {
+    public SimpleSongsListAdapter(Context context, List<Song> playlist) {
         super(context, R.layout.list_item_songs_simple, playlist)
-        this.context = context
-        this.player = player
         songsList = playlist
-        inflater = LayoutInflater.from context
+        Injector.inject this
     }
 
     static class ViewHolder {

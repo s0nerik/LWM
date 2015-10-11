@@ -6,12 +6,16 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.IBinder
 import app.Injector
+import app.commands.EnqueueCommand
+import app.commands.SeekToCommand
 import app.commands.StartPlaybackCommand
+import app.commands.StartPlaylistCommand
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
-import app.events.server.PauseClientsEvent
+import app.commands.ChangePauseStateCommand
+import app.events.server.MusicServerStateChangedEvent
 import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.ui.notification.NowPlayingNotification
@@ -28,6 +32,7 @@ import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
 import static ControlButtonEvent.Type.*
+import static app.events.server.MusicServerStateChangedEvent.State.STARTED
 
 @PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
@@ -43,6 +48,8 @@ class LocalPlayerService extends Service {
     AudioManager audioManager
 
     ComponentName mediaButtonsReceiver
+
+    private boolean serverStarted = false
 
     @Override
     void onCreate() {
@@ -82,6 +89,45 @@ class LocalPlayerService extends Service {
     CurrentSongAvailableEvent produceCurrentSong() { new CurrentSongAvailableEvent(player.currentSong) }
 
     @Subscribe
+    void startPlayback(StartPlaybackCommand cmd) {
+        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                  .subscribe {
+                      player.paused = false
+                  }
+    }
+
+    @Subscribe
+    void changePauseState(ChangePauseStateCommand cmd) {
+        if (serverStarted && !cmd.pause)
+            return
+
+        player.paused = cmd.pause
+    }
+
+    @Subscribe
+    void seekTo(SeekToCommand cmd) {
+        player.seekTo cmd.position as int
+    }
+
+    @Subscribe
+    void startPlaylist(StartPlaylistCommand cmd) {
+        if (player.playing) player.stop()
+
+        player.queue = cmd.playlist
+        player.play cmd.position
+    }
+
+    @Subscribe
+    void enqueue(EnqueueCommand cmd) {
+        player.addToQueue cmd.playlist
+    }
+
+    @Subscribe
+    void onMusicServerStateChanged(MusicServerStateChangedEvent event) {
+        serverStarted = event.state == STARTED
+    }
+
+    @Subscribe
     void onControlButton(ControlButtonEvent event) {
         Debug.d event as String
         switch (event.type) {
@@ -101,28 +147,12 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void onPlaybackStarted(PlaybackStartedEvent event) {
-        Debug.d()
         makeForeground true
     }
 
     @Subscribe
     void onPlaybackPaused(PlaybackPausedEvent event) {
-        Debug.d()
         makeForeground false
-    }
-
-    @Subscribe
-    void onStartPlayback(StartPlaybackCommand cmd) {
-        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                  .subscribe {
-                      player.setPaused false, true
-                  }
-    }
-
-    @Subscribe
-    void onPauseClients(PauseClientsEvent event) {
-        Debug.d()
-        player.setPaused true, true
     }
 
 }

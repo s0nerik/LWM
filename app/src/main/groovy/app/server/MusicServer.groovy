@@ -1,6 +1,9 @@
 package app.server
 import app.Daggered
 import app.Utils
+import app.commands.ChangePauseStateCommand
+import app.commands.PrepareClientsCommand
+import app.commands.SeekToCommand
 import app.commands.StartPlaybackCommand
 import app.events.chat.*
 import app.events.server.*
@@ -9,13 +12,11 @@ import app.player.LocalPlayer
 import app.websocket.SocketMessage
 import app.websocket.WebSocketMessageServer
 import com.github.s0nerik.betterknife.annotations.Profile
-import com.google.gson.Gson
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import org.java_websocket.WebSocket
 
 import javax.inject.Inject
 
@@ -25,8 +26,6 @@ import static app.websocket.SocketMessage.Message.MESSAGE
 import static app.websocket.SocketMessage.Message.PAUSE
 import static app.websocket.SocketMessage.Message.PREPARE
 import static app.websocket.SocketMessage.Message.SEEK_TO
-import static app.websocket.SocketMessage.Message.START
-import static app.websocket.SocketMessage.Message.START_FROM
 import static app.websocket.SocketMessage.Type.POST
 
 @CompileStatic
@@ -83,7 +82,7 @@ class MusicServer extends Daggered {
     }
 
     @Subscribe
-    public void prepareClients(PrepareClientsEvent event) {
+    public void prepareClients(PrepareClientsCommand event) {
         if (!webSocketMessageServer.connections().empty) {
             webSocketMessageServer.sendAll new SocketMessage(POST, PREPARE, event.position as String).toJson()
         } else {
@@ -92,13 +91,18 @@ class MusicServer extends Daggered {
     }
 
     @Subscribe
-    public void pauseClients(PauseClientsEvent event) {
-        webSocketMessageServer.sendAll(new SocketMessage(POST, PAUSE).toJson())
+    void onChangePauseState(ChangePauseStateCommand cmd) {
+        if (cmd.pause) {
+            webSocketMessageServer.sendAll new SocketMessage(POST, PAUSE).toJson()
+        } else {
+            webSocketMessageServer.sendAll new SocketMessage(POST, PREPARE, player.currentPosition as String).toJson()
+        }
     }
 
     @Subscribe
-    public void seekToClients(SeekToClientsEvent event) {
-        webSocketMessageServer.sendAll(new SocketMessage(POST, SEEK_TO, event.position as String).toJson())
+    void onSeekTo(SeekToCommand cmd) {
+        player.paused = true
+        webSocketMessageServer.sendAll(new SocketMessage(POST, SEEK_TO, cmd.position as String).toJson())
     }
 
     @Produce

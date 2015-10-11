@@ -6,7 +6,7 @@ import app.events.chat.ChatMessageReceivedEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.events.server.ClientReadyEvent
-import app.events.server.PauseClientsEvent
+import app.commands.ChangePauseStateCommand
 import app.helper.PingMeasurer
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
@@ -154,7 +154,7 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     @Subscribe
-    void onPauseClients(PauseClientsEvent event) {
+    void onPauseClients(ChangePauseStateCommand event) {
         Debug.d()
         connections().each {
             sendMessage it, POST, PAUSE

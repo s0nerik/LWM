@@ -11,6 +11,8 @@ import android.widget.*
 import app.R
 import app.Utils
 import app.adapter.SimpleSongsListAdapter
+import app.commands.EnqueueCommand
+import app.commands.StartPlaylistCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.helper.db.Order
@@ -72,9 +74,6 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     LayoutInflater inflater;
 
     @Inject
-    LocalPlayer player;
-
-    @Inject
     Utils utils;
 
     @Extra
@@ -89,7 +88,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
         playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));
 
-        adapter = new SimpleSongsListAdapter(this, player, playlist);
+        adapter = new SimpleSongsListAdapter(this, playlist);
 
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
@@ -141,11 +140,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
     @OnClick(R.id.fab)
     public void onFabClicked() {
-        if (player.isPlaying()) {
-            player.stop();
-        }
-        player.setQueue(playlist);
-        player.play(0);
+        bus.post new StartPlaylistCommand(playlist)
     }
 
     @OnClick(R.id.overflowMenu)
@@ -173,12 +168,12 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         int id = item.getItemId();
         switch (id) {
             case R.id.action_add_to_queue:
-                player.addToQueue(playlist);
-                Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT);
-                toast.show();
-                return true;
+                bus.post new EnqueueCommand(playlist)
+                Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT)
+                toast.show()
+                return true
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
     @Override
@@ -186,8 +181,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         Debug.d("onItemClick: " + position);
         setSelection(position);
 
-        player.setQueue(playlist);
-        player.play(position);
+        bus.post new StartPlaylistCommand(playlist, position)
     }
 
     @Override
@@ -196,24 +190,24 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         super.onDestroy();
     }
 
-    public void highlightCurrentSong() {
-        int pos = Utils.getCurrentSongPosition(player, playlist);
-        setSelection(pos);
+    public void highlightCurrentSong(Song song) {
+        int pos = playlist.indexOf song
+        selection = pos
     }
 
     private void setSelection(int position) {
-        mListView.setItemChecked(position, true);
-        adapter.setChecked(position);
+        mListView.setItemChecked position, true
+        adapter.setChecked position
     }
 
     @Subscribe
-    public void playbackStarted(PlaybackStartedEvent event) {
-        highlightCurrentSong();
+    void playbackStarted(PlaybackStartedEvent event) {
+        highlightCurrentSong event.song
     }
 
     @Subscribe
-    public void currentSongAvailable(CurrentSongAvailableEvent event) {
-        highlightCurrentSong();
+    void currentSongAvailable(CurrentSongAvailableEvent event) {
+        highlightCurrentSong event.song
     }
 
     @TargetApi(21)

@@ -53,11 +53,6 @@ class StreamPlayer extends BasePlayer {
         prepare uri, true
     }
 
-//    @Override
-//    void seekTo(int msec) {
-//        paused = true
-//    }
-
     @Override
     void nextSong() {
 

@@ -19,9 +19,6 @@ import javax.inject.Inject;
 public abstract class BaseLocalActivity extends DaggerActivity {
 
     @Inject
-    LocalPlayer player;
-
-    @Inject
     Bus bus;
 
     @Inject
