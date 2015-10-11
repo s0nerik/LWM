@@ -9,6 +9,7 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import com.github.s0nerik.betterknife.annotations.Profile
 
 import com.melnykov.fab.FloatingActionButton
+import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import rx.Observable
@@ -25,6 +26,10 @@ public final class SongsListFragment extends BaseSongsListFragment {
     @Inject
     @PackageScope
     SongsManager songsManager
+
+    @Inject
+    @PackageScope
+    Bus bus
 
     @OnClick(R.id.fab)
     public void onFabClicked() {

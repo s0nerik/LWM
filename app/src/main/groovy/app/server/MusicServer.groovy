@@ -4,7 +4,7 @@ import app.Utils
 import app.commands.ChangePauseStateCommand
 import app.commands.PrepareClientsCommand
 import app.commands.SeekToCommand
-import app.commands.StartPlaybackCommand
+import app.commands.StartPlaybackDelayedCommand
 import app.events.chat.*
 import app.events.server.*
 import app.model.chat.ChatMessage
@@ -86,7 +86,7 @@ class MusicServer extends Daggered {
         if (!webSocketMessageServer.connections().empty) {
             webSocketMessageServer.sendAll new SocketMessage(POST, PREPARE, event.position as String).toJson()
         } else {
-            bus.post new StartPlaybackCommand()
+            bus.post new StartPlaybackDelayedCommand()
         }
     }
 

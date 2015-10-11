@@ -12,7 +12,7 @@ import app.R
 import app.Utils
 import app.adapter.SimpleSongsListAdapter
 import app.commands.EnqueueCommand
-import app.commands.StartPlaylistCommand
+import app.commands.SetQueueAndPlayCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.helper.db.Order
@@ -20,7 +20,6 @@ import app.helper.db.SongsCursorGetter
 import app.model.Album
 import app.model.Playlist
 import app.model.Song
-import app.player.LocalPlayer
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
@@ -140,7 +139,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 
     @OnClick(R.id.fab)
     public void onFabClicked() {
-        bus.post new StartPlaylistCommand(playlist)
+        bus.post new SetQueueAndPlayCommand(playlist, 0)
     }
 
     @OnClick(R.id.overflowMenu)
@@ -181,7 +180,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         Debug.d("onItemClick: " + position);
         setSelection(position);
 
-        bus.post new StartPlaylistCommand(playlist, position)
+        bus.post new SetQueueAndPlayCommand(playlist, position)
     }
 
     @Override

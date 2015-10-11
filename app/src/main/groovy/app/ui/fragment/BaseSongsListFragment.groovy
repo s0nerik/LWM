@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import app.R
 import app.adapter.SongsListAdapter
+import app.commands.SetQueueAndPlayCommand
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -97,9 +98,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     protected void shuffleAll() {
         if (songs) {
-            player.queue = songs
-            player.shuffleQueue()
-            player.play 0
+            bus.post new SetQueueAndPlayCommand(songs, 0, true)
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
         }

@@ -8,9 +8,11 @@ import android.os.IBinder
 import app.Injector
 import app.commands.EnqueueCommand
 import app.commands.PlaySongAtPositionCommand
+import app.commands.PrepareClientsCommand
 import app.commands.SeekToCommand
-import app.commands.StartPlaybackCommand
-import app.commands.StartPlaylistCommand
+import app.commands.SetQueueAndPlayCommand
+import app.commands.StartPlaybackDelayedCommand
+import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.control.ControlButtonEvent
@@ -78,7 +80,7 @@ class LocalPlayerService extends Service {
 
     @Override
     int onStartCommand(Intent intent, int flags, int startId) {
-        makeForeground player.playing
+//        makeForeground player.playing
         return START_NOT_STICKY
     }
 
@@ -90,7 +92,7 @@ class LocalPlayerService extends Service {
     CurrentSongAvailableEvent produceCurrentSong() { new CurrentSongAvailableEvent(player.currentSong) }
 
     @Subscribe
-    void startPlayback(StartPlaybackCommand cmd) {
+    void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
         Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                   .subscribe {
                       player.paused = false
@@ -111,11 +113,17 @@ class LocalPlayerService extends Service {
     }
 
     @Subscribe
-    void startPlaylist(StartPlaylistCommand cmd) {
+    void setQueueAndPlayCommand(SetQueueAndPlayCommand cmd) {
         if (player.playing) player.stop()
 
-        player.queue = cmd.playlist
-        player.play cmd.position
+        player.queue = cmd.queue
+        if (cmd.shuffle) player.shuffleQueue()
+        player.prepare cmd.position
+    }
+
+    @Subscribe
+    void playSongAtPosition(PlaySongAtPositionCommand cmd) {
+        player.prepare cmd.position
     }
 
     @Subscribe
@@ -123,13 +131,17 @@ class LocalPlayerService extends Service {
         player.addToQueue cmd.playlist
     }
 
-    void playSongAtPosition(PlaySongAtPositionCommand cmd) {
-        player.play cmd.position
-    }
-
     @Subscribe
     void onMusicServerStateChanged(MusicServerStateChangedEvent event) {
         serverStarted = event.state == STARTED
+    }
+
+    @Subscribe
+    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
+        if (serverStarted) {
+            bus.post new CurrentSongAvailableEvent(event.song)
+            bus.post new PrepareClientsCommand(event.position)
+        }
     }
 
     @Subscribe

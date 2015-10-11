@@ -2,7 +2,7 @@ package app.player
 import android.content.Context
 import android.net.Uri
 import android.os.Handler
-import app.events.client.ReadyToStartPlaybackEvent
+import app.events.player.ReadyToStartPlaybackEvent
 import app.model.Song
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -44,7 +44,7 @@ class StreamPlayer extends BasePlayer {
             seekTo pos
         } else if (seekingToPosition && paused) {
             seekingToPosition = false
-            bus.post new ReadyToStartPlaybackEvent()
+            bus.post new ReadyToStartPlaybackEvent(this, getCurrentSong(), currentPosition)
         }
     }
 

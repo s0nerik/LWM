@@ -5,6 +5,6 @@ import groovy.transform.CompileStatic
 
 @Canonical
 @CompileStatic
-class StartPlaybackCommand {
+class StartPlaybackDelayedCommand {
     long startAt = System.currentTimeMillis()
 }

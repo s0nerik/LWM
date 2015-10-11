@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import app.R
 import app.Utils
+import app.commands.ChangePauseStateCommand
 import app.commands.SeekToCommand
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
@@ -22,6 +23,7 @@ import app.player.LocalPlayer
 import app.player.PlayerUtils
 import app.ui.Blurer
 import com.github.s0nerik.betterknife.annotations.OnClick
+import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -40,6 +42,10 @@ class LocalPlaybackFragment extends PlaybackFragment {
     @Inject
     @PackageScope
     Utils utils
+
+    @Inject
+    @PackageScope
+    Bus bus
 
 //    @Inject
 //    @PackageScope
@@ -87,14 +93,14 @@ class LocalPlaybackFragment extends PlaybackFragment {
                 player.prevSong()
                 break;
             case R.id.btnPlayPause:
-                player.togglePause()
-                break;
+                bus.post new ChangePauseStateCommand(!player.paused)
+                break
             case R.id.btnShuffle:
                 player.shuffleQueueExceptPlayed()
-                break;
+                break
             case R.id.btnRepeat:
                 player.repeat = !player.repeat
-                break;
+                break
         }
     }
 

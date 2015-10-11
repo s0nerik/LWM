@@ -1,7 +1,7 @@
 package app.websocket
 import app.Injector
 import app.Utils
-import app.commands.StartPlaybackCommand
+import app.commands.StartPlaybackDelayedCommand
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
@@ -136,7 +136,7 @@ class WebSocketMessageServer extends WebSocketServer {
     private void onEveryoneReady() {
         def startTime = System.currentTimeMillis() + pingMeasurers.values().max { PingMeasurer it -> it.average }.average + 250
 
-        bus.post new StartPlaybackCommand(startTime)
+        bus.post new StartPlaybackDelayedCommand(startTime)
 
         connections().each {
             sendMessage(it, POST, START, startTime as String)

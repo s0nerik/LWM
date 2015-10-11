@@ -9,7 +9,7 @@ import app.R
 import app.Utils
 import app.adapter.view_holders.SongViewHolder
 import app.commands.PlaySongAtPositionCommand
-import app.commands.StartPlaylistCommand
+import app.commands.SetQueueAndPlayCommand
 import app.model.Song
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -54,7 +54,7 @@ class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
         } else {
             holder.mContainer.onClickListener = { View v ->
                 def pos = holder.getAdapterPosition()
-                bus.post new StartPlaylistCommand(songs, pos)
+                bus.post new SetQueueAndPlayCommand(songs, pos)
             }
         }
         return holder

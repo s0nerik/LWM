@@ -4,6 +4,7 @@ import android.media.AudioManager
 import android.net.Uri
 import app.Injector
 import app.Utils
+import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
@@ -76,7 +77,6 @@ abstract class BasePlayer {
             gainAudioFocus()
             bus.post new PlaybackStartedEvent(getCurrentSong(), currentPosition)
             startNotifyingPlaybackProgress()
-            startService()
         }
     }
     void onError(ExoPlaybackException e) {
@@ -138,6 +138,8 @@ abstract class BasePlayer {
         innerPlayer.addListener listener
 
         paused = true
+
+        startService()
     }
 
     String getCurrentPositionInMinutes() {
@@ -215,7 +217,6 @@ abstract class BasePlayer {
             prepareOld()
         } else {
             prepareTimeMeasurer.start()
-//            innerPlayer.stop()
             prepareInternal uri
         }
     }

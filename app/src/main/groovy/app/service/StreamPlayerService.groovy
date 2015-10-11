@@ -3,8 +3,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import app.Injector
-import app.commands.StartPlaybackCommand
-import app.events.client.ReadyToStartPlaybackEvent
+import app.commands.StartPlaybackDelayedCommand
+import app.events.player.ReadyToStartPlaybackEvent
 import app.player.StreamPlayer
 import app.websocket.WebSocketMessageClient
 import com.squareup.otto.Bus
@@ -73,7 +73,7 @@ class StreamPlayerService extends Service {
     }
 
     @Subscribe
-    void onStartPlaybackCommand(StartPlaybackCommand cmd) {
+    void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
         Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                 .subscribe {
                     player.paused = false

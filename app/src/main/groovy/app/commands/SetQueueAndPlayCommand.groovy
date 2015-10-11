@@ -6,7 +6,8 @@ import groovy.transform.CompileStatic
 
 @Canonical
 @CompileStatic
-class StartPlaylistCommand {
-    List<Song> playlist
-    int position = 0
+class SetQueueAndPlayCommand {
+    List<Song> queue
+    int position
+    boolean shuffle = false
 }

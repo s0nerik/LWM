@@ -2,22 +2,19 @@ package app.player
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.events.player.service.CurrentSongAvailableEvent
-import app.events.server.MusicServerStateChangedEvent
 import app.commands.PrepareClientsCommand
 import app.model.Song
 import app.service.LocalPlayerService
 import com.google.android.exoplayer.ExoPlaybackException
 import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
 import javax.inject.Inject
-
-import static app.events.server.MusicServerStateChangedEvent.State.STARTED
 
 @CompileStatic
 class LocalPlayer extends BasePlayer {
@@ -33,11 +30,19 @@ class LocalPlayer extends BasePlayer {
     private Queue queue = new Queue()
 
     @Override
+    void onReady(boolean playWhenReady) {
+        super.onReady(playWhenReady)
+
+        if (!playWhenReady)
+            bus.post new ReadyToStartPlaybackEvent(this, getCurrentSong(), currentPosition)
+    }
+
+    @Override
     void onPlaybackEnded() {
         super.onPlaybackEnded()
 
         if (repeat) {
-            play()
+            prepare()
         } else {
             nextSong()
         }
@@ -96,30 +101,27 @@ class LocalPlayer extends BasePlayer {
         return queue.song
     }
 
-    void play(int position) {
+    void prepare(int position) {
         queue.moveTo position
-        play()
+        prepare()
     }
 
-    void play() {
+    void prepare() {
         stop()
 
         while (!prepare(queue.song?.sourceUri)) {
             queue.moveToNext true
         }
+    }
 
-        if (serverStarted) {
-            bus.post new CurrentSongAvailableEvent(currentSong)
-            bus.post new PrepareClientsCommand(0)
-        } else {
-            paused = false
-        }
+    void start() {
+        paused = false
     }
 
     @Override
     void nextSong() {
         if (queue.moveToNext()) {
-            play()
+            prepare()
         } else {
             Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show()
         }
@@ -128,7 +130,7 @@ class LocalPlayer extends BasePlayer {
     @Override
     void prevSong() {
         if (queue.moveToPrev()) {
-            play()
+            prepare()
         } else {
             Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show()
         }
