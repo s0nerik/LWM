@@ -55,9 +55,11 @@ class WebSocketMessageServer extends WebSocketServer {
     @Override
     void onOpen(WebSocket conn, ClientHandshake handshake) {
         Debug.d "connections.size() = ${connections().size()}"
-        conn.send new SocketMessage(GET, CLIENT_INFO).toJson()
 
         pingMeasurers[conn] = new PingMeasurer({ sendMessage conn, GET, PING, System.currentTimeMillis() as String })
+        pingMeasurers[conn].pingWarmupFinished.subscribe {
+            conn.send new SocketMessage(GET, CLIENT_INFO).toJson()
+        }
         pingMeasurers[conn].start()
     }
 

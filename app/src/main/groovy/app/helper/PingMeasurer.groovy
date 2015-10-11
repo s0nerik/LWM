@@ -5,6 +5,7 @@ import groovy.transform.TupleConstructor
 import rx.Observable
 import rx.Subscription
 import rx.functions.Action1
+import rx.subjects.AsyncSubject
 
 import java.util.concurrent.TimeUnit
 
@@ -21,7 +22,9 @@ class PingMeasurer {
 
     private DelayMeasurer<Long> delayMeasurer = new DelayMeasurer<Long>(PINGS_LIMIT)
 
-    Subscription pingWorker
+    private Subscription pingWorker
+
+    AsyncSubject<Long> pingWarmupFinished = AsyncSubject.<Long>create()
 
     PingMeasurer(Action1<Long> pingPerformer) {
         this.pingPerformer = pingPerformer
@@ -30,6 +33,10 @@ class PingMeasurer {
     void start() {
         pingWorker = Observable.interval(WARMUP_PERIOD, TimeUnit.MILLISECONDS)
                                 .take(WARMUP_COUNT)
+                                .doOnCompleted({
+                                    pingWarmupFinished.onNext System.currentTimeMillis()
+                                    pingWarmupFinished.onCompleted()
+                                })
                                 .concatWith(Observable.interval(PERIOD, TimeUnit.MILLISECONDS))
                                 .subscribe {
                                     delayMeasurer.start()
