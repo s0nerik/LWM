@@ -58,7 +58,7 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.d "connections.size() = ${connections().size()}"
         conn.send new SocketMessage(GET, CLIENT_INFO).toJson()
 
-        pingMeasurers[conn] = new PingMeasurer({ sendMessage conn, GET, PING })
+        pingMeasurers[conn] = new PingMeasurer({ sendMessage conn, GET, PING, System.currentTimeMillis() as String })
         pingMeasurers[conn].start()
     }
 

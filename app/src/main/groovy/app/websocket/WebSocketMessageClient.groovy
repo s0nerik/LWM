@@ -12,6 +12,7 @@ import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
 import app.helper.PingMeasurer
 import app.helper.PingResult
+import app.helper.TimeDifferenceMeasurer
 import app.model.Song
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
@@ -62,6 +63,8 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private ClientInfo clientInfo
 
+    private TimeDifferenceMeasurer timeDifferenceMeasurer = new TimeDifferenceMeasurer()
+
     WebSocketMessageClient(URI serverURI) {
         super(serverURI)
         Injector.inject this
@@ -97,6 +100,8 @@ public class WebSocketMessageClient extends WebSocketClient {
                     sendMessage POST, CLIENT_INFO, info
                     break
                 case PING:
+                    timeDifferenceMeasurer.add body as long
+                    Debug.d "time difference: ${timeDifferenceMeasurer.difference}"
                     sendMessage POST, PONG, System.currentTimeMillis() as String
                     break
                 default:
