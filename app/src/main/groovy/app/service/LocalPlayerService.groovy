@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.os.IBinder
 import app.Injector
 import app.commands.EnqueueCommand
+import app.commands.PlaySongAtPositionCommand
 import app.commands.SeekToCommand
 import app.commands.StartPlaybackCommand
 import app.commands.StartPlaylistCommand
@@ -120,6 +121,10 @@ class LocalPlayerService extends Service {
     @Subscribe
     void enqueue(EnqueueCommand cmd) {
         player.addToQueue cmd.playlist
+    }
+
+    void playSongAtPosition(PlaySongAtPositionCommand cmd) {
+        player.play cmd.position
     }
 
     @Subscribe

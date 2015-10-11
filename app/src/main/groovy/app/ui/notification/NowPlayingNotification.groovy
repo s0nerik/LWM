@@ -82,7 +82,7 @@ class NowPlayingNotification {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
 
-//        if (isPlaying) {
+//        if (playing) {
 //            builder.setSmallIcon(R.drawable.ic_stat_av_play)
 //        } else {
 //            builder.setSmallIcon(R.drawable.ic_stat_av_pause)

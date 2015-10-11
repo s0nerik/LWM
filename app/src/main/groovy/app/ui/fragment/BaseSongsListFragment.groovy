@@ -138,11 +138,12 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         public void onSongPlaybackStarted(PlaybackStartedEvent event) {
             currentSong = event.song
             setSelection currentSong
+            adapter.updateEqualizerState(true)
         }
 
         @Subscribe
         public void onSongPlaybackPaused(PlaybackPausedEvent event) {
-            adapter.updateEqualizerState()
+            adapter.updateEqualizerState(false)
         }
 
         @Subscribe

@@ -8,8 +8,10 @@ import app.Injector
 import app.R
 import app.Utils
 import app.adapter.view_holders.SongViewHolder
+import app.commands.PlaySongAtPositionCommand
+import app.commands.StartPlaylistCommand
 import app.model.Song
-import app.player.LocalPlayer
+import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -18,57 +20,56 @@ import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
-public class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
+class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
 
-    private final Context context;
-    private List<Song> songs;
+    private final Context context
+    private List<Song> songs
 
-    public int selection = -1;
+    public int selection = -1
 
-    private boolean newQueueOnClick;
+    private boolean newQueueOnClick = true;
+
+    private boolean playing
 
     @Inject
-    Utils utils;
+    Utils utils
 
     @Inject
-    LocalPlayer player;
+    Bus bus
 
-    public SongsListAdapter(Context context, List<Song> songs) {
+    SongsListAdapter(Context context, List<Song> songs) {
         Injector.inject(this);
         this.context = context;
         this.songs = songs;
     }
 
     @Override
-    public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         def holder = new SongViewHolder(View.inflate(context, R.layout.item_songs, null), songs)
-        if (newQueueOnClick) {
+        if (!newQueueOnClick) {
             holder.mContainer.onClickListener = { View v ->
                 def pos = holder.getAdapterPosition()
-                player.play(pos)
-                setSelection(pos)
+                bus.post new PlaySongAtPositionCommand(pos)
             }
         } else {
             holder.mContainer.onClickListener = { View v ->
                 def pos = holder.getAdapterPosition()
-                player.setQueue(songs);
-                player.play(pos);
-                setSelection(pos);
+                bus.post new StartPlaylistCommand(songs, pos)
             }
         }
         return holder
     }
 
     @Override
-    public void onBindViewHolder(SongViewHolder holder, int position) {
-        Song song = songs.get(position);
-        holder.mTitle.setText(song.getTitle());
-        holder.mArtist.setText(utils.getArtistName(song.getArtist()));
-        holder.mDuration.setText(song.getDurationString());
+    void onBindViewHolder(SongViewHolder holder, int position) {
+        Song song = songs[position]
+        holder.mTitle.setText song.title
+        holder.mArtist.setText utils.getArtistName(song.artist)
+        holder.mDuration.setText song.durationString
 
         if (selection == position) {
             holder.mPlayIcon.setVisibility(View.VISIBLE);
-            if (player.isPlaying()) {
+            if (playing) {
                 holder.mPlayIcon.animateBars();
             } else {
                 holder.mPlayIcon.stopBars();
@@ -80,20 +81,21 @@ public class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
     }
 
     @Override
-    public int getItemCount() {
-        return songs.size();
+    int getItemCount() {
+        return songs.size()
     }
 
-    public void setSelection(int position) {
-        int oldSelection = selection;
-        selection = position;
+    void setSelection(int position) {
+        int oldSelection = selection
+        selection = position
 
-        notifyItemChanged(oldSelection);
-        notifyItemChanged(position);
+        notifyItemChanged oldSelection
+        notifyItemChanged position
     }
 
-    public void updateEqualizerState() {
-        notifyItemChanged(selection);
+    void updateEqualizerState(boolean playing) {
+        this.playing = playing
+        notifyItemChanged selection
     }
 
 }
