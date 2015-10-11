@@ -10,8 +10,6 @@ import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
-import app.helper.PingMeasurer
-import app.helper.PingResult
 import app.helper.TimeDifferenceMeasurer
 import app.model.Song
 import app.model.chat.ChatMessage

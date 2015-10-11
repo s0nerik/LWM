@@ -14,6 +14,11 @@ class AveragingCollection<T extends Number> extends CircularFifoQueue<T> {
 
     private Closure<T> itemGetter
 
+    AveragingCollection(int size, Closure<T> itemGetter) {
+        super(size)
+        this.itemGetter = itemGetter
+    }
+
     AveragingCollection(Closure<T> itemGetter) {
         super()
         this.itemGetter = itemGetter

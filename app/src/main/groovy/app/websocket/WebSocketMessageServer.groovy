@@ -8,7 +8,6 @@ import app.events.server.ClientDisconnectedEvent
 import app.events.server.ClientReadyEvent
 import app.events.server.PauseClientsEvent
 import app.helper.PingMeasurer
-import app.helper.PingResult
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.websocket.entities.ClientInfo
@@ -97,7 +96,7 @@ class WebSocketMessageServer extends WebSocketServer {
                     processReadiness conn
                     break
                 case PONG:
-                    pingMeasurers[conn].pongReceived new PingResult(body as long)
+                    pingMeasurers[conn].pongReceived()
                     break
                 case CLIENT_INFO:
                     processClientInfo conn, Utils.<ClientInfo>fromJson(body)
@@ -119,7 +118,7 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.e ex
     }
 
-    private void sendMessage(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+    private static void sendMessage(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
         conn.send(new SocketMessage(type, msg, body).toJson())
     }
 

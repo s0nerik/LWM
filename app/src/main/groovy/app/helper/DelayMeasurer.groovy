@@ -1,16 +1,19 @@
 package app.helper
 
 import groovy.transform.CompileStatic
+import groovy.transform.InheritConstructors
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import org.apache.commons.lang3.time.StopWatch
 import ru.noties.debug.Debug
 
 @CompileStatic
-class DelayMeasurer {
-
-    private AveragingCollection<Long> delays = new AveragingCollection<Long>(10)
+class DelayMeasurer<T extends Number> extends AveragingCollection<T> {
 
     private StopWatch stopwatch = new StopWatch()
+
+    DelayMeasurer(int size) {
+        super(size)
+    }
 
     void start() {
         if (stopwatch.started) return
@@ -22,16 +25,12 @@ class DelayMeasurer {
         if (!stopwatch.started) return
 
         stopwatch.stop()
-        delays << stopwatch.time
+        add stopwatch.time as T
         stopwatch.reset()
     }
 
     void cancel() {
         stopwatch.reset()
-    }
-
-    public long getAverage() {
-        return delays.average
     }
 
 }

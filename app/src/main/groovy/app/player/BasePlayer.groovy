@@ -57,7 +57,7 @@ abstract class BasePlayer {
 
     private Song lastSong
 
-    protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer()
+    protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer(10)
 
     void onPlaybackEnded() { abandonAudioFocus() }
     void onStartedBuffering() {}
