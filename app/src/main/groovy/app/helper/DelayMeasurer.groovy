@@ -8,11 +8,9 @@ import ru.noties.debug.Debug
 @CompileStatic
 class DelayMeasurer {
 
-    private CircularFifoQueue<Long> delays = new CircularFifoQueue<Long>(10)
+    private AveragingCollection<Long> delays = new AveragingCollection<Long>(10)
 
     private StopWatch stopwatch = new StopWatch()
-
-    long average = 0
 
     void start() {
         if (stopwatch.started) return
@@ -25,7 +23,6 @@ class DelayMeasurer {
 
         stopwatch.stop()
         delays << stopwatch.time
-        updateAverage()
         stopwatch.reset()
     }
 
@@ -33,10 +30,8 @@ class DelayMeasurer {
         stopwatch.reset()
     }
 
-    private void updateAverage() {
-        average = (delays.sum() as long) / delays.size() as long
-
-        Debug.d "New delay average: ${average}"
+    public long getAverage() {
+        return delays.average
     }
 
 }
