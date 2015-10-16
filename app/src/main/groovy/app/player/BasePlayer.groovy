@@ -2,9 +2,9 @@ package app.player
 import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
+import android.support.annotation.NonNull
 import app.Injector
 import app.Utils
-import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
@@ -20,10 +20,18 @@ import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
+import rx.Observable
+import rx.Subscription
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 import static android.media.AudioManager.*
+import static com.google.android.exoplayer.ExoPlayer.STATE_BUFFERING
+import static com.google.android.exoplayer.ExoPlayer.STATE_ENDED
+import static com.google.android.exoplayer.ExoPlayer.STATE_IDLE
+import static com.google.android.exoplayer.ExoPlayer.STATE_PREPARING
+import static com.google.android.exoplayer.ExoPlayer.STATE_READY
 
 @CompileStatic
 abstract class BasePlayer {
@@ -46,14 +54,12 @@ abstract class BasePlayer {
     boolean repeat = false
     boolean shuffle = false
 
-    Uri playbackUri
-
     protected ExoPlayer innerPlayer
     protected MediaCodecAudioTrackRenderer renderer
 
     abstract void startService()
-    abstract Song getCurrentSong()
 
+    Song currentSong
     private Song lastSong
 
     protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer(10)
@@ -66,14 +72,14 @@ abstract class BasePlayer {
     }
     void onStartedPreparing() {}
     void onReady(boolean playWhenReady) {
-        if (getCurrentSong() != lastSong) {
-            lastSong = getCurrentSong()
-            bus.post new SongChangedEvent(getCurrentSong())
+        if (currentSong != lastSong) {
+            lastSong = currentSong
+            bus.post new SongChangedEvent(currentSong)
         }
 
         if (playWhenReady) {
             gainAudioFocus()
-            bus.post new PlaybackStartedEvent(getCurrentSong(), currentPosition)
+            bus.post new PlaybackStartedEvent(currentSong, innerPlayer.currentPosition)
             startNotifyingPlaybackProgress()
         }
     }
@@ -85,19 +91,19 @@ abstract class BasePlayer {
     private ExoPlayer.Listener listener = [
             onPlayerStateChanged    : { boolean playWhenReady, int playbackState ->
                 switch (playbackState) {
-                    case ExoPlayer.STATE_ENDED:
+                    case STATE_ENDED:
                         onPlaybackEnded()
                         break
-                    case ExoPlayer.STATE_BUFFERING:
+                    case STATE_BUFFERING:
                         onStartedBuffering()
                         break
-                    case ExoPlayer.STATE_IDLE:
+                    case STATE_IDLE:
                         onBecameIdle()
                         break
-                    case ExoPlayer.STATE_PREPARING:
+                    case STATE_PREPARING:
                         onStartedPreparing()
                         break
-                    case ExoPlayer.STATE_READY:
+                    case STATE_READY:
                         prepareTimeMeasurer.stop()
                         onReady(playWhenReady)
                         break
@@ -106,7 +112,7 @@ abstract class BasePlayer {
             },
             onPlayWhenReadyCommitted: {
                 if (!innerPlayer.playWhenReady) {
-                    bus.post new PlaybackPausedEvent(getCurrentSong(), currentPosition)
+                    bus.post new PlaybackPausedEvent(currentSong, innerPlayer.currentPosition)
                 }
             },
             onPlayerError           : { ExoPlaybackException e -> onError e }
@@ -127,7 +133,7 @@ abstract class BasePlayer {
         }
     } as OnAudioFocusChangeListener
 
-    private Timer playbackProgressNotifierTimer
+    private Subscription playbackProgressNotifier
 
     BasePlayer() {
         Injector.inject this
@@ -148,18 +154,30 @@ abstract class BasePlayer {
     }
 
     void setPaused(boolean flag) {
-        innerPlayer.playWhenReady = !flag
+        if (flag)
+            pause()
+        else
+            start()
     }
 
     boolean isPaused() { !innerPlayer.playWhenReady }
 
     void togglePause() { paused = !paused }
 
-    boolean isPlaying() { !paused && ready }
+    boolean isPlaying() { ready && !paused }
 
-    boolean isReady() { innerPlayer.playbackState == ExoPlayer.STATE_READY }
+    boolean isReady() { innerPlayer.playbackState == STATE_READY }
+
+    void start() {
+        innerPlayer.playWhenReady = true
+    }
+
+    void pause() {
+        innerPlayer.playWhenReady = false
+    }
 
     void stop() {
+        innerPlayer.playWhenReady = false
         innerPlayer.stop()
         seekTo 0
     }
@@ -175,47 +193,31 @@ abstract class BasePlayer {
     void abandonAudioFocus() { audioManager.abandonAudioFocus afListener }
 
     protected void startNotifyingPlaybackProgress() {
-        playbackProgressNotifierTimer = new Timer()
-        playbackProgressNotifierTimer.schedule(new TimerTask() {
-            @Override
-            void run() {
-                if (getCurrentSong()) bus.post new SongPlayingEvent(getCurrentPosition(), getCurrentSong().duration)
-            }
-        }, 0, NOTIFY_INTERVAL)
+        playbackProgressNotifier = Observable.interval(NOTIFY_INTERVAL, TimeUnit.MILLISECONDS)
+        .subscribe {
+            if (currentSong) bus.post new SongPlayingEvent(currentPosition, currentSong.duration)
+        }
     }
 
     protected void stopNotifyingPlaybackProgress() {
-        playbackProgressNotifierTimer?.cancel()
-        playbackProgressNotifierTimer = null
+        playbackProgressNotifier?.unsubscribe()
+        playbackProgressNotifier = null
     }
 
-    private boolean prepareInternal(Uri uri) {
+    boolean prepare(@NonNull Song song) {
+        currentSong = song
+
         try {
             renderer = new MediaCodecAudioTrackRenderer(
-                    new ExtractorSampleSource(uri,
+                    new ExtractorSampleSource(currentSong.sourceUri,
                             new DefaultUriDataSource(context, "LWM"),
                             BUFFER_SEGMENT_SIZE * BUFFER_SEGMENT_COUNT
                     )
             )
             innerPlayer.prepare(renderer)
-            playbackUri = uri
             return true
         } catch (IllegalStateException e) {
             return false
-        }
-    }
-
-    private boolean prepareOld() {
-        innerPlayer.prepare(renderer)
-        return true
-    }
-
-    boolean prepare(Uri uri, boolean reprepare = false) {
-        if (uri == playbackUri && !reprepare) {
-            prepareOld()
-        } else {
-            prepareTimeMeasurer.start()
-            prepareInternal uri
         }
     }
 

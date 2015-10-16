@@ -27,8 +27,6 @@ class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
-    private Song currentSong
-
     private int positionToPrepare = -1
     private boolean seekingToPosition = false
 
@@ -44,27 +42,18 @@ class StreamPlayer extends BasePlayer {
             seekTo pos
         } else if (seekingToPosition && paused) {
             seekingToPosition = false
-            bus.post new ReadyToStartPlaybackEvent(this, getCurrentSong(), currentPosition)
+            bus.post new ReadyToStartPlaybackEvent(this, currentSong, currentPosition as int)
         }
     }
 
-    void prepareForPosition(Uri uri, int pos) {
+    void prepareForPosition(int pos) {
         positionToPrepare = pos
-        prepare uri, true
+        prepare(currentSong)
     }
 
     @Override
     void startService() {
 
-    }
-
-    void setCurrentSong(Song s) {
-        currentSong = s
-    }
-
-    @Override
-    Song getCurrentSong() {
-        return currentSong
     }
 
 }

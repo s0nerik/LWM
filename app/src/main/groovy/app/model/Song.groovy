@@ -6,6 +6,7 @@ import android.util.JsonWriter
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 import groovy.transform.builder.Builder
 
 @CompileStatic
@@ -34,10 +35,12 @@ class Song {
         minutes + ":" + String.format("%02d", seconds)
     }
 
+    @Memoized
     Uri getAlbumArtUri() {
         ContentUris.withAppendedId(artworkUri, albumId)
     }
 
+    @Memoized
     Uri getSourceUri() {
         Uri.parse("file://$source")
     }

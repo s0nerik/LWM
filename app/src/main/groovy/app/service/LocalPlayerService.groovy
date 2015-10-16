@@ -141,6 +141,8 @@ class LocalPlayerService extends Service {
         if (serverStarted) {
             bus.post new CurrentSongAvailableEvent(event.song)
             bus.post new PrepareClientsCommand(event.position)
+        } else {
+            player.start()
         }
     }
 

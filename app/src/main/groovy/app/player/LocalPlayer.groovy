@@ -5,8 +5,6 @@ import android.widget.Toast
 import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
-import app.events.player.service.CurrentSongAvailableEvent
-import app.commands.PrepareClientsCommand
 import app.model.Song
 import app.service.LocalPlayerService
 import com.google.android.exoplayer.ExoPlaybackException
@@ -27,14 +25,14 @@ class LocalPlayer extends BasePlayer {
     @PackageScope
     Bus bus
 
-    private Queue queue = new Queue()
+    private Queue queueContainer = new Queue()
 
     @Override
     void onReady(boolean playWhenReady) {
         super.onReady(playWhenReady)
 
         if (!playWhenReady)
-            bus.post new ReadyToStartPlaybackEvent(this, getCurrentSong(), currentPosition)
+            bus.post new ReadyToStartPlaybackEvent(this, currentSong, currentPosition as int)
     }
 
     @Override
@@ -60,57 +58,53 @@ class LocalPlayer extends BasePlayer {
     }
 
     void shuffleQueue() {
-        queue.shuffle()
-        bus.post new QueueShuffledEvent(queue: getQueue())
+        queueContainer.shuffle()
+        bus.post new QueueShuffledEvent(queue: queue)
     }
 
-    List<Song> getQueue() { queue.queue }
+    List<Song> getQueue() { queueContainer.queue }
 
     void setQueue(List<Song> songs) {
-        queue.clear()
-        queue.addSongs songs
+        queueContainer.clear()
+        queueContainer.addSongs songs
     }
 
     void shuffleQueueExceptPlayed() {
-        queue.shuffleExceptPlayed()
-        bus.post(new QueueShuffledEvent(queue: getQueue()))
+        queueContainer.shuffleExceptPlayed()
+        bus.post(new QueueShuffledEvent(queue: queue))
     }
 
     void addToQueue(List<Song> songs) {
-        queue.addSongs(songs)
-        bus.post(new PlaylistAddedToQueueEvent(getQueue(), songs))
+        queueContainer.addSongs(songs)
+        bus.post(new PlaylistAddedToQueueEvent(queue, songs))
     }
 
     void addToQueue(Song song) {
-        queue.addSong(song)
-        bus.post(new SongAddedToQueueEvent(getQueue(), song))
+        queueContainer.addSong(song)
+        bus.post(new SongAddedToQueueEvent(queue, song))
     }
 
     void removeFromQueue(Song song) {
-        queue.removeSong(song)
-        bus.post(new SongRemovedFromQueueEvent(getQueue(), song))
+        queueContainer.removeSong(song)
+        bus.post(new SongRemovedFromQueueEvent(queue, song))
     }
 
     void removeFromQueue(List<Song> songs) {
-        queue.removeSongs(songs)
-        bus.post new PlaylistRemovedFromQueueEvent(getQueue(), songs)
-    }
-
-    @Override
-    Song getCurrentSong() {
-        return queue.song
+        queueContainer.removeSongs(songs)
+        bus.post new PlaylistRemovedFromQueueEvent(queue, songs)
     }
 
     void prepare(int position) {
-        queue.moveTo position
+        queueContainer.moveTo position
         prepare()
     }
 
     void prepare() {
-        stop()
+        pause()
+        seekTo 0
 
-        while (!prepare(queue.song?.sourceUri)) {
-            queue.moveToNext true
+        while (!prepare(queueContainer.song)) {
+            queueContainer.moveToNext true
         }
     }
 
@@ -119,7 +113,7 @@ class LocalPlayer extends BasePlayer {
     }
 
     void nextSong() {
-        if (queue.moveToNext()) {
+        if (queueContainer.moveToNext()) {
             prepare()
         } else {
             Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show()
@@ -127,7 +121,7 @@ class LocalPlayer extends BasePlayer {
     }
 
     void prevSong() {
-        if (queue.moveToPrev()) {
+        if (queueContainer.moveToPrev()) {
             prepare()
         } else {
             Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show()
@@ -139,17 +133,17 @@ class LocalPlayer extends BasePlayer {
         context.startService new Intent(context, LocalPlayerService)
     }
 
-    boolean isShuffle() { queue.shuffled }
+    boolean isShuffle() { queueContainer.shuffled }
 
     void setRepeat(boolean flag) {
         repeat = flag
         bus.post new RepeatStateChangedEvent(flag)
     }
 
-    int getCurrentQueuePosition() { queue.currentIndex }
+    int getCurrentQueuePosition() { queueContainer.currentIndex }
 
-    int getQueueSize() { queue.size }
+    int getQueueSize() { queueContainer.size }
 
-    boolean isSongInQueue(Song song) { queue.contains song }
+    boolean isSongInQueue(Song song) { queueContainer.contains song }
 
 }
