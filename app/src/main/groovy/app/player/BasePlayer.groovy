@@ -51,8 +51,6 @@ abstract class BasePlayer {
     protected ExoPlayer innerPlayer
     protected MediaCodecAudioTrackRenderer renderer
 
-    abstract void nextSong()
-    abstract void prevSong()
     abstract void startService()
     abstract Song getCurrentSong()
 

@@ -54,16 +54,6 @@ class StreamPlayer extends BasePlayer {
     }
 
     @Override
-    void nextSong() {
-
-    }
-
-    @Override
-    void prevSong() {
-
-    }
-
-    @Override
     void startService() {
 
     }

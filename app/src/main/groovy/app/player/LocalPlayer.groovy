@@ -118,7 +118,6 @@ class LocalPlayer extends BasePlayer {
         paused = false
     }
 
-    @Override
     void nextSong() {
         if (queue.moveToNext()) {
             prepare()
@@ -127,7 +126,6 @@ class LocalPlayer extends BasePlayer {
         }
     }
 
-    @Override
     void prevSong() {
         if (queue.moveToPrev()) {
             prepare()
