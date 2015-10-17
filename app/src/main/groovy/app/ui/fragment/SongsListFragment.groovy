@@ -36,10 +36,9 @@ public final class SongsListFragment extends BaseSongsListFragment {
         shuffleAll()
     }
 
-    @Profile
     @Override
     protected Observable<List<Song>> loadSongs() {
-        return songsManager.loadAllSongs()
+        songsManager.loadAllSongs().toList()
     }
 
 }

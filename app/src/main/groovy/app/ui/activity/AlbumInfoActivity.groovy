@@ -13,6 +13,7 @@ import app.Utils
 import app.adapter.SimpleSongsListAdapter
 import app.commands.EnqueueCommand
 import app.commands.SetQueueAndPlayCommand
+import app.data_managers.SongsManager
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.helper.db.Order
@@ -75,6 +76,9 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
     @Inject
     Utils utils;
 
+    @Inject
+    SongsManager songsManager
+
     @Extra
     Album album;
 
@@ -85,7 +89,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         setContentView(R.layout.activity_album_info);
         BetterKnife.loadExtras(this);
 
-        playlist = Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album));
+        playlist = songsManager.loadSongsForAlbum(album).toList().toBlocking().first();
 
         adapter = new SimpleSongsListAdapter(this, playlist);
 

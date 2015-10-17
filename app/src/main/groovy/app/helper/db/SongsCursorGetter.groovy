@@ -1,24 +1,26 @@
-package app.helper.db;
+package app.helper.db
 
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.provider.MediaStore;
+import android.content.ContentResolver
+import android.database.Cursor
+import android.provider.MediaStore
 
-import app.Daggered;
+import app.Daggered
 import app.model.Album
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
+import groovy.transform.PackageScopeTarget
+import rx.Observable
+import rx.Subscriber
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
-import android.provider.MediaStore.Audio.Media;
+import android.provider.MediaStore.Audio.Media
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public final class SongsCursorGetter extends Daggered {
+final class SongsCursorGetter extends Daggered {
 
     @Inject
+    @PackageScope
     ContentResolver contentResolver
 
     private String selection = "${Media.IS_MUSIC} != 0"
@@ -35,54 +37,56 @@ public final class SongsCursorGetter extends Daggered {
             Media.ARTIST_ID
     ]
 
-    public static final int _ID          = 0;
-    public static final int TITLE        = 1;
-    public static final int ARTIST       = 2;
-    public static final int ALBUM        = 3;
-    public static final int DURATION     = 4;
-    public static final int DATA         = 5;
-    public static final int DISPLAY_NAME = 6;
-    public static final int SIZE         = 7;
-    public static final int ALBUM_ID     = 8;
-    public static final int ARTIST_ID    = 9;
+    static final int _ID          = 0
+    static final int TITLE        = 1
+    static final int ARTIST       = 2
+    static final int ALBUM        = 3
+    static final int DURATION     = 4
+    static final int DATA         = 5
+    static final int DISPLAY_NAME = 6
+    static final int SIZE         = 7
+    static final int ALBUM_ID     = 8
+    static final int ARTIST_ID    = 9
 
-    public Cursor getSongsCursor(Order order, Album album) {
-
-        String[] selectionArgs = null
+    Observable<Cursor> getSongsCursor(Order order, Album album) {
+        def selectionArgs = null
         String selection = this.selection
         if (album?.id > -1) {
             selection = "${this.selection} AND $MediaStore.Audio.AudioColumns.ALBUM_ID = ?"
-            selectionArgs = [ album.id as String ]
+            selectionArgs = album.id as String[]
         }
 
         String orderString = ""
         switch (order) {
             case Order.ASCENDING:
                 orderString = "ASC"
-                break;
+                break
             case Order.DESCENDING:
                 orderString = "DESC"
-                break;
+                break
             case Order.RANDOM:
                 orderString = "random()"
-                break;
+                break
         }
 
         if (order != Order.RANDOM) {
-            orderString = "$Media.ARTIST $orderString $Media.ALBUM_ID $orderString $Media.TRACK $orderString $Media.DISPLAY_NAME $orderString"
+            orderString = "$Media.ARTIST $orderString, $Media.ALBUM_ID $orderString, $Media.TRACK $orderString, $Media.DISPLAY_NAME $orderString"
         }
 
-        return contentResolver.query(
-                Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                orderString
-        );
+        Observable.create({ Subscriber<Cursor> subscriber ->
+            subscriber.onNext contentResolver.query(
+                    Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    selection,
+                    (String[]) selectionArgs,
+                    orderString
+            )
 
+            subscriber.onCompleted()
+        } as Observable.OnSubscribe<Cursor>)
     }
 
-    public Cursor getSongsCursor(Order order){
-        return getSongsCursor(order, null);
+    Observable<Cursor> getSongsCursor(Order order){
+        return getSongsCursor(order, null)
     }
 }

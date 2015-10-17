@@ -4,22 +4,25 @@ import android.database.Cursor
 
 import app.helper.db.SongsCursorGetter
 import groovy.transform.CompileStatic
+import rx.Observable
+import rx.Subscriber
 
 @CompileStatic
-public class Playlist {
+class Playlist {
 
-    public static List<Song> fromCursor(Cursor cursor) {
-        List<Song> songs = new ArrayList<>()
-        if (cursor) {
-            if (cursor.moveToFirst()) {
-                songs << buildSongFromCursor(cursor)
-                while (cursor.moveToNext()) {
-                    songs << buildSongFromCursor(cursor)
+    static Observable<Song> fromCursor(Cursor cursor) {
+        Observable.create({ Subscriber<Song> subscriber ->
+            if (cursor) {
+                if (cursor.moveToFirst()) {
+                    subscriber.onNext buildSongFromCursor(cursor)
+                    while (cursor.moveToNext()) {
+                        subscriber.onNext buildSongFromCursor(cursor)
+                    }
                 }
+                cursor.close()
             }
-            cursor.close()
-        }
-        return songs
+            subscriber.onCompleted()
+        } as Observable.OnSubscribe<Song>)
     }
 
     private static Song buildSongFromCursor(Cursor cursor) {

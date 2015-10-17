@@ -1,22 +1,32 @@
 package app.data_managers
+
+import android.database.Cursor
 import app.helper.db.Order
 import app.helper.db.SongsCursorGetter
+import app.model.Album
 import app.model.Playlist
 import app.model.Song
 import groovy.transform.CompileStatic
-import groovy.transform.Memoized
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import rx.Subscriber
 
 @CompileStatic
-public class SongsManager {
+class SongsManager {
 
-    @Memoized
-    public Observable<List<Song>> loadAllSongs() {
-        Observable.just(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+    Observable<Song> loadAllSongs() {
+        Observable.create({ Subscriber<Song> subscriber ->
+            new SongsCursorGetter().getSongsCursor(Order.ASCENDING).subscribe { Cursor it ->
+                Playlist.fromCursor(it).subscribe subscriber
+            }
+        } as Observable.OnSubscribe<Song>)
+    }
+
+    Observable<Song> loadSongsForAlbum(Album album) {
+        Observable.create({ Subscriber<Song> subscriber ->
+            new SongsCursorGetter().getSongsCursor(Order.ASCENDING, album).subscribe { Cursor it ->
+                Playlist.fromCursor(it).subscribe subscriber
+            }
+        } as Observable.OnSubscribe<Song>)
     }
 
 }
