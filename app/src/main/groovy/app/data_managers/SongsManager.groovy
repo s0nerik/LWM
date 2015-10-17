@@ -12,19 +12,11 @@ import rx.schedulers.Schedulers
 @CompileStatic
 public class SongsManager {
 
-//    private AsyncSubject<List<Song>> songsSubject;
-
     @Memoized
     public Observable<List<Song>> loadAllSongs() {
-//        if (!songsSubject) {
-//            songsSubject = AsyncSubject.create()
-
-            Observable.just(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(songsSubject)
-//        }
-//        return songsSubject
+        Observable.just(Playlist.fromCursor(new SongsCursorGetter().getSongsCursor(Order.ASCENDING)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
 }

@@ -12,29 +12,28 @@ import groovy.transform.PackageScopeTarget;
 
 import javax.inject.Inject;
 
+import android.provider.MediaStore.Audio.Media;
+
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
 public final class SongsCursorGetter extends Daggered {
 
     @Inject
-    ContentResolver contentResolver;
+    ContentResolver contentResolver
 
-    private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+    private String selection = "${Media.IS_MUSIC} != 0"
     private String[] projection = [
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.DISPLAY_NAME,
-            MediaStore.Audio.Media.SIZE,
-            MediaStore.Audio.Media.ALBUM_ID,
-            MediaStore.Audio.Media.ARTIST_ID,
-//            MediaStore.Audio.Media.TRACK,
-//            MediaStore.Audio.Media.ALBUM_KEY,
-//            MediaStore.Audio.Media.ALBUM_KEY,
-    ];
+            Media._ID,
+            Media.TITLE,
+            Media.ARTIST,
+            Media.ALBUM,
+            Media.DURATION,
+            Media.DATA,
+            Media.DISPLAY_NAME,
+            Media.SIZE,
+            Media.ALBUM_ID,
+            Media.ARTIST_ID
+    ]
 
     public static final int _ID          = 0;
     public static final int TITLE        = 1;
@@ -46,42 +45,39 @@ public final class SongsCursorGetter extends Daggered {
     public static final int SIZE         = 7;
     public static final int ALBUM_ID     = 8;
     public static final int ARTIST_ID    = 9;
-//    public static final int TRACK        = 10;
-//    public static final int ALBUM_KEY    = 11;
-//    public static final int ALBUM_KEY    = 10;
 
     public Cursor getSongsCursor(Order order, Album album) {
 
-        String[] selectionArgs = null;
-        String selection = this.selection;
-        if (album != null && album.getId() > -1) {
-            selection = this.selection + " AND " + MediaStore.Audio.AudioColumns.ALBUM_ID + " = ?";
-            selectionArgs = [ String.valueOf(album.getId()) ];
+        String[] selectionArgs = null
+        String selection = this.selection
+        if (album?.id > -1) {
+            selection = "${this.selection} AND $MediaStore.Audio.AudioColumns.ALBUM_ID = ?"
+            selectionArgs = [ album.id as String ]
         }
 
-        String orderString = "";
+        String orderString = ""
         switch (order) {
             case Order.ASCENDING:
-                orderString = "ASC";
+                orderString = "ASC"
                 break;
             case Order.DESCENDING:
-                orderString = "DESC";
+                orderString = "DESC"
                 break;
             case Order.RANDOM:
-                orderString = "random()";
+                orderString = "random()"
                 break;
+        }
+
+        if (order != Order.RANDOM) {
+            orderString = "$Media.ARTIST $orderString $Media.ALBUM_ID $orderString $Media.TRACK $orderString $Media.DISPLAY_NAME $orderString"
         }
 
         return contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
                 selectionArgs,
-                order == Order.RANDOM ? orderString :
-                        MediaStore.Audio.Media.ARTIST + " "+orderString+", "
-                                + MediaStore.Audio.Media.ALBUM_ID + " "+orderString+", "
-                                + MediaStore.Audio.Media.TRACK + " "+orderString+", "
-                                + MediaStore.Audio.Media.DISPLAY_NAME + " "+orderString
+                orderString
         );
 
     }
