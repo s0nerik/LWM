@@ -27,6 +27,8 @@ class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
+    private Song currentSong
+
     private int positionToPrepare = -1
     private boolean seekingToPosition = false
 
@@ -54,6 +56,10 @@ class StreamPlayer extends BasePlayer {
     @Override
     void startService() {
 
+    }
+
+    void setCurrentSong (Song s) {
+        currentSong = s
     }
 
 }

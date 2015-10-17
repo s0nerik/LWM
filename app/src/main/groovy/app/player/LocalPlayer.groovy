@@ -31,8 +31,8 @@ class LocalPlayer extends BasePlayer {
     void onReady(boolean playWhenReady) {
         super.onReady(playWhenReady)
 
-        if (!playWhenReady)
-            bus.post new ReadyToStartPlaybackEvent(this, currentSong, currentPosition as int)
+//        if (!playWhenReady)
+//            bus.post new ReadyToStartPlaybackEvent(this, currentSong, currentPosition as int)
     }
 
     @Override
@@ -57,6 +57,7 @@ class LocalPlayer extends BasePlayer {
         bus.register this
     }
 
+    //region Queue manipulation
     void shuffleQueue() {
         queueContainer.shuffle()
         bus.post new QueueShuffledEvent(queue: queue)
@@ -93,6 +94,7 @@ class LocalPlayer extends BasePlayer {
         queueContainer.removeSongs(songs)
         bus.post new PlaylistRemovedFromQueueEvent(queue, songs)
     }
+    //endregion
 
     void prepare(int position) {
         queueContainer.moveTo position

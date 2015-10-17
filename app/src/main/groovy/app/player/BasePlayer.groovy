@@ -54,12 +54,12 @@ abstract class BasePlayer {
     boolean repeat = false
     boolean shuffle = false
 
-    protected ExoPlayer innerPlayer
-    protected MediaCodecAudioTrackRenderer renderer
+    private ExoPlayer innerPlayer
+    private MediaCodecAudioTrackRenderer renderer
 
     abstract void startService()
 
-    Song currentSong
+    private Song currentSong
     private Song lastSong
 
     protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer(10)
@@ -220,5 +220,7 @@ abstract class BasePlayer {
             return false
         }
     }
+
+    public Song getCurrentSong() { currentSong }
 
 }
