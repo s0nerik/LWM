@@ -11,6 +11,7 @@ import com.google.android.exoplayer.ExoPlaybackException
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.functions.Action1
 
 import javax.inject.Inject
 
@@ -26,14 +27,6 @@ class LocalPlayer extends BasePlayer {
     Bus bus
 
     private Queue queueContainer = new Queue()
-
-    @Override
-    void onReady(boolean playWhenReady) {
-        super.onReady(playWhenReady)
-
-//        if (!playWhenReady)
-//            bus.post new ReadyToStartPlaybackEvent(this, currentSong, currentPosition as int)
-    }
 
     @Override
     void onPlaybackEnded() {
@@ -102,12 +95,15 @@ class LocalPlayer extends BasePlayer {
     }
 
     void prepare() {
-        pause()
-        seekTo 0
+        stop()
 
-        while (!prepare(queueContainer.song)) {
+        Action1<Throwable> errorObserver
+        errorObserver = {
             queueContainer.moveToNext true
+            prepare(queueContainer.song).subscribe({}, errorObserver)
         }
+
+        prepare(queueContainer.song).subscribe({}, errorObserver)
     }
 
     void start() {

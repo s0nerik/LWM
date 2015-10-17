@@ -10,7 +10,7 @@ public class Playlist {
 
     public static List<Song> fromCursor(Cursor cursor) {
         List<Song> songs = new ArrayList<>()
-        if(cursor != null) {
+        if (cursor) {
             if (cursor.moveToFirst()) {
                 songs << buildSongFromCursor(cursor)
                 while (cursor.moveToNext()) {
