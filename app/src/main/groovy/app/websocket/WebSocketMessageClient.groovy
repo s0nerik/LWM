@@ -160,7 +160,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         if (!seeking) {
             Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
                     .subscribe {
-                        player.currentSong = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
+                        player.song = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
                         player.prepareForPosition position
                     }
         } else {

@@ -28,11 +28,7 @@ import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
 import static android.media.AudioManager.*
-import static com.google.android.exoplayer.ExoPlayer.STATE_BUFFERING
-import static com.google.android.exoplayer.ExoPlayer.STATE_ENDED
-import static com.google.android.exoplayer.ExoPlayer.STATE_IDLE
-import static com.google.android.exoplayer.ExoPlayer.STATE_PREPARING
-import static com.google.android.exoplayer.ExoPlayer.STATE_READY
+import static com.google.android.exoplayer.ExoPlayer.*
 
 @CompileStatic
 abstract class BasePlayer {
@@ -42,33 +38,35 @@ abstract class BasePlayer {
 
     @Inject
     @PackageScope
-    AudioManager audioManager
+    protected AudioManager audioManager
 
     @Inject
     @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
     @PackageScope
-    Context context
+    protected Context context
 
     boolean repeat = false
     boolean shuffle = false
 
-    private ExoPlayer innerPlayer
-    private MediaCodecAudioTrackRenderer renderer
+    protected ExoPlayer innerPlayer
+    protected MediaCodecAudioTrackRenderer renderer
 
     abstract void startService()
 
-    private Song currentSong
-    private Song lastSong
+    protected Song currentSong
+    protected Song lastSong
+
+    Song getCurrentSong() { currentSong }
 
     protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer(10)
 
-    private PublishSubject<Boolean> prepareSubject = PublishSubject.<Boolean>create()
-    private PublishSubject<ExoPlaybackException> errorSubject = PublishSubject.<ExoPlaybackException>create()
+    protected PublishSubject<Boolean> prepareSubject = PublishSubject.create()
+    protected PublishSubject<ExoPlaybackException> errorSubject = PublishSubject.create()
 
-    private int lastState = STATE_IDLE
+    protected int lastState = STATE_IDLE
 
     void onPlaybackEnded() { abandonAudioFocus() }
     private void onStartedBuffering() {}
@@ -94,7 +92,7 @@ abstract class BasePlayer {
         abandonAudioFocus()
     }
 
-    private ExoPlayer.Listener listener = [
+    private Listener listener = [
             onPlayerStateChanged    : { boolean playWhenReady, int playbackState ->
                 lastState = playbackState
 
@@ -130,7 +128,7 @@ abstract class BasePlayer {
                 }
                 onError e
             }
-    ] as ExoPlayer.Listener
+    ] as Listener
 
     static final int NOTIFY_INTERVAL = 1000
 
@@ -152,7 +150,7 @@ abstract class BasePlayer {
     BasePlayer() {
         Injector.inject this
 
-        innerPlayer = ExoPlayer.Factory.newInstance 1, 10000, 20000
+        innerPlayer = Factory.newInstance 1, 10000, 20000
         innerPlayer.addListener listener
 
         startService()
@@ -216,32 +214,30 @@ abstract class BasePlayer {
     }
 
     Observable<Boolean> prepare(@NonNull Song song) {
-        Observable.<Boolean>create({ Subscriber<Boolean> subscriber ->
-            currentSong = song
+        Observable.create({ Subscriber<Boolean> subscriber ->
+                currentSong = song
 
-            try {
-                renderer = new MediaCodecAudioTrackRenderer(
-                        new ExtractorSampleSource(currentSong.sourceUri,
-                                new DefaultUriDataSource(context, "LWM"),
-                                BUFFER_SEGMENT_SIZE * BUFFER_SEGMENT_COUNT
-                        )
-                )
-                innerPlayer.prepare(renderer)
+                try {
+                    renderer = new MediaCodecAudioTrackRenderer(
+                            new ExtractorSampleSource(currentSong.sourceUri,
+                                    new DefaultUriDataSource(context, "LWM"),
+                                    BUFFER_SEGMENT_SIZE * BUFFER_SEGMENT_COUNT
+                            )
+                    )
+                    innerPlayer.prepare(renderer)
 
-                prepareSubject.first().subscribe({
-                    subscriber.onNext(it)
+                    prepareSubject.first().subscribe({
+                        subscriber.onNext(it)
+                        subscriber.onCompleted()
+                    }, {
+                        subscriber.onError(it)
+                        subscriber.onCompleted()
+                    })
+                } catch (e) {
+                    subscriber.onError(e)
                     subscriber.onCompleted()
-                }, {
-                    subscriber.onError(it)
-                    subscriber.onCompleted()
-                })
-            } catch (e) {
-                subscriber.onError(e)
-                subscriber.onCompleted()
-            }
+                }
         } as Observable.OnSubscribe<Boolean>)
     }
-
-    public Song getCurrentSong() { currentSong }
 
 }

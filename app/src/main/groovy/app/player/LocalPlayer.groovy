@@ -1,30 +1,18 @@
 package app.player
-import android.content.Context
+
 import android.content.Intent
 import android.widget.Toast
-import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.model.Song
 import app.service.LocalPlayerService
 import com.google.android.exoplayer.ExoPlaybackException
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
+import ru.noties.debug.Debug
 import rx.functions.Action1
-
-import javax.inject.Inject
 
 @CompileStatic
 class LocalPlayer extends BasePlayer {
-
-    @Inject
-    @PackageScope
-    Context context
-
-    @Inject
-    @PackageScope
-    Bus bus
 
     private Queue queueContainer = new Queue()
 
@@ -98,7 +86,9 @@ class LocalPlayer extends BasePlayer {
         stop()
 
         Action1<Throwable> errorObserver
-        errorObserver = {
+        errorObserver = { Throwable it ->
+            Debug.e "errorObserver:"
+            Debug.e it
             queueContainer.moveToNext true
             prepare(queueContainer.song).subscribe({}, errorObserver)
         }
