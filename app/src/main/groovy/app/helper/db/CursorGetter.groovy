@@ -34,13 +34,13 @@ abstract class CursorGetter extends Daggered {
         contentResolver.query(
                 contentUri,
                 projection as String[],
-                makeSelection(),
+                makeSelection() ?: null,
                 null,
                 sortOrder.toString()
         )
     }
 
     private String makeSelection() {
-        selection.join " AND "
+        selection?.join " AND "
     }
 }

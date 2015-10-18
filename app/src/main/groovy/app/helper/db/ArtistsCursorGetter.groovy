@@ -1,68 +1,29 @@
-package app.helper.db;
-
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.provider.MediaStore;
-
-import app.Daggered;
-import app.model.Artist
+package app.helper.db
+import android.net.Uri
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
 
-import javax.inject.Inject;
+import static android.provider.BaseColumns._ID
+import static android.provider.MediaStore.Audio.ArtistColumns.*
+import static android.provider.MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
+import static android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public final class ArtistsCursorGetter extends Daggered {
+final class ArtistsCursorGetter extends CursorGetter {
 
-    @Inject
-    ContentResolver contentResolver;
+    Uri contentUri = EXTERNAL_CONTENT_URI
+    List<String> projection = [
+            _ID,
+            ARTIST,
+            NUMBER_OF_ALBUMS,
+            NUMBER_OF_TRACKS
+    ]
+    List<String> selection = []
+    SortOrder sortOrder = new StringSortOrder(DEFAULT_SORT_ORDER)
 
-    private final String[] projection = [
-            MediaStore.Audio.Artists._ID,
-            MediaStore.Audio.Artists.ARTIST,
-            MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
-            MediaStore.Audio.Artists.NUMBER_OF_TRACKS
-    ];
-
-    public static final int _ID              = 0;
-    public static final int ARTIST           = 1;
-    public static final int NUMBER_OF_ALBUMS = 2;
-    public static final int NUMBER_OF_TRACKS = 3;
-
-    public Cursor getArtistsCursor(){
-        return contentResolver.query(
-                MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
-        );
+    ArtistsCursorGetter() {
     }
 
-    public Artist getArtistById(long id){
-        String selection = MediaStore.Audio.Artists._ID + " = ?";
-        String[] selectionArgs = [ String.valueOf(id) ];
-        Cursor cursor = contentResolver.query(
-                MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                MediaStore.Audio.Artists.DEFAULT_SORT_ORDER);
-
-        Artist artist = null;
-        if (cursor.moveToFirst()) {
-            artist = Artist.builder()
-                    .id(cursor.getInt(_ID))
-                    .name(cursor.getString(ARTIST))
-                    .numberOfAlbums(cursor.getInt(NUMBER_OF_ALBUMS))
-                    .numberOfSongs(cursor.getInt(NUMBER_OF_TRACKS))
-                    .build();
-        }
-        cursor.close();
-
-        return artist;
+    ArtistsCursorGetter(long id) {
+        selection << ("$_ID = $id" as String)
     }
-
 }

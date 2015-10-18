@@ -1,18 +1,24 @@
 package app.model
 
 import android.content.ContentUris
+import android.database.Cursor
 import android.net.Uri
-import android.util.JsonWriter
+import app.data_managers.CursorInitializable
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 import groovy.transform.builder.Builder
 
+import static android.provider.BaseColumns._ID
+import static android.provider.MediaStore.Audio.AudioColumns.*
+import static android.provider.MediaStore.MediaColumns.DATA
+import static android.provider.MediaStore.MediaColumns.TITLE
+
 @CompileStatic
 @Builder
 @Parcelable
-class Song {
+class Song implements CursorInitializable {
 
     protected static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart")
 
@@ -27,6 +33,8 @@ class Song {
     String lyrics
 
     int duration
+
+    Song() {}
 
     String getDurationString() {
         int seconds = duration / 1000 as int
@@ -61,4 +69,15 @@ class Song {
         new RemoteSong(this, serverUrl)
     }
 
+    @Override
+    void initialize(Cursor cursor, Map<String, Integer> indices) {
+        songId = cursor.getLong indices[_ID]
+        artistId = cursor.getLong indices[ARTIST_ID]
+        albumId = cursor.getLong indices[ALBUM_ID]
+        title = cursor.getString indices[TITLE]
+        artist = cursor.getString indices[ARTIST]
+        album = cursor.getString indices[ALBUM]
+        source = cursor.getString indices[DATA]
+        duration = cursor.getInt indices[DURATION]
+    }
 }
