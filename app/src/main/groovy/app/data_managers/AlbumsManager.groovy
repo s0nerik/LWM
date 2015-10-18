@@ -1,5 +1,5 @@
 package app.data_managers
-import android.support.annotation.Nullable
+import android.support.annotation.NonNull
 import app.helper.db.AlbumsCursorGetter
 import app.model.Album
 import app.model.Artist
@@ -10,15 +10,15 @@ import rx.Subscriber
 @CompileStatic
 class AlbumsManager {
 
-    static Observable<Album> loadAllAlbums(@Nullable Artist artist) {
-        AlbumsCursorGetter cursorGetter
-        if (artist)
-            cursorGetter = new AlbumsCursorGetter(artist)
-        else
-            cursorGetter = new AlbumsCursorGetter()
-
+    static Observable<Album> loadAllAlbums(@NonNull Artist artist) {
         Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, cursorGetter)
+            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist))
+        } as Observable.OnSubscribe<Album>)
+    }
+
+    static Observable<Album> loadAllAlbums() {
+        Observable.create({ Subscriber<Album> subscriber ->
+            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter())
         } as Observable.OnSubscribe<Album>)
     }
 

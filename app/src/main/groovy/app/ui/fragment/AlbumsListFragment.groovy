@@ -65,10 +65,10 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     private void loadAlbums() {
         grid.hide()
         progress.show()
-        albumsManager.loadAllAlbums(artist).subscribe this.&onAlbumsLoaded
+        albumsManager.loadAllAlbums(artist).toList().subscribe this.&onAlbumsLoaded
     }
 
-    private void onAlbumsLoaded(Pair<Artist, List<Album>> loadedAlbums) {
+    private void onAlbumsLoaded(List<Album> loadedAlbums) {
         progress.hide()
 
         albums.clear()

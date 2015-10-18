@@ -2,9 +2,7 @@ package app.ui.fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
@@ -16,7 +14,6 @@ import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
@@ -54,7 +51,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     private loadArtists() {
         mRecyclerView.hide()
         mProgress.show()
-        artistsManager.loadAllArtists().subscribe this.&onArtistsLoaded
+        artistsManager.loadAllArtists().toList().subscribe this.&onArtistsLoaded
     }
 
     private void onArtistsLoaded(List<ArtistWrapper> artists) {
