@@ -1,15 +1,11 @@
 package app.model
-
 import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
-import app.data_managers.AlbumsManager
-import app.data_managers.ArtistsManager
-import app.data_managers.CursorInitializable
+import app.data_managers.*
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
-import groovy.transform.Memoized
 import groovy.transform.builder.Builder
 import rx.Observable
 
@@ -20,7 +16,7 @@ import static android.provider.MediaStore.MediaColumns.TITLE
 
 @CompileStatic
 @Builder
-@Parcelable
+@Parcelable(exclude = {metaClass; artist; album})
 class Song implements CursorInitializable {
 
     protected static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart")
@@ -54,12 +50,10 @@ class Song implements CursorInitializable {
         AlbumsManager.loadAlbumById(albumId)
     }
 
-    @Memoized
     Uri getAlbumArtUri() {
         ContentUris.withAppendedId(artworkUri, albumId)
     }
 
-    @Memoized
     Uri getSourceUri() {
         Uri.parse("file://$source")
     }

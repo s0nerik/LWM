@@ -11,7 +11,7 @@ import org.codehaus.groovy.runtime.InvokerHelper
 @Canonical
 @CompileStatic
 @EqualsAndHashCode(callSuper = true)
-@Parcelable
+@Parcelable(exclude = {metaClass})
 class RemoteSong extends Song {
 
     String serverUrl

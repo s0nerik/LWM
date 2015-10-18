@@ -14,7 +14,7 @@ import static android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID
 
 @CompileStatic
 @Builder
-@Parcelable(exclude = {metaClass})
+@Parcelable(exclude = {metaClass; artist})
 final class Album implements CursorInitializable {
     int id
     int year
