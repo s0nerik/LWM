@@ -17,6 +17,7 @@ repositories {
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
     maven { url "http://dl.bintray.com/s0nerik/maven" }
+    maven { url "http://dl.bintray.com/tbruyelle/tbruyelle" }
 //    maven { url 'http://repo.grousset.fr/snapshots' }
 }
 
@@ -184,6 +185,7 @@ dependencies {
 //        transitive = false
 //    }
     compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.2.0@aar'
 
     compile 'com.github.s0nerik.betterknife:BetterKnife:1.3.13@aar'
 
