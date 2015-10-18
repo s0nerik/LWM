@@ -1,17 +1,13 @@
 package app.adapter
+
 import android.content.Context
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.Typeface
+import android.graphics.*
 import android.os.Build
 import android.support.v7.widget.PopupMenu
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
-import app.Injector
-import app.R
-import app.Utils
+import app.*
+import app.adapter.view_holders.SimpleSongViewHolder
 import app.model.Song
 import app.player.LocalPlayer
 import es.claucookie.miniequalizerlibrary.EqualizerView
@@ -41,23 +37,15 @@ class SimpleSongsListAdapter extends ArrayAdapter<Song> {
         Injector.inject this
     }
 
-    static class ViewHolder {
-        public Checkable layout
-        public TextView title
-        public TextView duration
-        public EqualizerView nowPlayingEqIcon
-        public ImageView contextMenu
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder;
+        SimpleSongViewHolder holder
 
-        View rowView = convertView;
+        View rowView = convertView
         if (!rowView) {
-            rowView = inflater.inflate R.layout.list_item_songs_simple, parent, false
-            holder = new ViewHolder()
+            rowView = inflater.inflate(R.layout.list_item_songs_simple, parent, false)
+            holder = new SimpleSongViewHolder()
 
             holder.layout = (Checkable) rowView.findViewById(R.id.layout)
             holder.title = (TextView) rowView.findViewById(R.id.title)
@@ -67,7 +55,7 @@ class SimpleSongsListAdapter extends ArrayAdapter<Song> {
 
             rowView.setTag(holder)
         } else {
-            holder = rowView.getTag() as ViewHolder
+            holder = rowView.getTag() as SimpleSongViewHolder
         }
 
         Song song = songsList[position]
