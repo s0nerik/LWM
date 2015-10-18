@@ -17,9 +17,9 @@ abstract class CursorGetter extends Daggered {
 
     abstract Uri getContentUri()
     abstract List<String> getProjection()
-    abstract String getDefaultSelection()
-    abstract List<String> getDefaultSelectionArgs()
-    abstract SortOrder getDefaultSortOrder()
+    abstract String getSelection()
+    abstract List<String> getSelectionArgs()
+    abstract SortOrder getSortOrder()
 
     Map<String, Integer> projectionIndices() {
         def indices = [:]
@@ -31,17 +31,13 @@ abstract class CursorGetter extends Daggered {
         return indices
     }
 
-    abstract Cursor getCursor()
-
-    protected Cursor getCursor(SortOrder order,
-                               String selection,
-                               List<String> selectionArgs) {
+    Cursor getCursor() {
         contentResolver.query(
                 contentUri,
                 projection as String[],
                 selection,
                 selectionArgs as String[],
-                order.toString()
+                sortOrder.toString()
         )
     }
 }

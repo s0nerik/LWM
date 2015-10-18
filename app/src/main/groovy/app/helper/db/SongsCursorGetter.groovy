@@ -1,7 +1,8 @@
 package app.helper.db
-import android.database.Cursor
+
 import android.net.Uri
 import android.provider.MediaStore.Audio.Media
+import android.support.annotation.NonNull
 import app.model.Album
 import groovy.transform.CompileStatic
 
@@ -9,8 +10,8 @@ import groovy.transform.CompileStatic
 final class SongsCursorGetter extends CursorGetter {
 
     Uri contentUri = Media.EXTERNAL_CONTENT_URI
-    String defaultSelection = "${Media.IS_MUSIC} != ?"
-    List<String> defaultSelectionArgs = ["0"]
+    String selection = "${Media.IS_MUSIC} != ?"
+    List<String> selectionArgs = ["0"]
 
     List<String> projection = [
             Media._ID,
@@ -26,39 +27,28 @@ final class SongsCursorGetter extends CursorGetter {
             Media.TRACK
     ]
 
-    SortOrder defaultSortOrder = new SortOrder([Media.ARTIST, Media.ALBUM, Media.TRACK, Media.DISPLAY_NAME], Order.ASCENDING)
+    SortOrder sortOrder = new SortOrder([Media.ARTIST, Media.ALBUM, Media.TRACK, Media.DISPLAY_NAME], Order.ASCENDING)
 
     private Album album
-    private SortOrder sortOrder
 
     //region Constructors
     SongsCursorGetter() {}
 
-    SongsCursorGetter(Album album) {
+    SongsCursorGetter(@NonNull Album album) {
         this.album = album
+
+        selection = "${selection} AND $Media.ALBUM_ID = ?" as String
+        selectionArgs = selectionArgs + (album.id as String)
     }
 
-    SongsCursorGetter(SortOrder sortOrder) {
+    SongsCursorGetter(@NonNull SortOrder sortOrder) {
         this.sortOrder = sortOrder
     }
 
-    SongsCursorGetter(Album album, SortOrder sortOrder) {
-        this.album = album
+    SongsCursorGetter(@NonNull Album album, @NonNull SortOrder sortOrder) {
+        this(album)
         this.sortOrder = sortOrder
     }
     //endregion
 
-    @Override
-    Cursor getCursor() {
-        def selection = defaultSelection
-        def selectionArgs = defaultSelectionArgs
-        def sortOrder = this.sortOrder ?: defaultSortOrder
-
-        if (album) {
-            selection = "${defaultSelection} AND $Media.ALBUM_ID = ?" as String
-            selectionArgs = defaultSelectionArgs + (album.id as String)
-        }
-
-        getCursor sortOrder, selection, selectionArgs
-    }
 }
