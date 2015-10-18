@@ -25,6 +25,8 @@ final class Album implements CursorInitializable {
 
     long artistId
 
+    Album() {}
+
     Observable<Artist> getArtist() {
         ArtistsManager.loadArtistById(artistId)
     }
