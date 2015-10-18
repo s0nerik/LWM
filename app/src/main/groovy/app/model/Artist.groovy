@@ -1,8 +1,6 @@
 package app.model
-
 import android.database.Cursor
 import app.data_managers.CursorInitializable
-import app.helper.db.AlbumsCursorGetter
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
@@ -18,15 +16,9 @@ class Artist implements CursorInitializable {
     int numberOfAlbums
     int numberOfSongs
     String name
+//    List<Album> albums
 
     Artist() {}
-
-    public List<Album> getAlbums() {
-        AlbumsCursorGetter albumsCursorGetter = new AlbumsCursorGetter()
-        Cursor cursor = albumsCursorGetter.getAlbumsCursorByArtist(this)
-        AlbumsList albumsList = new AlbumsList(cursor)
-        return albumsList.getAlbums()
-    }
 
     @Override
     void initialize(Cursor cursor, Map<String, Integer> indices) {
@@ -34,5 +26,7 @@ class Artist implements CursorInitializable {
         name = cursor.getString indices[ARTIST]
         numberOfAlbums = cursor.getInt indices[NUMBER_OF_ALBUMS]
         numberOfSongs = cursor.getInt indices[NUMBER_OF_TRACKS]
+
+//        albums = AlbumsManager.loadAllAlbums(this).toList().toBlocking().first()
     }
 }

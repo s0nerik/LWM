@@ -10,7 +10,7 @@ import groovy.transform.CompileStatic
 final class SongsCursorGetter extends CursorGetter {
 
     Uri contentUri = Media.EXTERNAL_CONTENT_URI
-    List<String> selection = [ "${Media.IS_MUSIC} != 0" as String ]
+    List<String> selection = [ "$Media.IS_MUSIC != 0" as String ]
 
     List<String> projection = [
             Media._ID,
