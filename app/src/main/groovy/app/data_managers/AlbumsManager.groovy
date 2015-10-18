@@ -4,18 +4,16 @@ import app.helper.db.AlbumsCursorGetter
 import app.model.Album
 import app.model.Artist
 import groovy.transform.CompileStatic
-import groovy.transform.Memoized
 import rx.Observable
 import rx.Subscriber
 
 @CompileStatic
 class AlbumsManager {
 
-    @Memoized
     static Observable<Album> loadAllAlbums() {
         Observable.create({ Subscriber<Album> subscriber ->
             CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter()).subscribe subscriber
-        } as Observable.OnSubscribe<Album>).cache()
+        } as Observable.OnSubscribe<Album>)
     }
 
     static Observable<Album> loadAllAlbums(@NonNull Artist artist) {
@@ -24,11 +22,10 @@ class AlbumsManager {
         } as Observable.OnSubscribe<Album>)
     }
 
-    @Memoized
     static Observable<Album> loadAlbumById(long id) {
         Observable.create({ Subscriber<Album> subscriber ->
             CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(id)).subscribe subscriber
-        } as Observable.OnSubscribe<Album>).cache()
+        } as Observable.OnSubscribe<Album>)
     }
 
 }

@@ -116,6 +116,7 @@ import static android.content.Context.*
                 ArtistsAdapter,
                 AlbumCoversAdapter,
                 LocalMusicFragmentsAdapter,
+                SimpleSongsListAdapter,
 
                 // Fragments
                 QueueFragment,
