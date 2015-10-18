@@ -1,7 +1,7 @@
 package app.helper.db
 import android.content.ContentResolver
 import android.database.Cursor
-import android.provider.MediaStore.Audio.Media
+import android.net.Uri
 import app.Daggered
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -15,6 +15,7 @@ abstract class CursorGetter extends Daggered {
     @PackageScope
     ContentResolver contentResolver
 
+    abstract Uri getContentUri()
     abstract List<String> getProjection()
     abstract String getDefaultSelection()
     abstract List<String> getDefaultSelectionArgs()
@@ -36,7 +37,7 @@ abstract class CursorGetter extends Daggered {
                                String selection,
                                List<String> selectionArgs) {
         contentResolver.query(
-                Media.EXTERNAL_CONTENT_URI,
+                contentUri,
                 projection as String[],
                 selection,
                 selectionArgs as String[],

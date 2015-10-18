@@ -42,3 +42,16 @@ class RandomSortOrder extends SortOrder {
     @Override
     String toString() { "random()" }
 }
+
+@CompileStatic
+class StringSortOrder extends SortOrder {
+    private final String order
+
+    StringSortOrder(String s) {
+        super([:])
+        order = s
+    }
+
+    @Override
+    String toString() { order }
+}

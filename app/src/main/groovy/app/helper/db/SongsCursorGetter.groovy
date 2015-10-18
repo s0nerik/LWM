@@ -1,5 +1,6 @@
 package app.helper.db
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore.Audio.Media
 import app.model.Album
 import groovy.transform.CompileStatic
@@ -7,6 +8,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 final class SongsCursorGetter extends CursorGetter {
 
+    Uri contentUri = Media.EXTERNAL_CONTENT_URI
     String defaultSelection = "${Media.IS_MUSIC} != ?"
     List<String> defaultSelectionArgs = ["0"]
 
