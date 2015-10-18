@@ -3,8 +3,6 @@ import android.database.Cursor
 import groovy.transform.CompileStatic
 
 @CompileStatic
-trait CursorInitializable {
-
-    abstract void initialize(Cursor cursor, Map<String, Integer> indices)
-
+interface CursorInitializable {
+    void initialize(Cursor cursor, Map<String, Integer> indices)
 }

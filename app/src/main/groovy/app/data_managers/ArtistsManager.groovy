@@ -1,5 +1,7 @@
 package app.data_managers
 
+import app.helper.db.ArtistsCursorGetter
+import app.model.Artist
 import app.model.ArtistWrapper
 import groovy.transform.CompileStatic
 import rx.Observable
@@ -8,10 +10,12 @@ import rx.Observable
 class ArtistsManager {
 
     Observable<ArtistWrapper> loadAllArtists() {
-        Observable.just(new ArtistWrapper())
-//        Observable.create({
-//            CursorConstructor.fromCursorGetter(new ArtistsCursorGetter())
-//        } as Observable.OnSubscribe<ArtistWrapper>)
-//        Observable.just(new ArtistWrapperList(new ArtistsCursorGetter().getArtistsCursor()).getArtistWrappers())
+        Observable.create({
+
+            CursorConstructor.fromCursorGetter(Artist, new ArtistsCursorGetter())
+                    .map { new ArtistWrapper(it, []) }
+
+        } as Observable.OnSubscribe<ArtistWrapper>)
     }
+
 }
