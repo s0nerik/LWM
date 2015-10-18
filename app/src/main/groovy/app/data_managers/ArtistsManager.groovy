@@ -1,22 +1,26 @@
 package app.data_managers
-
 import app.helper.db.ArtistsCursorGetter
 import app.model.Artist
-import app.model.ArtistWrapper
 import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 import rx.Observable
 import rx.Subscriber
 
 @CompileStatic
 class ArtistsManager {
 
-    Observable<ArtistWrapper> loadAllArtists() {
-        Observable.create({ Subscriber<ArtistWrapper> subscriber ->
-            CursorConstructor.fromCursorGetter(Artist, new ArtistsCursorGetter())
-                    .map {
-                        new ArtistWrapper(it, AlbumsManager.loadAllAlbums(it).toList().toBlocking().first())
-                    }
-        } as Observable.OnSubscribe<ArtistWrapper>)
+    @Memoized
+    static Observable<Artist> loadAllArtists() {
+        Observable.create({ Subscriber<Artist> subscriber ->
+            CursorConstructor.fromCursorGetter Artist, new ArtistsCursorGetter()
+        } as Observable.OnSubscribe<Artist>).cache()
+    }
+
+    @Memoized
+    static Observable<Artist> loadArtistById(long id) {
+        Observable.create({ Subscriber<Artist> subscriber ->
+            CursorConstructor.fromCursorGetter Artist, new ArtistsCursorGetter(id)
+        } as Observable.OnSubscribe<Artist>).cache()
     }
 
 }

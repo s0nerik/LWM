@@ -7,7 +7,7 @@ import android.widget.TextView
 import app.Injector
 import app.R
 import app.events.ui.ShouldStartArtistInfoActivity
-import app.model.ArtistWrapper
+import app.model.Artist
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
@@ -30,19 +30,19 @@ class ArtistViewHolder extends RecyclerView.ViewHolder {
     @PackageScope
     Bus bus
 
-    List<ArtistWrapper> artistWrapperList
+    List<Artist> artists
 
-    ArtistViewHolder(View view, List<ArtistWrapper> artistWrapperList) {
+    ArtistViewHolder(View view, List<Artist> artists) {
         super(view);
         Injector.inject(this)
         BetterKnife.inject(this, view)
 
-        this.artistWrapperList = artistWrapperList
+        this.artists = artists
     }
 
     @OnClick(R.id.itemLayout)
-    public void onClick() {
-        bus.post(new ShouldStartArtistInfoActivity(artist: artistWrapperList.get(getAdapterPosition()).getArtist()))
+    void onClick() {
+        bus.post new ShouldStartArtistInfoActivity(artist: artists[adapterPosition])
     }
 
 }

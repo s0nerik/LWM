@@ -30,7 +30,7 @@ import javax.inject.Inject
 class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private final Context context
-    private List<Album> albumsList
+    private final List<Album> albums
 
     @Inject
     @PackageScope
@@ -43,29 +43,29 @@ class AlbumsAdapter extends ArrayAdapter<Album> {
     private PaletteApplier paletteApplier = new PaletteApplier(0.75f)
 
     public AlbumsAdapter(final Context context, List<Album> albums) {
-        super(context, R.layout.item_songs, albums);
-        Injector.inject(this);
-        this.context = context;
-        albumsList = albums;
+        super(context, R.layout.item_songs, albums)
+        Injector.inject(this)
+        this.context = context
+        this.albums = albums
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        AlbumViewHolder holder;
+        AlbumViewHolder holder
 
-        View rowView = convertView;
+        View rowView = convertView
         if (rowView == null) {
-            rowView = inflater.inflate(R.layout.item_albums, parent, false);
-            holder = new AlbumViewHolder(rowView);
-            rowView.setTag(holder);
+            rowView = inflater.inflate(R.layout.item_albums, parent, false)
+            holder = new AlbumViewHolder(rowView)
+            rowView.setTag(holder)
         } else {
-            holder = (AlbumViewHolder) rowView.getTag();
+            holder = (AlbumViewHolder) rowView.getTag()
         }
 
-        Album album = albumsList.get(position);
-        holder.mTitle.setText(album.getTitle());
-        holder.mSubtitle.setText(utils.getArtistName(album.getArtist()));
+        Album album = albums[position]
+        holder.mTitle.text = album.title
+        holder.mSubtitle.text = utils.getArtistName album.artistName
 //        holder.mBottomBar.setBackgroundResource(R.color.grid_item_default_bg);
 
         String url = "file://${album.albumArtPath}"
@@ -141,7 +141,7 @@ class AlbumsAdapter extends ArrayAdapter<Album> {
 //                    }
 //                })
 
-        return rowView;
+        return rowView
     }
 
     private void applyPalette(Palette palette, Resources resources, TextView title, TextView subtitle, View layout) {
@@ -153,20 +153,20 @@ class AlbumsAdapter extends ArrayAdapter<Album> {
     }
 
     private static class PaletteBitmap {
-        private final Bitmap mBitmap;
+        private final Bitmap mBitmap
         private final Palette mPalette;
 
         public PaletteBitmap(Bitmap bitmap, Palette palette) {
-            mBitmap = bitmap;
-            mPalette = palette;
+            mBitmap = bitmap
+            mPalette = palette
         }
 
         public Bitmap getBitmap(){
-            return mBitmap;
+            return mBitmap
         }
 
         public Palette getPalette(){
-            return mPalette;
+            return mPalette
         }
     }
 
@@ -174,40 +174,40 @@ class AlbumsAdapter extends ArrayAdapter<Album> {
 
     private static class PaletteBitmapResource implements Resource<PaletteBitmap> {
 
-        private final PaletteBitmap mPaletteBitmap;
+        private final PaletteBitmap mPaletteBitmap
         private final BitmapPool mBitmapPool;
 
         public PaletteBitmapResource(PaletteBitmap bitmap, BitmapPool bitmapPool) {
-            mPaletteBitmap = bitmap;
-            mBitmapPool = bitmapPool;
+            mPaletteBitmap = bitmap
+            mBitmapPool = bitmapPool
         }
 
         @Override
         public PaletteBitmap get() {
-            return mPaletteBitmap;
+            return mPaletteBitmap
         }
 
         @Override
         public int getSize() {
-            return Util.getBitmapByteSize(mPaletteBitmap.getBitmap());
+            return Util.getBitmapByteSize(mPaletteBitmap.getBitmap())
         }
 
         @Override
         public void recycle() {
             if (mPaletteBitmap != null && mPaletteBitmap.getBitmap() != null) {
-                mBitmapPool.put(mPaletteBitmap.getBitmap());
+                mBitmapPool.put(mPaletteBitmap.getBitmap())
             }
         }
     }
 
     private static class PaletteBitmapImageViewTarget extends ImageViewTarget<PaletteBitmap> {
         public PaletteBitmapImageViewTarget(ImageView view) {
-            super(view);
+            super(view)
         }
 
         @Override
         protected void setResource(PaletteBitmap resource) {
-            view.setImageBitmap(resource.getBitmap());
+            view.setImageBitmap(resource.getBitmap())
         }
     }
 
@@ -216,22 +216,22 @@ class AlbumsAdapter extends ArrayAdapter<Album> {
         private final BitmapPool mBitmapPool;
 
         public PaletteBitmapTranscoder(Context context) {
-            this(Glide.get(context).getBitmapPool());
+            this(Glide.get(context).getBitmapPool())
         }
 
         public PaletteBitmapTranscoder(BitmapPool bitmapPool) {
-            mBitmapPool = bitmapPool;
+            mBitmapPool = bitmapPool
         }
 
         @Override
         public Resource<PaletteBitmap> transcode(Resource<Bitmap> toTranscode) {
-            PaletteBitmap result = new PaletteBitmap(toTranscode.get(), Palette.from(toTranscode.get()).generate());
-            return new PaletteBitmapResource(result, mBitmapPool);
+            PaletteBitmap result = new PaletteBitmap(toTranscode.get(), Palette.from(toTranscode.get()).generate())
+            return new PaletteBitmapResource(result, mBitmapPool)
         }
 
         @Override
         public String getId() {
-            return "";
+            return ""
         }
     }
 

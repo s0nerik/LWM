@@ -127,7 +127,7 @@ class Utils extends Daggered {
         values.put(MediaStore.MediaColumns.TITLE, song.getTitle());
         values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
         values.put(MediaStore.Audio.Media.DURATION, song.getDuration());
-        values.put(MediaStore.Audio.Media.ARTIST, song.getArtist());
+        values.put(MediaStore.Audio.Media.ARTIST, song.artistName);
         values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
         values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
         values.put(MediaStore.Audio.Media.IS_ALARM, false);

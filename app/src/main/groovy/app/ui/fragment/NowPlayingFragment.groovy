@@ -62,7 +62,7 @@ public class NowPlayingFragment extends DaggerFragment {
                 .crossFade()
                 .into(cover)
 
-        artist.text = utils.getArtistName(song.artist)
+        artist.text = utils.getArtistName song.artistName
         title.text = song.title
     }
 

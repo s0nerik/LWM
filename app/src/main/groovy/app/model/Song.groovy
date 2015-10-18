@@ -3,12 +3,15 @@ package app.model
 import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
+import app.data_managers.AlbumsManager
+import app.data_managers.ArtistsManager
 import app.data_managers.CursorInitializable
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 import groovy.transform.builder.Builder
+import rx.Observable
 
 import static android.provider.BaseColumns._ID
 import static android.provider.MediaStore.Audio.AudioColumns.*
@@ -22,13 +25,13 @@ class Song implements CursorInitializable {
 
     protected static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart")
 
-    long songId
+    long id
     long artistId
     long albumId
 
     String title
-    String artist
-    String album
+    String artistName
+    String albumName
     String source
     String lyrics
 
@@ -41,6 +44,14 @@ class Song implements CursorInitializable {
         int minutes = seconds / 60 as int
         seconds -= minutes * 60
         minutes + ":" + String.format("%02d", seconds)
+    }
+
+    Observable<Artist> getArtist() {
+        ArtistsManager.loadArtistById(artistId)
+    }
+
+    Observable<Album> getAlbum() {
+        AlbumsManager.loadAlbumById(albumId)
     }
 
     @Memoized
@@ -56,8 +67,8 @@ class Song implements CursorInitializable {
     String toJson() {
         JsonOutput.toJson([
                 title: title,
-                artist: artist,
-                album: album,
+                artist: artistName,
+                album: albumName,
                 source: source,
                 lyrics: lyrics,
                 duration: duration,
@@ -71,12 +82,12 @@ class Song implements CursorInitializable {
 
     @Override
     void initialize(Cursor cursor, Map<String, Integer> indices) {
-        songId = cursor.getLong indices[_ID]
+        id = cursor.getLong indices[_ID]
         artistId = cursor.getLong indices[ARTIST_ID]
         albumId = cursor.getLong indices[ALBUM_ID]
         title = cursor.getString indices[TITLE]
-        artist = cursor.getString indices[ARTIST]
-        album = cursor.getString indices[ALBUM]
+        artistName = cursor.getString indices[ARTIST]
+        albumName = cursor.getString indices[ALBUM]
         source = cursor.getString indices[DATA]
         duration = cursor.getInt indices[DURATION]
     }

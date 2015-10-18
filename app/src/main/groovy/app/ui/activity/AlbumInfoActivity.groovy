@@ -1,5 +1,4 @@
 package app.ui.activity
-
 import android.annotation.TargetApi
 import android.content.res.Resources
 import android.graphics.Color
@@ -16,10 +15,7 @@ import app.commands.SetQueueAndPlayCommand
 import app.data_managers.SongsManager
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
-import app.helper.db.Order
-import app.helper.db.SongsCursorGetter
 import app.model.Album
-import app.model.Playlist
 import app.model.Song
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
@@ -89,7 +85,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
         setContentView(R.layout.activity_album_info);
         BetterKnife.loadExtras(this);
 
-        playlist = songsManager.loadSongsForAlbum(album).toList().toBlocking().first();
+        playlist = songsManager.loadAllSongs(album).toList().toBlocking().first();
 
         adapter = new SimpleSongsListAdapter(this, playlist);
 
@@ -124,7 +120,7 @@ public class AlbumInfoActivity extends BaseLocalActivity implements AdapterView.
 //                                    .build()
 //                );
 
-        String artistName = utils.getArtistName(album.getArtist());
+        String artistName = utils.getArtistName album.artistName
         String title = String.valueOf(album.getTitle());
 
         int year = album.getYear();

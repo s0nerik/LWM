@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.widget.*
 import app.R
+import app.Utils
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -43,6 +44,10 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     @Inject
     @PackageScope
     Blurer blurer
+
+    @Inject
+    @PackageScope
+    Utils utils
 
     ParallaxImageView background
     ImageView cover
@@ -128,7 +133,7 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     protected void setSongInfo(final Song song) {
         if (!song) return
         toolbar.setTitle song.title
-        toolbar.setSubtitle song.artist
+        toolbar.setSubtitle utils.getArtistName(song.artistName)
 
         seekBar.max = PlayerUtils.calculateProgressForSeekBar song.duration
         endTime.text = song.durationString

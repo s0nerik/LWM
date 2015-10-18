@@ -3,7 +3,9 @@ import android.net.Uri
 import groovy.transform.CompileStatic
 
 import static android.provider.BaseColumns._ID
-import static android.provider.MediaStore.Audio.ArtistColumns.*
+import static android.provider.MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS
+import static android.provider.MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS
+import static android.provider.MediaStore.Audio.AudioColumns.ARTIST
 import static android.provider.MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
 import static android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
 

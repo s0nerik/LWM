@@ -6,9 +6,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
-import app.adapter.ArtistWrappersAdapter
+import app.adapter.ArtistsAdapter
 import app.data_managers.ArtistsManager
-import app.model.ArtistWrapper
+import app.model.Artist
 import app.ui.base.DaggerOttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
@@ -19,30 +19,30 @@ import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(R.layout.fragment_list_artists)
-public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
+class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @InjectView(R.id.empty)
-    LinearLayout mEmpty;
+    LinearLayout mEmpty
     @InjectView(R.id.twoWayView)
-    RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView
     @InjectView(R.id.progress)
-    ProgressBar mProgress;
+    ProgressBar mProgress
 
     @Inject
     @PackageScope
     ArtistsManager artistsManager
 
-    private List<ArtistWrapper> artists = new ArrayList<>()
+    private List<Artist> artists = new ArrayList<>()
 
-    private ArtistWrappersAdapter adapter
+    private ArtistsAdapter adapter
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mRecyclerView.layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false)
+    void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState)
+        mRecyclerView.layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        adapter = new ArtistWrappersAdapter(activity, artists)
-        mRecyclerView.adapter = this.adapter
+        adapter = new ArtistsAdapter(activity, artists)
+        mRecyclerView.adapter = adapter
         mRecyclerView.hasFixedSize = true
 
         loadArtists()
@@ -54,7 +54,7 @@ public class ArtistsListFragment extends DaggerOttoOnCreateFragment {
         artistsManager.loadAllArtists().toList().subscribe this.&onArtistsLoaded
     }
 
-    private void onArtistsLoaded(List<ArtistWrapper> artists) {
+    private void onArtistsLoaded(List<Artist> artists) {
         mProgress.hide()
 
         this.artists.clear()

@@ -113,7 +113,7 @@ import static android.content.Context.*
                 // Adapters
                 SongsListAdapter,
                 AlbumsAdapter,
-                ArtistWrappersAdapter,
+                ArtistsAdapter,
                 AlbumCoversAdapter,
                 LocalMusicFragmentsAdapter,
 

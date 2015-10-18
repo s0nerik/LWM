@@ -3,11 +3,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import android.support.v4.util.Pair
 import android.view.View
 import android.widget.GridView
 import android.widget.LinearLayout
-import android.widget.ListAdapter
 import android.widget.ProgressBar
 import app.R
 import app.adapter.AlbumsAdapter
@@ -72,7 +70,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         progress.hide()
 
         albums.clear()
-        albums.addAll loadedAlbums.second
+        albums.addAll loadedAlbums
 
         if (albums) {
             grid.show()
@@ -85,7 +83,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @OnItemClick(R.id.grid)
     public void onItemClick(int position) {
         def intent = new Intent(activity, AlbumInfoActivity)
-        intent.putExtra "album", albums.get(position) as Parcelable
+        intent.putExtra "album", albums[position] as Parcelable
         startActivity intent
         activity.overridePendingTransition R.anim.slide_in_right, R.anim.slide_out_left_long_alpha
     }

@@ -137,8 +137,8 @@ class NowPlayingNotification {
         }
 
         bigContentView.setTextViewText R.id.title, song.title
-        bigContentView.setTextViewText R.id.artist, utils.getArtistName(song.artist)
-        bigContentView.setTextViewText R.id.album, song.album
+        bigContentView.setTextViewText R.id.artist, utils.getArtistName(song.artistName)
+        bigContentView.setTextViewText R.id.album, song.albumName
 
         bigContentView.setImageViewBitmap R.id.album_art, cover
 
@@ -178,8 +178,8 @@ class NowPlayingNotification {
         }
 
         contentView.setTextViewText R.id.title, song.title
-        contentView.setTextViewText R.id.artist, utils.getArtistName(song.getArtist())
-        contentView.setTextViewText R.id.album, song.album
+        contentView.setTextViewText R.id.artist, utils.getArtistName(song.artistName)
+        contentView.setTextViewText R.id.album, song.albumName
 
         contentView.setOnClickPendingIntent R.id.btn_play_pause, playPauseIntent
         contentView.setOnClickPendingIntent R.id.btn_next, nextIntent

@@ -1,4 +1,6 @@
 package app.data_managers
+
+import android.support.annotation.NonNull
 import app.helper.db.SongsCursorGetter
 import app.model.Album
 import app.model.Song
@@ -15,7 +17,7 @@ class SongsManager {
         } as Observable.OnSubscribe<Song>)
     }
 
-    Observable<Song> loadSongsForAlbum(Album album) {
+    Observable<Song> loadAllSongs(@NonNull Album album) {
         Observable.create({ Subscriber<Song> subscriber ->
             CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(album)).subscribe subscriber
         } as Observable.OnSubscribe<Song>)

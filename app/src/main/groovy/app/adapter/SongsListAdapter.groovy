@@ -63,9 +63,9 @@ class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
     @Override
     void onBindViewHolder(SongViewHolder holder, int position) {
         Song song = songs[position]
-        holder.mTitle.setText song.title
-        holder.mArtist.setText utils.getArtistName(song.artist)
-        holder.mDuration.setText song.durationString
+        holder.mTitle.text = song.title
+        holder.mArtist.text = utils.getArtistName(song.artistName)
+        holder.mDuration.text = song.durationString
 
         if (selection == position) {
             holder.mPlayIcon.setVisibility(View.VISIBLE);
