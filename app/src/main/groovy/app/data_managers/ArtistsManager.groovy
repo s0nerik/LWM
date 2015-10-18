@@ -12,14 +12,14 @@ class ArtistsManager {
     @Memoized
     static Observable<Artist> loadAllArtists() {
         Observable.create({ Subscriber<Artist> subscriber ->
-            CursorConstructor.fromCursorGetter Artist, new ArtistsCursorGetter()
+            CursorConstructor.fromCursorGetter(Artist, new ArtistsCursorGetter()).subscribe subscriber
         } as Observable.OnSubscribe<Artist>).cache()
     }
 
     @Memoized
     static Observable<Artist> loadArtistById(long id) {
         Observable.create({ Subscriber<Artist> subscriber ->
-            CursorConstructor.fromCursorGetter Artist, new ArtistsCursorGetter(id)
+            CursorConstructor.fromCursorGetter(Artist, new ArtistsCursorGetter(id)).subscribe subscriber
         } as Observable.OnSubscribe<Artist>).cache()
     }
 

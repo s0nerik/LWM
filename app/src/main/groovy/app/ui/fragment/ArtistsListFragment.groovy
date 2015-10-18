@@ -14,6 +14,8 @@ import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 import javax.inject.Inject
 
@@ -51,7 +53,11 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     private loadArtists() {
         mRecyclerView.hide()
         mProgress.show()
-        artistsManager.loadAllArtists().toList().subscribe this.&onArtistsLoaded
+        artistsManager.loadAllArtists()
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe this.&onArtistsLoaded
     }
 
     private void onArtistsLoaded(List<Artist> artists) {
