@@ -17,8 +17,7 @@ abstract class CursorGetter extends Daggered {
 
     abstract Uri getContentUri()
     abstract List<String> getProjection()
-    abstract String getSelection()
-    abstract List<String> getSelectionArgs()
+    abstract List<String> getSelection()
     abstract SortOrder getSortOrder()
 
     Map<String, Integer> projectionIndices() {
@@ -35,9 +34,13 @@ abstract class CursorGetter extends Daggered {
         contentResolver.query(
                 contentUri,
                 projection as String[],
-                selection,
-                selectionArgs as String[],
+                makeSelection(),
+                null,
                 sortOrder.toString()
         )
+    }
+
+    private String makeSelection() {
+        selection.join " AND "
     }
 }

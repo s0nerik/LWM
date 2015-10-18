@@ -10,8 +10,7 @@ import groovy.transform.CompileStatic
 final class SongsCursorGetter extends CursorGetter {
 
     Uri contentUri = Media.EXTERNAL_CONTENT_URI
-    String selection = "${Media.IS_MUSIC} != ?"
-    List<String> selectionArgs = ["0"]
+    List<String> selection = ["${Media.IS_MUSIC} != 0"]
 
     List<String> projection = [
             Media._ID,
@@ -36,9 +35,7 @@ final class SongsCursorGetter extends CursorGetter {
 
     SongsCursorGetter(@NonNull Album album) {
         this.album = album
-
-        selection = "${selection} AND $Media.ALBUM_ID = ?" as String
-        selectionArgs = selectionArgs + (album.id as String)
+        selection << "$Media.ALBUM_ID = $album.id"
     }
 
     SongsCursorGetter(@NonNull SortOrder sortOrder) {
@@ -50,5 +47,4 @@ final class SongsCursorGetter extends CursorGetter {
         this.sortOrder = sortOrder
     }
     //endregion
-
 }
