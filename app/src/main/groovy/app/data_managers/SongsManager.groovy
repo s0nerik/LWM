@@ -5,16 +5,18 @@ import app.helper.db.SongsCursorGetter
 import app.model.Album
 import app.model.Song
 import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 import rx.Observable
 import rx.Subscriber
 
 @CompileStatic
 class SongsManager {
 
+    @Memoized
     Observable<Song> loadAllSongs() {
         Observable.create({ Subscriber<Song> subscriber ->
             CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter()).subscribe subscriber
-        } as Observable.OnSubscribe<Song>)
+        } as Observable.OnSubscribe<Song>).cache()
     }
 
     Observable<Song> loadAllSongs(@NonNull Album album) {

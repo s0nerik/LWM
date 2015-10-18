@@ -11,10 +11,11 @@ import rx.Subscriber
 @CompileStatic
 class AlbumsManager {
 
+    @Memoized
     static Observable<Album> loadAllAlbums() {
         Observable.create({ Subscriber<Album> subscriber ->
             CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter()).subscribe subscriber
-        } as Observable.OnSubscribe<Album>)
+        } as Observable.OnSubscribe<Album>).cache()
     }
 
     static Observable<Album> loadAllAlbums(@NonNull Artist artist) {
