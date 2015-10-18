@@ -1,20 +1,16 @@
 package app.helper.db
-
 import android.content.ContentResolver
 import android.database.Cursor
-import android.provider.MediaStore
-
+import android.provider.MediaStore.Audio.Media
 import app.Daggered
 import app.model.Album
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
+import groovy.transform.TupleConstructor
 import rx.Observable
 import rx.Subscriber
 
 import javax.inject.Inject
-
-import android.provider.MediaStore.Audio.Media
 
 @CompileStatic
 final class SongsCursorGetter extends Daggered {
@@ -23,63 +19,70 @@ final class SongsCursorGetter extends Daggered {
     @PackageScope
     ContentResolver contentResolver
 
-    private String selection = "${Media.IS_MUSIC} != 0"
-    private String[] projection = [
-            Media._ID,
-            Media.TITLE,
-            Media.ARTIST,
-            Media.ALBUM,
-            Media.DURATION,
-            Media.DATA,
-            Media.DISPLAY_NAME,
-            Media.SIZE,
-            Media.ALBUM_ID,
-            Media.ARTIST_ID
-    ]
+    private String selection = "${Media.IS_MUSIC} != ?"
+    private List<String> selectionArgs = ["0"]
 
-    static final int _ID          = 0
-    static final int TITLE        = 1
-    static final int ARTIST       = 2
-    static final int ALBUM        = 3
-    static final int DURATION     = 4
-    static final int DATA         = 5
-    static final int DISPLAY_NAME = 6
-    static final int SIZE         = 7
-    static final int ALBUM_ID     = 8
-    static final int ARTIST_ID    = 9
+    @TupleConstructor
+    static enum Column {
+        ID              (Media._ID),
+        TITLE           (Media.TITLE),
+        ARTIST          (Media.ARTIST),
+        ALBUM           (Media.ALBUM),
+        DURATION        (Media.DURATION),
+        DATA            (Media.DATA),
+        DISPLAY_NAME    (Media.DISPLAY_NAME),
+        SIZE            (Media.SIZE),
+        ALBUM_ID        (Media.ALBUM_ID),
+        ARTIST_ID       (Media.ARTIST_ID),
+        TRACK           (Media.TRACK)
+
+        final String name
+
+        static List<String> names() {
+            values().collect { Column it -> it.name }
+        }
+
+        static Map<Column, Integer> indicesInCursor(Cursor c) {
+            def indices = [:]
+
+            values().each { Column it ->
+                indices[it] = c.getColumnIndex(it.name)
+            }
+
+            return indices
+        }
+    }
 
     Observable<Cursor> getSongsCursor(Order order, Album album) {
-        def selectionArgs = null
+        def selectionArgs = this.selectionArgs.clone() as List<String>
         String selection = this.selection
         if (album?.id > -1) {
-            selection = "${this.selection} AND $MediaStore.Audio.AudioColumns.ALBUM_ID = ?"
-            selectionArgs = album.id as String[]
+            selection = "${selection} AND $Media.ALBUM_ID = ?"
+            selectionArgs << (album.id as String)
         }
 
-        String orderString = ""
-        switch (order) {
-            case Order.ASCENDING:
-                orderString = "ASC"
-                break
-            case Order.DESCENDING:
-                orderString = "DESC"
-                break
-            case Order.RANDOM:
-                orderString = "random()"
-                break
-        }
+        def sortOrders = [
+                (Order.ASCENDING): "ASC",
+                (Order.DESCENDING): "DESC",
+                (Order.RANDOM): "random()"
+        ]
 
+        String sortOrder = sortOrders[order]
         if (order != Order.RANDOM) {
-            orderString = "$Media.ARTIST $orderString, $Media.ALBUM_ID $orderString, $Media.TRACK $orderString, $Media.DISPLAY_NAME $orderString"
+            sortOrder = """\
+$Column.ARTIST.name ${sortOrders[order]},
+$Column.ALBUM.name ${sortOrders[order]},
+$Column.TRACK.name ${sortOrders[order]},
+$Column.DISPLAY_NAME.name ${sortOrders[order]}"""
         }
 
         Observable.create({ Subscriber<Cursor> subscriber ->
             subscriber.onNext contentResolver.query(
                     Media.EXTERNAL_CONTENT_URI,
-                    projection,
+                    Column.names() as String[],
                     selection,
-                    (String[]) selectionArgs,
-                    orderString
+                    selectionArgs as String[],
+                    sortOrder
             )
 
             subscriber.onCompleted()

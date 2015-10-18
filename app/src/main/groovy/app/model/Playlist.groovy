@@ -1,11 +1,12 @@
 package app.model
 
 import android.database.Cursor
-
 import app.helper.db.SongsCursorGetter
 import groovy.transform.CompileStatic
 import rx.Observable
 import rx.Subscriber
+
+import static app.helper.db.SongsCursorGetter.Column.*
 
 @CompileStatic
 class Playlist {
@@ -14,9 +15,14 @@ class Playlist {
         Observable.create({ Subscriber<Song> subscriber ->
             if (cursor) {
                 if (cursor.moveToFirst()) {
-                    subscriber.onNext buildSongFromCursor(cursor)
+                    def indices = indicesInCursor(cursor)
+
+                    Song song = buildSongFromCursor(cursor, indices)
+                    if (song.source) subscriber.onNext song
+
                     while (cursor.moveToNext()) {
-                        subscriber.onNext buildSongFromCursor(cursor)
+                        song = buildSongFromCursor(cursor, indices)
+                        if (song.source) subscriber.onNext song
                     }
                 }
                 cursor.close()
@@ -25,16 +31,16 @@ class Playlist {
         } as Observable.OnSubscribe<Song>)
     }
 
-    private static Song buildSongFromCursor(Cursor cursor) {
+    private static Song buildSongFromCursor(Cursor cursor, Map<SongsCursorGetter.Column, Integer> indices) {
         Song.builder()
-                .songId(cursor.getLong(SongsCursorGetter._ID))
-                .artistId(cursor.getLong(SongsCursorGetter.ARTIST_ID))
-                .albumId(cursor.getLong(SongsCursorGetter.ALBUM_ID))
-                .title(cursor.getString(SongsCursorGetter.TITLE))
-                .artist(cursor.getString(SongsCursorGetter.ARTIST))
-                .album(cursor.getString(SongsCursorGetter.ALBUM))
-                .source(cursor.getString(SongsCursorGetter.DATA))
-                .duration(cursor.getInt(SongsCursorGetter.DURATION))
+                .songId(cursor.getLong(indices[ID]))
+                .artistId(cursor.getLong(indices[ARTIST_ID]))
+                .albumId(cursor.getLong(indices[ALBUM_ID]))
+                .title(cursor.getString(indices[TITLE]))
+                .artist(cursor.getString(indices[ARTIST]))
+                .album(cursor.getString(indices[ALBUM]))
+                .source(cursor.getString(indices[DATA]))
+                .duration(cursor.getInt(indices[DURATION]))
                 .build()
     }
 
