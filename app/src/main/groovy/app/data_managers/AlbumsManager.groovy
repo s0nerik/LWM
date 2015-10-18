@@ -13,20 +13,20 @@ class AlbumsManager {
 
     static Observable<Album> loadAllAlbums() {
         Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter())
+            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter()).subscribe subscriber
         } as Observable.OnSubscribe<Album>)
     }
 
     static Observable<Album> loadAllAlbums(@NonNull Artist artist) {
         Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist))
+            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist)).subscribe subscriber
         } as Observable.OnSubscribe<Album>)
     }
 
     @Memoized
     static Observable<Album> loadAlbumById(long id) {
         Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(id))
+            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(id)).subscribe subscriber
         } as Observable.OnSubscribe<Album>).cache()
     }
 

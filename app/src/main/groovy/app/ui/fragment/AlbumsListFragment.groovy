@@ -1,12 +1,11 @@
 package app.ui.fragment
+
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.view.View
-import android.widget.GridView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.*
 import app.R
 import app.adapter.AlbumsAdapter
 import app.data_managers.AlbumsManager
@@ -16,9 +15,10 @@ import app.ui.activity.AlbumInfoActivity
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnItemClick
-import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
+import groovy.transform.*
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 import javax.inject.Inject
 
@@ -64,11 +64,18 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         grid.hide()
         progress.show()
 
+        Observable<Album> observable
+
         if (artist) {
-            albumsManager.loadAllAlbums(artist).toList().subscribe this.&onAlbumsLoaded
+            observable = albumsManager.loadAllAlbums(artist)
         } else {
-            albumsManager.loadAllAlbums().toList().subscribe this.&onAlbumsLoaded
+            observable = albumsManager.loadAllAlbums()
         }
+
+        observable.toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe this.&onAlbumsLoaded
     }
 
     private void onAlbumsLoaded(List<Album> loadedAlbums) {
