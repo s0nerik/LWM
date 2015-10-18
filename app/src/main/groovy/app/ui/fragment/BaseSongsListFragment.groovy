@@ -71,6 +71,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         twoWayView.hasFixedSize = true
 
         fastScroller.hide()
+        progress.show()
         loadSongs().subscribe this.&onSongsLoaded
     }
 
