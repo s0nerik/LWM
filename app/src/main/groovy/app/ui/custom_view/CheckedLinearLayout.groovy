@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class CheckedLinearLayout extends LinearLayout implements Checkable {
+public class CheckedLinearLayout extends LinearLayout implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = [
             android.R.attr.state_checked

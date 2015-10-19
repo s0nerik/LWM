@@ -1,28 +1,24 @@
-package app.ui.activity;
-
-import android.media.AudioManager;
-import android.view.KeyEvent;
-
-import app.player.LocalPlayer;
-import app.ui.Croutons;
-import app.ui.base.DaggerActivity;
-import app.websocket.entities.ClientInfo;
+package app.ui.activity
+import android.media.AudioManager
+import android.view.KeyEvent
+import app.ui.Croutons
+import app.ui.base.DaggerActivity
+import app.websocket.entities.ClientInfo
 import com.squareup.otto.Bus
-import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
+import groovy.transform.*
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public abstract class BaseLocalActivity extends DaggerActivity {
+abstract class BaseLocalActivity extends DaggerActivity {
 
     @Inject
-    Bus bus;
+    @PackageScope
+    protected Bus bus
 
     @Inject
-    AudioManager audioManager;
+    @PackageScope
+    protected AudioManager audioManager
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

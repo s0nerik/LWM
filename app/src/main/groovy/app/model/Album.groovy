@@ -2,6 +2,7 @@ package app.model
 import android.database.Cursor
 import app.data_managers.ArtistsManager
 import app.data_managers.CursorInitializable
+import app.data_managers.SongsManager
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
@@ -29,6 +30,10 @@ final class Album implements CursorInitializable {
 
     Observable<Artist> getArtist() {
         ArtistsManager.loadArtistById(artistId)
+    }
+
+    Observable<Song> getSongs() {
+        SongsManager.loadAllSongs(this)
     }
 
     @Override

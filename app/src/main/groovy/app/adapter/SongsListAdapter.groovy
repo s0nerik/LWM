@@ -1,26 +1,22 @@
 package app.adapter
-
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.Adapter
 import android.view.View
 import android.view.ViewGroup
-import app.Injector
-import app.R
-import app.Utils
+import app.*
+import app.R.layout
 import app.adapter.view_holders.SongViewHolder
 import app.commands.PlaySongAtPositionCommand
 import app.commands.SetQueueAndPlayCommand
 import app.model.Song
 import com.squareup.otto.Bus
-import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
+import groovy.transform.*
 
 import javax.inject.Inject
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
-class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
+class SongsListAdapter extends Adapter<SongViewHolder> {
 
     private final Context context
     private List<Song> songs
@@ -45,7 +41,7 @@ class SongsListAdapter extends RecyclerView.Adapter<SongViewHolder> {
 
     @Override
     SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        def holder = new SongViewHolder(View.inflate(context, R.layout.item_songs, null), songs)
+        def holder = new SongViewHolder(View.inflate(context, layout.item_songs, null), songs)
         if (!newQueueOnClick) {
             holder.mContainer.onClickListener = { View v ->
                 def pos = holder.getAdapterPosition()

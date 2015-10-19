@@ -10,13 +10,13 @@ import rx.Subscriber
 @CompileStatic
 class SongsManager {
 
-    Observable<Song> loadAllSongs() {
+    static Observable<Song> loadAllSongs() {
         Observable.create({ Subscriber<Song> subscriber ->
             CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter()).subscribe subscriber
         } as Observable.OnSubscribe<Song>)
     }
 
-    Observable<Song> loadAllSongs(@NonNull Album album) {
+    static Observable<Song> loadAllSongs(@NonNull Album album) {
         Observable.create({ Subscriber<Song> subscriber ->
             CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(album)).subscribe subscriber
         } as Observable.OnSubscribe<Song>)
