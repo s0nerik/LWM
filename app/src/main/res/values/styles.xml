@@ -8,6 +8,8 @@
 
         <item name="popupMenuStyle">@style/OverflowMenu</item>
         <item name="android:windowBackground">@android:color/white</item>
+
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
