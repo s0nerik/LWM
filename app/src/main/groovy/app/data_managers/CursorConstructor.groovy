@@ -7,7 +7,7 @@ import rx.Subscriber
 @CompileStatic
 class CursorConstructor {
 
-    static <T extends CursorInitializable> Observable<T> fromCursorGetter(Class<T> clazz, CursorGetter cursorGetter, Closure<Boolean> check = { true }) {
+    static <T extends CursorInitializable> Observable<T> fromCursorGetter(Class<T> clazz, CursorGetter cursorGetter, @DelegatesTo(T) Closure<Boolean> check = { true }) {
         Observable.create({ Subscriber<T> subscriber ->
             def cursor = cursorGetter.cursor
 
@@ -18,7 +18,7 @@ class CursorConstructor {
                     def produceItem = {
                         T item = clazz.newInstance() as T
                         item.initialize(cursor, indices)
-                        if (check()) subscriber.onNext item
+                        if (check(item)) subscriber.onNext item
                     }
 
                     produceItem()

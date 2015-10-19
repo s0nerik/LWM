@@ -12,13 +12,15 @@ class SongsManager {
 
     static Observable<Song> loadAllSongs() {
         Observable.create({ Subscriber<Song> subscriber ->
-            CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter()).subscribe subscriber
+            CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(), { Song s -> s.source != null })
+                    .subscribe subscriber
         } as Observable.OnSubscribe<Song>)
     }
 
     static Observable<Song> loadAllSongs(@NonNull Album album) {
         Observable.create({ Subscriber<Song> subscriber ->
-            CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(album)).subscribe subscriber
+            CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(album), { Song s -> s.source != null })
+                    .subscribe subscriber
         } as Observable.OnSubscribe<Song>)
     }
 
