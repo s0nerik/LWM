@@ -4,7 +4,6 @@ import app.R
 import app.data_managers.SongsManager
 import app.model.Song
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.github.s0nerik.betterknife.annotations.OnClick
 import com.melnykov.fab.FloatingActionButton
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -29,11 +28,6 @@ final class SongsListFragment extends BaseSongsListFragment {
     @Inject
     @PackageScope
     Bus bus
-
-    @OnClick(R.id.fab)
-    void onFabClicked() {
-        shuffleAll()
-    }
 
     @Override
     protected Observable<List<Song>> loadSongs() {

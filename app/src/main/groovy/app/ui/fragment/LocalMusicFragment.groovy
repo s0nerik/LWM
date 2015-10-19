@@ -17,6 +17,7 @@ import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.*
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -41,6 +42,8 @@ public class LocalMusicFragment extends DaggerFragment {
 
     private Intent localPlayerServiceIntent
     private Intent streamPlayerServiceIntent
+
+    private Closure fabAction = {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,11 @@ public class LocalMusicFragment extends DaggerFragment {
     protected void initToolbar() {
         toolbar.setTitle getString(R.string.local_music)
         toolbar.inflateMenu R.menu.local_broadcast
+    }
+
+    @OnClick(R.id.fab)
+    void onFabClicked() {
+        fabAction()
     }
 
     @Produce

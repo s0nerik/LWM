@@ -54,18 +54,4 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:src="@drawable/ic_shuffle_white_24dp"
-
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:fab_colorNormal="@color/primary"
-        app:fab_colorPressed="@color/primaryDark"
-        />
-
 </RelativeLayout>
