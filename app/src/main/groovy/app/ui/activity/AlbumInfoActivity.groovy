@@ -74,7 +74,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     private void initHeader(Album album) {
         Glide.with(this)
-                .load("file://$album.albumArtPath")
+                .load("file://$album.albumArtPath" as String)
                 .centerCrop()
                 .error(R.drawable.no_cover)
                 .placeholder(R.color.grid_item_default_bg)
@@ -83,16 +83,6 @@ class AlbumInfoActivity extends BaseLocalActivity {
         collapsingToolbar.setTitle album.title
         toolbar.setSubtitle utils.getArtistName(album.artistName)
     }
-
-//    @OnClick(R.id.fab)
-//    public void onFabClicked() {
-//        bus.post new SetQueueAndPlayCommand(songs, 0)
-//    }
-//
-//    @OnClick(R.id.overflowMenu)
-//    public void onOverflowMenuClicked(View view) {
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
