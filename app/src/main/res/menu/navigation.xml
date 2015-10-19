@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/local_music"
+            android:checked="true"
+            android:icon="@drawable/ic_my_library_music_grey600_24dp"
+            android:title="@string/local_music"/>
+        <item
+            android:id="@+id/stations_around"
+            android:icon="@drawable/ic_radio_grey600_24dp"
+            android:title="@string/stations_around"/>
+    </group>
+</menu>

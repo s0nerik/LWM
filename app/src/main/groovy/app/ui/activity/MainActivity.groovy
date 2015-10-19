@@ -1,41 +1,25 @@
 package app.ui.activity
 
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.IdRes
+import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.View
-import android.widget.ListView
 import app.PrefManager
 import app.R
-import app.adapter.NavigationDrawerListAdapter
-import app.events.player.service.CurrentSongAvailableEvent
 import app.ui.base.DaggerActivity
 import app.ui.fragment.LocalMusicFragment
 import app.ui.fragment.StationsAroundFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.github.s0nerik.betterknife.annotations.InjectView
-import com.github.s0nerik.betterknife.annotations.OnItemClick
-import com.google.android.exoplayer.ExoPlaybackException
-import com.google.android.exoplayer.ExoPlayer
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer
-import com.google.android.exoplayer.extractor.ExtractorSampleSource
-import com.google.android.exoplayer.extractor.mp3.Mp3Extractor
-import com.google.android.exoplayer.upstream.Allocator
-import com.google.android.exoplayer.upstream.DataSource
-import com.google.android.exoplayer.upstream.DefaultAllocator
-import com.google.android.exoplayer.upstream.DefaultUriDataSource
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
-import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
@@ -62,8 +46,8 @@ public class MainActivity extends DaggerActivity {
     @PackageScope
     PrefManager prefManager
 
-    ListView drawerList
     DrawerLayout drawerLayout
+    NavigationView navigation
 
     @Override
     protected void onDestroy() {
@@ -76,16 +60,15 @@ public class MainActivity extends DaggerActivity {
         super.onPostCreate(savedInstanceState)
         bus.register this
         initNavigationDrawer()
-        showFragmentFromDrawer(prefManager.drawerSelection().getOr(0))
     }
 
-    private void showFragmentFromDrawer(int i) {
+    private void showFragmentFromDrawer(@IdRes int id) {
         Fragment fragment
-        switch (i) {
-            case 0:
+        switch (id) {
+            case R.id.local_music:
                 fragment = new LocalMusicFragment()
                 break
-            case 1:
+            case R.id.stations_around:
                 fragment = new StationsAroundFragment()
                 break
             default:
@@ -98,26 +81,16 @@ public class MainActivity extends DaggerActivity {
     }
 
     protected void initNavigationDrawer() {
-        // Set the adapter for the list view
-        drawerList.adapter = new NavigationDrawerListAdapter(this,
-                getResources().getStringArray(R.array.drawer_items),
-                getResources().obtainTypedArray(R.array.drawer_icons))
+        navigation.navigationItemSelectedListener = {
+            prefManager.drawerSelection().put(it.itemId).apply()
+            drawerLayout.closeDrawer Gravity.LEFT
+            showFragmentFromDrawer it.itemId
 
-        int activeFragment = prefManager.drawerSelection().getOr(0)
+            return true
+        }
 
-        drawerList.setItemChecked(activeFragment, true)
-    }
-
-//    @Subscribe
-//    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-//        mNowPlayingFrame.setVisibility(View.VISIBLE);
-//    }
-
-    @OnItemClick(R.id.drawer_list)
-    public void onDrawerItemClicked(int i) {
-        prefManager.drawerSelection().put(i).apply();
-        showFragmentFromDrawer(i);
-        drawerLayout.closeDrawer(Gravity.LEFT);
+        int activeFragment = prefManager.drawerSelection().getOr(R.id.local_music)
+        showFragmentFromDrawer activeFragment
     }
 
     @Subscribe
