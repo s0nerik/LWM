@@ -1,16 +1,12 @@
 package app.ui
+
 import android.content.res.Resources
 import android.graphics.Color
 import android.support.v7.graphics.Palette
 import android.view.View
 import android.widget.TextView
-import app.Daggered
-import app.R
-import app.Utils
-import com.melnykov.fab.FloatingActionButton
-import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
-import groovy.transform.PackageScope
+import app.*
+import groovy.transform.*
 
 import javax.inject.Inject
 
@@ -31,7 +27,6 @@ class PaletteApplier extends Daggered {
     View layoutShadow
     TextView title
     TextView subtitle
-    FloatingActionButton fab
 
     Palette.Swatch[] swatches = new Palette.Swatch[6]
 
@@ -84,7 +79,6 @@ class PaletteApplier extends Daggered {
     private void applyStyle(int bgColor, int shadowColor, int titleColor, int subtitleColor) {
 //        layout?.setBackgroundColor(bgColor)
 //        fab?.setColorNormal(shadowColor)
-        fab?.setColorNormal(bgColor)
         layoutShadow?.setBackgroundColor(shadowColor)
         title?.setTextColor(titleColor)
         subtitle?.setTextColor(subtitleColor)

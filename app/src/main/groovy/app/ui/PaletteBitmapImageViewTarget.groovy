@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.melnykov.fab.FloatingActionButton
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 
@@ -21,7 +20,6 @@ class PaletteBitmapImageViewTarget extends BitmapImageViewTarget {
     View layoutShadow
     TextView title
     TextView subtitle
-    FloatingActionButton fab
 
     PaletteBitmapImageViewTarget(ImageView view) {
         super(view)

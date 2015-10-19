@@ -15,10 +15,8 @@ import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
 import app.ui.custom_view.FastScroller
-
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.Profile
-import com.melnykov.fab.FloatingActionButton
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -37,8 +35,6 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     View emptyView
     @InjectView(R.id.progress)
     View progress
-    @InjectView(R.id.fab)
-    FloatingActionButton fab
 
     @PackageScope
     @Inject
@@ -115,9 +111,6 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
             selection = currentSong
 
             twoWayView.show()
-
-            fab?.attachToRecyclerView twoWayView
-            fab?.show true
 
             fastScroller.recyclerView = twoWayView
             fastScroller.show()
