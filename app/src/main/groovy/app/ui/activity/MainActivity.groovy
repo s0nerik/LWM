@@ -18,6 +18,7 @@ import app.events.player.service.CurrentSongAvailableEvent
 import app.ui.base.DaggerActivity
 import app.ui.fragment.LocalMusicFragment
 import app.ui.fragment.StationsAroundFragment
+import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnItemClick
 import com.google.android.exoplayer.ExoPlaybackException
@@ -43,76 +44,26 @@ import static android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import static android.view.KeyEvent.KEYCODE_VOLUME_UP
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
+@InjectLayout(value = R.layout.activity_main, injectAllViews = true)
 public class MainActivity extends DaggerActivity {
 
     int BUFFER_SEGMENT_SIZE = 1024
     int BUFFER_SEGMENT_COUNT = 512
 
     @Inject
+    @PackageScope
     Bus bus
+
     @Inject
+    @PackageScope
     AudioManager audio
+
     @Inject
+    @PackageScope
     PrefManager prefManager
 
-    @InjectView(R.id.drawer_list)
-    ListView mDrawerList
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout
-    @InjectView(R.id.nowPlayingFrame)
-    View mNowPlayingFrame
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState)
-        contentView = R.layout.activity_main
-        bus.register this
-        initNavigationDrawer()
-
-//        startActivity(new Intent(this, SplashActivity.class));
-    }
-
-//    @Override
-//    protected void onPostResume() {
-//        super.onPostResume()
-//
-//        audio.requestAudioFocus null, STREAM_MUSIC, AUDIOFOCUS_GAIN
-//
-//        def player = ExoPlayer.Factory.newInstance(1, 1000, 5000)
-//
-//        Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
-//        DataSource dataSource = new DefaultUriDataSource(this, null, "Android")
-////        DataSource dataSource = new DefaultUriDataSource(this, null, "Android");
-//        def extractor = new Mp3Extractor()
-////        ExtractorSampleSource sampleSource = new ExtractorSampleSource(
-////                Uri.fromFile(new File("/storage/ext_sd/1.mp3")),
-////                dataSource, extractor, allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
-//        ExtractorSampleSource sampleSource = new ExtractorSampleSource(
-//                Uri.fromFile(new File("/storage/ext_sd/2.mp3")),
-//                dataSource, extractor, allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
-//
-//        MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource)
-//        player.setRendererEnabled(0, true)
-//        player.prepare(audioRenderer)
-//        player.setPlayWhenReady(true)
-//        player.addListener(new ExoPlayer.Listener() {
-//            @Override
-//            void onPlayerStateChanged(boolean b, int i) {
-//                Debug.d "$b: $i"
-//            }
-//
-//            @Override
-//            void onPlayWhenReadyCommitted() {
-//                Debug.d()
-//            }
-//
-//            @Override
-//            void onPlayerError(ExoPlaybackException e) {
-//                Debug.e e
-//            }
-//        })
-//    }
+    ListView drawerList
+    DrawerLayout drawerLayout
 
     @Override
     protected void onDestroy() {
@@ -123,6 +74,8 @@ public class MainActivity extends DaggerActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState)
+        bus.register this
+        initNavigationDrawer()
         showFragmentFromDrawer(prefManager.drawerSelection().getOr(0))
     }
 
@@ -146,38 +99,38 @@ public class MainActivity extends DaggerActivity {
 
     protected void initNavigationDrawer() {
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new NavigationDrawerListAdapter(this,
+        drawerList.adapter = new NavigationDrawerListAdapter(this,
                 getResources().getStringArray(R.array.drawer_items),
-                getResources().obtainTypedArray(R.array.drawer_icons)))
+                getResources().obtainTypedArray(R.array.drawer_icons))
 
         int activeFragment = prefManager.drawerSelection().getOr(0)
 
-        mDrawerList.setItemChecked(activeFragment, true)
+        drawerList.setItemChecked(activeFragment, true)
     }
 
-    @Subscribe
-    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-        mNowPlayingFrame.setVisibility(View.VISIBLE);
-    }
+//    @Subscribe
+//    public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
+//        mNowPlayingFrame.setVisibility(View.VISIBLE);
+//    }
 
     @OnItemClick(R.id.drawer_list)
     public void onDrawerItemClicked(int i) {
         prefManager.drawerSelection().put(i).apply();
         showFragmentFromDrawer(i);
-        mDrawerLayout.closeDrawer(Gravity.LEFT);
+        drawerLayout.closeDrawer(Gravity.LEFT);
     }
 
     @Subscribe
     public void onToolbarAvailable(Toolbar toolbar) {
         def drawerToggle = new ActionBarDrawerToggle(
                 this,
-                mDrawerLayout,
+                drawerLayout,
                 toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
         );
-        mDrawerLayout.drawerListener = drawerToggle
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT)
+        drawerLayout.drawerListener = drawerToggle
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT)
         drawerToggle.syncState()
     }
 

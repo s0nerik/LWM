@@ -17,24 +17,22 @@ import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.squareup.otto.Bus
-import com.squareup.otto.Produce
-import com.squareup.otto.Subscribe
+import com.squareup.otto.*
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 @InjectLayout(value = R.layout.fragment_local_music, injectAllViews = true)
 public class LocalMusicFragment extends DaggerFragment {
 
     @Inject
+    @PackageScope
     PrefManager prefManager
 
     @Inject
+    @PackageScope
     Bus bus
 
     Toolbar toolbar

@@ -8,39 +8,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_above="@+id/nowPlayingFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <View
-            android:layout_above="@+id/nowPlayingFrame"
-            android:background="@drawable/shadow_now_playing_fragment_up"
-            android:layout_width="match_parent"
-            android:layout_height="4dp" />
-
-        <FrameLayout
-            tools:visibility="visible"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/nowPlayingFrame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <fragment
-                android:id="@+id/nowPlayingFragment"
-                android:name="app.ui.fragment.NowPlayingFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_now_playing" />
-        </FrameLayout>
-
-    </RelativeLayout>
+        android:layout_height="match_parent" />
 
     <include layout="@layout/drawer" />
 
