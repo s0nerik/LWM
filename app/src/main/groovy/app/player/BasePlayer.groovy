@@ -111,13 +111,19 @@ abstract class BasePlayer {
                         break
                     case STATE_READY:
                         prepareSubject.onNext(playWhenReady)
-                        prepareTimeMeasurer.stop()
+//                        prepareTimeMeasurer.stop()
                         onReady(playWhenReady)
                         break
                 }
                 Debug.d Utils.getConstantName(ExoPlayer, playbackState)
             },
             onPlayWhenReadyCommitted: {
+                if (ready && innerPlayer.playWhenReady) {
+                    gainAudioFocus()
+                    bus.post new PlaybackStartedEvent(currentSong, innerPlayer.currentPosition)
+                    startNotifyingPlaybackProgress()
+                }
+
                 if (!innerPlayer.playWhenReady) {
                     bus.post new PlaybackPausedEvent(currentSong, innerPlayer.currentPosition)
                 }
@@ -203,9 +209,9 @@ abstract class BasePlayer {
 
     protected void startNotifyingPlaybackProgress() {
         playbackProgressNotifier = Observable.interval(NOTIFY_INTERVAL, TimeUnit.MILLISECONDS)
-        .subscribe {
-            if (currentSong) bus.post new SongPlayingEvent(currentPosition, currentSong.duration)
-        }
+            .subscribe {
+                if (currentSong) bus.post new SongPlayingEvent(currentPosition, currentSong.duration)
+            }
     }
 
     protected void stopNotifyingPlaybackProgress() {
@@ -231,11 +237,9 @@ abstract class BasePlayer {
                         subscriber.onCompleted()
                     }, {
                         subscriber.onError(it)
-                        subscriber.onCompleted()
                     })
                 } catch (e) {
                     subscriber.onError(e)
-                    subscriber.onCompleted()
                 }
         } as Observable.OnSubscribe<Boolean>)
     }

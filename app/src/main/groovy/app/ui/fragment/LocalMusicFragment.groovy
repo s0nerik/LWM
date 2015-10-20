@@ -1,5 +1,4 @@
 package app.ui.fragment
-
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -25,10 +24,8 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.*
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import rx.Observable
 
 import javax.inject.Inject
-import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_local_music, injectAllViews = true)
@@ -87,15 +84,11 @@ public class LocalMusicFragment extends DaggerFragment {
     @Subscribe
     void onSongPlaybackStarted(PlaybackStartedEvent e) {
         circleProgress.visibility = View.VISIBLE
-
-        Observable.interval(0, 2, TimeUnit.SECONDS).subscribe {
-            circleProgress.barWidth = 40 - new Random().nextInt(20) + 10
-        }
     }
 
     @Subscribe
     void onSongPlaying(SongPlayingEvent e) {
-        circleProgress.value = (e.progress / (float) e.duration) as float
+        circleProgress.value = (e.progress / (float) e.duration) * 100 as float
     }
 
     @Produce

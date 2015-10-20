@@ -83,21 +83,25 @@ class LocalPlayer extends BasePlayer {
     }
 
     void prepare() {
-        stop()
+        innerPlayer.stop()
+        innerPlayer.seekTo(0)
+
+        Action1<Boolean> onNext = {
+            Debug.d "LocalPlayer onNext: ${it}"
+            if (!it) {
+                innerPlayer.playWhenReady = true
+            }
+        }
 
         Action1<Throwable> errorObserver
         errorObserver = { Throwable it ->
             Debug.e "errorObserver:"
             Debug.e it
             queueContainer.moveToNext true
-            prepare(queueContainer.song).subscribe({}, errorObserver)
+            prepare(queueContainer.song).subscribe(onNext, errorObserver)
         }
 
-        prepare(queueContainer.song).subscribe({}, errorObserver)
-    }
-
-    void start() {
-        paused = false
+        prepare(queueContainer.song).subscribe(onNext, errorObserver)
     }
 
     void nextSong() {
@@ -124,7 +128,7 @@ class LocalPlayer extends BasePlayer {
     boolean isShuffle() { queueContainer.shuffled }
 
     void setRepeat(boolean flag) {
-        repeat = flag
+        this.@repeat = flag
         bus.post new RepeatStateChangedEvent(flag)
     }
 
