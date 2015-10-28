@@ -51,18 +51,30 @@
     <FrameLayout
         app:layout_anchor="@id/pager"
         app:layout_anchorGravity="bottom|right|end"
+        android:paddingBottom="70dp"
         android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <at.grabner.circleprogress.CircleProgressView
-            android:id="@+id/circleProgress"
-            android:visibility="invisible"
-            android:layout_width="72dp"
-            android:layout_height="72dp" />
+        <!--<at.grabner.circleprogress.CircleProgressView-->
+            <!--android:id="@+id/circleProgress"-->
+            <!--android:visibility="invisible"-->
+            <!--android:layout_width="72dp"-->
+            <!--android:layout_height="72dp" />-->
+
+        <app.ui.custom_view.RadialEqualizerView
+            android:id="@+id/radialEqualizer"
+            android:visibility="visible"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            app:rew_color="@color/primaryDark"
+            app:rew_bars_count="15"
+            app:rew_min_scale="50"
+            />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
+            tools:visibility="visible"
             android:layout_height="56dp"
             android:layout_width="56dp"
             android:src="@drawable/ic_shuffle_white_24dp"

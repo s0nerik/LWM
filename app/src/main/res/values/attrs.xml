@@ -29,4 +29,10 @@
     <declare-styleable name="ScrimInsetsView">
         <attr name="scrimInsetForeground" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="RadialEqualizerView">
+        <attr name="rew_color" format="color" />
+        <attr name="rew_bars_count" format="integer" />
+        <attr name="rew_min_scale" format="integer" />
+    </declare-styleable>
 </resources>
