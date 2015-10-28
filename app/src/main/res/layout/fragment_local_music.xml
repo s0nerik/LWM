@@ -69,7 +69,7 @@
             android:layout_height="76dp"
             app:rew_color="@color/primaryDark"
             app:rew_bars_count="15"
-            app:rew_min_scale="50"
+            app:rew_min_scale="80"
             />
 
         <android.support.design.widget.FloatingActionButton

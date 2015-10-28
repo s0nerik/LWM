@@ -81,6 +81,7 @@ class RadialEqualizerView extends View {
         // Draw the pie slices
         for (int i = 0; i < percents.size(); i++) {
             float scale = percents[i] / 100f as float
+            scale = (minScale + (100 - minScale) * scale) / 100f as float
             scaleBounds(dirtyBounds, scale)
 
             canvas.drawArc dirtyBounds, startAngle * i as float, startAngle as float, true, equalizerPaint
