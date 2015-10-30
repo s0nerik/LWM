@@ -1,4 +1,7 @@
 package app.ui.custom_view
+
+import android.animation.FloatArrayEvaluator
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -16,7 +19,7 @@ class RadialEqualizerView extends View {
     int minScale
     int barsCount
 
-    List<Float> percents = new ArrayList<>()
+    float[] percents
 
     RadialEqualizerView(Context context, AttributeSet attrs) {
         super(context, attrs)
@@ -47,11 +50,10 @@ class RadialEqualizerView extends View {
 
         barsCount = a.getInt R.styleable.RadialEqualizerView_rew_bars_count, 10
 
-        if (isInEditMode()) {
-            def rand = new Random()
-            for (int i = 0; i < barsCount; i++) {
-                percents.add((rand.nextFloat() * 101f) as float)
-            }
+        percents = new float[barsCount]
+
+        if (inEditMode) {
+            randomize()
         }
 
         a.recycle()
@@ -63,6 +65,32 @@ class RadialEqualizerView extends View {
 
         bounds.set 0, 0, w, w
         dirtyBounds.set bounds
+    }
+
+    void randomize() {
+        def newPercents = new float[barsCount]
+        def rand = new Random()
+        for (int i = 0; i < barsCount; i++) {
+            newPercents[i] = rand.nextFloat() * 101f as float
+        }
+
+        if (inEditMode) {
+            percents = newPercents
+            invalidate()
+            return
+        }
+
+        def oldPercents = Arrays.copyOf(percents, percents.length)
+
+        def animator = ObjectAnimator.ofObject(this, "percents", new FloatArrayEvaluator(), oldPercents, newPercents)
+        animator.duration = 60
+
+        animator.start()
+    }
+
+    void setPercents(float[] percents) {
+        this.percents = percents
+        invalidate()
     }
 
     private void scaleBounds(RectF bounds, float scale) {
@@ -81,7 +109,7 @@ class RadialEqualizerView extends View {
         // Draw the pie slices
         for (int i = 0; i < percents.size(); i++) {
             float scale = percents[i] / 100f as float
-            scale = (minScale + (100 - minScale) * scale) / 100f as float
+            scale = (minScale + ((100 - minScale) * scale)) / 100f as float
             scaleBounds(dirtyBounds, scale)
 
             canvas.drawArc dirtyBounds, startAngle * i as float, startAngle as float, true, equalizerPaint
