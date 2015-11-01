@@ -16,6 +16,7 @@ import app.R
 import app.adapter.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.player.playback.*
+import app.events.ui.ChangeFabActionCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.service.StreamPlayerService
 import app.ui.Croutons
@@ -55,7 +56,9 @@ public class LocalMusicFragment extends DaggerFragment {
     private Intent localPlayerServiceIntent
     private Intent streamPlayerServiceIntent
 
-    private Closure fabAction = {}
+    protected Closure fabAction = {}
+
+    private boolean canShowFab = true
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,18 @@ public class LocalMusicFragment extends DaggerFragment {
 
         nowPlayingFragment = childFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
         childFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
+
+        tabs.onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            void onPageScrollStateChanged(int state) {
+                if (!canShowFab) return
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+                        fab.hide()
+                        break
+                }
+            }
+        }
     }
 
     @Override
@@ -104,12 +119,20 @@ public class LocalMusicFragment extends DaggerFragment {
     }
 
     @Subscribe
+    void onChangeFabAction(ChangeFabActionCommand c) {
+        if (!canShowFab) return
+
+        fabAction = c.action
+        fab.imageResource = c.iconId
+        fab.show()
+    }
+
+    @Subscribe
     void onSongPlaybackStarted(PlaybackStartedEvent e) {
-        if (fab.visibility != View.GONE)
         fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
             @Override
             void onHidden(FloatingActionButton fab) {
-                fab.visibility = View.GONE
+                canShowFab = false
 
                 getChildFragmentManager().beginTransaction().show(nowPlayingFragment).commit()
                 nowPlayingFragment.show().subscribe { int height ->

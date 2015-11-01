@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:id="@+id/mainGroup"
-        android:layout_marginTop="30dp"
+        android:paddingTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

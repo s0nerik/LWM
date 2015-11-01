@@ -10,6 +10,7 @@ import app.commands.SetQueueAndPlayCommand
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
+import app.events.ui.ChangeFabActionCommand
 import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
@@ -69,6 +70,17 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         fastScroller.hide()
         progress.show()
         loadSongs().subscribe this.&onSongsLoaded
+    }
+
+    @Override
+    void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser)
+
+        if (isVisibleToUser) {
+            bus.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, {
+                bus.post new SetQueueAndPlayCommand(songs, 0, true)
+            })
+        }
     }
 
     protected void setSelection(Song song) {

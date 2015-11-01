@@ -77,7 +77,7 @@ class NowPlayingFragment extends DaggerFragment {
                     .setDuration(500)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction({
-                        subscriber.onNext(mainGroup.height - (mainGroup.layoutParams as RelativeLayout.LayoutParams).topMargin)
+                        subscriber.onNext(mainGroup.height - mainGroup.paddingTop)
                         subscriber.onCompleted()
 
                         fabGroup.animate()
