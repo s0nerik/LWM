@@ -17,7 +17,6 @@ import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
 import app.ui.custom_view.FastScroller
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -57,7 +56,6 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         adapter = new SongsListAdapter(activity, songs)
     }
 
-    @Profile
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,9 +65,14 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
 
-        fastScroller.hide()
-        progress.show()
-        loadSongs().subscribe this.&onSongsLoaded
+        if (!savedInstanceState) {
+            fastScroller.hide()
+            progress.show()
+            loadSongs().subscribe this.&onSongsLoaded
+        } else {
+            fastScroller.recyclerView = twoWayView
+            updateSongsList()
+        }
     }
 
     @Override
@@ -118,6 +121,10 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         songs.addAll loadedSongs
 
         progress.hide()
+        updateSongsList()
+    }
+
+    private void updateSongsList() {
         if (songs) {
             adapter.notifyDataSetChanged()
             selection = currentSong
