@@ -129,27 +129,28 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Subscribe
     void onSongPlaybackStarted(PlaybackStartedEvent e) {
-        fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
-            @Override
-            void onHidden(FloatingActionButton fab) {
-                canShowFab = false
-
-                getChildFragmentManager().beginTransaction().show(nowPlayingFragment).commit()
-                nowPlayingFragment.show().subscribe { int height ->
-                    def a = new Animation() {
-                        @Override
-                        protected void applyTransformation(float interpolatedTime, Transformation t) {
-                            RelativeLayout.LayoutParams params = coordinator.layoutParams as RelativeLayout.LayoutParams
-                            params.bottomMargin = height * interpolatedTime as int
-                            coordinator.layoutParams = params
+        if (canShowFab) {
+            fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                @Override
+                void onHidden(FloatingActionButton fab) {
+                    getChildFragmentManager().beginTransaction().show(nowPlayingFragment).commit()
+                    nowPlayingFragment.show().subscribe { int height ->
+                        def a = new Animation() {
+                            @Override
+                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                                RelativeLayout.LayoutParams params = coordinator.layoutParams as RelativeLayout.LayoutParams
+                                params.bottomMargin = height * interpolatedTime as int
+                                coordinator.layoutParams = params
+                            }
                         }
-                    }
 
-                    a.duration = 150
-                    coordinator.startAnimation a
+                        a.duration = 150
+                        coordinator.startAnimation a
+                    }
                 }
-            }
-        })
+            })
+            canShowFab = false
+        }
     }
 
     @Produce
