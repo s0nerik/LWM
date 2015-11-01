@@ -16,6 +16,7 @@ import app.R
 import app.adapter.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.player.playback.*
+import app.events.ui.ChangeFabActionCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.service.StreamPlayerService
 import app.ui.Croutons
@@ -55,7 +56,7 @@ public class LocalMusicFragment extends DaggerFragment {
     private Intent localPlayerServiceIntent
     private Intent streamPlayerServiceIntent
 
-    private Closure fabAction = {}
+    protected Closure fabAction = {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,17 @@ public class LocalMusicFragment extends DaggerFragment {
 
         nowPlayingFragment = childFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
         childFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
+
+        tabs.onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            void onPageScrollStateChanged(int state) {
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+                        fab.hide()
+                        break
+                }
+            }
+        }
     }
 
     @Override
@@ -101,6 +113,13 @@ public class LocalMusicFragment extends DaggerFragment {
     void onSongPlaying(SongPlayingEvent e) {
 //        radialEqualizerView.randomize()
 //        radialEqualizerView.value = (e.progress / (float) e.duration) * 100 as float
+    }
+
+    @Subscribe
+    void onChangeFabAction(ChangeFabActionCommand c) {
+        fabAction = c.action
+        fab.imageResource = c.iconId
+        fab.show()
     }
 
     @Subscribe
