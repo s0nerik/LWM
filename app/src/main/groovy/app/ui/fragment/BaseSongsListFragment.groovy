@@ -65,14 +65,10 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
 
-        if (!savedInstanceState) {
-            fastScroller.hide()
-            progress.show()
-            loadSongs().subscribe this.&onSongsLoaded
-        } else {
-            fastScroller.recyclerView = twoWayView
-            updateSongsList()
-        }
+        fastScroller.hide()
+        twoWayView.hide()
+        progress.show()
+        loadSongs().subscribe this.&onSongsLoaded
     }
 
     @Override

@@ -24,12 +24,17 @@ final class SongsListFragment extends BaseSongsListFragment {
     @PackageScope
     Bus bus
 
+    private Observable<List<Song>> songsObservable
+
     @Override
     protected Observable<List<Song>> loadSongs() {
-        songsManager.loadAllSongs()
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        if (!songsObservable)
+            songsObservable = songsManager.loadAllSongs()
+                                            .toList()
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .cache()
+        return songsObservable
     }
 
 }
