@@ -10,6 +10,7 @@ import app.PrefManager
 import app.R
 import app.adapter.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
+import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.events.ui.ShouldStartArtistInfoActivity
@@ -17,15 +18,19 @@ import app.service.StreamPlayerService
 import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
-import at.grabner.circleprogress.CircleProgressView
+import app.ui.custom_view.RadialEqualizerView
 import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.*
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.Observable
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_local_music, injectAllViews = true)
@@ -42,7 +47,9 @@ public class LocalMusicFragment extends DaggerFragment {
     Toolbar toolbar
     PagerSlidingTabStrip tabs
     ViewPager pager
-    CircleProgressView circleProgress
+    RadialEqualizerView radialEqualizerView
+
+    private Subscription radialEqualizerViewSubscription
 
     private Intent localPlayerServiceIntent
     private Intent streamPlayerServiceIntent
@@ -83,12 +90,26 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Subscribe
     void onSongPlaybackStarted(PlaybackStartedEvent e) {
-        circleProgress.visibility = View.VISIBLE
+        radialEqualizerView.visibility = View.VISIBLE
+
+        radialEqualizerViewSubscription?.unsubscribe()
+
+        radialEqualizerViewSubscription = Observable.interval(200, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    radialEqualizerView.randomize()
+                }
+    }
+
+    @Subscribe
+    void onSongPlaybackPaused(PlaybackPausedEvent e) {
+        radialEqualizerViewSubscription?.unsubscribe()
     }
 
     @Subscribe
     void onSongPlaying(SongPlayingEvent e) {
-        circleProgress.value = (e.progress / (float) e.duration) * 100 as float
+//        radialEqualizerView.randomize()
+//        radialEqualizerView.value = (e.progress / (float) e.duration) * 100 as float
     }
 
     @Produce

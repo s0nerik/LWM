@@ -63,7 +63,7 @@
             <!--android:layout_height="72dp" />-->
 
         <app.ui.custom_view.RadialEqualizerView
-            android:id="@+id/radialEqualizer"
+            android:id="@+id/radialEqualizerView"
             android:visibility="visible"
             android:layout_width="76dp"
             android:layout_height="76dp"
