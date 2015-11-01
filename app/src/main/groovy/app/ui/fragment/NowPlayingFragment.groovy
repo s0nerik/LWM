@@ -1,15 +1,14 @@
 package app.ui.fragment
 
-import android.animation.ValueAnimator
 import android.content.Intent
+import android.support.design.widget.FloatingActionButton
 import android.view.View
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.*
 import app.R
 import app.Utils
-import app.events.player.playback.PlaybackStartedEvent
-import app.events.player.playback.SongChangedEvent
+import app.commands.ChangePauseStateCommand
+import app.events.player.playback.*
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.BlurTransformation
@@ -47,6 +46,7 @@ class NowPlayingFragment extends DaggerFragment {
     View mainGroup
     View layout
     RadialEqualizerView radialEqualizerView
+    FloatingActionButton playbackFab
 
     private Subscription radialEqualizerViewSubscription
 
@@ -74,7 +74,8 @@ class NowPlayingFragment extends DaggerFragment {
 
             mainGroup.animate()
                     .translationY(0)
-                    .setDuration(1000)
+                    .setDuration(500)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
                     .withEndAction({
                         subscriber.onNext(mainGroup.height - (mainGroup.layoutParams as RelativeLayout.LayoutParams).topMargin)
                         subscriber.onCompleted()
@@ -82,7 +83,7 @@ class NowPlayingFragment extends DaggerFragment {
                         fabGroup.animate()
                                 .scaleX(1)
                                 .scaleY(1)
-                                .setDuration(1000)
+                                .setDuration(250)
                                 .start()
                     })
                     .start()
@@ -109,6 +110,11 @@ class NowPlayingFragment extends DaggerFragment {
         activity.overridePendingTransition R.anim.slide_in_right, R.anim.slide_out_left_long_alpha
     }
 
+    @OnClick(R.id.playbackFab)
+    void onFabClicked() {
+        player.togglePause()
+    }
+
     @Subscribe
     void onSongChanged(SongChangedEvent event) {
         songInfo = event.song
@@ -116,6 +122,8 @@ class NowPlayingFragment extends DaggerFragment {
 
     @Subscribe
     void onSongPlaybackStarted(PlaybackStartedEvent e) {
+        (playbackFab as ImageView).imageResource = R.drawable.ic_pause_24dp
+
         radialEqualizerViewSubscription?.unsubscribe()
 
         radialEqualizerViewSubscription = Observable.interval(200, TimeUnit.MILLISECONDS)
@@ -125,4 +133,10 @@ class NowPlayingFragment extends DaggerFragment {
         }
     }
 
+    @Subscribe
+    void onSongPlaybackStarted(PlaybackPausedEvent e) {
+        (playbackFab as ImageView).imageResource = R.drawable.ic_play_arrow_24dp
+
+        radialEqualizerViewSubscription?.unsubscribe()
+    }
 }

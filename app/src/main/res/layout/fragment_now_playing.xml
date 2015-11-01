@@ -101,7 +101,8 @@
             android:id="@+id/playbackFab"
             android:layout_height="56dp"
             android:layout_width="56dp"
-            android:src="@drawable/ic_shuffle_white_24dp"
+            android:src="@drawable/ic_pause_24dp"
+            android:tint="@android:color/white"
             android:layout_gravity="center"
 
             app:elevation="4dp"

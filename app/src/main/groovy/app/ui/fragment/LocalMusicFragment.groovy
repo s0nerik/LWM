@@ -105,6 +105,7 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Subscribe
     void onSongPlaybackStarted(PlaybackStartedEvent e) {
+        if (fab.visibility != View.GONE)
         fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
             @Override
             void onHidden(FloatingActionButton fab) {
