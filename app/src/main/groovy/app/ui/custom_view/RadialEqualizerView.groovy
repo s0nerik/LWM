@@ -70,8 +70,13 @@ class RadialEqualizerView extends View {
     void randomize() {
         def newPercents = new float[barsCount]
         def rand = new Random()
+
+        def baseLevel = rand.nextFloat() * 0.5f
+
         for (int i = 0; i < barsCount; i++) {
-            newPercents[i] = rand.nextFloat() * 101f as float
+            newPercents[i] = 100f * (baseLevel + rand.nextFloat() * 0.5f) as float
+            if (newPercents[i] > 100f)
+                newPercents[i] = 100f
         }
 
         if (inEditMode) {
@@ -83,7 +88,7 @@ class RadialEqualizerView extends View {
         def oldPercents = Arrays.copyOf(percents, percents.length)
 
         def animator = ObjectAnimator.ofObject(this, "percents", new FloatArrayEvaluator(), oldPercents, newPercents)
-        animator.duration = 60
+        animator.duration = 200
 
         animator.start()
     }
