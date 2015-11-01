@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:id="@+id/mainGroup"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -89,22 +89,23 @@
 
         <app.ui.custom_view.RadialEqualizerView
             android:id="@+id/radialEqualizerView"
-            android:layout_width="76dp"
-            android:layout_height="76dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
 
-            app:rew_color="@color/primaryDark"
+            app:rew_color="@color/md_orange_a700"
             app:rew_bars_count="15"
-            app:rew_min_scale="80"
+            app:rew_min_scale="70"
             />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/playbackFab"
-            android:layout_height="56dp"
-            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:src="@drawable/ic_pause_24dp"
             android:tint="@android:color/white"
             android:layout_gravity="center"
 
+            app:fabSize="normal"
             app:elevation="4dp"
             app:backgroundTint="?attr/colorPrimary"
 
