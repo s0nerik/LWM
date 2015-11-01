@@ -23,6 +23,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.Subscription
 import rx.subjects.PublishSubject
+import rx.subjects.SerializedSubject
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
@@ -63,8 +64,8 @@ abstract class BasePlayer {
 
     protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer(10)
 
-    protected PublishSubject<Boolean> prepareSubject = PublishSubject.create()
-    protected PublishSubject<ExoPlaybackException> errorSubject = PublishSubject.create()
+    protected SerializedSubject<Boolean, Boolean> prepareSubject = PublishSubject.create().toSerialized()
+    protected SerializedSubject<ExoPlaybackException, ExoPlaybackException> errorSubject = PublishSubject.create().toSerialized()
 
     protected int lastState = STATE_IDLE
 
