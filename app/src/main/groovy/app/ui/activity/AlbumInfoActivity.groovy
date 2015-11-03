@@ -1,13 +1,12 @@
 package app.ui.activity
+
 import android.os.Bundle
 import android.support.annotation.Nullable
-import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
-import android.view.*
-import android.widget.ImageView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.widget.*
 import app.R
 import app.R.layout
 import app.Utils
@@ -34,8 +33,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     private List<Song> songs
 
-    CollapsingToolbarLayout collapsingToolbar
-    Toolbar toolbar
+    TextView title
+    TextView subtitle
     ImageView image
     RecyclerView recycler
 
@@ -69,6 +68,25 @@ class AlbumInfoActivity extends BaseLocalActivity {
         recycler.layoutManager = layoutManager
         recycler.hasFixedSize = true
 
+//        recycler.addOnScrollListener new RecyclerView.OnScrollListener() {
+//            @Override
+//            void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                def params = image.layoutParams
+//                params.height -= dy
+//                image.layoutParams = params
+//            }
+//        }
+//
+//        image.viewTreeObserver.addOnGlobalLayoutListener {
+//            if (firstLayout) {
+//                def params = image.layoutParams
+//                params.height = image.width
+//                image.layoutParams = params
+//
+//                firstLayout = false
+//            }
+//        }
+
         initHeader album
     }
 
@@ -80,15 +98,15 @@ class AlbumInfoActivity extends BaseLocalActivity {
                 .placeholder(R.color.grid_item_default_bg)
                 .into(image)
 
-        collapsingToolbar.setTitle album.title
-        toolbar.setSubtitle utils.getArtistName(album.artistName)
+        title.text = album.title
+        subtitle.text = "$album.artistName • $album.year" as String
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.album_info, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.album_info, menu);
+//        return true;
+//    }
 
 //    @Override
 //    public void onBackPressed() {

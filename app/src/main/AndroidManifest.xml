@@ -107,7 +107,7 @@
             android:screenOrientation="portrait"
             android:name="app.ui.activity.AlbumInfoActivity"
             android:label=""
-            android:theme="@style/AppTheme.TranslucentStatusBar"
+            android:theme="@style/AppTheme"
             android:parentActivityName="app.ui.activity.MainActivity" >
         </activity>
 
