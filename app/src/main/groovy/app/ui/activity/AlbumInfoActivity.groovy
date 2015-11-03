@@ -2,11 +2,15 @@ package app.ui.activity
 
 import android.os.Bundle
 import android.support.annotation.Nullable
+import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import app.R
 import app.R.layout
 import app.Utils
@@ -33,6 +37,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     private List<Song> songs
 
+    Toolbar toolbar
+    AppBarLayout appBarLayout
     TextView title
     TextView subtitle
     ImageView image
@@ -68,24 +74,34 @@ class AlbumInfoActivity extends BaseLocalActivity {
         recycler.layoutManager = layoutManager
         recycler.hasFixedSize = true
 
-//        recycler.addOnScrollListener new RecyclerView.OnScrollListener() {
+//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 //            @Override
-//            void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                def params = image.layoutParams
-//                params.height -= dy
-//                image.layoutParams = params
-//            }
-//        }
+//            void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 //
-//        image.viewTreeObserver.addOnGlobalLayoutListener {
-//            if (firstLayout) {
-//                def params = image.layoutParams
-//                params.height = image.width
-//                image.layoutParams = params
-//
-//                firstLayout = false
 //            }
-//        }
+//        })
+
+        recycler.addOnScrollListener new RecyclerView.OnScrollListener() {
+            private boolean collapsed
+            private boolean expanded
+
+            @Override
+            void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && !collapsed) {
+                    appBarLayout.setExpanded(false, true)
+                    collapsed = true
+                    expanded = false
+
+                    toolbar.setNavigationIcon R.drawable.ic_arrow_back_white_24dp
+                } else if (dy < 0 && !expanded && layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                    appBarLayout.setExpanded(true, true)
+                    collapsed = false
+                    expanded = true
+
+                    toolbar.setNavigationIcon null
+                }
+            }
+        }
 
         initHeader album
     }
@@ -108,11 +124,11 @@ class AlbumInfoActivity extends BaseLocalActivity {
 //        return true;
 //    }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
-//    }
+    @Override
+    void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
