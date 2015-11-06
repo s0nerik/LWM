@@ -133,8 +133,7 @@ public class LocalMusicFragment extends DaggerFragment {
             fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
                 @Override
                 void onHidden(FloatingActionButton fab) {
-                    getChildFragmentManager().beginTransaction().show(nowPlayingFragment).commit()
-                    nowPlayingFragment.show().subscribe { int height ->
+                    nowPlayingFragment.show(getChildFragmentManager()).subscribe { int height ->
                         def a = new Animation() {
                             @Override
                             protected void applyTransformation(float interpolatedTime, Transformation t) {

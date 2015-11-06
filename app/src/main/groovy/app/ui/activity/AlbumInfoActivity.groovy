@@ -3,12 +3,16 @@ package app.ui.activity
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import app.R
@@ -21,6 +25,7 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.model.Album
 import app.model.Song
+import app.ui.fragment.NowPlayingFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
@@ -43,6 +48,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
     TextView subtitle
     ImageView image
     RecyclerView recycler
+    NowPlayingFragment nowPlayingFragment
+    CoordinatorLayout coordinator
 
     @Inject
     @PackageScope
@@ -63,7 +70,6 @@ class AlbumInfoActivity extends BaseLocalActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState)
         BetterKnife.loadExtras this
-        bus.register this
 
         songs = album.songs.toList().toBlocking().first()
 
@@ -103,7 +109,12 @@ class AlbumInfoActivity extends BaseLocalActivity {
             }
         }
 
+        nowPlayingFragment = supportFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
+        supportFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
+
         initHeader album
+
+        bus.register this
     }
 
     private void initHeader(Album album) {
@@ -150,7 +161,26 @@ class AlbumInfoActivity extends BaseLocalActivity {
     }
 
     @Subscribe
+    void onSongAvailable(CurrentSongAvailableEvent event) {
+        if (event.song)
+            playbackStarted null
+    }
+
+    @Subscribe
     void playbackStarted(PlaybackStartedEvent event) {
+        nowPlayingFragment.show(supportFragmentManager).subscribe { int height ->
+            def a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    RelativeLayout.LayoutParams params = coordinator.layoutParams as RelativeLayout.LayoutParams
+                    params.bottomMargin = height * interpolatedTime as int
+                    coordinator.layoutParams = params
+                }
+            }
+
+            a.duration = 150
+            coordinator.startAnimation a
+        }
 //        highlightCurrentSong event.song
     }
 

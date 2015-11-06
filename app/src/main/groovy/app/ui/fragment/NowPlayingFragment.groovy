@@ -1,7 +1,10 @@
 package app.ui.fragment
 
 import android.content.Intent
+import android.os.Bundle
+import android.support.annotation.Nullable
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.FragmentManager
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.*
@@ -51,6 +54,13 @@ class NowPlayingFragment extends DaggerFragment {
     private Subscription radialEqualizerViewSubscription
 
     @Override
+    void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.visibility = View.GONE
+    }
+
+    @Override
     void onResume() {
         super.onResume()
         bus.register this
@@ -66,8 +76,11 @@ class NowPlayingFragment extends DaggerFragment {
         super.onPause()
     }
 
-    Observable<Integer> show() {
+    Observable<Integer> show(FragmentManager fragmentManager) {
         Observable.create({ Subscriber<Integer> subscriber ->
+            fragmentManager.beginTransaction().show(this).commitAllowingStateLoss()
+            view.visibility = View.VISIBLE
+
             mainGroup.translationY = mainGroup.height
             fabGroup.scaleX = 0
             fabGroup.scaleY = 0
