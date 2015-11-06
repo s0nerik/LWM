@@ -61,19 +61,15 @@ class NowPlayingFragment extends DaggerFragment {
     }
 
     @Override
-    void onResume() {
-        super.onResume()
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
         bus.register this
-        Song song = player.currentSong
-        if (song != null) {
-            songInfo = player.currentSong
-        }
     }
 
     @Override
-    void onPause() {
+    void onDestroy() {
         bus.unregister this
-        super.onPause()
+        super.onDestroy()
     }
 
     Observable<Integer> show(FragmentManager fragmentManager) {
