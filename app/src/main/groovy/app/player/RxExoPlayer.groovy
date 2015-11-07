@@ -43,6 +43,10 @@ abstract class RxExoPlayer {
                         break
                     case STATE_READY:
                         prepareSubject.onNext playWhenReady
+                        if (playWhenReady)
+                            playbackSubject.onNext PlaybackEvent.STARTED
+                        else
+                            playbackSubject.onNext PlaybackEvent.PAUSED
                         break
                 }
                 lastState = playbackState
