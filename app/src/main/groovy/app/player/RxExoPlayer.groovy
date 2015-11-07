@@ -21,6 +21,7 @@ abstract class RxExoPlayer {
 
     protected SerializedSubject<Boolean, Boolean> prepareSubject = PublishSubject.create().toSerialized()
     protected SerializedSubject<PlaybackEvent, PlaybackEvent> playbackSubject = PublishSubject.create().toSerialized()
+    protected SerializedSubject<ExoPlaybackException, ExoPlaybackException> errorSubject = PublishSubject.create().toSerialized()
 
     protected int lastState = STATE_IDLE
 
@@ -59,10 +60,10 @@ abstract class RxExoPlayer {
             onPlayerError           : { ExoPlaybackException e ->
                 if (lastState == STATE_PREPARING || lastState == STATE_BUFFERING) {
                     prepareSubject.onError e
-                }
-
-                if (lastState == STATE_READY) {
+                } else if (lastState == STATE_READY && playing) {
                     playbackSubject.onError e
+                } else {
+                    errorSubject.onNext e
                 }
             }
     ] as Listener
