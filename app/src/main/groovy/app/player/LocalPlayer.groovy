@@ -17,7 +17,7 @@ class LocalPlayer extends BasePlayer {
     LocalPlayer() {
         bus.register this
 
-        playerSubject.subscribe({
+        playerSubject.distinct().subscribe({
             switch(it) {
                 case PlayerEvent.STARTED:
                     break
@@ -25,9 +25,9 @@ class LocalPlayer extends BasePlayer {
                     break
                 case PlayerEvent.ENDED:
                     if (repeat)
-                        prepare().subscribe()
+                        restart().subscribe()
                     else
-                        nextSong().subscribe()
+                        prepareNextSong().concatWith(start()).subscribe()
                     break
                 case PlayerEvent.IDLE:
                     break
@@ -84,9 +84,10 @@ class LocalPlayer extends BasePlayer {
     }
     //endregion
 
-    Observable<Boolean> prepare(int position) {
+    Observable prepare(int position) {
         queueContainer.moveToAsObservable(position)
-                .map { true }
+                .cast(Object)
+                .ignoreElements()
                 .concatWith(prepare())
         .doOnSubscribe {
             Debug.d "LocalPlayer: prepare(int) onSubscribe"
@@ -99,9 +100,9 @@ class LocalPlayer extends BasePlayer {
         }
     }
 
-    Observable<Boolean> prepare() {
+    Observable prepare() {
         Observable.defer {
-            lastState != ExoPlayer.STATE_IDLE ? reset() : Observable.<Boolean>empty()
+            lastState != ExoPlayer.STATE_IDLE ? reset() : Observable.empty()
         }
         .concatWith(super.prepare())
         .doOnError {
@@ -119,33 +120,35 @@ class LocalPlayer extends BasePlayer {
         }
     }
 
-    Observable<Boolean> nextSong() {
+    Observable prepareNextSong() {
         queueContainer.moveToNextAsObservable()
-                .map { true }
+                .cast(Object)
+                .ignoreElements()
                 .concatWith(prepare())
         .doOnSubscribe {
-            Debug.d "LocalPlayer: nextSong() onSubscribe"
+            Debug.d "LocalPlayer: prepareNextSong() onSubscribe"
         }
         .doOnNext {
-            Debug.d "LocalPlayer: nextSong() onNext"
+            Debug.d "LocalPlayer: prepareNextSong() onNext"
         }
         .doOnCompleted {
-            Debug.d "LocalPlayer: nextSong() onCompleted"
+            Debug.d "LocalPlayer: prepareNextSong() onCompleted"
         }
     }
 
-    Observable<Boolean> prevSong() {
+    Observable preparePrevSong() {
         queueContainer.moveToPrevAsObservable()
-                .map { true }
+                .cast(Object)
+                .ignoreElements()
                 .concatWith(prepare())
         .doOnSubscribe {
-            Debug.d "LocalPlayer: prevSong() onSubscribe"
+            Debug.d "LocalPlayer: preparePrevSong() onSubscribe"
         }
         .doOnNext {
-            Debug.d "LocalPlayer: prevSong() onNext"
+            Debug.d "LocalPlayer: preparePrevSong() onNext"
         }
         .doOnCompleted {
-            Debug.d "LocalPlayer: prevSong() onCompleted"
+            Debug.d "LocalPlayer: preparePrevSong() onCompleted"
         }
     }
 

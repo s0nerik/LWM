@@ -19,7 +19,9 @@ class StreamPlayer extends BasePlayer {
 
     private int positionToPrepare = -1
 
-    Observable<Boolean> prepareForPosition(int pos) {
+    Song currentSong
+
+    Observable prepareForPosition(int pos) {
         positionToPrepare = pos
         currentSong = song
         prepare().concatWith(seekTo(pos))

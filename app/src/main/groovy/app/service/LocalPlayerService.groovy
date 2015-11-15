@@ -127,12 +127,12 @@ class LocalPlayerService extends Service {
     void playSongAtPosition(PlaySongAtPositionCommand cmd) {
         switch (cmd.positionType) {
             case PlaySongAtPositionCommand.PositionType.NEXT:
-                player.nextSong()
+                player.prepareNextSong()
                         .concatWith(player.start())
                         .subscribe()
                 break
             case PlaySongAtPositionCommand.PositionType.PREVIOS:
-                player.prevSong()
+                player.preparePrevSong()
                         .concatWith(player.start())
                         .subscribe()
                 break
@@ -171,7 +171,7 @@ class LocalPlayerService extends Service {
         Debug.d event as String
         switch (event.type) {
             case NEXT:
-                player.nextSong()
+                player.prepareNextSong()
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
@@ -179,7 +179,7 @@ class LocalPlayerService extends Service {
                 }
                 break
             case PREV:
-                player.prevSong().subscribe {
+                player.preparePrevSong().subscribe {
                     "LocalPlayer moved to previous song"
                 }
                 break

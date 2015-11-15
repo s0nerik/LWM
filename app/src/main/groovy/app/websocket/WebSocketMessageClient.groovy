@@ -112,7 +112,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(body as long))
                     break
                 case PAUSE:
-                    player.paused = true
+                    player.setPaused true
                     break
                 case PREPARE:
                     prepare body as int
