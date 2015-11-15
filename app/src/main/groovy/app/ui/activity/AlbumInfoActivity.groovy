@@ -1,5 +1,4 @@
 package app.ui.activity
-
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.support.design.widget.AppBarLayout
@@ -66,6 +65,25 @@ class AlbumInfoActivity extends BaseLocalActivity {
     @Extra
     Album album
 
+    private LinearLayoutManager layoutManager
+    private RecyclerView.OnScrollListener recyclerScrollListener = new RecyclerView.OnScrollListener() {
+        private int lastDy = 0
+
+        @Override
+        void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && lastDy < 0
+                    && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 ) {
+                appBarLayout.setExpanded(true, true)
+            }
+        }
+
+        @Override
+        void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            lastDy = dy
+        }
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState)
@@ -74,40 +92,13 @@ class AlbumInfoActivity extends BaseLocalActivity {
         songs = album.songs.toList().toBlocking().first()
 
         def adapter = new SongsListAdapter(this, songs)
-        def layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         recycler.adapter = adapter
-        recycler.layoutManager = layoutManager
+        recycler.layoutManager = this.layoutManager
         recycler.hasFixedSize = true
 
-//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            @Override
-//            void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//
-//            }
-//        })
-
-        recycler.addOnScrollListener new RecyclerView.OnScrollListener() {
-            private boolean collapsed
-            private boolean expanded
-
-            @Override
-            void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 && !collapsed) {
-                    appBarLayout.setExpanded(false, true)
-                    collapsed = true
-                    expanded = false
-
-                    toolbar.setNavigationIcon R.drawable.ic_arrow_back_white_24dp
-                } else if (dy < 0 && !expanded && layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    appBarLayout.setExpanded(true, true)
-                    collapsed = false
-                    expanded = true
-
-                    toolbar.setNavigationIcon null
-                }
-            }
-        }
+        subscribeToScrollEvents()
 
         nowPlayingFragment = supportFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
         supportFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
@@ -115,6 +106,14 @@ class AlbumInfoActivity extends BaseLocalActivity {
         initHeader album
 
         bus.register this
+    }
+
+    private void subscribeToScrollEvents() {
+        recycler.addOnScrollListener recyclerScrollListener
+    }
+
+    private void unsubscribeFromScrollEvents() {
+        recycler.removeOnScrollListener recyclerScrollListener
     }
 
     private void initHeader(Album album) {
@@ -156,8 +155,9 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     @Override
     protected void onDestroy() {
-        bus.unregister(this);
-        super.onDestroy();
+        bus.unregister(this)
+        unsubscribeFromScrollEvents()
+        super.onDestroy()
     }
 
     @Subscribe

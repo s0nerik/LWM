@@ -30,7 +30,7 @@
                 android:fitsSystemWindows="true"
                 android:minHeight="80dp"
                 app:contentScrim="@color/primaryDark"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:statusBarScrim="@color/primaryDark"
                 app:titleEnabled="false"
                 >
