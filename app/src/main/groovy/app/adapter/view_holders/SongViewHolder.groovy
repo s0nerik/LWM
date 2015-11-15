@@ -2,7 +2,7 @@ package app.adapter.view_holders
 import android.content.Context
 import android.graphics.ColorFilter
 import android.os.Build
-import android.support.v7.internal.view.ContextThemeWrapper
+import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.View
