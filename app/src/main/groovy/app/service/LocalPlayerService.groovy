@@ -1,23 +1,16 @@
 package app.service
-
 import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
 import android.media.AudioManager
 import android.os.IBinder
 import app.Injector
-import app.commands.EnqueueCommand
-import app.commands.PlaySongAtPositionCommand
-import app.commands.PrepareClientsCommand
-import app.commands.SeekToCommand
-import app.commands.SetQueueAndPlayCommand
-import app.commands.StartPlaybackDelayedCommand
+import app.commands.*
 import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
-import app.commands.ChangePauseStateCommand
 import app.events.server.MusicServerStateChangedEvent
 import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
@@ -30,11 +23,12 @@ import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
-import static ControlButtonEvent.Type.*
+import static app.events.player.playback.control.ControlButtonEvent.Type.*
 import static app.events.server.MusicServerStateChangedEvent.State.STARTED
 
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -95,7 +89,9 @@ class LocalPlayerService extends Service {
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
         Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                   .subscribe {
-                      player.paused = false
+                      player.setPaused(false).subscribe {
+                          Debug.d "LocalPlayer started playback with delay."
+                      }
                   }
     }
 
@@ -104,26 +100,48 @@ class LocalPlayerService extends Service {
         if (serverStarted && !cmd.pause)
             return
 
-        player.paused = cmd.pause
+        player.setPaused(cmd.pause).subscribe {
+            Debug.d "LocalPlayer setPaused: $it"
+        }
     }
 
     @Subscribe
     void seekTo(SeekToCommand cmd) {
-        player.seekTo cmd.position as int
+        player.seekTo(cmd.position as int).subscribe {
+            Debug.d "Player sought to: $it"
+        }
     }
 
     @Subscribe
     void setQueueAndPlayCommand(SetQueueAndPlayCommand cmd) {
-        if (player.playing) player.stop()
-
         player.queue = cmd.queue
         if (cmd.shuffle) player.shuffleQueue()
-        player.prepare cmd.position
+
+        Observable.concat(player.prepare(cmd.position), player.start())
+                .subscribe {
+            Debug.d "LocalPlayer prepared and started playback"
+        }
     }
 
     @Subscribe
     void playSongAtPosition(PlaySongAtPositionCommand cmd) {
-        player.prepare cmd.position
+        switch (cmd.positionType) {
+            case PlaySongAtPositionCommand.PositionType.NEXT:
+                player.nextSong()
+                        .concatWith(player.start())
+                        .subscribe()
+                break
+            case PlaySongAtPositionCommand.PositionType.PREVIOS:
+                player.prevSong()
+                        .concatWith(player.start())
+                        .subscribe()
+                break
+            case PlaySongAtPositionCommand.PositionType.EXACT:
+                player.prepare(cmd.position)
+                        .concatWith(player.start())
+                        .subscribe()
+                break
+        }
     }
 
     @Subscribe
@@ -142,7 +160,9 @@ class LocalPlayerService extends Service {
             bus.post new CurrentSongAvailableEvent(event.song)
             bus.post new PrepareClientsCommand(event.position)
         } else {
-            player.start()
+            player.start().subscribe {
+                Debug.d "LocalPlayer started playback."
+            }
         }
     }
 
@@ -152,14 +172,23 @@ class LocalPlayerService extends Service {
         switch (event.type) {
             case NEXT:
                 player.nextSong()
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                    "LocalPlayer moved to next song"
+                }
                 break
             case PREV:
-                player.prevSong()
+                player.prevSong().subscribe {
+                    "LocalPlayer moved to previous song"
+                }
                 break
             case PLAY:
             case PAUSE:
             case TOGGLE_PAUSE:
-                player.togglePause()
+                player.togglePause().subscribe {
+                    "LocalPlayer toggled pause"
+                }
                 break
         }
     }

@@ -1,17 +1,10 @@
 package app.events.chat
 import app.model.chat.ChatMessage
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 
+@Canonical
 @CompileStatic
-public class ChatMessagesAvailableEvent {
-
-    private List<ChatMessage> messages;
-
-    public ChatMessagesAvailableEvent(List<ChatMessage> messages) {
-        this.messages = messages;
-    }
-
-    public List<ChatMessage> getMessages() {
-        return messages;
-    }
+class ChatMessagesAvailableEvent {
+    List<ChatMessage> messages
 }

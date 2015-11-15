@@ -8,7 +8,6 @@ import com.google.android.exoplayer.TrackRenderer
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.Observable
-import rx.Subscriber
 import rx.subjects.PublishSubject
 import rx.subjects.SerializedSubject
 
@@ -18,36 +17,35 @@ import static com.google.android.exoplayer.ExoPlayer.*
 abstract class RxExoPlayer {
 
     protected ExoPlayer innerPlayer
+    protected TrackRenderer currentRenderer
 
-    protected SerializedSubject<Boolean, Boolean> prepareSubject = PublishSubject.create().toSerialized()
-    protected SerializedSubject<PlaybackEvent, PlaybackEvent> playbackSubject = PublishSubject.create().toSerialized()
+    protected SerializedSubject<PlayerEvent, PlayerEvent> playerSubject = PublishSubject.create().toSerialized()
     protected SerializedSubject<ExoPlaybackException, ExoPlaybackException> errorSubject = PublishSubject.create().toSerialized()
 
     protected int lastState = STATE_IDLE
 
-    enum PlaybackEvent {
-        STARTED, PAUSED, ENDED, STOPPED
+    enum PlayerEvent {
+        READY, STARTED, PAUSED, ENDED, IDLE
     }
 
     private Listener listener = [
             onPlayerStateChanged    : { boolean playWhenReady, int playbackState ->
                 switch (playbackState) {
                     case STATE_ENDED:
-                        playbackSubject.onNext PlaybackEvent.ENDED
+                        playerSubject.onNext PlayerEvent.ENDED
                         break
                     case STATE_IDLE:
-                        playbackSubject.onNext PlaybackEvent.STOPPED
+                        playerSubject.onNext PlayerEvent.IDLE
                         break
                     case STATE_PREPARING:
                         break
                     case STATE_BUFFERING:
                         break
                     case STATE_READY:
-                        prepareSubject.onNext playWhenReady
-                        if (playWhenReady)
-                            playbackSubject.onNext PlaybackEvent.STARTED
-                        else
-                            playbackSubject.onNext PlaybackEvent.PAUSED
+                        playerSubject.onNext PlayerEvent.READY
+                        if (playWhenReady) {
+                            playerSubject.onNext PlayerEvent.STARTED
+                        }
                         break
                 }
                 lastState = playbackState
@@ -55,16 +53,13 @@ abstract class RxExoPlayer {
                 Debug.d Utils.getConstantName(ExoPlayer, playbackState)
             },
             onPlayWhenReadyCommitted: {
-
+                Debug.d "onPlayWhenReadyCommitted: $innerPlayer.playWhenReady"
+                if (!innerPlayer.playWhenReady)
+                    playerSubject.onNext PlayerEvent.PAUSED
             },
             onPlayerError           : { ExoPlaybackException e ->
-                if (lastState == STATE_PREPARING || lastState == STATE_BUFFERING) {
-                    prepareSubject.onError e
-                } else if (lastState == STATE_READY && playing) {
-                    playbackSubject.onError e
-                } else {
-                    errorSubject.onNext e
-                }
+                playerSubject.onError e
+                errorSubject.onNext e
             }
     ] as Listener
 
@@ -85,18 +80,52 @@ abstract class RxExoPlayer {
 
     protected abstract TrackRenderer getRenderer(Uri uri)
 
+    /**
+     * Start playback
+     * @return true if playback started successfully and false means that error has occurred during playback startup.
+     */
     Observable<Boolean> start() {
-        Observable.create({ Subscriber<Boolean> subscriber ->
+        playerSubject.first { it == PlayerEvent.STARTED }
+                .map { true }
+                .ignoreElements()
+        .doOnNext {
+            Debug.d "RxExoPlayer: start() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "RxExoPlayer: start() onCompleted"
+        }
+        .doOnSubscribe {
+            Debug.d "RxExoPlayer: start() onSubscribe"
             innerPlayer.playWhenReady = true
-            prepareSubject.first().subscribe subscriber
-        } as Observable.OnSubscribe<Boolean>)
+        }
     }
 
+    /**
+     * Restart playback from the beginning
+     * @return true if playback started successfully and false means that error has occurred during playback startup.
+     */
+    Observable<Boolean> restart() {
+        Observable.concat reset(), start()
+    }
+
+    /**
+     * Pause playback
+     * @return true if playback paused successfully and false means that error has occurred during playback pausing.
+     */
     Observable<Boolean> pause() {
-        Observable.create({ Subscriber<Boolean> subscriber ->
+        playerSubject.first { it == PlayerEvent.PAUSED }
+                .map { true }
+                .ignoreElements()
+        .doOnNext {
+            Debug.d "RxExoPlayer: pause() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "RxExoPlayer: pause() onCompleted"
+        }
+        .doOnSubscribe {
+            Debug.d "RxExoPlayer: pause() onSubscribe"
             innerPlayer.playWhenReady = false
-            prepareSubject.first().subscribe subscriber
-        } as Observable.OnSubscribe<Boolean>)
+        }
     }
 
     Observable<Boolean> setPaused(boolean flag) {
@@ -108,32 +137,85 @@ abstract class RxExoPlayer {
 
     Observable<Boolean> togglePause() { setPaused !paused }
 
-    Observable<PlaybackEvent> stop() {
-        Observable.create({ Subscriber<PlaybackEvent> subscriber ->
+    /**
+     * Stop playback
+     * @return true if playback stopped successfully and false means that error has occurred during playback stopping.
+     */
+    Observable<Boolean> stop() {
+        playerSubject.first { it == PlayerEvent.IDLE }
+                .map { true }
+                .ignoreElements()
+        .doOnNext {
+            Debug.d "RxExoPlayer: stop() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "RxExoPlayer: stop() onCompleted"
+        }
+        .doOnSubscribe {
+            Debug.d "RxExoPlayer: stop() onSubscribe"
             innerPlayer.stop()
-            playbackSubject.filter({it == PlaybackEvent.STOPPED}).first().subscribe subscriber
-        } as Observable.OnSubscribe<PlaybackEvent>)
+        }
     }
 
+    /**
+     * Prepare a new Uri for playback
+     * @return true if a new stream for playback is prepared successfully and false means that error has occurred during preparing.
+     */
     Observable<Boolean> prepare(@NonNull Uri uri) {
-        Observable.create({ Subscriber<Boolean> subscriber ->
-            try {
-                innerPlayer.prepare getRenderer(uri)
-                prepareSubject.first().subscribe subscriber
-            } catch (e) {
-                subscriber.onError(e)
-            }
-        } as Observable.OnSubscribe<Boolean>)
+        playerSubject.first { it == PlayerEvent.READY }
+                .map { true }
+                .ignoreElements()
+                .doOnNext {
+            Debug.d "RxExoPlayer: prepare(Uri) onNext"
+        }
+        .doOnCompleted {
+            Debug.d "RxExoPlayer: prepare(Uri) onCompleted"
+        }
+        .doOnSubscribe {
+            Debug.d "RxExoPlayer: prepare(Uri) onSubscribe"
+            currentRenderer = getRenderer(uri)
+            innerPlayer.prepare currentRenderer
+        }
     }
 
+    /**
+     * Seek to position
+     * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
+     */
     Observable<Boolean> seekTo(int msec) {
-        Observable.create({ Subscriber<Boolean> subscriber ->
-            try {
-                innerPlayer.seekTo msec
-                prepareSubject.first().subscribe subscriber
-            } catch (e) {
-                subscriber.onError(e)
-            }
-        } as Observable.OnSubscribe<Boolean>)
+        playerSubject.first { it == PlayerEvent.READY }
+                .map { true }
+                .ignoreElements()
+        .doOnNext {
+            Debug.d "RxExoPlayer: seekTo() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "RxExoPlayer: seekTo() onCompleted"
+        }
+        .doOnSubscribe {
+            Debug.d "RxExoPlayer: seekTo() onSubscribe"
+            innerPlayer.seekTo msec
+        }
+    }
+
+    /**
+     * Seek to the beginning
+     * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
+     */
+    Observable<Boolean> reset() {
+        playerSubject.first { it == PlayerEvent.IDLE || it == PlayerEvent.READY }
+                .map { true }
+                .ignoreElements()
+        .doOnNext {
+            Debug.d "RxExoPlayer: reset() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "RxExoPlayer: reset() onCompleted"
+        }
+        .doOnSubscribe {
+            Debug.d "RxExoPlayer: reset() onSubscribe"
+            innerPlayer.stop()
+            innerPlayer.seekTo(0)
+        }
     }
 }

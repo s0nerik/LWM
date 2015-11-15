@@ -6,5 +6,7 @@ import groovy.transform.CompileStatic
 @Canonical
 @CompileStatic
 class PlaySongAtPositionCommand {
-    int position = 0
+    enum PositionType { NEXT, PREVIOS, EXACT }
+    PositionType positionType
+    int position = -1
 }

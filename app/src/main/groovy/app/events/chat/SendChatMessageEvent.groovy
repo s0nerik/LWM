@@ -1,14 +1,11 @@
 package app.events.chat;
 
 import app.model.chat.ChatMessage
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 
+@Canonical
 @CompileStatic
-public class SendChatMessageEvent {
-
-    ChatMessage message;
-
-    public SendChatMessageEvent(ChatMessage message) {
-        this.message = message;
-    }
+class SendChatMessageEvent {
+    ChatMessage message
 }

@@ -1,20 +1,11 @@
-package app.model.chat;
+package app.model.chat
 
-import com.google.gson.annotations.Expose
-import groovy.transform.CompileStatic;
+import groovy.transform.Canonical
+import groovy.transform.CompileStatic
 
+@Canonical
 @CompileStatic
-public class ChatMessage {
-
-    @Expose
+class ChatMessage {
     String message
-
-    @Expose
     String author
-
-    public ChatMessage(String author, String message) {
-        this.author = author;
-        this.message = message;
-    }
-
 }

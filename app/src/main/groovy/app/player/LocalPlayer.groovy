@@ -1,41 +1,48 @@
 package app.player
-
 import android.content.Intent
-import android.widget.Toast
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.model.Song
 import app.service.LocalPlayerService
-import com.google.android.exoplayer.ExoPlaybackException
+import com.google.android.exoplayer.ExoPlayer
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
-import rx.functions.Action1
+import rx.Observable
 
 @CompileStatic
 class LocalPlayer extends BasePlayer {
 
     private Queue queueContainer = new Queue()
 
-    @Override
-    void onPlaybackEnded() {
-        super.onPlaybackEnded()
-
-        if (repeat) {
-            prepare()
-        } else {
-            nextSong()
-        }
-    }
-
-    @Override
-    void onError(ExoPlaybackException e) {
-        super.onError(e)
-        nextSong()
-    }
-
     LocalPlayer() {
-        super()
         bus.register this
+
+        playerSubject.subscribe({
+            switch(it) {
+                case PlayerEvent.STARTED:
+                    break
+                case PlayerEvent.PAUSED:
+                    break
+                case PlayerEvent.ENDED:
+                    if (repeat)
+                        prepare().subscribe()
+                    else
+                        nextSong().subscribe()
+                    break
+                case PlayerEvent.IDLE:
+                    break
+            }
+        }, {
+            Debug.e "Error while playing:"
+            Debug.e it
+            stop().subscribe()
+        })
+
+        errorSubject.subscribe {
+            Debug.e "RxExoPlayer error:"
+            Debug.e it
+            stop().subscribe()
+        }
     }
 
     //region Queue manipulation
@@ -77,52 +84,79 @@ class LocalPlayer extends BasePlayer {
     }
     //endregion
 
-    void prepare(int position) {
-        queueContainer.moveTo position
-        prepare()
+    Observable<Boolean> prepare(int position) {
+        queueContainer.moveToAsObservable(position)
+                .map { true }
+                .concatWith(prepare())
+        .doOnSubscribe {
+            Debug.d "LocalPlayer: prepare(int) onSubscribe"
+        }
+        .doOnNext {
+            Debug.d "LocalPlayer: prepare(int) onNext"
+        }
+        .doOnCompleted {
+            Debug.d "LocalPlayer: prepare(int) onCompleted"
+        }
     }
 
-    void prepare() {
-        innerPlayer.stop()
-        innerPlayer.seekTo(0)
-
-        Action1<Boolean> onNext = {
-            Debug.d "LocalPlayer onNext: ${it}"
-            if (!it) {
-                innerPlayer.playWhenReady = true
-            }
+    Observable<Boolean> prepare() {
+        Observable.defer {
+            lastState != ExoPlayer.STATE_IDLE ? reset() : Observable.<Boolean>empty()
         }
-
-        Action1<Throwable> errorObserver
-        errorObserver = { Throwable it ->
-            Debug.e "errorObserver:"
-            Debug.e it
+        .concatWith(super.prepare())
+        .doOnError {
+            Debug.e "prepare() error"
             queueContainer.moveToNext true
-            prepare(queueContainer.song).subscribe(onNext, errorObserver)
         }
-
-        prepare(queueContainer.song).subscribe(onNext, errorObserver)
-    }
-
-    void nextSong() {
-        if (queueContainer.moveToNext()) {
-            prepare()
-        } else {
-            Toast.makeText(context, "There's no next song", Toast.LENGTH_SHORT).show()
+        .doOnSubscribe {
+            Debug.d "LocalPlayer: prepare() onSubscribe"
+        }
+        .doOnNext {
+            Debug.d "LocalPlayer: prepare() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "LocalPlayer: prepare() onCompleted"
         }
     }
 
-    void prevSong() {
-        if (queueContainer.moveToPrev()) {
-            prepare()
-        } else {
-            Toast.makeText(context, "There's no previous song", Toast.LENGTH_SHORT).show()
+    Observable<Boolean> nextSong() {
+        queueContainer.moveToNextAsObservable()
+                .map { true }
+                .concatWith(prepare())
+        .doOnSubscribe {
+            Debug.d "LocalPlayer: nextSong() onSubscribe"
+        }
+        .doOnNext {
+            Debug.d "LocalPlayer: nextSong() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "LocalPlayer: nextSong() onCompleted"
+        }
+    }
+
+    Observable<Boolean> prevSong() {
+        queueContainer.moveToPrevAsObservable()
+                .map { true }
+                .concatWith(prepare())
+        .doOnSubscribe {
+            Debug.d "LocalPlayer: prevSong() onSubscribe"
+        }
+        .doOnNext {
+            Debug.d "LocalPlayer: prevSong() onNext"
+        }
+        .doOnCompleted {
+            Debug.d "LocalPlayer: prevSong() onCompleted"
         }
     }
 
     @Override
     void startService() {
         context.startService new Intent(context, LocalPlayerService)
+    }
+
+    @Override
+    Song getCurrentSong() {
+        queueContainer.song
     }
 
     boolean isShuffle() { queueContainer.shuffled }

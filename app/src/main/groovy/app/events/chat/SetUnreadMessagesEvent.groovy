@@ -1,13 +1,10 @@
 package app.events.chat
 
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 
+@Canonical
 @CompileStatic
-public class SetUnreadMessagesEvent {
-
-    int count;
-
-    public SetUnreadMessagesEvent(int count) {
-        this.count = count;
-    }
+class SetUnreadMessagesEvent {
+    int count
 }

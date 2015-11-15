@@ -2,6 +2,7 @@ package app.player
 import app.model.Song
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
+import rx.Observable
 
 @CompileStatic
 public class Queue {
@@ -94,6 +95,13 @@ public class Queue {
         }
     }
 
+    public Observable<Song> moveToNextAsObservable(boolean circular = false) {
+        Observable.defer {
+            moveToNext circular
+            Observable.just currentSong
+        }
+    }
+
     /**
      *
      * @return true if successfully moved to the next previous song, else returns false
@@ -107,6 +115,13 @@ public class Queue {
         } catch (IndexOutOfBoundsException | EmptyStackException e) {
             currentSong = queue.get(currentIndex);
             return false;
+        }
+    }
+
+    public Observable<Song> moveToPrevAsObservable(boolean circular = false) {
+        Observable.defer {
+            moveToPrev()
+            Observable.just currentSong
         }
     }
 
@@ -124,6 +139,13 @@ public class Queue {
             Debug.e("moveTo IndexOutOfBoundsException");
             currentSong = queue.get(currentIndex);
             return false;
+        }
+    }
+
+    public Observable<Song> moveToAsObservable(int position) {
+        Observable.defer {
+            moveTo position
+            Observable.just currentSong
         }
     }
 

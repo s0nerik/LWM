@@ -27,6 +27,9 @@ project.androidGroovy {
         sourceCompatibility = '1.6'
         targetCompatibility = '1.6'
         groovyOptions.configurationScript = file("$projectDir/config/groovy-compile-options.groovy")
+        groovyOptions.verbose = true
+//        groovyOptions.javaAnnotationProcessing = true
+        groovyOptions.optimizationOptions = [int: true]
     }
 }
 
@@ -36,10 +39,10 @@ android {
     defaultConfig {
         applicationId "com.lwm.app"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 4
         versionName '0.7'
-        renderscriptTargetApi 23
+        renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
         multiDexEnabled true
     }
@@ -187,6 +190,7 @@ dependencies {
 //        transitive = false
 //    }
     compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'io.reactivex:rxjava-debug:1.0.3'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.2.0@aar'
 
     compile 'com.github.s0nerik.betterknife:BetterKnife:1.3.13@aar'

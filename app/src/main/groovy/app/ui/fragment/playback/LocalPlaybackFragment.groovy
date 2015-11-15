@@ -10,6 +10,7 @@ import android.widget.SeekBar
 import app.R
 import app.Utils
 import app.commands.ChangePauseStateCommand
+import app.commands.PlaySongAtPositionCommand
 import app.commands.SeekToCommand
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.playback.PlaybackPausedEvent
@@ -31,6 +32,8 @@ import rx.Observable
 import rx.Subscriber
 
 import javax.inject.Inject
+
+import static app.commands.PlaySongAtPositionCommand.PositionType.*
 
 @CompileStatic
 class LocalPlaybackFragment extends PlaybackFragment {
@@ -87,10 +90,10 @@ class LocalPlaybackFragment extends PlaybackFragment {
     void onClickControls(View btn) {
         switch (btn.getId()) {
             case R.id.btnNext:
-                player.nextSong()
+                bus.post new PlaySongAtPositionCommand(NEXT)
                 break;
             case R.id.btnPrev:
-                player.prevSong()
+                bus.post new PlaySongAtPositionCommand(PREVIOS)
                 break;
             case R.id.btnPlayPause:
                 bus.post new ChangePauseStateCommand(!player.paused)

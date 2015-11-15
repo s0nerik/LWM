@@ -14,6 +14,8 @@ import groovy.transform.*
 
 import javax.inject.Inject
 
+import static app.commands.PlaySongAtPositionCommand.PositionType.*
+
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
 class SongsListAdapter extends Adapter<SongViewHolder> {
@@ -45,7 +47,7 @@ class SongsListAdapter extends Adapter<SongViewHolder> {
         if (!newQueueOnClick) {
             holder.mContainer.onClickListener = { View v ->
                 def pos = holder.getAdapterPosition()
-                bus.post new PlaySongAtPositionCommand(pos)
+                bus.post new PlaySongAtPositionCommand(EXACT, pos)
             }
         } else {
             holder.mContainer.onClickListener = { View v ->
