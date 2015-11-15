@@ -126,7 +126,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
                 .into(image)
 
         title.text = album.title
-        subtitle.text = "$album.artistName • $album.year" as String
+        subtitle.text = album.year ? "$album.artistName • $album.year" : album.artistName as String
     }
 
 //    @Override
