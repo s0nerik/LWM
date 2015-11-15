@@ -53,7 +53,6 @@ abstract class RxExoPlayer {
                 Debug.d Utils.getConstantName(ExoPlayer, playbackState)
             },
             onPlayWhenReadyCommitted: {
-//                Debug.d "onPlayWhenReadyCommitted: $innerPlayer.playWhenReady"
                 if (!innerPlayer.playWhenReady)
                     playerSubject.onNext PlayerEvent.PAUSED
             },
@@ -199,8 +198,9 @@ abstract class RxExoPlayer {
      * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
      */
     Observable reset() {
-        playerSubject.first { it == PlayerEvent.IDLE || it == PlayerEvent.READY }
-                .ignoreElements()
+        pause()
+        .concatWith(seekTo(0))
+        .concatWith(stop())
         .doOnNext {
             Debug.d "RxExoPlayer: reset() onNext"
         }
@@ -209,9 +209,6 @@ abstract class RxExoPlayer {
         }
         .doOnSubscribe {
             Debug.d "RxExoPlayer: reset() onSubscribe"
-            innerPlayer.stop()
-            innerPlayer.seekTo(0)
-            innerPlayer.playWhenReady = false
         }
     }
 }
