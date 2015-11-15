@@ -12,6 +12,7 @@ import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+import ru.noties.debug.Debug
 import rx.Observable
 
 import javax.inject.Inject
@@ -76,7 +77,9 @@ class StreamPlayerService extends Service {
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
         Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                 .subscribe {
-                    player.paused = false
+                    player.setPaused(false).subscribe {
+                        Debug.d "StreamPlayer started playback with delay."
+                    }
                 }
     }
 
