@@ -1,8 +1,10 @@
 package app.ui.activity
+import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -29,9 +31,12 @@ import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.jakewharton.rxbinding.support.design.widget.RxAppBarLayout
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import ru.noties.debug.Debug
+import rx.subscriptions.CompositeSubscription
 
 import javax.inject.Inject
 
@@ -49,6 +54,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
     RecyclerView recycler
     NowPlayingFragment nowPlayingFragment
     CoordinatorLayout coordinator
+    FloatingActionButton fab
 
     @Inject
     @PackageScope
@@ -64,6 +70,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     @Extra
     Album album
+
+    private CompositeSubscription scrollSubscribers
 
     private LinearLayoutManager layoutManager
     private RecyclerView.OnScrollListener recyclerScrollListener = new RecyclerView.OnScrollListener() {
@@ -110,10 +118,55 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     private void subscribeToScrollEvents() {
         recycler.addOnScrollListener recyclerScrollListener
+
+        int scrollableHeight = 0
+
+        int toolbarHeightsDifference = 0
+        int originalToolbarHeight = 0
+
+        appBarLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            scrollableHeight = resources.displayMetrics.widthPixels - toolbar.minimumHeight
+            originalToolbarHeight = toolbar.height
+            toolbarHeightsDifference = toolbar.height - toolbar.minimumHeight
+        }
+
+        scrollSubscribers = new CompositeSubscription()
+
+        int statusbarHeight = Utils.dpToPx(24)
+
+        def scrolledPercent = RxAppBarLayout.offsetChanges(appBarLayout)
+                .doOnNext { Debug.d it as String }
+                .map { (1 - (scrollableHeight - statusbarHeight + it) / (float) scrollableHeight) as float }
+
+        def desiredToolbarAlpha = scrolledPercent.map { (1 - it) * 180 as int }
+
+        scrollSubscribers.add desiredToolbarAlpha
+                .subscribe {
+            toolbar.backgroundColor = Color.argb(it, 0, 0, 0)
+        }
+
+        def bufferedScrollPercent = scrolledPercent.buffer(2)
+
+        scrollSubscribers.add bufferedScrollPercent
+                .skipWhile { it[1] < it[0] }
+                .first()
+                .repeat()
+                .subscribe {
+            fab.hide()
+        }
+
+        scrollSubscribers.add bufferedScrollPercent
+                .skipWhile { it[1] > it[0] }
+                .first()
+                .repeat()
+                .subscribe {
+            fab.show()
+        }
     }
 
     private void unsubscribeFromScrollEvents() {
         recycler.removeOnScrollListener recyclerScrollListener
+        scrollSubscribers.unsubscribe()
     }
 
     private void initHeader(Album album) {
