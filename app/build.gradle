@@ -1,10 +1,8 @@
 apply plugin: "com.android.application"
-// This does not break the build when Android Studio is missing the JRebel for Android plugin.
-apply plugin: 'com.zeroturnaround.jrebel.android'
 apply plugin: 'groovyx.grooid.groovy-android'
-apply plugin: "crashlytics"
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'io.fabric'
 
 repositories {
     flatDir {
@@ -13,7 +11,7 @@ repositories {
     jcenter()
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
     maven { url "http://dl.bintray.com/s0nerik/maven" }
@@ -35,15 +33,15 @@ project.androidGroovy {
 
 android {
     compileSdkVersion "android-23"
-    buildToolsVersion "23.0.1"
+    buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "com.lwm.app"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 4
         versionName '0.7'
-        renderscriptTargetApi 22
-        renderscriptSupportModeEnabled true
+        renderscriptTargetApi 23
+//        renderscriptSupportModeEnabled true
         multiDexEnabled true
     }
     dexOptions {
@@ -126,9 +124,12 @@ dependencies {
     compile 'com.google.android.gms:play-services-identity:8.3.0'
 
     // Compatibility
-    compile 'com.afollestad:material-dialogs:0.7.2.8'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
+        transitive = true
+    }
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
+    compile 'com.commit451:NativeStackBlur:1.0.2'
 
     // UI elements
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
@@ -162,13 +163,15 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.3.0'
     compile 'com.koushikdutta.ion:ion:+'
 
-    // Crash reports
-    compile 'com.crashlytics.android:crashlytics:+'
+    // Crashlytics kit
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+        transitive = true
+    }
 
     // Thanks, Square!
     compile 'com.squareup.dagger:dagger:1.2.2'
-    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile 'com.squareup:otto:1.3.6'
+    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'com.squareup:otto:1.3.8'
 
     // Thanks, Apache!
     compile 'org.apache.commons:commons-lang3:3.3.2'
@@ -185,7 +188,7 @@ dependencies {
 
     // Rx
     compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxjava:1.0.16'
     compile 'io.reactivex:rxjava-math:+'
 //    compile('io.reactivex:rxgroovy:1.0.0') {
 //        transitive = false

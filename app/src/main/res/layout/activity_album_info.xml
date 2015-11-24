@@ -87,12 +87,13 @@
                         </LinearLayout>
 
                         <ImageView
-                            android:layout_width="32dp"
+                            android:layout_width="56dp"
                             android:layout_height="32dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentTop="true"
-                            android:layout_marginRight="28dp"
+                            android:layout_marginRight="16dp"
                             android:layout_marginTop="-4dp"
+                            tools:layout_marginTop="6dp"
                             android:scaleType="center"
                             android:src="@drawable/ic_core_overflow"
                             android:tint="@color/md_white"/>

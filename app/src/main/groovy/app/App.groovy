@@ -1,10 +1,12 @@
 package app
+
 import android.content.Context
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import app.modules.AndroidModule
 import com.crashlytics.android.Crashlytics
 import groovy.transform.CompileStatic
+import io.fabric.sdk.android.Fabric
 import ru.noties.debug.Debug
 
 @CompileStatic
@@ -15,7 +17,7 @@ final class App extends MultiDexApplication {
     void onCreate() {
         super.onCreate()
         if (BuildConfig.CRASHLYTICS)
-            Crashlytics.start this
+            Fabric.with this, new Crashlytics()
 
         Debug.init BuildConfig.DEBUG
 

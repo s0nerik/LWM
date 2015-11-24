@@ -4,14 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
+import android.os.Build;
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
+import com.commit451.nativestackblur.NativeStackBlur;
 
 import java.util.UUID;
 
@@ -60,16 +62,22 @@ public class BlurTransformation implements Transformation<Bitmap> {
 //        script.forEach(output);
 //        output.copyTo(bitmapOriginal);
 
-        RenderScript rs = RenderScript.create(mContext);
-        Allocation input = Allocation.createFromBitmap(rs, bitmap);
-        Allocation output = Allocation.createTyped(rs, input.getType());
-        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, input.getElement());
-        blur.setInput(input);
-        blur.setRadius(mRadius);
-        blur.forEach(output);
-        output.copyTo(bitmap);
 
-        rs.destroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            RenderScript rs = RenderScript.create(mContext);
+            Allocation input = Allocation.createFromBitmap(rs, bitmap);
+            Allocation output = Allocation.createTyped(rs, input.getType());
+            ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, input.getElement());
+            blur.setInput(input);
+            blur.setRadius(mRadius);
+            blur.forEach(output);
+            output.copyTo(bitmap);
+
+            rs.destroy();
+        } else {
+            bitmap = NativeStackBlur.process(bitmap, mRadius);
+        }
+
 
         return BitmapResource.obtain(bitmap, mBitmapPool);
     }
