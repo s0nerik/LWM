@@ -93,7 +93,7 @@ class LocalPlaybackFragment extends PlaybackFragment {
                 bus.post new PlaySongAtPositionCommand(NEXT)
                 break;
             case R.id.btnPrev:
-                bus.post new PlaySongAtPositionCommand(PREVIOS)
+                bus.post new PlaySongAtPositionCommand(PREVIOUS)
                 break;
             case R.id.btnPlayPause:
                 bus.post new ChangePauseStateCommand(!player.paused)

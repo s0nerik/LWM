@@ -1,4 +1,5 @@
 package app.player
+
 import android.content.Intent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
@@ -17,27 +18,30 @@ class LocalPlayer extends BasePlayer {
     LocalPlayer() {
         bus.register this
 
-        playerSubject.distinct().subscribe({
-            switch(it) {
-                case PlayerEvent.STARTED:
-                    break
-                case PlayerEvent.PAUSED:
-                    break
-                case PlayerEvent.ENDED:
-                    if (repeat)
-                        restart().subscribe()
-                    else
-                        prepareNextSong().concatWith(start()).subscribe()
-                    break
-                case PlayerEvent.IDLE:
-                    break
-            }
-        }, {
-            Debug.e "Error while playing:"
-            Debug.e it
-            stop().subscribe()
-        })
-
+        playerSubject.distinct()
+                     .subscribe({
+                                    switch (it) {
+                                        case PlayerEvent.STARTED:
+                                            break
+                                        case PlayerEvent.PAUSED:
+                                            break
+                                        case PlayerEvent.ENDED:
+                                            if (repeat)
+                                                restart().subscribe()
+                                            else
+                                                prepareNextSong()
+                                                        .concatWith(start())
+                                                        .subscribe()
+                                            break
+                                        case PlayerEvent.IDLE:
+                                            break
+                                    }
+                                }, {
+                                    Debug.e "Error while playing:"
+                                    Debug.e it
+                                    stop().subscribe()
+                                })
+        
         errorSubject.subscribe {
             Debug.e "RxExoPlayer error:"
             Debug.e it
@@ -86,16 +90,16 @@ class LocalPlayer extends BasePlayer {
 
     Observable prepare(int position) {
         queueContainer.moveToAsObservable(position)
-                .cast(Object)
-                .ignoreElements()
-                .concatWith(prepare())
-        .doOnSubscribe {
+                      .cast(Object)
+                      .ignoreElements()
+                      .concatWith(prepare())
+                      .doOnSubscribe {
             Debug.d "LocalPlayer: prepare(int) onSubscribe"
         }
-        .doOnNext {
+                      .doOnNext {
             Debug.d "LocalPlayer: prepare(int) onNext"
         }
-        .doOnCompleted {
+                      .doOnCompleted {
             Debug.d "LocalPlayer: prepare(int) onCompleted"
         }
     }
@@ -104,50 +108,50 @@ class LocalPlayer extends BasePlayer {
         Observable.defer {
             lastState != ExoPlayer.STATE_IDLE ? reset() : Observable.empty()
         }
-        .concatWith(super.prepare())
-        .doOnError {
+                  .concatWith(super.prepare())
+                  .doOnError {
             Debug.e "prepare() error"
             queueContainer.moveToNext true
         }
-        .doOnSubscribe {
+                  .doOnSubscribe {
             Debug.d "LocalPlayer: prepare() onSubscribe"
         }
-        .doOnNext {
+                  .doOnNext {
             Debug.d "LocalPlayer: prepare() onNext"
         }
-        .doOnCompleted {
+                  .doOnCompleted {
             Debug.d "LocalPlayer: prepare() onCompleted"
         }
     }
 
     Observable prepareNextSong() {
         queueContainer.moveToNextAsObservable()
-                .cast(Object)
-                .ignoreElements()
-                .concatWith(prepare())
-        .doOnSubscribe {
+                      .cast(Object)
+                      .ignoreElements()
+                      .concatWith(prepare())
+                      .doOnSubscribe {
             Debug.d "LocalPlayer: prepareNextSong() onSubscribe"
         }
-        .doOnNext {
+                      .doOnNext {
             Debug.d "LocalPlayer: prepareNextSong() onNext"
         }
-        .doOnCompleted {
+                      .doOnCompleted {
             Debug.d "LocalPlayer: prepareNextSong() onCompleted"
         }
     }
 
     Observable preparePrevSong() {
         queueContainer.moveToPrevAsObservable()
-                .cast(Object)
-                .ignoreElements()
-                .concatWith(prepare())
-        .doOnSubscribe {
+                      .cast(Object)
+                      .ignoreElements()
+                      .concatWith(prepare())
+                      .doOnSubscribe {
             Debug.d "LocalPlayer: preparePrevSong() onSubscribe"
         }
-        .doOnNext {
+                      .doOnNext {
             Debug.d "LocalPlayer: preparePrevSong() onNext"
         }
-        .doOnCompleted {
+                      .doOnCompleted {
             Debug.d "LocalPlayer: preparePrevSong() onCompleted"
         }
     }

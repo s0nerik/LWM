@@ -1,4 +1,5 @@
 package app.service
+
 import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
@@ -54,7 +55,8 @@ class LocalPlayerService extends Service {
 
         bus.register this
 
-        mediaButtonsReceiver = new ComponentName(packageName, MediaButtonIntentReceiver.canonicalName)
+        mediaButtonsReceiver = new ComponentName(packageName,
+                                                 MediaButtonIntentReceiver.canonicalName)
         audioManager.registerMediaButtonEventReceiver mediaButtonsReceiver
     }
 
@@ -83,16 +85,15 @@ class LocalPlayerService extends Service {
     }
 
     @Produce
-    CurrentSongAvailableEvent produceCurrentSong() { new CurrentSongAvailableEvent(player.currentSong) }
+    CurrentSongAvailableEvent produceCurrentSong() {
+        new CurrentSongAvailableEvent(player.currentSong)
+    }
 
     @Subscribe
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
         Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                  .subscribe {
-                      player.setPaused(false).subscribe {
-                          Debug.d "LocalPlayer started playback with delay."
-                      }
-                  }
+                  .concatMap { player.start() }
+                  .subscribe { Debug.d "LocalPlayer started playback with delay." }
     }
 
     @Subscribe
@@ -100,9 +101,8 @@ class LocalPlayerService extends Service {
         if (serverStarted && !cmd.pause)
             return
 
-        player.setPaused(cmd.pause).subscribe {
-            Debug.d "LocalPlayer setPaused: $it"
-        }
+        player.setPaused(cmd.pause)
+              .subscribe { Debug.d "LocalPlayer setPaused: $it" }
     }
 
     @Subscribe
@@ -118,30 +118,35 @@ class LocalPlayerService extends Service {
         if (cmd.shuffle) player.shuffleQueue()
 
         Observable.concat(player.prepare(cmd.position), player.start())
-                .subscribe {
-            Debug.d "LocalPlayer prepared and started playback"
-        }
+                  .subscribe { Debug.d "LocalPlayer prepared and started playback" }
     }
 
     @Subscribe
     void playSongAtPosition(PlaySongAtPositionCommand cmd) {
+        Observable startPlayback
+        if (serverStarted) {
+            startPlayback = Observable.defer {
+                bus.post new PrepareClientsCommand(0)
+            }
+        } else {
+            startPlayback = player.start()
+        }
+
+        Observable prepare = null
         switch (cmd.positionType) {
             case PlaySongAtPositionCommand.PositionType.NEXT:
-                player.prepareNextSong()
-                        .concatWith(player.start())
-                        .subscribe()
+                prepare = player.prepareNextSong()
                 break
-            case PlaySongAtPositionCommand.PositionType.PREVIOS:
-                player.preparePrevSong()
-                        .concatWith(player.start())
-                        .subscribe()
+            case PlaySongAtPositionCommand.PositionType.PREVIOUS:
+                prepare = player.preparePrevSong()
                 break
             case PlaySongAtPositionCommand.PositionType.EXACT:
-                player.prepare(cmd.position)
-                        .concatWith(player.start())
-                        .subscribe()
+                prepare = player.prepare(cmd.position)
                 break
         }
+
+        prepare.concatWith(startPlayback)
+               .subscribe()
     }
 
     @Subscribe
@@ -172,9 +177,9 @@ class LocalPlayerService extends Service {
         switch (event.type) {
             case NEXT:
                 player.prepareNextSong()
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
+                      .subscribeOn(AndroidSchedulers.mainThread())
+                      .observeOn(AndroidSchedulers.mainThread())
+                      .subscribe {
                     "LocalPlayer moved to next song"
                 }
                 break

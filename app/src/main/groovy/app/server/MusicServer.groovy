@@ -101,7 +101,6 @@ class MusicServer extends Daggered {
 
     @Subscribe
     void onSeekTo(SeekToCommand cmd) {
-        player.paused = true
         webSocketMessageServer.sendAll(new SocketMessage(POST, SEEK_TO, cmd.position as String).toJson())
     }
 
