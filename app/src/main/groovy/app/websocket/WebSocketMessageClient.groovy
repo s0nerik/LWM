@@ -112,7 +112,7 @@ public class WebSocketMessageClient extends WebSocketClient {
                     bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(body as long))
                     break
                 case PAUSE:
-                    player.setPaused true
+                    player.setPaused(true).subscribe()
                     break
                 case PREPARE:
                     prepare body as int
@@ -155,18 +155,22 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     private void prepare(int position, boolean seeking = false) {
-        player.stop()
-
+        Observable prepare
         if (!seeking) {
-            Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
-                    .subscribe {
-                        player.song = it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}")
-                        player.prepareForPosition position
-                    }
+            prepare = Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
+                      .map { it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}") }
+                      .doOnNext { player.song = it }
+                      .concatMap { player.prepareForPosition position }
         } else {
-            player.prepareForPosition position
+            prepare = player.prepareForPosition(position)
         }
+
+        player.stop()
+              .concatMap { prepare }
+              .subscribe { sendMessage POST, READY }
     }
+
+    //region Chat
 
     @Subscribe
     void onSendChatMessage(SendChatMessageEvent event) {
@@ -198,5 +202,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     SetUnreadMessagesEvent produceUnreadMessages() {
         new SetUnreadMessagesEvent(unreadMessages)
     }
+
+    //endregion
 
 }

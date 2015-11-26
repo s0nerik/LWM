@@ -76,11 +76,10 @@ class StreamPlayerService extends Service {
     @Subscribe
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
         Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                .subscribe {
-                    player.setPaused(false).subscribe {
-                        Debug.d "StreamPlayer started playback with delay."
-                    }
-                }
+                  .concatMap { player.start() }
+                  .subscribe {
+            Debug.d "StreamPlayer started playback with delay."
+        }
     }
 
 }
