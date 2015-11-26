@@ -1,12 +1,12 @@
 package app.websocket
 import app.Injector
 import app.Utils
+import app.commands.ChangePauseStateCommand
 import app.commands.StartPlaybackDelayedCommand
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.events.server.ClientReadyEvent
-import app.commands.ChangePauseStateCommand
 import app.helper.PingMeasurer
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
@@ -15,10 +15,15 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import org.apache.commons.lang3.tuple.ImmutablePair
+import org.apache.commons.lang3.tuple.Pair
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import ru.noties.debug.Debug
+import rx.Observable
+import rx.subjects.PublishSubject
+import rx.subjects.Subject
 
 import javax.inject.Inject
 
@@ -39,6 +44,20 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private long lastMessageTime = -1
 
+    private Subject<Pair<WebSocket, SocketMessage>, Pair<WebSocket, SocketMessage>> messages =
+            PublishSubject.create().toSerialized()
+
+    private Observable<Pair<WebSocket, SocketMessage>> getMessages
+    private Observable<Pair<WebSocket, SocketMessage>> postMessages
+
+    private Observable<WebSocket> clientReady
+    private Observable<WebSocket> clientPong
+    private Observable<Pair<WebSocket, ClientInfo>> clientInfo
+    private Observable<Pair<WebSocket, ChatMessage>> chatMessage
+
+    private Observable<WebSocket> currentPositionRequest
+    private Observable<WebSocket> playbackStatusRequest
+
     @Inject
     @PackageScope
     LocalPlayer player
@@ -50,6 +69,50 @@ class WebSocketMessageServer extends WebSocketServer {
     WebSocketMessageServer(InetSocketAddress address) {
         super(address)
         Injector.inject this
+        initObservables()
+        initSubscribers()
+    }
+
+    private void initObservables() {
+        getMessages = messages.filter { it.value.type == GET }
+        postMessages = messages.filter { it.value.type == POST }
+
+        clientReady = postMessages.filter { it.value.message == READY }.map { it.key }
+        clientPong = postMessages.filter { it.value.message == PONG }.map { it.key }
+
+        clientInfo = postMessages
+                .filter { it.value.message == CLIENT_INFO }
+                .map {
+            new ImmutablePair<WebSocket, ClientInfo>(it.key,
+                                                     Utils.<ClientInfo> fromJson(it.value.body))
+        }
+
+        chatMessage = postMessages
+                .filter { it.value.message == MESSAGE }
+                .map {
+            new ImmutablePair<WebSocket, ChatMessage>(it.key,
+                                                      Utils.<ChatMessage> fromJson(it.value.body))
+        }
+
+        currentPositionRequest = getMessages.filter { it.value.message == CURRENT_POSITION }
+                                            .map { it.key }
+
+        playbackStatusRequest = getMessages.filter { it.value.message == IS_PLAYING }.map { it.key }
+    }
+
+    private void initSubscribers() {
+        clientReady.subscribe { processReadiness it }
+        clientPong.subscribe { pingMeasurers[it].pongReceived() }
+        clientInfo.subscribe { processClientInfo it.key, it.value }
+        chatMessage.subscribe { bus.post new ChatMessageReceivedEvent(it.value, it.key) }
+
+        currentPositionRequest.subscribe {
+            sendMessage it, POST, CURRENT_POSITION, player.currentPosition as String
+        }
+
+        playbackStatusRequest.subscribe {
+            sendMessage it, POST, IS_PLAYING, player.playing as String
+        }
     }
 
     @Override
@@ -75,43 +138,8 @@ class WebSocketMessageServer extends WebSocketServer {
     @Override
     void onMessage(WebSocket conn, String message) {
         Debug.d "$message"
-
         SocketMessage socketMessage = Utils.fromJson message
-        String body = socketMessage.body
-
-        if (socketMessage.type == GET) {
-            switch (socketMessage.message) {
-                case CURRENT_POSITION:
-                    String pos = player.currentPosition as String
-                    sendMessage conn, POST, CURRENT_POSITION, pos
-                    break
-                case IS_PLAYING:
-                    String isPlaying = player.playing as String
-                    sendMessage conn, POST, IS_PLAYING, isPlaying
-                    break
-                default:
-                    Debug.e "Can't process message: ${socketMessage.message.name()}"
-            }
-        } else if (socketMessage.type == POST) {
-            switch (socketMessage.message) {
-                case READY:
-                    processReadiness conn
-                    break
-                case PONG:
-                    pingMeasurers[conn].pongReceived()
-                    break
-                case CLIENT_INFO:
-                    processClientInfo conn, Utils.<ClientInfo>fromJson(body)
-                    break
-                case MESSAGE:
-                    ChatMessage chatMessage = Utils.fromJson body
-                    bus.post new ChatMessageReceivedEvent(chatMessage, conn)
-                    break
-                default:
-                    Debug.e "Can't process message: ${socketMessage.message.name()}"
-            }
-        }
-
+        messages.onNext new ImmutablePair<WebSocket, SocketMessage>(conn, socketMessage)
         lastMessageTime = System.currentTimeMillis()
     }
 
