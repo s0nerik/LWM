@@ -74,8 +74,8 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void initObservables() {
-        getMessages = messages.filter { it.value.type == GET }
-        postMessages = messages.filter { it.value.type == POST }
+        getMessages = messages.filter { it.value.type == GET }.cast(Pair)
+        postMessages = messages.filter { it.value.type == POST }.cast(Pair)
 
         clientReady = postMessages.filter { it.value.message == READY }.map { it.key }
         clientPong = postMessages.filter { it.value.message == PONG }.map { it.key }
@@ -83,15 +83,15 @@ class WebSocketMessageServer extends WebSocketServer {
         clientInfo = postMessages
                 .filter { it.value.message == CLIENT_INFO }
                 .map {
-            new ImmutablePair<WebSocket, ClientInfo>(it.key,
-                                                     Utils.<ClientInfo> fromJson(it.value.body))
+            new ImmutablePair<WebSocket, ClientInfo>(
+                    it.key, Utils.<ClientInfo> fromJson(it.value.body)) as Pair
         }
 
         chatMessage = postMessages
                 .filter { it.value.message == MESSAGE }
                 .map {
-            new ImmutablePair<WebSocket, ChatMessage>(it.key,
-                                                      Utils.<ChatMessage> fromJson(it.value.body))
+            new ImmutablePair<WebSocket, ChatMessage>(
+                    it.key, Utils.<ChatMessage> fromJson(it.value.body)) as Pair
         }
 
         currentPositionRequest = getMessages.filter { it.value.message == CURRENT_POSITION }
