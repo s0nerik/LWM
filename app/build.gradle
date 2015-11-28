@@ -3,6 +3,7 @@ apply plugin: 'groovyx.grooid.groovy-android'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'io.fabric'
+apply plugin: 'com.fernandocejas.frodo'
 
 repositories {
     flatDir {

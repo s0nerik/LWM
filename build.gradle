@@ -14,10 +14,6 @@ buildscript {
 //        classpath 'com.github.groovy:groovy-android-gradle-plugin:bea6ca6'
 //        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.1.1'
+        classpath "com.fernandocejas.frodo:frodo-plugin:0.8.1"
     }
 }
-
-//ext {
-//    compileSdkVersion = 22       // depending on your sdk version
-//    buildToolsVersion = "22.0.1" // depending on your build tools version
-//}

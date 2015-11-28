@@ -1,5 +1,4 @@
 package app.service
-
 import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
@@ -127,6 +126,7 @@ class LocalPlayerService extends Service {
         if (serverStarted) {
             startPlayback = Observable.defer {
                 bus.post new PrepareClientsCommand(0)
+                Observable.empty()
             }
         } else {
             startPlayback = player.start()
