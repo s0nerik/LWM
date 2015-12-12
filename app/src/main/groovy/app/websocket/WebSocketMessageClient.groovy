@@ -182,22 +182,8 @@ public class WebSocketMessageClient extends WebSocketClient {
         }
 
         prepare.startWith(player.stop())
-               .doOnSubscribe { Debug.d "Subscribe: prepare.startWith" }
-               .doOnCompleted {
-            Debug.d "Completed: prepare.startWith"
-            sendMessage POST, READY
-        }
+               .doOnCompleted { sendMessage POST, READY }
                .subscribe()
-//        player.stop()
-//              .doOnSubscribe { Debug.d "Subscribe: player.stop()" }
-//              .doOnCompleted { Debug.d "Completed: player.stop()" }
-//              .concatMap { prepare }
-//              .doOnSubscribe { Debug.d "Subscribe: concatMap { prepare }" }
-//              .doOnCompleted {
-//            Debug.d "Completed: concatMap { prepare }"
-//            sendMessage POST, READY
-//        }
-//              .subscribe()
     }
 
     //region Chat
