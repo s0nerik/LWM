@@ -13,10 +13,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
-import rx.Observable
 
 import javax.inject.Inject
-import java.util.concurrent.TimeUnit
 
 import static app.websocket.SocketMessage.Message.READY
 import static app.websocket.SocketMessage.Type.POST
@@ -50,6 +48,9 @@ class StreamPlayerService extends Service {
     @Override
     int onStartCommand(Intent intent, int flags, int startId) {
         startWebSocketClient intent.getStringExtra("uri")
+
+        Debug.d "StreamPlayerService: ${intent.getStringExtra("uri")}"
+
         super.onStartCommand(intent, flags, startId)
     }
 
@@ -75,11 +76,15 @@ class StreamPlayerService extends Service {
 
     @Subscribe
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
-        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                  .concatMap { player.start() }
-                  .subscribe {
+        player.start().subscribe {
             Debug.d "StreamPlayer started playback with delay."
         }
+
+//        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+//                  .concatMap { player.start() }
+//                  .subscribe {
+//            Debug.d "StreamPlayer started playback with delay."
+//        }
     }
 
 }

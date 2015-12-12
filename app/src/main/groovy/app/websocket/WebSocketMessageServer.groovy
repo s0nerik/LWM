@@ -137,8 +137,11 @@ class WebSocketMessageServer extends WebSocketServer {
 
     @Override
     void onMessage(WebSocket conn, String message) {
-        Debug.d "$message"
         SocketMessage socketMessage = Utils.fromJson message
+
+        if (socketMessage.message != PONG)
+            Debug.d "$message"
+
         messages.onNext new ImmutablePair<WebSocket, SocketMessage>(conn, socketMessage)
         lastMessageTime = System.currentTimeMillis()
     }
@@ -153,6 +156,8 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void processReadiness(WebSocket conn) {
+        Debug.d()
+
         ready << conn
 
         bus.post new ClientReadyEvent(conn)
@@ -162,6 +167,8 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void onEveryoneReady() {
+        Debug.d()
+
         def startTime = System.currentTimeMillis() + pingMeasurers.values().max { PingMeasurer it -> it.average }.average + 250
 
         bus.post new StartPlaybackDelayedCommand(startTime)

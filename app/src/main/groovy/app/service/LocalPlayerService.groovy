@@ -26,7 +26,6 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
-import java.util.concurrent.TimeUnit
 
 import static app.events.player.playback.control.ControlButtonEvent.Type.*
 import static app.events.server.MusicServerStateChangedEvent.State.STARTED
@@ -90,9 +89,11 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
-        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                  .concatMap { player.start() }
-                  .subscribe { Debug.d "LocalPlayer started playback with delay." }
+        player.start().subscribe { Debug.d "LocalPlayer started playback with delay." }
+
+//        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+//                  .concatMap { player.start() }
+//                  .subscribe { Debug.d "LocalPlayer started playback with delay." }
     }
 
     @Subscribe

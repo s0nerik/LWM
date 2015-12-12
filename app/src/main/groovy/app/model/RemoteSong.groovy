@@ -19,10 +19,15 @@ class RemoteSong extends Song {
     RemoteSong(Song original, String serverUrl) {
         InvokerHelper.setProperties(this, original.properties)
         this.serverUrl = serverUrl
+        source = "${serverUrl}${StreamServer.Method.STREAM}"
     }
 
     @Override
     Uri getAlbumArtUri() {
         Uri.parse("${serverUrl}${StreamServer.Method.CURRENT_ALBUMART}")
+    }
+
+    Uri getSourceUri() {
+        Uri.parse source
     }
 }

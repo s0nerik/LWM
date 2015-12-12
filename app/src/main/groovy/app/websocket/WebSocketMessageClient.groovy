@@ -28,8 +28,10 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import ru.noties.debug.Debug
 import rx.Observable
+import rx.Observer
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 import static app.websocket.SocketMessage.Message.*
 import static app.websocket.SocketMessage.Type.GET
@@ -79,10 +81,11 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Override
     void onMessage(String message) {
-        Debug.d "$message"
-
         SocketMessage socketMessage = Utils.fromJson message
         String body = socketMessage.body
+
+        if (socketMessage.message != PING)
+            Debug.d "$message"
 
         if (socketMessage.type == GET) {
             switch (socketMessage.message) {
@@ -135,6 +138,8 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     void sendMessage(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+        if (msg != PONG) Debug.d "sendMessage: ${msg}"
+
         send new SocketMessage(type, msg, body).toJson()
     }
 
@@ -157,17 +162,53 @@ public class WebSocketMessageClient extends WebSocketClient {
     private void prepare(int position, boolean seeking = false) {
         Observable prepare
         if (!seeking) {
-            prepare = Observable.from(Ion.with(context).load(SONG_INFO_URI as String).as(Song))
-                      .map { it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}") }
-                      .doOnNext { player.song = it }
-                      .concatMap { player.prepareForPosition position }
+            def loadSong = Observable.create({ Observer<String> observer ->
+                try {
+                    def songStr = Ion.with(context).load(SONG_INFO_URI as String).asString().get(5, TimeUnit.SECONDS)
+                    observer.onNext(songStr)
+                    observer.onCompleted()
+                } catch (e) {
+                    observer.onError(e)
+                }
+            } as Observable.OnSubscribe<String>)
+
+            prepare = loadSong
+                                .doOnSubscribe { Debug.d "Subscribe: loadSong" }
+                                .doOnNext { Debug.d "Next: loadSong (${it})" }
+                                .doOnCompleted { Debug.d "Completed: loadSong" }
+                                .map { Song.fromJson(it) }
+                                .doOnSubscribe { Debug.d "Subscribe: map1" }
+                                .doOnNext { Debug.d "Next: map1 ${it.title}" }
+                                .doOnCompleted { Debug.d "Completed: map1" }
+                                .map { it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}") }
+                                .doOnSubscribe { Debug.d "Subscribe: map2" }
+                                .doOnNext {
+                Debug.d "Next: map2"
+                player.song = it
+            }
+                                .doOnCompleted { Debug.d "Completed: map2" }
+                                .concatMap { player.prepareForPosition position }
         } else {
             prepare = player.prepareForPosition(position)
         }
 
-        player.stop()
-              .concatMap { prepare }
-              .subscribe { sendMessage POST, READY }
+        prepare.startWith(player.stop())
+               .doOnSubscribe { Debug.d "Subscribe: prepare.startWith" }
+               .doOnCompleted {
+            Debug.d "Completed: prepare.startWith"
+            sendMessage POST, READY
+        }
+               .subscribe()
+//        player.stop()
+//              .doOnSubscribe { Debug.d "Subscribe: player.stop()" }
+//              .doOnCompleted { Debug.d "Completed: player.stop()" }
+//              .concatMap { prepare }
+//              .doOnSubscribe { Debug.d "Subscribe: concatMap { prepare }" }
+//              .doOnCompleted {
+//            Debug.d "Completed: concatMap { prepare }"
+//            sendMessage POST, READY
+//        }
+//              .subscribe()
     }
 
     //region Chat

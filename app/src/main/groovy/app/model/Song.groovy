@@ -2,9 +2,12 @@ package app.model
 import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
-import app.data_managers.*
+import app.data_managers.AlbumsManager
+import app.data_managers.ArtistsManager
+import app.data_managers.CursorInitializable
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
 import rx.Observable
@@ -68,6 +71,20 @@ class Song implements CursorInitializable {
                 duration: duration,
                 albumArtUri: albumArtUri.toString()
         ])
+    }
+
+    static Song fromJson(String json) {
+        def jsonMap = new JsonSlurper().parseText(json)
+
+        def song = new Song()
+        song.title = jsonMap["title"]
+        song.artistName = jsonMap["artist"]
+        song.albumName = jsonMap["album"]
+        song.source = jsonMap["source"]
+        song.lyrics = jsonMap["lyrics"]
+        song.duration = jsonMap["duration"] as int
+
+        return song
     }
 
     RemoteSong toRemoteSong(String serverUrl) {

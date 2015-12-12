@@ -140,17 +140,21 @@ abstract class RxExoPlayer {
      * @return true if playback stopped successfully and false means that error has occurred during playback stopping.
      */
     Observable stop() {
-        playerSubject.first { it == PlayerEvent.IDLE }
-                .ignoreElements()
-        .doOnNext {
-            Debug.d "RxExoPlayer: stop() onNext"
-        }
-        .doOnCompleted {
-            Debug.d "RxExoPlayer: stop() onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "RxExoPlayer: stop() onSubscribe"
-            innerPlayer.stop()
+        if (innerPlayer.playbackState == STATE_IDLE) {
+            return Observable.empty()
+        } else {
+            return playerSubject.first { it == PlayerEvent.IDLE }
+                                .ignoreElements()
+                                .doOnNext {
+                Debug.d "RxExoPlayer: stop() onNext"
+            }
+                                .doOnCompleted {
+                Debug.d "RxExoPlayer: stop() onCompleted"
+            }
+                                .doOnSubscribe {
+                Debug.d "RxExoPlayer: stop() onSubscribe"
+                innerPlayer.stop()
+            }
         }
     }
 
