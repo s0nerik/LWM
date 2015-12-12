@@ -93,15 +93,6 @@ class LocalPlayer extends BasePlayer {
                       .cast(Object)
                       .ignoreElements()
                       .concatWith(prepare())
-                      .doOnSubscribe {
-            Debug.d "LocalPlayer: prepare(int) onSubscribe"
-        }
-                      .doOnNext {
-            Debug.d "LocalPlayer: prepare(int) onNext"
-        }
-                      .doOnCompleted {
-            Debug.d "LocalPlayer: prepare(int) onCompleted"
-        }
     }
 
     Observable prepare() {
@@ -112,15 +103,6 @@ class LocalPlayer extends BasePlayer {
                   .doOnError {
             Debug.e "prepare() error"
             queueContainer.moveToNext true
-        }
-                  .doOnSubscribe {
-            Debug.d "LocalPlayer: prepare() onSubscribe"
-        }
-                  .doOnNext {
-            Debug.d "LocalPlayer: prepare() onNext"
-        }
-                  .doOnCompleted {
-            Debug.d "LocalPlayer: prepare() onCompleted"
         }
     }
 

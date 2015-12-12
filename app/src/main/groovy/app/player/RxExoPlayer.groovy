@@ -94,7 +94,7 @@ abstract class RxExoPlayer {
      * @return true if playback started successfully and false means that error has occurred during playback startup.
      */
     Observable restart() {
-        Observable.concat reset(), start()
+        Observable.concat reset().ignoreElements(), start()
     }
 
     /**
@@ -154,6 +154,6 @@ abstract class RxExoPlayer {
      * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
      */
     Observable reset() {
-        Observable.concat pause(), seekTo(0), stop()
+        Observable.concat pause().ignoreElements(), seekTo(0).ignoreElements(), stop()
     }
 }
