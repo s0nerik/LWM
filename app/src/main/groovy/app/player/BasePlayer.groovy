@@ -136,15 +136,6 @@ abstract class BasePlayer extends RxExoPlayer {
         Observable.defer {
             prepare(currentSong.sourceUri)
         }
-        .doOnNext {
-            Debug.d "BasePlayer: prepare() onNext"
-        }
-        .doOnCompleted {
-            Debug.d "BasePlayer: prepare() onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "BasePlayer: prepare() onSubscribe"
-        }
     }
 
     @Override
