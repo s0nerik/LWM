@@ -50,12 +50,6 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Inject
     SharedPreferences sharedPreferences
 
-    private final Uri STREAM_URI =
-            Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.STREAM}"
-
-    private final Uri ALBUMART_URI =
-            Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.CURRENT_ALBUMART}"
-
     private final Uri SONG_INFO_URI =
             Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.CURRENT_INFO}"
 

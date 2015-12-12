@@ -86,17 +86,7 @@ abstract class RxExoPlayer {
      */
     Observable start() {
         playerSubject.first { it == PlayerEvent.STARTED }
-                .ignoreElements()
-        .doOnNext {
-            Debug.d "RxExoPlayer: start() onNext"
-        }
-        .doOnCompleted {
-            Debug.d "RxExoPlayer: start() onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "RxExoPlayer: start() onSubscribe"
-            innerPlayer.playWhenReady = true
-        }
+                     .doOnSubscribe { innerPlayer.playWhenReady = true }
     }
 
     /**
@@ -113,17 +103,7 @@ abstract class RxExoPlayer {
      */
     Observable pause() {
         playerSubject.first { it == PlayerEvent.PAUSED }
-                .ignoreElements()
-        .doOnNext {
-            Debug.d "RxExoPlayer: pause() onNext"
-        }
-        .doOnCompleted {
-            Debug.d "RxExoPlayer: pause() onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "RxExoPlayer: pause() onSubscribe"
-            innerPlayer.playWhenReady = false
-        }
+                     .doOnSubscribe { innerPlayer.playWhenReady = false }
     }
 
     Observable setPaused(boolean flag) {
@@ -141,20 +121,10 @@ abstract class RxExoPlayer {
      */
     Observable stop() {
         if (innerPlayer.playbackState == STATE_IDLE) {
-            return Observable.empty()
+            return Observable.just(PlayerEvent.IDLE)
         } else {
             return playerSubject.first { it == PlayerEvent.IDLE }
-                                .ignoreElements()
-                                .doOnNext {
-                Debug.d "RxExoPlayer: stop() onNext"
-            }
-                                .doOnCompleted {
-                Debug.d "RxExoPlayer: stop() onCompleted"
-            }
-                                .doOnSubscribe {
-                Debug.d "RxExoPlayer: stop() onSubscribe"
-                innerPlayer.stop()
-            }
+                                .doOnSubscribe { innerPlayer.stop() }
         }
     }
 
@@ -164,15 +134,7 @@ abstract class RxExoPlayer {
      */
     Observable prepare(@NonNull Uri uri) {
         playerSubject.first { it == PlayerEvent.READY }
-                .ignoreElements()
-                .doOnNext {
-            Debug.d "RxExoPlayer: prepare(Uri) onNext"
-        }
-        .doOnCompleted {
-            Debug.d "RxExoPlayer: prepare(Uri) onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "RxExoPlayer: prepare(Uri) onSubscribe"
+                     .doOnSubscribe {
             currentRenderer = getRenderer(uri)
             innerPlayer.prepare currentRenderer
         }
@@ -184,17 +146,7 @@ abstract class RxExoPlayer {
      */
     Observable seekTo(int msec) {
         playerSubject.first { it == PlayerEvent.READY }
-                .ignoreElements()
-        .doOnNext {
-            Debug.d "RxExoPlayer: seekTo() onNext"
-        }
-        .doOnCompleted {
-            Debug.d "RxExoPlayer: seekTo() onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "RxExoPlayer: seekTo() onSubscribe"
-            innerPlayer.seekTo msec
-        }
+                     .doOnSubscribe { innerPlayer.seekTo msec }
     }
 
     /**
@@ -202,17 +154,6 @@ abstract class RxExoPlayer {
      * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
      */
     Observable reset() {
-        pause()
-        .concatWith(seekTo(0))
-        .concatWith(stop())
-        .doOnNext {
-            Debug.d "RxExoPlayer: reset() onNext"
-        }
-        .doOnCompleted {
-            Debug.d "RxExoPlayer: reset() onCompleted"
-        }
-        .doOnSubscribe {
-            Debug.d "RxExoPlayer: reset() onSubscribe"
-        }
+        Observable.concat pause(), seekTo(0), stop()
     }
 }
