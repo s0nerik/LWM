@@ -173,21 +173,10 @@ public class WebSocketMessageClient extends WebSocketClient {
             } as Observable.OnSubscribe<String>)
 
             prepare = loadSong
-                                .doOnSubscribe { Debug.d "Subscribe: loadSong" }
-                                .doOnNext { Debug.d "Next: loadSong (${it})" }
-                                .doOnCompleted { Debug.d "Completed: loadSong" }
-                                .map { Song.fromJson(it) }
-                                .doOnSubscribe { Debug.d "Subscribe: map1" }
-                                .doOnNext { Debug.d "Next: map1 ${it.title}" }
-                                .doOnCompleted { Debug.d "Completed: map1" }
-                                .map { it.toRemoteSong("http://${uri.host}:${StreamServer.PORT}") }
-                                .doOnSubscribe { Debug.d "Subscribe: map2" }
-                                .doOnNext {
-                Debug.d "Next: map2"
-                player.song = it
-            }
-                                .doOnCompleted { Debug.d "Completed: map2" }
-                                .concatMap { player.prepareForPosition position }
+                    .map { Song.fromJson(it) }
+                    .map { it.toRemoteSong(uri.host) }
+                    .doOnNext { player.song = it }
+                    .concatMap { player.prepareForPosition position }
         } else {
             prepare = player.prepareForPosition(position)
         }

@@ -5,6 +5,7 @@ import android.net.Uri
 import app.data_managers.AlbumsManager
 import app.data_managers.ArtistsManager
 import app.data_managers.CursorInitializable
+import app.server.StreamServer
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -87,8 +88,8 @@ class Song implements CursorInitializable {
         return song
     }
 
-    RemoteSong toRemoteSong(String serverUrl) {
-        new RemoteSong(this, serverUrl)
+    RemoteSong toRemoteSong(String host, String port = StreamServer.PORT) {
+        new RemoteSong(this, "http://$host:$port")
     }
 
     @Override
