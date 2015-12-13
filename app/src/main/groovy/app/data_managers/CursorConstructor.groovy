@@ -7,7 +7,7 @@ import rx.Subscriber
 @CompileStatic
 class CursorConstructor {
 
-    static <T extends CursorInitializable> Observable<T> fromCursorGetter(Class<T> clazz, CursorGetter cursorGetter, @DelegatesTo(T) Closure<Boolean> check = { true }) {
+    static <T extends CursorInitializable> Observable<T> fromCursorGetter(Class<T> clazz, CursorGetter cursorGetter, Closure<Boolean> check = { true }) {
         Observable.create({ Subscriber<T> subscriber ->
             def cursor = cursorGetter.cursor
 

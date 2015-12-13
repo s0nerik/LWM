@@ -5,27 +5,20 @@ import app.model.Album
 import app.model.Artist
 import groovy.transform.CompileStatic
 import rx.Observable
-import rx.Subscriber
 
 @CompileStatic
 class AlbumsManager {
 
     static Observable<Album> loadAllAlbums() {
-        Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter()).subscribe subscriber
-        } as Observable.OnSubscribe<Album>)
+        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter())
     }
 
     static Observable<Album> loadAllAlbums(@NonNull Artist artist) {
-        Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist)).subscribe subscriber
-        } as Observable.OnSubscribe<Album>)
+        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist))
     }
 
     static Observable<Album> loadAlbumById(long id) {
-        Observable.create({ Subscriber<Album> subscriber ->
-            CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(id)).subscribe subscriber
-        } as Observable.OnSubscribe<Album>)
+        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(id))
     }
 
 }
