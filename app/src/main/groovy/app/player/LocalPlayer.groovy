@@ -8,8 +8,6 @@ import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.Observable
 
-import java.util.concurrent.TimeUnit
-
 @CompileStatic
 class LocalPlayer extends BasePlayer {
 
@@ -96,11 +94,13 @@ class LocalPlayer extends BasePlayer {
     Observable prepare() {
         Observable.concat(reset(), super.prepare())
                   .ignoreElements()
-                  .onErrorResumeNext {
+                  .doOnError {
             Debug.e currentSong.toString()
             Debug.e it
-            Observable.concat Observable.timer(1, TimeUnit.SECONDS), prepareNextSong()
+
+            queueContainer.moveToNext(true)
         }
+                  .retry(3)
     }
 
     Observable prepareNextSong() {

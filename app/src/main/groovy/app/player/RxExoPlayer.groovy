@@ -153,7 +153,7 @@ abstract class RxExoPlayer {
             currentRenderer = getRenderer(uri)
             innerPlayer.prepare currentRenderer
             playerSubject.first { it == PlayerEvent.READY }.ignoreElements()
-        }
+        }.serialize()
     }
 
     /**
