@@ -1,14 +1,14 @@
 package app.player
-
 import android.content.Intent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.model.Song
 import app.service.LocalPlayerService
-import com.google.android.exoplayer.ExoPlayer
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.Observable
+
+import java.util.concurrent.TimeUnit
 
 @CompileStatic
 class LocalPlayer extends BasePlayer {
@@ -89,53 +89,28 @@ class LocalPlayer extends BasePlayer {
     //endregion
 
     Observable prepare(int position) {
-        queueContainer.moveToAsObservable(position)
-                      .cast(Object)
-                      .ignoreElements()
-                      .concatWith(prepare())
+        Observable.concat(queueContainer.moveToAsObservable(position), prepare())
+                  .ignoreElements()
     }
 
     Observable prepare() {
-        Observable.defer {
-            lastState != ExoPlayer.STATE_IDLE ? reset() : Observable.empty()
-        }
-                  .concatWith(super.prepare())
-                  .doOnError {
-            Debug.e "prepare() error"
-            queueContainer.moveToNext true
+        Observable.concat(reset(), super.prepare())
+                  .ignoreElements()
+                  .onErrorResumeNext {
+            Debug.e currentSong.toString()
+            Debug.e it
+            Observable.concat Observable.timer(1, TimeUnit.SECONDS), prepareNextSong()
         }
     }
 
     Observable prepareNextSong() {
-        queueContainer.moveToNextAsObservable()
-                      .cast(Object)
-                      .ignoreElements()
-                      .concatWith(prepare())
-                      .doOnSubscribe {
-            Debug.d "LocalPlayer: prepareNextSong() onSubscribe"
-        }
-                      .doOnNext {
-            Debug.d "LocalPlayer: prepareNextSong() onNext"
-        }
-                      .doOnCompleted {
-            Debug.d "LocalPlayer: prepareNextSong() onCompleted"
-        }
+        Observable.concat(queueContainer.moveToNextAsObservable(), prepare())
+                  .ignoreElements()
     }
 
     Observable preparePrevSong() {
-        queueContainer.moveToPrevAsObservable()
-                      .cast(Object)
-                      .ignoreElements()
-                      .concatWith(prepare())
-                      .doOnSubscribe {
-            Debug.d "LocalPlayer: preparePrevSong() onSubscribe"
-        }
-                      .doOnNext {
-            Debug.d "LocalPlayer: preparePrevSong() onNext"
-        }
-                      .doOnCompleted {
-            Debug.d "LocalPlayer: preparePrevSong() onCompleted"
-        }
+        Observable.concat(queueContainer.moveToPrevAsObservable(), prepare())
+                  .ignoreElements()
     }
 
     @Override

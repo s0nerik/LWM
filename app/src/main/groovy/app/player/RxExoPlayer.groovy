@@ -85,8 +85,15 @@ abstract class RxExoPlayer {
      * @return true if playback started successfully and false means that error has occurred during playback startup.
      */
     Observable start() {
-        playerSubject.first { it == PlayerEvent.STARTED }
-                     .doOnSubscribe { innerPlayer.playWhenReady = true }
+        Observable.defer {
+            if (innerPlayer.playWhenReady) {
+                Observable.empty()
+            } else {
+                innerPlayer.playWhenReady = true
+                playerSubject.first { it == PlayerEvent.STARTED }
+                             .ignoreElements()
+            }
+        }
     }
 
     /**
@@ -94,7 +101,7 @@ abstract class RxExoPlayer {
      * @return true if playback started successfully and false means that error has occurred during playback startup.
      */
     Observable restart() {
-        Observable.concat reset().ignoreElements(), start()
+        Observable.concat reset(), start()
     }
 
     /**
@@ -102,8 +109,15 @@ abstract class RxExoPlayer {
      * @return true if playback paused successfully and false means that error has occurred during playback pausing.
      */
     Observable pause() {
-        playerSubject.first { it == PlayerEvent.PAUSED }
-                     .doOnSubscribe { innerPlayer.playWhenReady = false }
+        Observable.defer {
+            if (!innerPlayer.playWhenReady) {
+                Observable.empty()
+            } else {
+                innerPlayer.playWhenReady = false
+                playerSubject.first { it == PlayerEvent.PAUSED }
+                             .ignoreElements()
+            }
+        }
     }
 
     Observable setPaused(boolean flag) {
@@ -120,11 +134,13 @@ abstract class RxExoPlayer {
      * @return true if playback stopped successfully and false means that error has occurred during playback stopping.
      */
     Observable stop() {
-        if (innerPlayer.playbackState == STATE_IDLE) {
-            return Observable.just(PlayerEvent.IDLE)
-        } else {
-            return playerSubject.first { it == PlayerEvent.IDLE }
-                                .doOnSubscribe { innerPlayer.stop() }
+        Observable.defer {
+            if (innerPlayer.playbackState == STATE_IDLE) {
+                Observable.empty()
+            } else {
+                playerSubject.first { it == PlayerEvent.IDLE }.ignoreElements()
+                             .doOnSubscribe { innerPlayer.stop() }
+            }
         }
     }
 
@@ -133,10 +149,10 @@ abstract class RxExoPlayer {
      * @return true if a new stream for playback is prepared successfully and false means that error has occurred during preparing.
      */
     Observable prepare(@NonNull Uri uri) {
-        playerSubject.first { it == PlayerEvent.READY }
-                     .doOnSubscribe {
+        Observable.defer {
             currentRenderer = getRenderer(uri)
             innerPlayer.prepare currentRenderer
+            playerSubject.first { it == PlayerEvent.READY }.ignoreElements()
         }
     }
 
@@ -145,8 +161,15 @@ abstract class RxExoPlayer {
      * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
      */
     Observable seekTo(int msec) {
-        playerSubject.first { it == PlayerEvent.READY }
-                     .doOnSubscribe { innerPlayer.seekTo msec }
+        Observable.defer {
+            if (innerPlayer.currentPosition == msec) {
+                Observable.empty()
+            } else {
+                innerPlayer.seekTo msec
+                playerSubject.first { it == PlayerEvent.READY }
+                             .ignoreElements()
+            }
+        }
     }
 
     /**
@@ -154,6 +177,12 @@ abstract class RxExoPlayer {
      * @return true if player successfully sought to the desired position and false means that error has occurred during seeking.
      */
     Observable reset() {
-        Observable.concat pause().ignoreElements(), seekTo(0).ignoreElements(), stop()
+        Observable.defer {
+            if (innerPlayer.playbackState == STATE_IDLE) {
+                Observable.empty()
+            } else {
+                Observable.concat pause(), seekTo(0), stop()
+            }
+        }
     }
 }

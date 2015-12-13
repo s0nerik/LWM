@@ -10,6 +10,7 @@ import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import groovy.transform.ToString
 import groovy.transform.builder.Builder
 import rx.Observable
 
@@ -18,6 +19,7 @@ import static android.provider.MediaStore.Audio.AudioColumns.*
 import static android.provider.MediaStore.MediaColumns.DATA
 import static android.provider.MediaStore.MediaColumns.TITLE
 
+@ToString
 @CompileStatic
 @Builder
 @Parcelable(exclude = {metaClass; artist; album})
