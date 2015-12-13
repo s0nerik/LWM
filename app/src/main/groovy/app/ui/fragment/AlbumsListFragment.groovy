@@ -72,7 +72,15 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
             observable = albumsManager.loadAllAlbums()
         }
 
-        observable.toList()
+        // TODO: replace this with caching of supported songs inside SongsManager
+        observable
+                .concatMap {
+                    def songsNum = it.songs.count().toBlocking().singleOrDefault(0)
+
+                    if (songsNum > 0) Observable.just it
+                    else Observable.empty()
+                }
+                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe this.&onAlbumsLoaded

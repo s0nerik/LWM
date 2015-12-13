@@ -1,7 +1,9 @@
 package app.model
+
 import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import app.data_managers.AlbumsManager
 import app.data_managers.ArtistsManager
 import app.data_managers.CursorInitializable
@@ -17,6 +19,7 @@ import rx.Observable
 import static android.provider.BaseColumns._ID
 import static android.provider.MediaStore.Audio.AudioColumns.*
 import static android.provider.MediaStore.MediaColumns.DATA
+import static android.provider.MediaStore.MediaColumns.MIME_TYPE
 import static android.provider.MediaStore.MediaColumns.TITLE
 
 @ToString
@@ -24,6 +27,13 @@ import static android.provider.MediaStore.MediaColumns.TITLE
 @Builder
 @Parcelable(exclude = {metaClass; artist; album})
 class Song implements CursorInitializable {
+
+    static final String[] SUPPORTED_MIME_TYPES = [
+            MimeTypeMap.singleton.getMimeTypeFromExtension("mp3"),
+            MimeTypeMap.singleton.getMimeTypeFromExtension("m4a"),
+            MimeTypeMap.singleton.getMimeTypeFromExtension("mp4"),
+            MimeTypeMap.singleton.getMimeTypeFromExtension("aac")
+    ]
 
     protected static final Uri artworkUri = Uri.parse("content://media/external/audio/albumart")
 
@@ -38,6 +48,8 @@ class Song implements CursorInitializable {
     String lyrics
 
     int duration
+
+    String mimeType
 
     Song() {}
 
@@ -72,7 +84,8 @@ class Song implements CursorInitializable {
                 source: source,
                 lyrics: lyrics,
                 duration: duration,
-                albumArtUri: albumArtUri.toString()
+                albumArtUri: albumArtUri.toString(),
+                mimeType: mimeType
         ])
     }
 
@@ -86,6 +99,7 @@ class Song implements CursorInitializable {
         song.source = jsonMap["source"]
         song.lyrics = jsonMap["lyrics"]
         song.duration = jsonMap["duration"] as int
+        song.mimeType = jsonMap["mimeType"]
 
         return song
     }
@@ -104,5 +118,6 @@ class Song implements CursorInitializable {
         albumName = cursor.getString indices[ALBUM]
         source = cursor.getString indices[DATA]
         duration = cursor.getInt indices[DURATION]
+        mimeType = cursor.getString indices[MIME_TYPE]
     }
 }
