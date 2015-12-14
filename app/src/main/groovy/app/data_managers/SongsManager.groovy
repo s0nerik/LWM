@@ -9,12 +9,17 @@ import rx.Observable
 @CompileStatic
 class SongsManager {
 
+    private static final Observable<Song> songs =
+            CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(), { Song s -> (s.source != null) as boolean })
+                             .cache()
+
     static Observable<Song> loadAllSongs() {
-        CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(), { Song s -> s.source != null })
+        songs
     }
 
     static Observable<Song> loadAllSongs(@NonNull Album album) {
-        CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(album), { Song s -> s.source != null })
+        songs.filter { it.albumId == album.id }
+//        CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter(album), { Song s -> s.source != null })
     }
 
 }

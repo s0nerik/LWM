@@ -1,5 +1,6 @@
 package app.ui.fragment
 import app.R
+import app.data_managers.CollectionManager
 import app.data_managers.SongsManager
 import app.model.Song
 import com.github.s0nerik.betterknife.annotations.InjectLayout
@@ -28,12 +29,17 @@ final class SongsListFragment extends BaseSongsListFragment {
 
     @Override
     protected Observable<List<Song>> loadSongs() {
-        if (!songsObservable)
-            songsObservable = songsManager.loadAllSongs()
-                                            .toList()
-                                            .subscribeOn(Schedulers.io())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .cache()
+        songsObservable = CollectionManager.init()
+                                           .toList()
+                                           .subscribeOn(Schedulers.io())
+                                           .observeOn(AndroidSchedulers.mainThread())
+
+//        if (!songsObservable)
+//            songsObservable = songsManager.loadAllSongs()
+//                                            .toList()
+//                                            .subscribeOn(Schedulers.io())
+//                                            .observeOn(AndroidSchedulers.mainThread())
+//                                            .cache()
         return songsObservable
     }
 

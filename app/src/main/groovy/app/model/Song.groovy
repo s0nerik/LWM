@@ -1,11 +1,8 @@
 package app.model
-
 import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
 import android.webkit.MimeTypeMap
-import app.data_managers.AlbumsManager
-import app.data_managers.ArtistsManager
 import app.data_managers.CursorInitializable
 import app.server.StreamServer
 import com.github.s0nerik.betterknife.annotations.Parcelable
@@ -14,7 +11,6 @@ import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
-import rx.Observable
 
 import static android.provider.BaseColumns._ID
 import static android.provider.MediaStore.Audio.AudioColumns.*
@@ -25,8 +21,9 @@ import static android.provider.MediaStore.MediaColumns.TITLE
 @ToString
 @CompileStatic
 @Builder
-@Parcelable(exclude = {metaClass; artist; album})
-class Song implements CursorInitializable {
+@Parcelable(exclude = {metaClass})
+//@Parcelable(exclude = {metaClass; artist; album})
+class Song implements CursorInitializable, Serializable {
 
     static final String[] SUPPORTED_MIME_TYPES = [
             MimeTypeMap.singleton.getMimeTypeFromExtension("mp3"),
@@ -58,14 +55,6 @@ class Song implements CursorInitializable {
         int minutes = seconds / 60 as int
         seconds -= minutes * 60
         minutes + ":" + String.format("%02d", seconds)
-    }
-
-    Observable<Artist> getArtist() {
-        ArtistsManager.loadArtistById(artistId)
-    }
-
-    Observable<Album> getAlbum() {
-        AlbumsManager.loadAlbumById(albumId)
     }
 
     Uri getAlbumArtUri() {

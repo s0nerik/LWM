@@ -16,7 +16,15 @@ import static android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID
 @CompileStatic
 @Builder
 @Parcelable(exclude = {metaClass; artist})
-final class Album implements CursorInitializable {
+final class Album implements CursorInitializable, Serializable {
+//    static final Album UNKNOWN = builder()
+//            .id(-1)
+//            .albumArtPath("")
+//            .title("Unknown")
+//            .artistId(-1)
+//            .artistName("Unknown")
+//            .build()
+
     int id
     int year
     int songsCount

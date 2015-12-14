@@ -33,6 +33,7 @@ import app.helper.db.AlbumsCursorGetter
 import app.helper.db.ArtistsCursorGetter
 import app.helper.db.SongsCursorGetter
 import app.helper.wifi.WifiUtils
+import app.model.MusicCollection
 import app.player.LocalPlayer
 import app.player.StreamPlayer
 import app.receiver.MediaButtonIntentReceiver
@@ -69,6 +70,7 @@ import static android.content.Context.*
 @Module(injects =
         [
                 Daggered,
+                MusicCollection,
                 PaletteApplier,
                 WiFiP2pStationsAdapter,
                 WiFiDirectBroadcastReceiver,
