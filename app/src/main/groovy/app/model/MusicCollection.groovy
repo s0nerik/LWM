@@ -54,7 +54,7 @@ class MusicCollection extends Daggered implements Serializable {
         songs << song
     }
 
-    Observable<Song> prepare() {
+    Observable<Song> initFromFile() {
         Observable.create({ Subscriber<Song> subscriber ->
             clear()
 
@@ -63,20 +63,32 @@ class MusicCollection extends Daggered implements Serializable {
                 new ObjectInputStream(stream).withObjectInputStream {
                     init(it.readObject() as MusicCollection)
                 }
+
+                songs.each { subscriber.onNext it }
+                subscriber.onCompleted()
             } catch (e) {
-                def artistsList = ArtistsManager.loadAllArtists().toList().toBlocking().single()
-                def songsList = SongsManager.loadAllSongs().toList().toBlocking().single()
-                def albumsList = AlbumsManager.loadAllAlbums().toList().toBlocking().single()
+                subscriber.onError(e)
+            }
+        } as Observable.OnSubscribe<Song>)
+    }
 
-                songsList.each { Song song ->
-                    addSong song, artistsList.find { it.id == song.artistId }, albumsList.find { it.id == song.albumId }
-                }
+    Observable<Song> initFromMediaStore() {
+        Observable.create({ Subscriber<Song> subscriber ->
+            clear()
 
-                def stream = context.openFileOutput("collection.lwm", Context.MODE_PRIVATE)
+            def artistsList = ArtistsManager.loadAllArtists().toList().toBlocking().single()
+            def songsList = SongsManager.loadAllSongs().toList().toBlocking().single()
+            def albumsList = AlbumsManager.loadAllAlbums().toList().toBlocking().single()
 
-                new ObjectOutputStream(stream).withObjectOutputStream {
-                    it.writeObject(this as MusicCollection)
-                }
+            songsList.each { Song song ->
+                addSong song, artistsList.find { it.id == song.artistId },
+                        albumsList.find { it.id == song.albumId }
+            }
+
+            def stream = context.openFileOutput("collection.lwm", Context.MODE_PRIVATE)
+
+            new ObjectOutputStream(stream).withObjectOutputStream {
+                it.writeObject(this as MusicCollection)
             }
 
             songs.each { subscriber.onNext it }

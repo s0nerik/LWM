@@ -1,8 +1,10 @@
 package app.ui.fragment
+
 import app.R
 import app.data_managers.CollectionManager
 import app.data_managers.SongsManager
 import app.model.Song
+import com.afollestad.materialdialogs.MaterialDialog
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -29,7 +31,23 @@ final class SongsListFragment extends BaseSongsListFragment {
 
     @Override
     protected Observable<List<Song>> loadSongs() {
-        songsObservable = CollectionManager.init()
+        def waitingDialog = new MaterialDialog.Builder(activity).title("Updating your collection...").build()
+
+        songsObservable = CollectionManager.initFromFile()
+                                           .onErrorResumeNext(
+                                                    CollectionManager.initFromMediaStore()
+                                                                     .observeOn(AndroidSchedulers.mainThread())
+                                                                     .doOnSubscribe {
+                                                        activity.runOnUiThread {
+                                                            waitingDialog.show()
+                                                        }
+                                                    }
+                                                                     .doOnCompleted {
+                                                        activity.runOnUiThread {
+                                                            waitingDialog.hide()
+                                                        }
+                                                    }
+                                            )
                                            .toList()
                                            .subscribeOn(Schedulers.io())
                                            .observeOn(AndroidSchedulers.mainThread())

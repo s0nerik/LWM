@@ -9,7 +9,11 @@ import rx.Observable
 class CollectionManager {
     private static MusicCollection collection = new MusicCollection()
 
-    static Observable<Song> init() {
-        collection.prepare()
+    static Observable<Song> initFromFile() {
+        collection.initFromFile()
+    }
+
+    static Observable<Song> initFromMediaStore() {
+        collection.initFromMediaStore()
     }
 }
