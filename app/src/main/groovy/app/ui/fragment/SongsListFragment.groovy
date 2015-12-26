@@ -38,7 +38,6 @@ final class SongsListFragment extends BaseSongsListFragment {
                         .initFromFile()
                         .onErrorResumeNext(
                             CollectionManager.initFromMediaStore()
-                                             .observeOn(AndroidSchedulers.mainThread())
                                              .doOnSubscribe {
                                                  activity.runOnUiThread {
                                                      waitingDialog.show()

@@ -25,7 +25,7 @@ final class Album implements CursorInitializable, Serializable {
 //            .artistName("Unknown")
 //            .build()
 
-    int id
+    long id
     int year
     int songsCount
     String title
@@ -46,7 +46,7 @@ final class Album implements CursorInitializable, Serializable {
 
     @Override
     void initialize(Cursor cursor, Map<String, Integer> indices) {
-        id = cursor.getInt indices[_ID]
+        id = cursor.getLong indices[_ID]
         title = cursor.getString indices[ALBUM]
         artistName = cursor.getString indices[ARTIST]
         year = cursor.getInt indices[FIRST_YEAR]

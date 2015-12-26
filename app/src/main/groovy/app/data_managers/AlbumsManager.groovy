@@ -9,14 +9,12 @@ import rx.Observable
 @CompileStatic
 class AlbumsManager {
 
-    static Observable<Album> loadAllAlbums() {
-        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(), {
-            Album a -> a.songs.firstOrDefault(null).toBlocking().single() != null
-        })
+    static Observable<Album> loadAllAlbums(Closure<Boolean> check = { true }) {
+        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(), check)
     }
 
-    static Observable<Album> loadAllAlbums(@NonNull Artist artist) {
-        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist), { Album a -> a.songs.count().toBlocking().single() > 0 })
+    static Observable<Album> loadAllAlbums(@NonNull Artist artist, Closure<Boolean> check = { true }) {
+        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter(artist), check)
     }
 
     static Observable<Album> loadAlbumById(long id) {

@@ -1,14 +1,14 @@
 package app.model
-
 import android.content.Context
+import android.support.v4.util.LongSparseArray
 import app.Daggered
 import app.data_managers.AlbumsManager
 import app.data_managers.ArtistsManager
 import app.data_managers.SongsManager
+import app.helper.SerializableLongSparseArray
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import org.apache.commons.collections4.MultiMap
-import org.apache.commons.collections4.map.MultiValueMap
+import ru.noties.debug.Debug
 import rx.Observable
 import rx.Subscriber
 
@@ -16,43 +16,13 @@ import javax.inject.Inject
 
 @CompileStatic
 class MusicCollection extends Daggered implements Serializable {
-    MultiMap<Artist, Album> artistAlbums = new MultiValueMap<>()
-    MultiMap<Artist, Song> artistSongs = new MultiValueMap<>()
-    MultiMap<Album, Song> albumSongs = new MultiValueMap<>()
-
-    MultiMap<Album, Artist> albumArtists = new MultiValueMap<>()
-    MultiMap<Song, Artist> songArtists = new MultiValueMap<>()
-    MultiMap<Song, Album> songAlbums = new MultiValueMap<>()
-
-    List<Song> songs = new ArrayList<>()
-    List<Album> albums = new ArrayList<>()
-    List<Artist> artists = new ArrayList<>()
+    LongSparseArray<Song> songs = new SerializableLongSparseArray<>()
+    LongSparseArray<Album> albums = new SerializableLongSparseArray<>()
+    LongSparseArray<Artist> artists = new SerializableLongSparseArray<>()
 
     @Inject
     @PackageScope
     transient Context context
-
-    void addSong(Song song, Artist artist, Album album) {
-        if (album) {
-            songAlbums[song] = album
-            albumSongs[album] = song
-
-            if (artist) albumArtists[album] = artist
-
-            albums << album
-        }
-
-        if (artist) {
-            songArtists[song] = artist
-            artistSongs[artist] = song
-
-            if (album) artistAlbums[artist] = album
-
-            artists << artist
-        }
-
-        songs << song
-    }
 
     Observable<Song> initFromFile() {
         Observable.create({ Subscriber<Song> subscriber ->
@@ -64,7 +34,10 @@ class MusicCollection extends Daggered implements Serializable {
                     init(it.readObject() as MusicCollection)
                 }
 
-                songs.each { subscriber.onNext it }
+                for(int i = 0; i < songs.size(); i++) {
+                    subscriber.onNext songs.valueAt(i)
+                }
+
                 subscriber.onCompleted()
             } catch (e) {
                 subscriber.onError(e)
@@ -76,46 +49,77 @@ class MusicCollection extends Daggered implements Serializable {
         Observable.create({ Subscriber<Song> subscriber ->
             clear()
 
-            def artistsList = ArtistsManager.loadAllArtists().toList().toBlocking().single()
+            Debug.d "Collection fetching..."
             def songsList = SongsManager.loadAllSongs().toList().toBlocking().single()
-            def albumsList = AlbumsManager.loadAllAlbums().toList().toBlocking().single()
+            Debug.d "Songs fetched"
+            songsList.each { songs.put(it.id, it) }
 
-            songsList.each { Song song ->
-                addSong song, artistsList.find { it.id == song.artistId },
-                        albumsList.find { it.id == song.albumId }
-            }
+            def artistsList = ArtistsManager.loadAllArtists().toList().toBlocking().single()
+            Debug.d "Artists fetched"
+            artistsList.each { artists.put(it.id, it) }
+
+            def albumsList = AlbumsManager.loadAllAlbums { Album album -> songsList.find {it.albumId == album.id} != null }
+                                          .toList()
+                                          .toBlocking()
+                                          .single()
+            Debug.d "Albums fetched"
+            albumsList.each { albums.put(it.id, it) }
 
             def stream = context.openFileOutput("collection.lwm", Context.MODE_PRIVATE)
 
             new ObjectOutputStream(stream).withObjectOutputStream {
                 it.writeObject(this as MusicCollection)
             }
+            Debug.d "Collection written"
 
-            songs.each { subscriber.onNext it }
+            for(int i = 0; i < songs.size(); i++) {
+                subscriber.onNext songs.valueAt(i)
+            }
+
             subscriber.onCompleted()
 
         } as Observable.OnSubscribe<Song>)
     }
 
+    Artist getArtist(Song song) {
+        artists.get(song.artistId)
+    }
+
+    Artist getArtist(Album album) {
+        artists.get(album.artistId)
+    }
+
+    Album getAlbum(Song song) {
+        albums.get(song.albumId)
+    }
+
+    List<Song> getSongs(Album album) {
+        def albumSongs = new ArrayList()
+        for(int i = 0; i < songs.size(); i++) {
+            def song = songs.valueAt(i)
+            if (song.albumId == album.id) albumSongs << song
+        }
+
+        return albumSongs
+    }
+
+    List<Song> getSongs(Artist artist) {
+        def artistSongs = new ArrayList()
+        for(int i = 0; i < songs.size(); i++) {
+            def song = songs.valueAt(i)
+            if (song.artistId == artist.id) artistSongs << song
+        }
+
+        return artistSongs
+    }
+
     private void clear() {
-        artistAlbums.clear()
-        artistSongs.clear()
-        albumSongs.clear()
-        albumArtists.clear()
-        songArtists.clear()
-        songAlbums.clear()
         songs.clear()
         albums.clear()
         artists.clear()
     }
 
     private void init(MusicCollection other) {
-        artistAlbums = other.artistAlbums
-        artistSongs = other.artistSongs
-        albumSongs = other.albumSongs
-        albumArtists = other.albumArtists
-        songArtists = other.songArtists
-        songAlbums = other.songAlbums
         songs = other.songs
         albums = other.albums
         artists = other.artists
