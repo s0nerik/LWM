@@ -33,31 +33,26 @@ final class SongsListFragment extends BaseSongsListFragment {
     protected Observable<List<Song>> loadSongs() {
         def waitingDialog = new MaterialDialog.Builder(activity).title("Updating your collection...").build()
 
-        songsObservable = CollectionManager.initFromFile()
-                                           .onErrorResumeNext(
-                                                    CollectionManager.initFromMediaStore()
-                                                                     .observeOn(AndroidSchedulers.mainThread())
-                                                                     .doOnSubscribe {
-                                                        activity.runOnUiThread {
-                                                            waitingDialog.show()
-                                                        }
-                                                    }
-                                                                     .doOnCompleted {
-                                                        activity.runOnUiThread {
-                                                            waitingDialog.hide()
-                                                        }
-                                                    }
-                                            )
-                                           .toList()
-                                           .subscribeOn(Schedulers.io())
-                                           .observeOn(AndroidSchedulers.mainThread())
+        songsObservable =
+                CollectionManager
+                        .initFromFile()
+                        .onErrorResumeNext(
+                            CollectionManager.initFromMediaStore()
+                                             .observeOn(AndroidSchedulers.mainThread())
+                                             .doOnSubscribe {
+                                                 activity.runOnUiThread {
+                                                     waitingDialog.show()
+                                                 }
+                                             }
+                                             .doOnCompleted {
+                                                 activity.runOnUiThread {
+                                                     waitingDialog.hide()
+                                                 }
+                                             })
+                        .toList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
 
-//        if (!songsObservable)
-//            songsObservable = songsManager.loadAllSongs()
-//                                            .toList()
-//                                            .subscribeOn(Schedulers.io())
-//                                            .observeOn(AndroidSchedulers.mainThread())
-//                                            .cache()
         return songsObservable
     }
 
