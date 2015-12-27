@@ -1,11 +1,11 @@
 package app.model
 import android.content.Context
-import android.support.v4.util.LongSparseArray
 import app.Daggered
-import app.data_managers.AlbumsManager
-import app.data_managers.ArtistsManager
-import app.data_managers.SongsManager
-import app.helper.SerializableLongSparseArray
+import app.helper.GroovyLongSparseArray
+import app.helper.db.AlbumsCursorGetter
+import app.helper.db.ArtistsCursorGetter
+import app.helper.db.SongsCursorGetter
+import app.helper.db.cursor_constructor.CursorConstructor
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
@@ -16,101 +16,119 @@ import javax.inject.Inject
 
 @CompileStatic
 class MusicCollection extends Daggered implements Serializable {
-    LongSparseArray<Song> songs = new SerializableLongSparseArray<>()
-    LongSparseArray<Album> albums = new SerializableLongSparseArray<>()
-    LongSparseArray<Artist> artists = new SerializableLongSparseArray<>()
+    GroovyLongSparseArray<Song> songs = new GroovyLongSparseArray<>()
+    GroovyLongSparseArray<Album> albums = new GroovyLongSparseArray<>()
+    GroovyLongSparseArray<Artist> artists = new GroovyLongSparseArray<>()
 
     @Inject
     @PackageScope
     transient Context context
 
-    Observable<Song> initFromFile() {
-        Observable.create({ Subscriber<Song> subscriber ->
-            clear()
+    class FetchingMediaStoreStartedNotification {}
+    class FetchingMediaStoreCompletedNotification {}
+    class SongsLoadedNotification {}
+    class ArtistsLoadedNotification {}
+    class AlbumsLoadedNotification {}
 
-            try {
-                def stream = context.openFileInput "collection.lwm"
-                new ObjectInputStream(stream).withObjectInputStream {
-                    init(it.readObject() as MusicCollection)
-                }
-
-                for(int i = 0; i < songs.size(); i++) {
-                    subscriber.onNext songs.valueAt(i)
-                }
-
-                subscriber.onCompleted()
-            } catch (e) {
-                subscriber.onError(e)
-            }
-        } as Observable.OnSubscribe<Song>)
+    Observable<Object> init() {
+        clear()
+        initFromFile().onErrorResumeNext(initFromMediaStore())
     }
 
-    Observable<Song> initFromMediaStore() {
-        Observable.create({ Subscriber<Song> subscriber ->
-            clear()
+    private Observable<Object> initFromFile() {
+        readAndInitCollectionFromFile()
+                .doOnError { Debug.e it, "Collection initialization error." }
+                .doOnCompleted { Debug.d "Collection initialized successfully." }
+                .concatWith(Observable.just(this))
+    }
 
-            Debug.d "Collection fetching..."
-            def songsList = SongsManager.loadAllSongs().toList().toBlocking().single()
-            Debug.d "Songs fetched"
-            songsList.each { songs.put(it.id, it) }
-
-            def artistsList = ArtistsManager.loadAllArtists().toList().toBlocking().single()
-            Debug.d "Artists fetched"
-            artistsList.each { artists.put(it.id, it) }
-
-            def albumsList = AlbumsManager.loadAllAlbums { Album album -> songsList.find {it.albumId == album.id} != null }
-                                          .toList()
-                                          .toBlocking()
-                                          .single()
-            Debug.d "Albums fetched"
-            albumsList.each { albums.put(it.id, it) }
-
-            def stream = context.openFileOutput("collection.lwm", Context.MODE_PRIVATE)
-
-            new ObjectOutputStream(stream).withObjectOutputStream {
-                it.writeObject(this as MusicCollection)
-            }
-            Debug.d "Collection written"
-
-            for(int i = 0; i < songs.size(); i++) {
-                subscriber.onNext songs.valueAt(i)
-            }
-
-            subscriber.onCompleted()
-
-        } as Observable.OnSubscribe<Song>)
+    private Observable<Object> initFromMediaStore() {
+        loadAllSongs().cast(Object)
+                      .doOnCompleted { Debug.d "Songs loaded..." }
+                      .concatWith(loadAllArtists())
+                      .doOnCompleted { Debug.d "Artists loaded..." }
+                      .concatWith(loadAllAlbums())
+                      .doOnCompleted { Debug.d "Albums loaded..." }
+                      .concatWith(writeCollectionIntoFile())
+                      .doOnCompleted { Debug.d "Collection written to file." }
+                      .concatWith(Observable.just(this))
     }
 
     Artist getArtist(Song song) {
         artists.get(song.artistId)
     }
 
-    Artist getArtist(Album album) {
-        artists.get(album.artistId)
-    }
-
     Album getAlbum(Song song) {
         albums.get(song.albumId)
     }
 
-    List<Song> getSongs(Album album) {
-        def albumSongs = new ArrayList()
-        for(int i = 0; i < songs.size(); i++) {
-            def song = songs.valueAt(i)
-            if (song.albumId == album.id) albumSongs << song
-        }
+    Artist getArtist(Album album) {
+        artists.get(album.artistId)
+    }
 
-        return albumSongs
+    List<Song> getSongs(Album album) {
+        songs.filter { it.albumId == album.id }
     }
 
     List<Song> getSongs(Artist artist) {
-        def artistSongs = new ArrayList()
-        for(int i = 0; i < songs.size(); i++) {
-            def song = songs.valueAt(i)
-            if (song.artistId == artist.id) artistSongs << song
-        }
+        songs.filter { it.artistId == artist.id }
+    }
 
-        return artistSongs
+    List<Album> getAlbums(Artist artist) {
+        albums.filter { it.artistId == artist.id }
+    }
+
+    private Observable<Song> loadAllSongs() {
+        CursorConstructor.fromCursorGetter(Song, new SongsCursorGetter())
+                         .onBackpressureBuffer()
+                         .filter { it.source != null }
+                         .doOnNext { songs.put(it.id, it) }
+    }
+
+    private Observable<Artist> loadAllArtists() {
+        CursorConstructor.fromCursorGetter(Artist, new ArtistsCursorGetter())
+                         .onBackpressureBuffer()
+                         .filter { isArtistHasSongs(it) }
+                         .doOnNext { artists.put(it.id, it) }
+    }
+
+    private Observable<Album> loadAllAlbums() {
+        CursorConstructor.fromCursorGetter(Album, new AlbumsCursorGetter())
+                         .onBackpressureBuffer()
+                         .filter { isAlbumContainsSongs(it) }
+                         .doOnNext { albums.put(it.id, it) }
+    }
+
+    private boolean isArtistHasSongs(Artist artist) {
+        songs.first { it.artistId == artist.id } != null
+    }
+
+    private boolean isAlbumContainsSongs(Album album) {
+        songs.first { it.albumId == album.id } != null
+    }
+
+    private Observable<Object> writeCollectionIntoFile() {
+        Observable.create({ Subscriber<Object> subscriber ->
+            def stream = context.openFileOutput("collection.lwm", Context.MODE_PRIVATE)
+
+            new ObjectOutputStream(stream).withObjectOutputStream {
+                it.writeObject(this as MusicCollection)
+            }
+
+            subscriber.onCompleted()
+        } as Observable.OnSubscribe<Object>)
+    }
+
+    private Observable<Object> readAndInitCollectionFromFile() {
+        Observable.create({ Subscriber<Object> subscriber ->
+            def stream = context.openFileInput "collection.lwm"
+
+            new ObjectInputStream(stream).withObjectInputStream {
+                initWith(it.readObject() as MusicCollection)
+            }
+
+            subscriber.onCompleted()
+        } as Observable.OnSubscribe<Object>)
     }
 
     private void clear() {
@@ -119,7 +137,7 @@ class MusicCollection extends Daggered implements Serializable {
         artists.clear()
     }
 
-    private void init(MusicCollection other) {
+    private void initWith(MusicCollection other) {
         songs = other.songs
         albums = other.albums
         artists = other.artists

@@ -3,14 +3,19 @@ import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
 import android.webkit.MimeTypeMap
-import app.data_managers.CursorInitializable
+import app.Daggered
+import app.helper.db.cursor_constructor.CursorInitializable
+import app.helper.CollectionManager
 import app.server.StreamServer
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
+
+import javax.inject.Inject
 
 import static android.provider.BaseColumns._ID
 import static android.provider.MediaStore.Audio.AudioColumns.*
@@ -21,9 +26,12 @@ import static android.provider.MediaStore.MediaColumns.TITLE
 @ToString
 @CompileStatic
 @Builder
-@Parcelable(exclude = {metaClass})
-//@Parcelable(exclude = {metaClass; artist; album})
-class Song implements CursorInitializable, Serializable {
+@Parcelable(exclude = {metaClass; album; artist; albumArtUri; sourceUri; durationString; collectionManager})
+class Song extends Daggered implements CursorInitializable, Serializable {
+
+    @Inject
+    @PackageScope
+    transient CollectionManager collectionManager
 
     static final String[] SUPPORTED_MIME_TYPES = [
             MimeTypeMap.singleton.getMimeTypeFromExtension("mp3"),
@@ -48,8 +56,6 @@ class Song implements CursorInitializable, Serializable {
 
     String mimeType
 
-    Song() {}
-
     String getDurationString() {
         int seconds = duration / 1000 as int
         int minutes = seconds / 60 as int
@@ -63,6 +69,14 @@ class Song implements CursorInitializable, Serializable {
 
     Uri getSourceUri() {
         Uri.parse("file://$source")
+    }
+
+    Album getAlbum() {
+        collectionManager.getAlbum this
+    }
+
+    Artist getArtist() {
+        collectionManager.getArtist this
     }
 
     String toJson() {

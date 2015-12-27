@@ -69,7 +69,7 @@ public class SerializableLongSparseArray<E> extends LongSparseArray<E> implement
         Object[] data = (Object[]) ois.readObject();
         for (int i=data.length-1;i>=0;i--){
             Object[] pair = (Object[]) data[i]; 
-            this.append((Integer)pair[0],(E)pair[1]);
+            this.append((Long) pair[0],(E)pair[1]);
         }
         return;
     }

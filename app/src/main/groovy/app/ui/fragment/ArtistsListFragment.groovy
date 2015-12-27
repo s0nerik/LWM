@@ -7,15 +7,13 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
 import app.adapter.ArtistsAdapter
-import app.data_managers.ArtistsManager
+import app.helper.CollectionManager
 import app.model.Artist
 import app.ui.base.DaggerOttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 import javax.inject.Inject
 
@@ -32,7 +30,7 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
 
     @Inject
     @PackageScope
-    ArtistsManager artistsManager
+    CollectionManager collectionManager
 
     private List<Artist> artists = new ArrayList<>()
 
@@ -53,11 +51,12 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     private loadArtists() {
         mRecyclerView.hide()
         mProgress.show()
-        artistsManager.loadAllArtists()
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe this.&onArtistsLoaded
+        onArtistsLoaded(collectionManager.artists)
+//        artistsManager.loadAllArtists()
+//                .toList()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe this.&onArtistsLoaded
     }
 
     private void onArtistsLoaded(List<Artist> artists) {

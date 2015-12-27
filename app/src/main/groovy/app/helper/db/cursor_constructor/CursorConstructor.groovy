@@ -1,4 +1,4 @@
-package app.data_managers
+package app.helper.db.cursor_constructor
 import app.helper.db.CursorGetter
 import groovy.transform.CompileStatic
 import rx.Observable

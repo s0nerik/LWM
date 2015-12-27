@@ -1,24 +1,24 @@
 package app.ui.fragment
-
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.view.View
-import android.widget.*
+import android.widget.GridView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import app.R
 import app.adapter.AlbumsAdapter
-import app.data_managers.AlbumsManager
+import app.helper.CollectionManager
 import app.model.Album
 import app.model.Artist
 import app.ui.activity.AlbumInfoActivity
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnItemClick
-import groovy.transform.*
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     ProgressBar progress
 
     @Inject
-    AlbumsManager albumsManager
+    CollectionManager collectionManager
 
     Artist artist
 
@@ -64,26 +64,28 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         grid.hide()
         progress.show()
 
-        Observable<Album> observable
+        onAlbumsLoaded(artist ? artist.albums : collectionManager.albums)
 
-        if (artist) {
-            observable = albumsManager.loadAllAlbums(artist)
-        } else {
-            observable = albumsManager.loadAllAlbums()
-        }
-
-        // TODO: replace this with caching of supported songs inside SongsManager
-        observable
-//                .concatMap {
-//                    def songsNum = it.songs.count().toBlocking().singleOrDefault(0)
+//        Observable<Album> observable
 //
-//                    if (songsNum > 0) Observable.just it
-//                    else Observable.empty()
-//                }
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe this.&onAlbumsLoaded
+//        if (artist) {
+//            observable = albumsManager.loadAllAlbums(artist)
+//        } else {
+//            observable = albumsManager.loadAllAlbums()
+//        }
+//
+//        // TODO: replace this with caching of supported songs inside SongsManager
+//        observable
+////                .concatMap {
+////                    def songsNum = it.songs.count().toBlocking().singleOrDefault(0)
+////
+////                    if (songsNum > 0) Observable.just it
+////                    else Observable.empty()
+////                }
+//                .toList()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe this.&onAlbumsLoaded
     }
 
     private void onAlbumsLoaded(List<Album> loadedAlbums) {

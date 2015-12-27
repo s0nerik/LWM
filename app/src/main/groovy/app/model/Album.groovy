@@ -1,29 +1,31 @@
 package app.model
 import android.database.Cursor
-import app.data_managers.ArtistsManager
-import app.data_managers.CursorInitializable
-import app.data_managers.SongsManager
+import app.Daggered
+import app.helper.db.cursor_constructor.CursorInitializable
+import app.helper.CollectionManager
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import groovy.transform.builder.Builder
-import rx.Observable
+
+import javax.inject.Inject
 
 import static android.provider.BaseColumns._ID
-import static android.provider.MediaStore.Audio.AlbumColumns.*
+import static android.provider.MediaStore.Audio.AlbumColumns.ALBUM_ART
+import static android.provider.MediaStore.Audio.AlbumColumns.ARTIST
+import static android.provider.MediaStore.Audio.AlbumColumns.FIRST_YEAR
+import static android.provider.MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS
 import static android.provider.MediaStore.Audio.AudioColumns.ALBUM
 import static android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID
 
 @CompileStatic
 @Builder
-@Parcelable(exclude = {metaClass; artist})
-final class Album implements CursorInitializable, Serializable {
-//    static final Album UNKNOWN = builder()
-//            .id(-1)
-//            .albumArtPath("")
-//            .title("Unknown")
-//            .artistId(-1)
-//            .artistName("Unknown")
-//            .build()
+@Parcelable(exclude = {metaClass; artist; songs; collectionManager})
+final class Album extends Daggered implements CursorInitializable, Serializable {
+
+    @Inject
+    @PackageScope
+    transient CollectionManager collectionManager
 
     long id
     int year
@@ -34,14 +36,12 @@ final class Album implements CursorInitializable, Serializable {
 
     long artistId
 
-    Album() {}
-
-    Observable<Artist> getArtist() {
-        ArtistsManager.loadArtistById(artistId)
+    Artist getArtist() {
+        collectionManager.getArtist this
     }
 
-    Observable<Song> getSongs() {
-        SongsManager.loadAllSongs(this)
+    List<Song> getSongs() {
+        collectionManager.getSongs this
     }
 
     @Override

@@ -23,17 +23,18 @@ import app.adapter.view_holders.ArtistViewHolder
 import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.adapter.view_holders.SongViewHolder
 import app.adapter.view_holders.WifiP2pDeviceViewHolder
-import app.data_managers.AlbumsManager
-import app.data_managers.ArtistsManager
-import app.data_managers.SongsManager
 import app.events.MainThreadBus
 import app.events.RxBus
+import app.helper.CollectionManager
 import app.helper.StationsExplorer
 import app.helper.db.AlbumsCursorGetter
 import app.helper.db.ArtistsCursorGetter
 import app.helper.db.SongsCursorGetter
 import app.helper.wifi.WifiUtils
+import app.model.Album
+import app.model.Artist
 import app.model.MusicCollection
+import app.model.Song
 import app.player.LocalPlayer
 import app.player.StreamPlayer
 import app.receiver.MediaButtonIntentReceiver
@@ -112,6 +113,9 @@ import static android.content.Context.*
                 // Intent receivers
                 PendingIntentReceiver, MediaButtonIntentReceiver,
 
+                // Models
+                Song, Album, Artist,
+
                 // Adapters
                 SongsListAdapter,
                 AlbumsAdapter,
@@ -138,6 +142,7 @@ import static android.content.Context.*
                 RemotePlaybackActivity,
                 ArtistInfoActivity,
                 MainActivity,
+                StartActivity,
 
         ],
         library = true)
@@ -289,24 +294,6 @@ public class AndroidModule {
 
     @Provides
     @Singleton
-    SongsManager provideSongsManager() {
-        return new SongsManager();
-    }
-
-    @Provides
-    @Singleton
-    AlbumsManager provideAlbumsManager() {
-        return new AlbumsManager();
-    }
-
-    @Provides
-    @Singleton
-    ArtistsManager provideArtistsManager() {
-        return new ArtistsManager();
-    }
-
-    @Provides
-    @Singleton
     StationsExplorer provideStationsExplorer() {
         return new StationsExplorer();
     }
@@ -315,6 +302,12 @@ public class AndroidModule {
     @Singleton
     MusicServer provideMusicServer() {
         return new MusicServer()
+    }
+
+    @Provides
+    @Singleton
+    CollectionManager provideCollectionManager() {
+        return new CollectionManager()
     }
 
 }

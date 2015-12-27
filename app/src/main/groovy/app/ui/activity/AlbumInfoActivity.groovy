@@ -21,7 +21,6 @@ import app.R.layout
 import app.Utils
 import app.adapter.SongsListAdapter
 import app.commands.EnqueueCommand
-import app.data_managers.SongsManager
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.model.Album
@@ -64,10 +63,6 @@ class AlbumInfoActivity extends BaseLocalActivity {
     @PackageScope
     Utils utils
 
-    @Inject
-    @PackageScope
-    SongsManager songsManager
-
     @Extra
     Album album
 
@@ -97,7 +92,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
         super.onPostCreate(savedInstanceState)
         BetterKnife.loadExtras this
 
-        songs = album.songs.toList().toBlocking().first()
+        songs = album.songs
 
         def adapter = new SongsListAdapter(this, songs)
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

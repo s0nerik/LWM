@@ -1,4 +1,4 @@
-package app.data_managers
+package app.helper.db.cursor_constructor
 import android.database.Cursor
 import groovy.transform.CompileStatic
 
