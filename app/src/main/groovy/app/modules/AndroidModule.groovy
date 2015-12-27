@@ -31,10 +31,7 @@ import app.helper.db.AlbumsCursorGetter
 import app.helper.db.ArtistsCursorGetter
 import app.helper.db.SongsCursorGetter
 import app.helper.wifi.WifiUtils
-import app.model.Album
-import app.model.Artist
-import app.model.MusicCollection
-import app.model.Song
+import app.model.*
 import app.player.LocalPlayer
 import app.player.StreamPlayer
 import app.receiver.MediaButtonIntentReceiver
@@ -114,7 +111,7 @@ import static android.content.Context.*
                 PendingIntentReceiver, MediaButtonIntentReceiver,
 
                 // Models
-                Song, Album, Artist,
+                Song, RemoteSong, Album, Artist,
 
                 // Adapters
                 SongsListAdapter,
