@@ -12,6 +12,7 @@ import app.model.Song
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer
 import com.google.android.exoplayer.TrackRenderer
 import com.google.android.exoplayer.extractor.ExtractorSampleSource
+import com.google.android.exoplayer.upstream.DefaultAllocator
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
@@ -29,8 +30,8 @@ import static com.google.android.exoplayer.ExoPlayer.STATE_IDLE
 @CompileStatic
 abstract class BasePlayer extends RxExoPlayer {
 
-    int BUFFER_SEGMENT_SIZE = 1024
-    int BUFFER_SEGMENT_COUNT = 512
+    int BUFFER_SEGMENT_SIZE = 64 * 1024
+    int BUFFER_SEGMENT_COUNT = 256
 
     @Inject
     @PackageScope
@@ -140,9 +141,11 @@ abstract class BasePlayer extends RxExoPlayer {
 
     @Override
     protected TrackRenderer getRenderer(Uri uri) {
+        def allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
         new MediaCodecAudioTrackRenderer(
                 new ExtractorSampleSource(uri,
                         new DefaultUriDataSource(context, "LWM"),
+                        allocator,
                         BUFFER_SEGMENT_SIZE * BUFFER_SEGMENT_COUNT
                 )
         )

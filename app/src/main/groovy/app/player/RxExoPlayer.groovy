@@ -63,7 +63,7 @@ abstract class RxExoPlayer {
     ] as Listener
 
     RxExoPlayer() {
-        innerPlayer = Factory.newInstance 1, 10000, 20000
+        innerPlayer = Factory.newInstance 1, 30 * 1000, 60 * 1000
         innerPlayer.addListener listener
         innerPlayer.playWhenReady = false
     }
@@ -89,11 +89,12 @@ abstract class RxExoPlayer {
             if (innerPlayer.playWhenReady) {
                 Observable.empty()
             } else {
-                innerPlayer.playWhenReady = true
-                playerSubject.first { it == PlayerEvent.STARTED }
+                playerSubject.doOnSubscribe { innerPlayer.playWhenReady = true }
+                             .filter { it == PlayerEvent.STARTED }
+                             .take(1)
                              .ignoreElements()
             }
-        }
+        }.serialize()
     }
 
     /**
@@ -113,11 +114,12 @@ abstract class RxExoPlayer {
             if (!innerPlayer.playWhenReady) {
                 Observable.empty()
             } else {
-                innerPlayer.playWhenReady = false
-                playerSubject.first { it == PlayerEvent.PAUSED }
+                playerSubject.doOnSubscribe { innerPlayer.playWhenReady = false }
+                             .filter { it == PlayerEvent.PAUSED }
+                             .take(1)
                              .ignoreElements()
             }
-        }
+        }.serialize()
     }
 
     Observable setPaused(boolean flag) {
@@ -138,10 +140,12 @@ abstract class RxExoPlayer {
             if (innerPlayer.playbackState == STATE_IDLE) {
                 Observable.empty()
             } else {
-                playerSubject.first { it == PlayerEvent.IDLE }.ignoreElements()
-                             .doOnSubscribe { innerPlayer.stop() }
+                playerSubject.doOnSubscribe { innerPlayer.stop() }
+                             .filter { it == PlayerEvent.IDLE }
+                             .take(1)
+                             .ignoreElements()
             }
-        }
+        }.serialize()
     }
 
     /**
@@ -151,8 +155,10 @@ abstract class RxExoPlayer {
     Observable prepare(@NonNull Uri uri) {
         Observable.defer {
             currentRenderer = getRenderer(uri)
-            innerPlayer.prepare currentRenderer
-            playerSubject.first { it == PlayerEvent.READY }.ignoreElements()
+            playerSubject.doOnSubscribe { innerPlayer.prepare currentRenderer }
+                         .filter { it == PlayerEvent.READY }
+                         .take(1)
+                         .ignoreElements()
         }.serialize()
     }
 
@@ -165,11 +171,12 @@ abstract class RxExoPlayer {
             if (innerPlayer.currentPosition == msec) {
                 Observable.empty()
             } else {
-                innerPlayer.seekTo msec
-                playerSubject.first { it == PlayerEvent.READY || it == PlayerEvent.IDLE }
+                playerSubject.doOnSubscribe { innerPlayer.seekTo msec }
+                             .filter { it == PlayerEvent.READY || it == PlayerEvent.IDLE }
+                             .take(1)
                              .ignoreElements()
             }
-        }
+        }.serialize()
     }
 
     /**
@@ -184,6 +191,6 @@ abstract class RxExoPlayer {
 //            } else {
 //                Observable.concat pause(), seekTo(0), stop()
 //            }
-        }
+        }.serialize()
     }
 }

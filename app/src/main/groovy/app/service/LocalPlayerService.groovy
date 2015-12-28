@@ -102,8 +102,8 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void changePauseState(ChangePauseStateCommand cmd) {
-        if (serverStarted && !cmd.pause)
-            return
+//        if (serverStarted && !cmd.pause)
+//            return
 
         player.setPaused(cmd.pause)
               .subscribe { Debug.d "LocalPlayer setPaused: $it" }

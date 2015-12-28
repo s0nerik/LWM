@@ -23,8 +23,10 @@ class StreamPlayer extends BasePlayer {
     Observable prepareForPosition(int pos) {
         Debug.d "prepareForPosition: ${pos}"
 
-        currentSong = song
-        Observable.concat reset().onErrorResumeNext(Observable.empty()), prepare(), seekTo(pos)
+        reset().onErrorResumeNext(Observable.empty())
+               .doOnSubscribe { currentSong = song }
+               .concatWith(prepare())
+               .concatWith(seekTo(pos))
     }
 
     @Override
