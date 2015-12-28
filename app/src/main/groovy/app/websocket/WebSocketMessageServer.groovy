@@ -167,14 +167,15 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void onEveryoneReady() {
-        Debug.d()
-
-        def startTime = System.currentTimeMillis() + pingMeasurers.values().max { PingMeasurer it -> it.average }.average + 250
+        def maxAvgPing = pingMeasurers.values().max { PingMeasurer it -> it.average }.average
+        Debug.d "maxAvgPing: $maxAvgPing"
+        def startTime = System.currentTimeMillis() + maxAvgPing + 2500
+        Debug.d "startTime: $startTime"
 
         bus.post new StartPlaybackDelayedCommand(startTime)
 
         connections().each {
-            sendMessage(it, POST, START, startTime as String)
+            sendMessage(it, POST, START, (startTime - pingMeasurers[it].average) as String)
         }
 
         ready.clear()

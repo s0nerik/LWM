@@ -6,7 +6,6 @@ import android.media.AudioManager
 import android.os.IBinder
 import app.Injector
 import app.commands.*
-import app.events.player.ReadyToStartPlaybackEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.control.ControlButtonEvent
@@ -26,6 +25,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 import static app.events.player.playback.control.ControlButtonEvent.Type.*
 import static app.events.server.MusicServerStateChangedEvent.State.STARTED
@@ -89,11 +89,15 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
-        player.start().subscribe { Debug.d "LocalPlayer started playback with delay." }
+        Debug.d "cmd.startAt: $cmd.startAt"
+        Debug.d "System.currentTimeMillis(): ${System.currentTimeMillis()}"
+        def delay = cmd.startAt - System.currentTimeMillis()
+        Debug.d "delay: $delay"
 
-//        Observable.timer(cmd.startAt - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-//                  .concatMap { player.start() }
-//                  .subscribe { Debug.d "LocalPlayer started playback with delay." }
+        player.start()
+              .delaySubscription(delay, TimeUnit.MILLISECONDS)
+              .doOnCompleted { Debug.d "LocalPlayer started playback with delay." }
+              .subscribe()
     }
 
     @Subscribe
@@ -160,17 +164,18 @@ class LocalPlayerService extends Service {
         serverStarted = event.state == STARTED
     }
 
-    @Subscribe
-    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
-        if (serverStarted) {
-            bus.post new CurrentSongAvailableEvent(event.song)
-            bus.post new PrepareClientsCommand(event.position)
-        } else {
-            player.start().subscribe {
-                Debug.d "LocalPlayer started playback."
-            }
-        }
-    }
+//    @Subscribe
+//    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
+//        Debug.d()
+//        if (serverStarted) {
+//            bus.post new CurrentSongAvailableEvent(event.song)
+//            bus.post new PrepareClientsCommand(event.position)
+//        } else {
+//            player.start().subscribe {
+//                Debug.d "LocalPlayer started playback."
+//            }
+//        }
+//    }
 
     @Subscribe
     void onControlButton(ControlButtonEvent event) {

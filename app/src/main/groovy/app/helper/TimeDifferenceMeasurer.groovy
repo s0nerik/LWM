@@ -18,7 +18,7 @@ class TimeDifferenceMeasurer {
     long getDifference() { differences.average }
 
     long toLocalTime(long time) {
-        time + differences.average
+        time + difference
     }
 
 }

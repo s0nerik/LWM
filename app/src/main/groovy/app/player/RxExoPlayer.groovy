@@ -166,7 +166,7 @@ abstract class RxExoPlayer {
                 Observable.empty()
             } else {
                 innerPlayer.seekTo msec
-                playerSubject.first { it == PlayerEvent.READY }
+                playerSubject.first { it == PlayerEvent.READY || it == PlayerEvent.IDLE }
                              .ignoreElements()
             }
         }
@@ -178,11 +178,12 @@ abstract class RxExoPlayer {
      */
     Observable reset() {
         Observable.defer {
-            if (innerPlayer.playbackState == STATE_IDLE) {
-                Observable.empty()
-            } else {
-                Observable.concat pause(), seekTo(0), stop()
-            }
+            Observable.concat pause(), seekTo(0), stop()
+//            if (innerPlayer.playbackState == STATE_IDLE) {
+//                pause()
+//            } else {
+//                Observable.concat pause(), seekTo(0), stop()
+//            }
         }
     }
 }

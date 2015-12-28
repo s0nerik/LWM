@@ -175,8 +175,7 @@ public class WebSocketMessageClient extends WebSocketClient {
             prepare = player.prepareForPosition(position)
         }
 
-        prepare.startWith(player.stop())
-               .doOnCompleted { sendMessage POST, READY }
+        prepare.doOnCompleted { sendMessage POST, READY }
                .subscribe()
     }
 
