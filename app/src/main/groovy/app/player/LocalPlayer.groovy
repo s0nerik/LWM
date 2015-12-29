@@ -16,7 +16,7 @@ class LocalPlayer extends BasePlayer {
     LocalPlayer() {
         bus.register this
 
-        playerSubject.distinct()
+        playerSubject.distinctUntilChanged()
                      .subscribe({
                                     switch (it) {
                                         case PlayerEvent.STARTED:
