@@ -16,30 +16,18 @@ class LocalPlayer extends BasePlayer {
     LocalPlayer() {
         bus.register this
 
-        playerSubject.distinctUntilChanged()
-                     .subscribe({
-                                    switch (it) {
-                                        case PlayerEvent.STARTED:
-                                            break
-                                        case PlayerEvent.PAUSED:
-                                            break
-                                        case PlayerEvent.ENDED:
-                                            if (repeat)
-                                                restart().subscribe()
-                                            else
-                                                prepareNextSong()
-                                                        .concatWith(start())
-                                                        .subscribe()
-                                            break
-                                        case PlayerEvent.IDLE:
-                                            break
-                                    }
-                                }, {
-                                    Debug.e "Error while playing:"
-                                    Debug.e it
-                                    stop().subscribe()
-                                })
-        
+        def playerEvents = playerSubject.distinctUntilChanged()
+
+        playerEvents.filter { it == PlayerEvent.ENDED }
+                    .concatMap { repeat ? restart() : prepareNextSong().concatWith(start()) }
+                    .subscribe()
+
+        playerEvents.doOnError {
+            Debug.e "Error while playing:"
+            Debug.e it
+            stop().subscribe()
+        }.subscribe()
+
         errorSubject.subscribe {
             Debug.e "RxExoPlayer error:"
             Debug.e it

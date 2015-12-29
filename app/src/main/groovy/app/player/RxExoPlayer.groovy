@@ -102,7 +102,7 @@ abstract class RxExoPlayer {
      * @return true if playback started successfully and false means that error has occurred during playback startup.
      */
     Observable restart() {
-        Observable.concat reset(), start()
+        Observable.concat seekTo(0), start()
     }
 
     /**

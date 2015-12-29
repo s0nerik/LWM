@@ -45,7 +45,7 @@ abstract class BasePlayer extends RxExoPlayer {
     @PackageScope
     protected Context context
 
-    boolean repeat = false
+    public boolean repeat = false
     boolean shuffle = false
 
     abstract void startService()
