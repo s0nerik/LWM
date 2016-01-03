@@ -22,7 +22,6 @@ import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
@@ -182,24 +181,15 @@ class LocalPlayerService extends Service {
         Debug.d event as String
         switch (event.type) {
             case NEXT:
-                player.prepareNextSong()
-                      .subscribeOn(AndroidSchedulers.mainThread())
-                      .observeOn(AndroidSchedulers.mainThread())
-                      .subscribe {
-                    "LocalPlayer moved to next song"
-                }
+                bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.NEXT)
                 break
             case PREV:
-                player.preparePrevSong().subscribe {
-                    "LocalPlayer moved to previous song"
-                }
+                bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.PREVIOUS)
                 break
             case PLAY:
             case PAUSE:
             case TOGGLE_PAUSE:
-                player.togglePause().subscribe {
-                    "LocalPlayer toggled pause"
-                }
+                player.togglePause().subscribe { Debug.d "LocalPlayer toggled pause" }
                 break
         }
     }
