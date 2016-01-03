@@ -44,8 +44,7 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private long lastMessageTime = -1
 
-    private Subject<Pair<WebSocket, SocketMessage>, Pair<WebSocket, SocketMessage>> messages =
-            PublishSubject.create().toSerialized()
+    private Subject<Pair<WebSocket, SocketMessage>, Pair<WebSocket, SocketMessage>> messages = PublishSubject.create().toSerialized()
 
     private Observable<Pair<WebSocket, SocketMessage>> getMessages
     private Observable<Pair<WebSocket, SocketMessage>> postMessages
@@ -80,19 +79,11 @@ class WebSocketMessageServer extends WebSocketServer {
         clientReady = postMessages.filter { it.value.message == READY }.map { it.key }
         clientPong = postMessages.filter { it.value.message == PONG }.map { it.key }
 
-        clientInfo = postMessages
-                .filter { it.value.message == CLIENT_INFO }
-                .map {
-            new ImmutablePair<WebSocket, ClientInfo>(
-                    it.key, Utils.<ClientInfo> fromJson(it.value.body)) as Pair
-        }
+        clientInfo = postMessages.filter { it.value.message == CLIENT_INFO }
+                                 .map { new ImmutablePair<WebSocket, ClientInfo>(it.key, Utils.<ClientInfo> fromJson(it.value.body)) as Pair }
 
-        chatMessage = postMessages
-                .filter { it.value.message == MESSAGE }
-                .map {
-            new ImmutablePair<WebSocket, ChatMessage>(
-                    it.key, Utils.<ChatMessage> fromJson(it.value.body)) as Pair
-        }
+        chatMessage = postMessages.filter { it.value.message == MESSAGE }
+                                  .map { new ImmutablePair<WebSocket, ChatMessage>(it.key, Utils.<ChatMessage> fromJson(it.value.body)) as Pair }
 
         currentPositionRequest = getMessages.filter { it.value.message == CURRENT_POSITION }
                                             .map { it.key }
