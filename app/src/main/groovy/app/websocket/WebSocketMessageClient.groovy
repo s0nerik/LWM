@@ -29,6 +29,8 @@ import org.java_websocket.handshake.ServerHandshake
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.Observer
+import rx.subjects.PublishSubject
+import rx.subjects.Subject
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
@@ -60,10 +62,70 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private TimeDifferenceMeasurer timeDifferenceMeasurer = new TimeDifferenceMeasurer()
 
+    private Subject<SocketMessage, SocketMessage> messages = PublishSubject.create().toSerialized()
+
+    private Observable<SocketMessage> getMessages
+    private Observable<SocketMessage> postMessage
+
+    private Observable<SocketMessage> getCurrentPosition
+    private Observable<SocketMessage> getIsPlaying
+    private Observable<SocketMessage> getClientInfo
+    private Observable<SocketMessage> getPing
+
+    private Observable<SocketMessage> postStart
+    private Observable<SocketMessage> postPause
+    private Observable<SocketMessage> postPrepare
+    private Observable<SocketMessage> postSeekTo
+    private Observable<SocketMessage> postClientInfo
+
+    private Observable<SocketMessage> postChatMessage
+
     WebSocketMessageClient(URI serverURI) {
         super(serverURI)
         Injector.inject this
         clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL))
+
+        initObservables()
+        initSubscribers()
+    }
+
+    private void initObservables() {
+        getMessages = messages.filter { it.type == GET }
+        postMessage = messages.filter { it.type == POST }
+
+        getPing = getMessages.filter { it.message == PING }
+        getClientInfo = getMessages.filter { it.message == CLIENT_INFO }
+        getIsPlaying = getMessages.filter { it.message == IS_PLAYING }
+        getCurrentPosition = getMessages.filter { it.message == CURRENT_POSITION }
+
+        postStart = postMessage.filter { it.message == START }
+        postPause = postMessage.filter { it.message == PAUSE }
+        postPrepare = postMessage.filter { it.message == PREPARE }
+        postSeekTo = postMessage.filter { it.message == SEEK_TO }
+        postClientInfo = postMessage.filter { it.message == CLIENT_INFO }
+
+        postChatMessage = postMessage.filter { it.message == MESSAGE }
+    }
+
+    private void initSubscribers() {
+        getCurrentPosition.subscribe { sendMessage POST, CURRENT_POSITION, player.currentPosition as String }
+        getIsPlaying.subscribe { sendMessage POST, IS_PLAYING, player.playing as String }
+        getClientInfo.subscribe { sendMessage POST, CLIENT_INFO, Utils.toJson(clientInfo) }
+
+        getPing.doOnNext { timeDifferenceMeasurer.add it.body as long }
+               .doOnNext { Debug.d "time difference: ${timeDifferenceMeasurer.difference}" }
+               .subscribe { sendMessage POST, PONG, System.currentTimeMillis() as String }
+
+        postStart.subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(it.body as long)) }
+        postPause.doOnNext { player.setPaused(true) }.subscribe()
+        postPrepare.subscribe { prepare it.body as int }
+        postSeekTo.subscribe { seekTo it.body as int }
+        postChatMessage.subscribe { bus.post new ChatMessageReceivedEvent(Utils.<ChatMessage> fromJson(it.body), connection) }
+        postClientInfo.subscribe { bus.post new ClientInfoReceivedEvent(connection, Utils.<ClientInfo> fromJson(it.body)) }
+
+
+        messages.filter { it.message != PING }
+                .subscribe { Debug.d "$it.type: $it.message" }
     }
 
     @Override
@@ -75,59 +137,12 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     @Override
     void onMessage(String message) {
-        SocketMessage socketMessage = Utils.fromJson message
-        String body = socketMessage.body
-
-        if (socketMessage.message != PING)
-            Debug.d "$message"
-
-        if (socketMessage.type == GET) {
-            switch (socketMessage.message) {
-                case CURRENT_POSITION:
-                    String pos = player.currentPosition as String
-                    sendMessage POST, CURRENT_POSITION, pos
-                    break
-                case IS_PLAYING:
-                    String isPlaying = player.playing as String
-                    sendMessage POST, IS_PLAYING, isPlaying
-                    break
-                case CLIENT_INFO:
-                    String info = Utils.toJson clientInfo
-                    sendMessage POST, CLIENT_INFO, info
-                    break
-                case PING:
-                    timeDifferenceMeasurer.add body as long
-                    Debug.d "time difference: ${timeDifferenceMeasurer.difference}"
-                    sendMessage POST, PONG, System.currentTimeMillis() as String
-                    break
-                default:
-                    Debug.e "Can't process message: ${socketMessage.message.name()}"
-            }
-        } else if (socketMessage.type == POST) {
-            switch (socketMessage.message) {
-                case START:
-                    bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(body as long))
-                    break
-                case PAUSE:
-                    player.setPaused(true).subscribe()
-                    break
-                case PREPARE:
-                    prepare body as int
-                    break
-                case SEEK_TO:
-                    seekTo body as int
-                    break
-                case MESSAGE:
-                    ChatMessage chatMessage = Utils.fromJson body
-                    bus.post new ChatMessageReceivedEvent(chatMessage, connection)
-                    break
-                case CLIENT_INFO:
-                    ClientInfo clientInfo = Utils.fromJson body
-                    bus.post new ClientInfoReceivedEvent(connection, clientInfo)
-                    break
-                default:
-                    Debug.e "Can't process message: ${socketMessage.message.name()}"
-            }
+        try {
+            SocketMessage socketMessage = Utils.fromJson message
+            messages.onNext socketMessage
+        } catch (e) {
+            Debug.e e
+            Debug.e message
         }
     }
 

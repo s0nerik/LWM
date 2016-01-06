@@ -225,7 +225,7 @@ class Utils extends Daggered {
     }
 
     public static <T> T fromJson(String json) {
-        new JsonSlurper().parseText(json) as T
+        return (new JsonSlurper().parseText(json) as T)
     }
 
     public static String toJson(Object obj) {
