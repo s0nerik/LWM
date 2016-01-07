@@ -29,6 +29,8 @@ import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 import static java.lang.reflect.Modifier.FINAL
 import static java.lang.reflect.Modifier.PUBLIC
@@ -230,6 +232,30 @@ class Utils extends Daggered {
 
     public static String toJson(Object obj) {
         JsonOutput.toJson(obj)
+    }
+
+    public static byte[] serializeInt(int value) {
+        ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(value).array()
+    }
+
+    public static int deserializeInt(byte[] value) {
+        ByteBuffer.wrap(value).order(ByteOrder.LITTLE_ENDIAN).int
+    }
+
+    public static byte[] serializeLong(long value) {
+        ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(value).array()
+    }
+
+    public static long deserializeLong(byte[] value) {
+        ByteBuffer.wrap(value).order(ByteOrder.LITTLE_ENDIAN).long
+    }
+
+    public static byte[] serializeBool(boolean value) {
+        [value ? 1 : 0] as byte[]
+    }
+
+    public static boolean deserializeBool(byte[] value) {
+        value[0] ? true : false
     }
 
     public static String getConstantName(Class c, Object constant) {

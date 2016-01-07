@@ -83,7 +83,7 @@ class MusicServer extends Daggered {
     @Subscribe
     public void prepareClients(PrepareClientsCommand event) {
         if (!webSocketMessageServer.connections().empty) {
-            webSocketMessageServer.sendAll POST, PREPARE, event.position as String
+            webSocketMessageServer.sendAll POST, PREPARE, Utils.serializeInt(event.position)
         } else {
             bus.post new StartPlaybackDelayedCommand()
         }
@@ -94,13 +94,13 @@ class MusicServer extends Daggered {
         if (cmd.pause) {
             webSocketMessageServer.sendAll POST, PAUSE
         } else {
-            webSocketMessageServer.sendAll POST, PREPARE, player.currentPosition as String
+            webSocketMessageServer.sendAll POST, PREPARE, Utils.serializeInt(player.currentPosition)
         }
     }
 
     @Subscribe
     void onSeekTo(SeekToCommand cmd) {
-        webSocketMessageServer.sendAll POST, SEEK_TO, cmd.position as String
+        webSocketMessageServer.sendAll POST, SEEK_TO, Utils.serializeLong(cmd.position)
     }
 
     @Produce
@@ -113,7 +113,7 @@ class MusicServer extends Daggered {
         unreadMessages += 1
         ChatMessage msg = event.getMessage()
         chatMessages.add(msg)
-        webSocketMessageServer.sendAllExcept event.webSocket, POST, MESSAGE, Utils.toJson(msg)
+        webSocketMessageServer.sendAllExcept event.webSocket, POST, MESSAGE, msg.serialize()
         bus.post(new NotifyMessageAddedEvent(msg))
     }
 

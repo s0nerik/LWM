@@ -81,10 +81,10 @@ class WebSocketMessageServer extends WebSocketServer {
         clientPong = postMessages.filter { it.value.message == PONG }.map { it.key }
 
         clientInfo = postMessages.filter { it.value.message == CLIENT_INFO }
-                                 .map { new ImmutablePair<WebSocket, ClientInfo>(it.key, Utils.<ClientInfo> fromJson(it.value.body)) as Pair }
+                                 .map { new ImmutablePair<WebSocket, ClientInfo>(it.key, ClientInfo.deserialize(it.value.body)) as Pair }
 
         chatMessage = postMessages.filter { it.value.message == MESSAGE }
-                                  .map { new ImmutablePair<WebSocket, ChatMessage>(it.key, Utils.<ChatMessage> fromJson(it.value.body)) as Pair }
+                                  .map { new ImmutablePair<WebSocket, ChatMessage>(it.key, ChatMessage.deserialize(it.value.body)) as Pair }
 
         currentPositionRequest = getMessages.filter { it.value.message == CURRENT_POSITION }
                                             .map { it.key }
@@ -99,11 +99,11 @@ class WebSocketMessageServer extends WebSocketServer {
         chatMessage.subscribe { bus.post new ChatMessageReceivedEvent(it.value, it.key) }
 
         currentPositionRequest.subscribe {
-            send it, POST, CURRENT_POSITION, player.currentPosition as String
+            send it, POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition)
         }
 
         playbackStatusRequest.subscribe {
-            send it, POST, IS_PLAYING, player.playing as String
+            send it, POST, IS_PLAYING, Utils.serializeBool(player.playing)
         }
     }
 
@@ -111,7 +111,7 @@ class WebSocketMessageServer extends WebSocketServer {
     void onOpen(WebSocket conn, ClientHandshake handshake) {
         Debug.d "connections.size() = ${connections().size()}"
 
-        pingMeasurers[conn] = new PingMeasurer({ send conn, GET, PING, System.currentTimeMillis() as String })
+        pingMeasurers[conn] = new PingMeasurer({ send conn, GET, PING, Utils.serializeLong(System.currentTimeMillis()) })
         pingMeasurers[conn].pingWarmupFinished.subscribe {
             send conn, GET, CLIENT_INFO
         }
@@ -143,17 +143,17 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.e ex
     }
 
-    private void send(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+    private void send(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, byte[] body = null) {
         conn.send new SocketMessage(type, msg, body).serialize()
     }
 
-    void sendAll(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+    void sendAll(SocketMessage.Type type, SocketMessage.Message msg, byte[] body = null) {
         for (WebSocket conn : connections()) {
             send conn, type, msg, body
         }
     }
 
-    void sendAllExcept(WebSocket exception, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+    void sendAllExcept(WebSocket exception, SocketMessage.Type type, SocketMessage.Message msg, byte[] body = null) {
         for (WebSocket conn : connections()) {
             if (!conn.equals(exception)) send conn, type, msg, body
         }
@@ -179,7 +179,7 @@ class WebSocketMessageServer extends WebSocketServer {
         bus.post new StartPlaybackDelayedCommand(startTime)
 
         connections().each {
-            send(it, POST, START, (startTime - pingMeasurers[it].average) as String)
+            send(it, POST, START, Utils.serializeLong(startTime - pingMeasurers[it].average))
         }
 
         ready.clear()
@@ -188,7 +188,7 @@ class WebSocketMessageServer extends WebSocketServer {
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
         if (player.playing) {
-            send conn, POST, PREPARE, player.currentPosition as String
+            send conn, POST, PREPARE, Utils.serializeInt(player.currentPosition)
         }
         bus.post new ClientConnectedEvent(info)
     }

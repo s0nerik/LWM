@@ -1,12 +1,19 @@
-package app.websocket.entities;
+package app.websocket.entities
 
-import com.google.gson.annotations.Expose
-import groovy.transform.CompileStatic;
+import groovy.transform.Canonical
+import groovy.transform.CompileStatic
+import org.apache.commons.lang3.SerializationUtils
 
+@Canonical
 @CompileStatic
-public class ClientInfo {
+class ClientInfo implements Serializable {
+    String name
 
-    @Expose
-    String name;
+    byte[] serialize() {
+        SerializationUtils.serialize this
+    }
 
+    static ClientInfo deserialize(byte[] bytes) {
+        SerializationUtils.deserialize(bytes) as ClientInfo
+    }
 }

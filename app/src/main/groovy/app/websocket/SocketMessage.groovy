@@ -1,5 +1,5 @@
 package app.websocket
-import com.google.gson.annotations.Expose
+
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 import org.apache.commons.lang3.SerializationUtils
@@ -21,23 +21,16 @@ class SocketMessage implements Serializable {
         GET, POST
     }
 
-    @Expose
     Type type
-
-    @Expose
     Message message
-
-    @Expose
-    String body
+    byte[] body
 
     byte[] serialize() {
         SerializationUtils.serialize this
-//        asByteArray()
     }
 
     static SocketMessage deserialize(byte[] bytes) {
         SerializationUtils.deserialize(bytes) as SocketMessage
-//        bytes.<SocketMessage> asObject()
     }
 
 }

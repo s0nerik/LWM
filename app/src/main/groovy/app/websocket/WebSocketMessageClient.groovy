@@ -1,5 +1,4 @@
 package app.websocket
-
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
@@ -84,7 +83,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     WebSocketMessageClient(URI serverURI) {
         super(serverURI)
         Injector.inject this
-        clientInfo = new ClientInfo(name: sharedPreferences.getString("client_name", Build.MODEL))
+        clientInfo = new ClientInfo(sharedPreferences.getString("client_name", Build.MODEL))
 
         initObservables()
         initSubscribers()
@@ -109,20 +108,20 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     private void initSubscribers() {
-        getCurrentPosition.subscribe { sendMessage POST, CURRENT_POSITION, player.currentPosition as String }
-        getIsPlaying.subscribe { sendMessage POST, IS_PLAYING, player.playing as String }
-        getClientInfo.subscribe { sendMessage POST, CLIENT_INFO, Utils.toJson(clientInfo) }
+        getCurrentPosition.subscribe { sendMessage POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition) }
+        getIsPlaying.subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
+        getClientInfo.subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
 
         getPing.doOnNext { timeDifferenceMeasurer.add it.body as long }
                .doOnNext { Debug.d "time difference: ${timeDifferenceMeasurer.difference}" }
-               .subscribe { sendMessage POST, PONG, System.currentTimeMillis() as String }
+               .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
 
         postStart.subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(it.body as long)) }
         postPause.doOnNext { player.setPaused(true) }.subscribe()
         postPrepare.subscribe { prepare it.body as int }
         postSeekTo.subscribe { seekTo it.body as int }
-        postChatMessage.subscribe { bus.post new ChatMessageReceivedEvent(Utils.<ChatMessage> fromJson(it.body), connection) }
-        postClientInfo.subscribe { bus.post new ClientInfoReceivedEvent(connection, Utils.<ClientInfo> fromJson(it.body)) }
+        postChatMessage.subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
+        postClientInfo.subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
 
 
         messages.filter { it.message != PING }
@@ -146,7 +145,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         Debug.e()
     }
 
-    void sendMessage(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+    void sendMessage(SocketMessage.Type type, SocketMessage.Message msg, byte[] body = null) {
         if (msg != PONG) Debug.d "sendMessage: ${msg}"
 
         send new SocketMessage(type, msg, body).serialize()
@@ -199,7 +198,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Subscribe
     void onSendChatMessage(SendChatMessageEvent event) {
         ChatMessage message = event.message
-        sendMessage POST, MESSAGE, Utils.toJson(message)
+        sendMessage POST, MESSAGE, message.serialize()
         chatMessages << message
         bus.post new NotifyMessageAddedEvent(message)
     }
