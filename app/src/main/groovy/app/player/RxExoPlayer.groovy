@@ -1,4 +1,5 @@
 package app.player
+
 import android.net.Uri
 import android.support.annotation.NonNull
 import app.Utils
@@ -20,12 +21,21 @@ abstract class RxExoPlayer {
     protected TrackRenderer currentRenderer
 
     protected SerializedSubject<PlayerEvent, PlayerEvent> playerSubject = PublishSubject.create().toSerialized()
+
+    protected Observable readyObservable = playerSubject.filter { it == PlayerEvent.READY }
+    protected Observable preparingObservable = playerSubject.filter { it == PlayerEvent.PREPARING }
+    protected Observable bufferingObservable = playerSubject.filter { it == PlayerEvent.BUFFERING }
+    protected Observable startedObservable = playerSubject.filter { it == PlayerEvent.STARTED }
+    protected Observable pausedObservable = playerSubject.filter { it == PlayerEvent.PAUSED }
+    protected Observable endedObservable = playerSubject.filter { it == PlayerEvent.ENDED }
+    protected Observable idleObservable = playerSubject.filter { it == PlayerEvent.IDLE }
+
     protected SerializedSubject<ExoPlaybackException, ExoPlaybackException> errorSubject = PublishSubject.create().toSerialized()
 
     protected int lastState = STATE_IDLE
 
     enum PlayerEvent {
-        READY, STARTED, PAUSED, ENDED, IDLE
+        READY, PREPARING, BUFFERING, STARTED, PAUSED, ENDED, IDLE
     }
 
     private Listener listener = [
@@ -38,8 +48,10 @@ abstract class RxExoPlayer {
                         playerSubject.onNext PlayerEvent.IDLE
                         break
                     case STATE_PREPARING:
+                        playerSubject.onNext PlayerEvent.PREPARING
                         break
                     case STATE_BUFFERING:
+                        playerSubject.onNext PlayerEvent.BUFFERING
                         break
                     case STATE_READY:
                         playerSubject.onNext PlayerEvent.READY
@@ -90,10 +102,10 @@ abstract class RxExoPlayer {
             if (innerPlayer.playWhenReady) {
                 Observable.empty()
             } else {
-                playerSubject.doOnSubscribe { innerPlayer.playWhenReady = true }
-                             .filter { it == PlayerEvent.STARTED }
-                             .take(1)
-                             .ignoreElements()
+                def started = startedObservable.take(1)
+
+                started.doOnSubscribe { innerPlayer.playWhenReady = true }
+                       .ignoreElements()
             }
         }
     }
@@ -115,10 +127,10 @@ abstract class RxExoPlayer {
             if (!innerPlayer.playWhenReady) {
                 Observable.empty()
             } else {
-                playerSubject.doOnSubscribe { innerPlayer.playWhenReady = false }
-                             .filter { it == PlayerEvent.PAUSED }
-                             .take(1)
-                             .ignoreElements()
+                def paused = pausedObservable.take(1)
+
+                paused.doOnSubscribe { innerPlayer.playWhenReady = false }
+                      .ignoreElements()
             }
         }
     }
@@ -141,10 +153,10 @@ abstract class RxExoPlayer {
             if (innerPlayer.playbackState == STATE_IDLE) {
                 Observable.empty()
             } else {
-                playerSubject.doOnSubscribe { innerPlayer.stop() }
-                             .filter { it == PlayerEvent.IDLE }
-                             .take(1)
-                             .ignoreElements()
+                def idle = idleObservable.take(1)
+
+                idle.doOnSubscribe { innerPlayer.stop() }
+                    .ignoreElements()
             }
         }
     }
@@ -155,11 +167,15 @@ abstract class RxExoPlayer {
      */
     Observable prepare(@NonNull Uri uri) {
         Observable.defer {
-            currentRenderer = getRenderer(uri)
-            playerSubject.doOnSubscribe { innerPlayer.prepare currentRenderer }
-                         .filter { it == PlayerEvent.READY }
-                         .take(1)
-                         .ignoreElements()
+            def preparing = preparingObservable.take(1)
+            def ready = readyObservable.take(1)
+
+            Observable.concat(preparing, ready)
+                      .doOnSubscribe {
+                currentRenderer = getRenderer(uri)
+                innerPlayer.prepare currentRenderer
+            }
+                      .ignoreElements()
         }
     }
 
@@ -169,13 +185,15 @@ abstract class RxExoPlayer {
      */
     Observable seekTo(int msec) {
         Observable.defer {
-            if (innerPlayer.currentPosition == msec) {
+            if (lastState == STATE_IDLE || lastState == STATE_PREPARING || innerPlayer.currentPosition == msec) {
                 Observable.empty()
             } else {
-                playerSubject.doOnSubscribe { innerPlayer.seekTo msec }
-                             .filter { it == PlayerEvent.READY || it == PlayerEvent.IDLE }
-                             .take(1)
-                             .ignoreElements()
+                def buffering = bufferingObservable.take(1)
+                def ready = readyObservable.take(1)
+
+                Observable.concat(buffering, ready)
+                          .doOnSubscribe { innerPlayer.seekTo msec }
+                          .ignoreElements()
             }
         }
     }

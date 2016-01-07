@@ -28,11 +28,11 @@ class LocalPlayer extends BasePlayer {
             stop().subscribe()
         }.subscribe()
 
-        errorSubject.subscribe {
-            Debug.e "RxExoPlayer error:"
-            Debug.e it
-            stop().subscribe()
-        }
+//        errorSubject.subscribe {
+//            Debug.e "RxExoPlayer error:"
+//            Debug.e it
+//            stop().subscribe()
+//        }
     }
 
     //region Queue manipulation
