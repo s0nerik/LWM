@@ -10,16 +10,18 @@ import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
-import app.events.server.MusicServerStateChangedEvent
 import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.ui.notification.NowPlayingNotification
+import app.websocket.WebSocketMessageServer
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+import org.apache.commons.lang3.tuple.ImmutablePair
+import org.java_websocket.WebSocket
 import ru.noties.debug.Debug
 import rx.Observable
 
@@ -27,7 +29,6 @@ import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
 import static app.events.player.playback.control.ControlButtonEvent.Type.*
-import static app.events.server.MusicServerStateChangedEvent.State.STARTED
 
 @PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
@@ -42,9 +43,10 @@ class LocalPlayerService extends Service {
     @Inject
     AudioManager audioManager
 
-    ComponentName mediaButtonsReceiver
+    @Inject
+    WebSocketMessageServer server
 
-    private boolean serverStarted = false
+    ComponentName mediaButtonsReceiver
 
     @Override
     void onCreate() {
@@ -100,12 +102,24 @@ class LocalPlayerService extends Service {
     }
 
     @Subscribe
-    void changePauseState(ChangePauseStateCommand cmd) {
-//        if (serverStarted && !cmd.pause)
-//            return
+    void onPauseStateChanged(ChangePauseStateCommand cmd) {
+        Observable observable
 
-        player.setPaused(cmd.pause)
-              .subscribe { Debug.d "LocalPlayer setPaused: $it" }
+        if (server.started)
+            if (cmd.pause) {
+                observable = Observable.merge(player.setPaused(cmd.pause), server.pauseClients(server.connections()))
+            } else {
+                observable = Observable.defer {
+                    server.prepareClients(player.currentPosition)
+                          .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
+                          .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
+                          .concatMap { server.startClients(it.left, it.right) }
+                }
+            }
+        else
+            observable = player.setPaused(cmd.pause)
+
+        observable.subscribe { Debug.d "LocalPlayer setPaused: $it" }
     }
 
     @Subscribe
@@ -126,17 +140,19 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void playSongAtPosition(PlaySongAtPositionCommand cmd) {
-        Observable startPlayback
-        if (serverStarted) {
+        Observable<Object> startPlayback
+        if (server.started) {
             startPlayback = Observable.defer {
-                bus.post new PrepareClientsCommand(0)
-                Observable.empty()
+                server.prepareClients(player.currentPosition)
+                      .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
+                      .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
+                      .concatMap { server.startClients(it.left, it.right) }
             }
         } else {
             startPlayback = player.start()
         }
 
-        Observable prepare = null
+        Observable<Object> prepare = null
         switch (cmd.positionType) {
             case PlaySongAtPositionCommand.PositionType.NEXT:
                 prepare = player.prepareNextSong()
@@ -156,11 +172,6 @@ class LocalPlayerService extends Service {
     @Subscribe
     void enqueue(EnqueueCommand cmd) {
         player.addToQueue cmd.playlist
-    }
-
-    @Subscribe
-    void onMusicServerStateChanged(MusicServerStateChangedEvent event) {
-        serverStarted = event.state == STARTED
     }
 
 //    @Subscribe

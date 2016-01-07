@@ -1,7 +1,7 @@
 package app.model
 
 import android.net.Uri
-import app.server.StreamServer
+import app.server.HttpStreamServer
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
@@ -19,12 +19,12 @@ class RemoteSong extends Song {
     RemoteSong(Song original, String serverUrl) {
         InvokerHelper.setProperties(this, original.properties)
         this.serverUrl = serverUrl
-        source = "${serverUrl}${StreamServer.Method.STREAM}"
+        source = "${serverUrl}${HttpStreamServer.Method.STREAM}"
     }
 
     @Override
     Uri getAlbumArtUri() {
-        Uri.parse("${serverUrl}${StreamServer.Method.CURRENT_ALBUMART}")
+        Uri.parse("${serverUrl}${HttpStreamServer.Method.CURRENT_ALBUMART}")
     }
 
     Uri getSourceUri() {

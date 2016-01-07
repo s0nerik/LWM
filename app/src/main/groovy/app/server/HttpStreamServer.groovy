@@ -5,11 +5,9 @@ import android.graphics.BitmapFactory
 import app.Injector
 import app.R
 import app.Utils
-import app.events.player.playback.SongChangedEvent
-import app.events.player.service.CurrentSongAvailableEvent
 import app.model.Song
+import app.player.LocalPlayer
 import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.Response
 import fi.iki.elonen.NanoHTTPD.ResponseException
@@ -25,20 +23,20 @@ import static fi.iki.elonen.NanoHTTPD.Response.Status.BAD_REQUEST
 import static fi.iki.elonen.NanoHTTPD.Response.Status.INTERNAL_ERROR
 
 @CompileStatic
-class StreamServer extends NanoHTTPD {
-
-    static final String PORT = "8888"
+class HttpStreamServer extends NanoHTTPD {
 
     static class Method {
         static String CURRENT_ALBUMART = "/albumart"
         static String STREAM = "/stream"
     }
 
-    private Song song
-
     @Inject
     @PackageScope
     ContentResolver contentResolver
+
+    @Inject
+    @PackageScope
+    LocalPlayer localPlayer
 
     @Inject
     @PackageScope
@@ -48,21 +46,9 @@ class StreamServer extends NanoHTTPD {
     @PackageScope
     Utils utils
 
-    StreamServer() {
-        super(8888)
+    HttpStreamServer(int port) {
+        super(port)
         Injector.inject this
-    }
-
-    @Override
-    void start() throws IOException {
-        super.start()
-        bus.register this
-    }
-
-    @Override
-    void stop() {
-        bus.unregister this
-        super.stop()
     }
 
     @Override
@@ -87,9 +73,9 @@ class StreamServer extends NanoHTTPD {
             case GET: // Outcoming info
                 switch (uri) {
                     case Method.STREAM:
-                        return stream(song)
+                        return stream(localPlayer.currentSong)
                     case Method.CURRENT_ALBUMART:
-                        return currentAlbumArt(song)
+                        return currentAlbumArt(localPlayer.currentSong)
                 }
             default:
                 return new Response(BAD_REQUEST, MIME_PLAINTEXT, "Only GET is supported.")
@@ -126,16 +112,6 @@ class StreamServer extends NanoHTTPD {
 
         is = new ByteArrayInputStream(os.toByteArray())
         return new Response(Response.Status.OK, "image/webp", is)
-    }
-
-    @Subscribe
-    void onSongChanged(SongChangedEvent event) {
-        song = event.song
-    }
-
-    @Subscribe
-    void onSongAvailable(CurrentSongAvailableEvent event) {
-        song = event.song
     }
 
 }

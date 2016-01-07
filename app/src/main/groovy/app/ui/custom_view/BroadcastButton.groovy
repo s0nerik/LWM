@@ -9,7 +9,7 @@ import app.Injector
 import app.R
 import app.Utils
 import app.server.MusicStation
-import app.server.MusicStation.StateChangedEvent
+import app.server.MusicStation.BroadcastStateChangedEvent
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
@@ -98,7 +98,7 @@ class BroadcastButton extends RelativeLayout {
     }
 
     @Subscribe
-    void onMusicStationStateChangedEvent(StateChangedEvent event) {
+    void onMusicStationStateChangedEvent(BroadcastStateChangedEvent event) {
         broadcastState = event.state
     }
 }

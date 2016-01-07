@@ -3,10 +3,10 @@ import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import app.Config
 import app.Daggered
-import app.helper.db.cursor_constructor.CursorInitializable
 import app.helper.CollectionManager
-import app.server.StreamServer
+import app.helper.db.cursor_constructor.CursorInitializable
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -116,7 +116,7 @@ class Song extends Daggered implements CursorInitializable, Serializable {
         return song
     }
 
-    RemoteSong toRemoteSong(String host, String port = StreamServer.PORT) {
+    RemoteSong toRemoteSong(String host, String port = Config.HTTP_SERVER_PORT) {
         new RemoteSong(this, "http://$host:$port")
     }
 

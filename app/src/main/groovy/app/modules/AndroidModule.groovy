@@ -15,6 +15,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
 import app.App
+import app.Config
 import app.Daggered
 import app.PrefManager
 import app.Utils
@@ -37,9 +38,9 @@ import app.player.StreamPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.receiver.PendingIntentReceiver
 import app.receiver.WiFiDirectBroadcastReceiver
-import app.server.MusicServer
+
 import app.server.MusicStation
-import app.server.StreamServer
+import app.server.HttpStreamServer
 import app.service.LocalPlayerService
 import app.service.MusicStationService
 import app.service.StreamPlayerService
@@ -102,7 +103,7 @@ import static android.content.Context.*
                 LocalPlayer, StreamPlayer,
 
                 // Servers
-                StreamServer, MusicServer,
+                HttpStreamServer,
 
                 // Services
                 LocalPlayerService, StreamPlayerService, MusicStationService,
@@ -297,8 +298,14 @@ public class AndroidModule {
 
     @Provides
     @Singleton
-    MusicServer provideMusicServer() {
-        return new MusicServer()
+    HttpStreamServer provideHttpStreamServer() {
+        return new HttpStreamServer(Config.HTTP_SERVER_PORT)
+    }
+
+    @Provides
+    @Singleton
+    WebSocketMessageServer provideWebSocketMessageServer() {
+        return new WebSocketMessageServer(new InetSocketAddress(Config.WS_SERVER_PORT))
     }
 
     @Provides

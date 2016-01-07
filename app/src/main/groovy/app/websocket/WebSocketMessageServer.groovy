@@ -1,15 +1,14 @@
 package app.websocket
 import app.Injector
 import app.Utils
-import app.commands.ChangePauseStateCommand
-import app.commands.StartPlaybackDelayedCommand
+import app.commands.SeekToCommand
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
-import app.events.server.ClientReadyEvent
 import app.helper.PingMeasurer
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
+import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
@@ -27,6 +26,7 @@ import rx.subjects.Subject
 
 import javax.inject.Inject
 import java.nio.ByteBuffer
+import java.util.concurrent.TimeUnit
 
 import static app.websocket.SocketMessage.Message.*
 import static app.websocket.SocketMessage.Type.GET
@@ -34,11 +34,6 @@ import static app.websocket.SocketMessage.Type.POST
 
 @CompileStatic
 class WebSocketMessageServer extends WebSocketServer {
-
-    private static final int TIMEOUT = 10 * 1000 // 10 seconds
-
-    private Set<WebSocket> ready = new HashSet<>()
-
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<WebSocket, ClientInfo>()
 
     private Map<WebSocket, PingMeasurer> pingMeasurers = new HashMap<WebSocket, PingMeasurer>()
@@ -65,13 +60,35 @@ class WebSocketMessageServer extends WebSocketServer {
 
     @Inject
     @PackageScope
+    HttpStreamServer httpStreamServer
+
+    @Inject
+    @PackageScope
     Bus bus
+
+    boolean started
 
     WebSocketMessageServer(InetSocketAddress address) {
         super(address)
         Injector.inject this
         initObservables()
         initSubscribers()
+    }
+
+    Observable startAsObservable() {
+        def startHttpServer = Observable.empty().doOnSubscribe { httpStreamServer.start() }
+        def startWebSocketServer = Observable.empty().doOnSubscribe { start() }
+
+        Observable.merge(startHttpServer, startWebSocketServer)
+                  .doOnCompleted { started = true }
+    }
+
+    Observable stopAsObservable() {
+        def stopHttpServer = Observable.empty().doOnSubscribe { httpStreamServer.stop() }
+        def stopWebSocketServer = Observable.empty().doOnSubscribe { stop() }
+
+        Observable.merge(stopHttpServer, stopWebSocketServer)
+                  .doOnCompleted { started = false }
     }
 
     private void initObservables() {
@@ -95,8 +112,30 @@ class WebSocketMessageServer extends WebSocketServer {
         playbackStatusRequest = getMessages.filter { it.value.message == IS_PLAYING }.map { it.key }
     }
 
+    Observable pauseClients(Collection<WebSocket> clients) {
+        Observable.empty()
+                  .doOnSubscribe { clients.each { send it, POST, PAUSE } }
+    }
+
+    Observable startClients(Collection<WebSocket> clients, long startTime) {
+        Observable.empty()
+                  .doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime - pingMeasurers[it].average) } }
+    }
+
+    Observable<Collection<WebSocket>> prepareClients(int pos) {
+        waitForReadyClients().doOnSubscribe { sendAll POST, PREPARE, Utils.serializeLong(pos) }
+    }
+
+    private Observable<Collection<WebSocket>> waitForReadyClients() {
+        Observable.defer { clientReady.buffer(10, TimeUnit.SECONDS, connections().size()).take(1) }
+    }
+
+    long getRecommendedStartTime() {
+        def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }.average
+        return System.currentTimeMillis() + maxAvgPing + 2500
+    }
+
     private void initSubscribers() {
-        clientReady.subscribe { processReadiness it }
         clientPong.subscribe { pingMeasurers[it].pongReceived() }
         clientInfo.subscribe { processClientInfo it.key, it.value }
         chatMessage.subscribe { bus.post new ChatMessageReceivedEvent(it.value, it.key) }
@@ -166,32 +205,6 @@ class WebSocketMessageServer extends WebSocketServer {
         }
     }
 
-    private void processReadiness(WebSocket conn) {
-        Debug.d()
-
-        ready << conn
-
-        bus.post new ClientReadyEvent(conn)
-
-        if(ready.size() == connections().size())
-            onEveryoneReady()
-    }
-
-    private void onEveryoneReady() {
-        def maxAvgPing = pingMeasurers.values().max { PingMeasurer it -> it.average }.average
-        Debug.d "maxAvgPing: $maxAvgPing"
-        def startTime = System.currentTimeMillis() + maxAvgPing + 2500
-        Debug.d "startTime: $startTime"
-
-        bus.post new StartPlaybackDelayedCommand(startTime)
-
-        connections().each {
-            send(it, POST, START, Utils.serializeLong(startTime - pingMeasurers[it].average))
-        }
-
-        ready.clear()
-    }
-
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
         if (player.playing) {
@@ -200,12 +213,19 @@ class WebSocketMessageServer extends WebSocketServer {
         bus.post new ClientConnectedEvent(info)
     }
 
+//    @Subscribe
+//    void onPauseStateChanged(ChangePauseStateCommand cmd) {
+//        if (cmd.pause) {
+//            pauseClients(connections()).subscribe()
+////            sendAll POST, PAUSE
+//        } else {
+//            sendAll POST, PREPARE, Utils.serializeInt(player.currentPosition)
+//        }
+//    }
+
     @Subscribe
-    void onPauseClients(ChangePauseStateCommand event) {
-        Debug.d()
-        connections().each {
-            send it, POST, PAUSE
-        }
+    void onSeekTo(SeekToCommand cmd) {
+        sendAll POST, SEEK_TO, Utils.serializeLong(cmd.position)
     }
 
 }

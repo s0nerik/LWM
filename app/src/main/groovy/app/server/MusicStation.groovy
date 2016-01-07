@@ -3,7 +3,9 @@ import android.content.Context
 import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
+import app.Config
 import app.Daggered
+import app.websocket.WebSocketMessageServer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -33,7 +35,7 @@ class MusicStation extends Daggered {
 
     @Inject
     @PackageScope
-    MusicServer server
+    WebSocketMessageServer server
 
     public static final String INSTANCE_NAME = "_LWM";
     public static final String SERVICE_TYPE = "_http._tcp";
@@ -82,7 +84,7 @@ class MusicStation extends Daggered {
     ] as WifiP2pManager.ActionListener
 
     private void startServiceRegistrationAndCreateGroup() {
-        def record = [port: StreamServer.PORT,
+        def record = [port: Config.HTTP_SERVER_PORT as String,
                       name : "station",
                       currentSong : "Asking Alexandria - Closure"]
 
@@ -118,7 +120,7 @@ class MusicStation extends Daggered {
 
     private void setState(State newState) {
         state = newState
-        bus.post new StateChangedEvent(newState)
+        bus.post new BroadcastStateChangedEvent(newState)
     }
 
     private void removeServiceRegistrationAndGroup() {
@@ -154,7 +156,7 @@ class MusicStation extends Daggered {
     }
 
     @TupleConstructor
-    static class StateChangedEvent {
+    static class BroadcastStateChangedEvent {
         State state
     }
 
