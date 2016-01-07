@@ -14,6 +14,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
+import org.apache.commons.lang3.SerializationUtils
 
 import javax.inject.Inject
 
@@ -77,6 +78,14 @@ class Song extends Daggered implements CursorInitializable, Serializable {
 
     Artist getArtist() {
         collectionManager.getArtist this
+    }
+
+    byte[] serialize() {
+        SerializationUtils.serialize this
+    }
+
+    static Song deserialize(byte[] bytes) {
+        SerializationUtils.deserialize(bytes) as Song
     }
 
     String toJson() {

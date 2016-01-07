@@ -1,7 +1,6 @@
 package app.websocket
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Build
 import app.Injector
 import app.Utils
@@ -14,9 +13,7 @@ import app.helper.TimeDifferenceMeasurer
 import app.model.Song
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
-import app.server.StreamServer
 import app.websocket.entities.ClientInfo
-import com.koushikdutta.ion.Ion
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -27,7 +24,6 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import ru.noties.debug.Debug
 import rx.Observable
-import rx.Observer
 import rx.subjects.PublishSubject
 import rx.subjects.Subject
 
@@ -52,9 +48,6 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Inject
     SharedPreferences sharedPreferences
 
-    private final Uri SONG_INFO_URI =
-            Uri.parse "http://${uri.host}:${StreamServer.PORT}${StreamServer.Method.CURRENT_INFO}"
-
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
 
@@ -77,6 +70,7 @@ public class WebSocketMessageClient extends WebSocketClient {
     private Observable<SocketMessage> postPrepare
     private Observable<SocketMessage> postSeekTo
     private Observable<SocketMessage> postClientInfo
+    private Observable<SocketMessage> postCurrentSong
 
     private Observable<SocketMessage> postChatMessage
 
@@ -103,6 +97,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         postPrepare = postMessage.filter { it.message == PREPARE }
         postSeekTo = postMessage.filter { it.message == SEEK_TO }
         postClientInfo = postMessage.filter { it.message == CLIENT_INFO }
+        postCurrentSong = postMessage.filter { it.message == CURRENT_SONG }
 
         postChatMessage = postMessage.filter { it.message == MESSAGE }
     }
@@ -170,18 +165,12 @@ public class WebSocketMessageClient extends WebSocketClient {
     private void prepare(int position, boolean seeking = false) {
         Observable prepare
         if (!seeking) {
-            def loadSong = Observable.create({ Observer<String> observer ->
-                try {
-                    def songStr = Ion.with(context).load(SONG_INFO_URI as String).asString().get(5, TimeUnit.SECONDS)
-                    observer.onNext(songStr)
-                    observer.onCompleted()
-                } catch (e) {
-                    observer.onError(e)
-                }
-            } as Observable.OnSubscribe<String>)
+            def loadSong = postCurrentSong.take(1)
+                                          .timeout(5, TimeUnit.SECONDS)
+                                          .doOnSubscribe { sendMessage GET, CURRENT_SONG }
+                                          .map { Song.deserialize(it.body) }
 
             prepare = loadSong
-                    .map { Song.fromJson(it) }
                     .map { it.toRemoteSong(uri.host) }
                     .doOnNext { player.song = it }
                     .concatMap { player.prepareForPosition position }

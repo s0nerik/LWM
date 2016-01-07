@@ -9,7 +9,7 @@ import org.apache.commons.lang3.SerializationUtils
 class SocketMessage implements Serializable {
     static enum Message {
         START_FROM, SEEK_TO,
-        CURRENT_POSITION, IS_PLAYING,
+        CURRENT_SONG, CURRENT_POSITION, IS_PLAYING,
         OK, ERROR,
         PAUSE, UNPAUSE, START,
         PREPARE, READY,

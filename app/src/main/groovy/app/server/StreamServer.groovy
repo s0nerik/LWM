@@ -30,7 +30,6 @@ class StreamServer extends NanoHTTPD {
     static final String PORT = "8888"
 
     static class Method {
-        static String CURRENT_INFO = "/info"
         static String CURRENT_ALBUMART = "/albumart"
         static String STREAM = "/stream"
     }
@@ -89,8 +88,6 @@ class StreamServer extends NanoHTTPD {
                 switch (uri) {
                     case Method.STREAM:
                         return stream(song)
-                    case Method.CURRENT_INFO:
-                        return currentInfo(song)
                     case Method.CURRENT_ALBUMART:
                         return currentAlbumArt(song)
                 }
@@ -112,11 +109,6 @@ class StreamServer extends NanoHTTPD {
         return res
     }
 
-    private static Response currentInfo(Song song) {
-        Debug.d "StreamServer: CURRENT_INFO"
-        return new Response(Response.Status.OK, "application/json", getSongInfoJSON(song))
-    }
-
     private Response currentAlbumArt(Song song) {
         Debug.d "StreamServer: CURRENT_ALBUMART"
         InputStream is = null
@@ -135,8 +127,6 @@ class StreamServer extends NanoHTTPD {
         is = new ByteArrayInputStream(os.toByteArray())
         return new Response(Response.Status.OK, "image/webp", is)
     }
-
-    private static String getSongInfoJSON(Song song) { song.toJson() }
 
     @Subscribe
     void onSongChanged(SongChangedEvent event) {

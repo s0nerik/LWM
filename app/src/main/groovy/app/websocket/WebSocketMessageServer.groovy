@@ -55,6 +55,7 @@ class WebSocketMessageServer extends WebSocketServer {
     private Observable<Pair<WebSocket, ClientInfo>> clientInfo
     private Observable<Pair<WebSocket, ChatMessage>> chatMessage
 
+    private Observable<WebSocket> currentSongRequest
     private Observable<WebSocket> currentPositionRequest
     private Observable<WebSocket> playbackStatusRequest
 
@@ -86,6 +87,8 @@ class WebSocketMessageServer extends WebSocketServer {
         chatMessage = postMessages.filter { it.value.message == MESSAGE }
                                   .map { new ImmutablePair<WebSocket, ChatMessage>(it.key, ChatMessage.deserialize(it.value.body)) as Pair }
 
+        currentSongRequest = getMessages.filter { it.value.message == CURRENT_SONG }.map { it.key }
+
         currentPositionRequest = getMessages.filter { it.value.message == CURRENT_POSITION }
                                             .map { it.key }
 
@@ -104,6 +107,10 @@ class WebSocketMessageServer extends WebSocketServer {
 
         playbackStatusRequest.subscribe {
             send it, POST, IS_PLAYING, Utils.serializeBool(player.playing)
+        }
+
+        currentSongRequest.subscribe {
+            send it, POST, CURRENT_SONG, player.currentSong.serialize()
         }
     }
 
