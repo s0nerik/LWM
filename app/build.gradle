@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: 'groovyx.grooid.groovy-android'
+apply plugin: 'net.kaleidos.gradle.plugins.emerger'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'io.fabric'
@@ -82,6 +83,8 @@ android {
         }
     }
     packagingOptions {
+        exclude 'META-INF/services/org.codehaus.groovy.transform.ASTTransformation'
+        exclude 'META-INF/services/org.codehaus.groovy.runtime.ExtensionModule'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/DISCLAIMER'
@@ -89,6 +92,7 @@ android {
         exclude 'META-INF/NOTICE'
     }
     lintOptions {
+        disable 'InvalidPackage'
         abortOnError false
     }
 //    signingConfigs {

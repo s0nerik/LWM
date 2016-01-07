@@ -30,9 +30,6 @@ import static com.google.android.exoplayer.ExoPlayer.STATE_IDLE
 @CompileStatic
 abstract class BasePlayer extends RxExoPlayer {
 
-    int BUFFER_SEGMENT_SIZE = 64 * 1024
-    int BUFFER_SEGMENT_COUNT = 256
-
     @Inject
     @PackageScope
     protected AudioManager audioManager
@@ -141,13 +138,17 @@ abstract class BasePlayer extends RxExoPlayer {
 
     @Override
     protected TrackRenderer getRenderer(Uri uri) {
-        def allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
+        def allocator = new DefaultAllocator(bufferSegmentSize);
         new MediaCodecAudioTrackRenderer(
                 new ExtractorSampleSource(uri,
-                        new DefaultUriDataSource(context, "LWM"),
-                        allocator,
-                        BUFFER_SEGMENT_SIZE * BUFFER_SEGMENT_COUNT
+                                          new DefaultUriDataSource(context, "LWM"),
+                                          allocator,
+                                          bufferSegmentSize * bufferSegmentCount
                 )
         )
     }
+
+    protected int getBufferSegmentSize() { 64 * 1024 }
+
+    protected int getBufferSegmentCount() { 256 }
 }

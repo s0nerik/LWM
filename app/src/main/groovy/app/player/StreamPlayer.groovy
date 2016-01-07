@@ -1,5 +1,4 @@
 package app.player
-
 import android.os.Handler
 import app.model.Song
 import groovy.transform.CompileStatic
@@ -21,9 +20,8 @@ class StreamPlayer extends BasePlayer {
     Song currentSong
 
     Observable prepareForPosition(int pos) {
-        Debug.d "prepareForPosition: ${pos}"
-
-        reset().onErrorResumeNext(Observable.empty())
+        reset().doOnSubscribe { Debug.d "prepareForPosition: ${pos}" }
+                .onErrorResumeNext(Observable.empty())
                .doOnSubscribe { currentSong = song }
                .concatWith(prepare())
                .concatWith(seekTo(pos))
@@ -34,4 +32,9 @@ class StreamPlayer extends BasePlayer {
 //        context.startService new Intent(context, StreamPlayerService)
     }
 
+    @Override
+    protected int getBufferSegmentSize() { 16 * 1024 }
+
+    @Override
+    protected int getBufferSegmentCount() { 256 }
 }

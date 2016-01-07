@@ -6,10 +6,9 @@ import app.commands.PrepareClientsCommand
 import app.commands.SeekToCommand
 import app.commands.StartPlaybackDelayedCommand
 import app.events.chat.*
-import app.events.server.*
+import app.events.server.MusicServerStateChangedEvent
 import app.model.chat.ChatMessage
 import app.player.LocalPlayer
-import app.websocket.SocketMessage
 import app.websocket.WebSocketMessageServer
 import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Bus
@@ -84,7 +83,7 @@ class MusicServer extends Daggered {
     @Subscribe
     public void prepareClients(PrepareClientsCommand event) {
         if (!webSocketMessageServer.connections().empty) {
-            webSocketMessageServer.sendAll new SocketMessage(POST, PREPARE, event.position as String).toJson()
+            webSocketMessageServer.sendAll POST, PREPARE, event.position as String
         } else {
             bus.post new StartPlaybackDelayedCommand()
         }
@@ -93,15 +92,15 @@ class MusicServer extends Daggered {
     @Subscribe
     void onChangePauseState(ChangePauseStateCommand cmd) {
         if (cmd.pause) {
-            webSocketMessageServer.sendAll new SocketMessage(POST, PAUSE).toJson()
+            webSocketMessageServer.sendAll POST, PAUSE
         } else {
-            webSocketMessageServer.sendAll new SocketMessage(POST, PREPARE, player.currentPosition as String).toJson()
+            webSocketMessageServer.sendAll POST, PREPARE, player.currentPosition as String
         }
     }
 
     @Subscribe
     void onSeekTo(SeekToCommand cmd) {
-        webSocketMessageServer.sendAll(new SocketMessage(POST, SEEK_TO, cmd.position as String).toJson())
+        webSocketMessageServer.sendAll POST, SEEK_TO, cmd.position as String
     }
 
     @Produce
@@ -114,7 +113,7 @@ class MusicServer extends Daggered {
         unreadMessages += 1
         ChatMessage msg = event.getMessage()
         chatMessages.add(msg)
-        webSocketMessageServer.sendAllExcept(new SocketMessage(POST, MESSAGE, Utils.toJson(msg)).toJson(), event.getWebSocket())
+        webSocketMessageServer.sendAllExcept event.webSocket, POST, MESSAGE, Utils.toJson(msg)
         bus.post(new NotifyMessageAddedEvent(msg))
     }
 

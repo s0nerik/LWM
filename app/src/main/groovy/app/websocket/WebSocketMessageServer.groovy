@@ -26,6 +26,7 @@ import rx.subjects.PublishSubject
 import rx.subjects.Subject
 
 import javax.inject.Inject
+import java.nio.ByteBuffer
 
 import static app.websocket.SocketMessage.Message.*
 import static app.websocket.SocketMessage.Type.GET
@@ -98,11 +99,11 @@ class WebSocketMessageServer extends WebSocketServer {
         chatMessage.subscribe { bus.post new ChatMessageReceivedEvent(it.value, it.key) }
 
         currentPositionRequest.subscribe {
-            sendMessage it, POST, CURRENT_POSITION, player.currentPosition as String
+            send it, POST, CURRENT_POSITION, player.currentPosition as String
         }
 
         playbackStatusRequest.subscribe {
-            sendMessage it, POST, IS_PLAYING, player.playing as String
+            send it, POST, IS_PLAYING, player.playing as String
         }
     }
 
@@ -110,9 +111,9 @@ class WebSocketMessageServer extends WebSocketServer {
     void onOpen(WebSocket conn, ClientHandshake handshake) {
         Debug.d "connections.size() = ${connections().size()}"
 
-        pingMeasurers[conn] = new PingMeasurer({ sendMessage conn, GET, PING, System.currentTimeMillis() as String })
+        pingMeasurers[conn] = new PingMeasurer({ send conn, GET, PING, System.currentTimeMillis() as String })
         pingMeasurers[conn].pingWarmupFinished.subscribe {
-            conn.send new SocketMessage(GET, CLIENT_INFO).toJson()
+            send conn, GET, CLIENT_INFO
         }
         pingMeasurers[conn].start()
     }
@@ -127,14 +128,14 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     @Override
-    void onMessage(WebSocket conn, String message) {
-        SocketMessage socketMessage = Utils.fromJson message
-
-        if (socketMessage.message != PONG)
-            Debug.d "$message"
-
-        messages.onNext new ImmutablePair<WebSocket, SocketMessage>(conn, socketMessage)
+    void onMessage(WebSocket conn, ByteBuffer message) {
+        messages.onNext new ImmutablePair<WebSocket, SocketMessage>(conn, SocketMessage.deserialize(message.array()))
         lastMessageTime = System.currentTimeMillis()
+    }
+
+    @Override
+    void onMessage(WebSocket conn, String message) {
+        Debug.e()
     }
 
     @Override
@@ -142,8 +143,20 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.e ex
     }
 
-    private static void sendMessage(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
-        conn.send(new SocketMessage(type, msg, body).toJson())
+    private void send(WebSocket conn, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+        conn.send new SocketMessage(type, msg, body).serialize()
+    }
+
+    void sendAll(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+        for (WebSocket conn : connections()) {
+            send conn, type, msg, body
+        }
+    }
+
+    void sendAllExcept(WebSocket exception, SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
+        for (WebSocket conn : connections()) {
+            if (!conn.equals(exception)) send conn, type, msg, body
+        }
     }
 
     private void processReadiness(WebSocket conn) {
@@ -166,7 +179,7 @@ class WebSocketMessageServer extends WebSocketServer {
         bus.post new StartPlaybackDelayedCommand(startTime)
 
         connections().each {
-            sendMessage(it, POST, START, (startTime - pingMeasurers[it].average) as String)
+            send(it, POST, START, (startTime - pingMeasurers[it].average) as String)
         }
 
         ready.clear()
@@ -175,7 +188,7 @@ class WebSocketMessageServer extends WebSocketServer {
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
         if (player.playing) {
-            conn.send new SocketMessage(POST, PREPARE, player.currentPosition as String).toJson()
+            send conn, POST, PREPARE, player.currentPosition as String
         }
         bus.post new ClientConnectedEvent(info)
     }
@@ -184,19 +197,7 @@ class WebSocketMessageServer extends WebSocketServer {
     void onPauseClients(ChangePauseStateCommand event) {
         Debug.d()
         connections().each {
-            sendMessage it, POST, PAUSE
-        }
-    }
-
-    void sendAll(String message) {
-        for (WebSocket conn : connections()) {
-            conn.send(message)
-        }
-    }
-
-    void sendAllExcept(String message, WebSocket socket) {
-        for (WebSocket conn : connections()) {
-            if (!conn.equals(socket)) conn.send(message)
+            send it, POST, PAUSE
         }
     }
 

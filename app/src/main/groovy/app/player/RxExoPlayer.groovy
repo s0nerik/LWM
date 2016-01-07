@@ -63,7 +63,8 @@ abstract class RxExoPlayer {
     ] as Listener
 
     RxExoPlayer() {
-        innerPlayer = Factory.newInstance 1, 30 * 1000, 60 * 1000
+        innerPlayer = Factory.newInstance 1
+//        innerPlayer = Factory.newInstance 1, 30 * 1000, 60 * 1000
         innerPlayer.addListener listener
         innerPlayer.playWhenReady = false
     }

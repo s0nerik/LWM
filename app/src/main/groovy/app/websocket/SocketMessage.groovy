@@ -1,12 +1,12 @@
 package app.websocket
-import app.Utils
 import com.google.gson.annotations.Expose
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
+import org.apache.commons.lang3.SerializationUtils
 
 @TupleConstructor
 @CompileStatic
-class SocketMessage {
+class SocketMessage implements Serializable {
     static enum Message {
         START_FROM, SEEK_TO,
         CURRENT_POSITION, IS_PLAYING,
@@ -30,9 +30,14 @@ class SocketMessage {
     @Expose
     String body
 
-    String toJson() {
-        Utils.toJson this
-//        gson.toJson(this)
+    byte[] serialize() {
+        SerializationUtils.serialize this
+//        asByteArray()
+    }
+
+    static SocketMessage deserialize(byte[] bytes) {
+        SerializationUtils.deserialize(bytes) as SocketMessage
+//        bytes.<SocketMessage> asObject()
     }
 
 }

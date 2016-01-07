@@ -33,6 +33,7 @@ import rx.subjects.PublishSubject
 import rx.subjects.Subject
 
 import javax.inject.Inject
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 import static app.websocket.SocketMessage.Message.*
@@ -136,20 +137,19 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     @Override
+    void onMessage(ByteBuffer bytes) {
+        messages.onNext SocketMessage.deserialize(bytes.array())
+    }
+
+    @Override
     void onMessage(String message) {
-        try {
-            SocketMessage socketMessage = Utils.fromJson message
-            messages.onNext socketMessage
-        } catch (e) {
-            Debug.e e
-            Debug.e message
-        }
+        Debug.e()
     }
 
     void sendMessage(SocketMessage.Type type, SocketMessage.Message msg, String body = null) {
         if (msg != PONG) Debug.d "sendMessage: ${msg}"
 
-        send new SocketMessage(type, msg, body).toJson()
+        send new SocketMessage(type, msg, body).serialize()
     }
 
     @Override
