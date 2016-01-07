@@ -10,7 +10,6 @@ import app.model.Song
 import app.player.BasePlayer
 import app.player.StreamPlayer
 import app.ui.Blurer
-import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -50,12 +49,12 @@ class RemotePlaybackFragment extends PlaybackFragment {
     protected Observable<Bitmap> getCoverBitmap(Song song) {
         Observable.create({ Subscriber<Bitmap> subscriber ->
             Bitmap bmp = null
-            try {
-                bmp = Ion.with(this)
-                            .load("${player.currentSong.albumArtUri}?${UUID.randomUUID()}")
-                            .asBitmap()
-                            .get()
-            } catch (ignored) {}
+//            try {
+//                bmp = Ion.with(this)
+//                            .load("${player.currentSong.albumArtUri}?${player.currentSong.id}")
+//                            .asBitmap()
+//                            .get()
+//            } catch (ignored) {}
 
             bmp = bmp ?: utils.noCoverBitmap
 

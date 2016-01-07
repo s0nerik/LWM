@@ -95,7 +95,7 @@ abstract class RxExoPlayer {
                              .take(1)
                              .ignoreElements()
             }
-        }.serialize()
+        }
     }
 
     /**
@@ -120,7 +120,7 @@ abstract class RxExoPlayer {
                              .take(1)
                              .ignoreElements()
             }
-        }.serialize()
+        }
     }
 
     Observable setPaused(boolean flag) {
@@ -146,7 +146,7 @@ abstract class RxExoPlayer {
                              .take(1)
                              .ignoreElements()
             }
-        }.serialize()
+        }
     }
 
     /**
@@ -160,7 +160,7 @@ abstract class RxExoPlayer {
                          .filter { it == PlayerEvent.READY }
                          .take(1)
                          .ignoreElements()
-        }.serialize()
+        }
     }
 
     /**
@@ -177,7 +177,7 @@ abstract class RxExoPlayer {
                              .take(1)
                              .ignoreElements()
             }
-        }.serialize()
+        }
     }
 
     /**
@@ -192,6 +192,6 @@ abstract class RxExoPlayer {
 //            } else {
 //                Observable.concat pause(), seekTo(0), stop()
 //            }
-        }.serialize()
+        }
     }
 }

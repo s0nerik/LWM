@@ -107,17 +107,16 @@ public class WebSocketMessageClient extends WebSocketClient {
         getIsPlaying.subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
         getClientInfo.subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
 
-        getPing.doOnNext { timeDifferenceMeasurer.add it.body as long }
+        getPing.doOnNext { timeDifferenceMeasurer.add Utils.deserializeLong(it.body) }
                .doOnNext { Debug.d "time difference: ${timeDifferenceMeasurer.difference}" }
                .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
 
-        postStart.subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(it.body as long)) }
+        postStart.subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(Utils.deserializeLong(it.body))) }
         postPause.doOnNext { player.setPaused(true) }.subscribe()
-        postPrepare.subscribe { prepare it.body as int }
-        postSeekTo.subscribe { seekTo it.body as int }
+        postPrepare.subscribe { prepare Utils.deserializeInt(it.body) }
+        postSeekTo.subscribe { seekTo Utils.deserializeInt(it.body) }
         postChatMessage.subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
         postClientInfo.subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
-
 
         messages.filter { it.message != PING }
                 .subscribe { Debug.d "$it.type: $it.message" }
