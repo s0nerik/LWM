@@ -126,6 +126,14 @@ class WebSocketMessageServer extends WebSocketServer {
         waitForReadyClients().doOnSubscribe { sendAll POST, PREPARE, Utils.serializeLong(pos) }
     }
 
+    Observable<WebSocket> prepareClient(WebSocket conn, int pos) {
+        waitForReadyClient(conn).doOnSubscribe { send conn, POST, PREPARE, Utils.serializeLong(pos) }
+    }
+
+    private Observable<WebSocket> waitForReadyClient(WebSocket conn) {
+        clientReady.filter { it == conn }.timeout(10, TimeUnit.SECONDS).take(1)
+    }
+
     private Observable<Collection<WebSocket>> waitForReadyClients() {
         Observable.defer { clientReady.buffer(10, TimeUnit.SECONDS, connections().size()).take(1) }
     }
@@ -207,8 +215,12 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
+
+        def timeToPrepare = 10 * 1000
+        def preparePos = player.currentPosition + timeToPrepare
+
         if (player.playing) {
-            send conn, POST, PREPARE, Utils.serializeInt(player.currentPosition)
+            prepareClient(conn, preparePos).concatMap { startClients([it], recommendedStartTime) }.subscribe()
         }
         bus.post new ClientConnectedEvent(info)
     }
