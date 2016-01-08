@@ -144,15 +144,17 @@ class MusicStation extends Daggered {
     void enable() {
         if (server.started) return
         setState State.CHANGING
-        server.start()
-        startServiceRegistrationAndCreateGroup()
+        server.startAsObservable()
+              .doOnCompleted { startServiceRegistrationAndCreateGroup() }
+              .subscribe()
     }
 
     void disable() {
         if (!server.started) return
         setState State.CHANGING
-        server.stop()
-        removeServiceRegistrationAndGroup()
+        server.stopAsObservable()
+              .doOnCompleted { removeServiceRegistrationAndGroup() }
+              .subscribe()
     }
 
     @TupleConstructor
