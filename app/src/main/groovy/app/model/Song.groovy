@@ -11,6 +11,7 @@ import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.PackageScope
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
@@ -24,6 +25,7 @@ import static android.provider.MediaStore.MediaColumns.DATA
 import static android.provider.MediaStore.MediaColumns.MIME_TYPE
 import static android.provider.MediaStore.MediaColumns.TITLE
 
+@EqualsAndHashCode(includes = ["id", "artistId", "albumId"])
 @ToString
 @CompileStatic
 @Builder

@@ -14,6 +14,7 @@ import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.ui.notification.NowPlayingNotification
 import app.websocket.WebSocketMessageServer
+import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -110,7 +111,7 @@ class LocalPlayerService extends Service {
                 observable = Observable.merge(player.setPaused(cmd.pause), server.pauseClients(server.connections()))
             } else {
                 observable = Observable.defer {
-                    server.prepareClients(player.currentPosition)
+                    server.prepareClients(new PrepareInfo(player.currentSong, System.currentTimeMillis(), player.currentPosition, false, false))
                           .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
                           .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
                           .concatMap { server.startClients(it.left, it.right) }
@@ -143,7 +144,7 @@ class LocalPlayerService extends Service {
         Observable<Object> startPlayback
         if (server.started) {
             startPlayback = Observable.defer {
-                server.prepareClients(player.currentPosition)
+                server.prepareClients(new PrepareInfo(player.currentSong, System.currentTimeMillis(), player.currentPosition, false, false))
                       .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
                       .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
                       .concatMap { server.startClients(it.left, it.right) }

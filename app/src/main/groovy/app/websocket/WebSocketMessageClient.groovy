@@ -10,10 +10,10 @@ import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
 import app.helper.TimeDifferenceMeasurer
-import app.model.Song
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
 import app.websocket.entities.ClientInfo
+import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -60,19 +60,8 @@ public class WebSocketMessageClient extends WebSocketClient {
     private Observable<SocketMessage> getMessages
     private Observable<SocketMessage> postMessage
 
-    private Observable<SocketMessage> getCurrentPosition
-    private Observable<SocketMessage> getIsPlaying
-    private Observable<SocketMessage> getClientInfo
-    private Observable<SocketMessage> getPing
-
-    private Observable<SocketMessage> postStart
-    private Observable<SocketMessage> postPause
-    private Observable<SocketMessage> postPrepare
-    private Observable<SocketMessage> postSeekTo
-    private Observable<SocketMessage> postClientInfo
-    private Observable<SocketMessage> postCurrentSong
-
-    private Observable<SocketMessage> postChatMessage
+    private Map<SocketMessage.Message, Observable<SocketMessage>> get = new HashMap<>()
+    private Map<SocketMessage.Message, Observable<SocketMessage>> post = new HashMap<>()
 
     WebSocketMessageClient(URI serverURI) {
         super(serverURI)
@@ -87,36 +76,25 @@ public class WebSocketMessageClient extends WebSocketClient {
         getMessages = messages.filter { it.type == GET }
         postMessage = messages.filter { it.type == POST }
 
-        getPing = getMessages.filter { it.message == PING }
-        getClientInfo = getMessages.filter { it.message == CLIENT_INFO }
-        getIsPlaying = getMessages.filter { it.message == IS_PLAYING }
-        getCurrentPosition = getMessages.filter { it.message == CURRENT_POSITION }
-
-        postStart = postMessage.filter { it.message == START }
-        postPause = postMessage.filter { it.message == PAUSE }
-        postPrepare = postMessage.filter { it.message == PREPARE }
-        postSeekTo = postMessage.filter { it.message == SEEK_TO }
-        postClientInfo = postMessage.filter { it.message == CLIENT_INFO }
-        postCurrentSong = postMessage.filter { it.message == CURRENT_SONG }
-
-        postChatMessage = postMessage.filter { it.message == MESSAGE }
+        SocketMessage.Message.values().each { SocketMessage.Message m ->
+            get[m] = getMessages.filter { it.message == m }
+            post[m] = postMessage.filter { it.message == m }
+        }
     }
 
     private void initSubscribers() {
-        getCurrentPosition.subscribe { sendMessage POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition) }
-        getIsPlaying.subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
-        getClientInfo.subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
+        get[CURRENT_POSITION].subscribe { sendMessage POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition) }
+        get[IS_PLAYING].subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
+        get[CLIENT_INFO].subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
+        get[PING].doOnNext { timeDifferenceMeasurer.add Utils.deserializeLong(it.body) }
+//                 .doOnNext { Debug.d "time difference: ${timeDifferenceMeasurer.difference}" }
+                 .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
 
-        getPing.doOnNext { timeDifferenceMeasurer.add Utils.deserializeLong(it.body) }
-               .doOnNext { Debug.d "time difference: ${timeDifferenceMeasurer.difference}" }
-               .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
-
-        postStart.subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(Utils.deserializeLong(it.body))) }
-        postPause.doOnNext { player.setPaused(true) }.subscribe()
-        postPrepare.subscribe { prepare Utils.deserializeInt(it.body) }
-        postSeekTo.subscribe { seekTo Utils.deserializeInt(it.body) }
-        postChatMessage.subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
-        postClientInfo.subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
+        post[START].subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(Utils.deserializeLong(it.body))) }
+        post[PAUSE].doOnNext { player.setPaused(true) }.subscribe()
+        post[PREPARE].subscribe { prepare PrepareInfo.deserialize(it.body) }
+        post[MESSAGE].subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
+        post[CLIENT_INFO].subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
 
         messages.filter { it.message != PING }
                 .subscribe { Debug.d "$it.type: $it.message" }
@@ -157,28 +135,33 @@ public class WebSocketMessageClient extends WebSocketClient {
         Debug.e ex as String
     }
 
-    private void seekTo(int pos) {
-        prepare pos, true
-    }
+    private void prepare(PrepareInfo info) {
+        int offset = 10000
 
-    private void prepare(int position, boolean seeking = false) {
-        Observable prepare
-        if (!seeking) {
-            def loadSong = postCurrentSong.take(1)
-                                          .timeout(5, TimeUnit.SECONDS)
-                                          .doOnSubscribe { sendMessage GET, CURRENT_SONG }
-                                          .map { Song.deserialize(it.body) }
+        Observable<Object> prepare
+        if (!info.seeking || player.song != info.song) {
+            prepare = Observable.just(info.song.toRemoteSong(uri.host))
+                                .doOnNext { player.song = it }
+                                .cast(Object)
 
-            prepare = loadSong
-                    .map { it.toRemoteSong(uri.host) }
-                    .doOnNext { player.song = it }
-                    .concatMap { player.prepareForPosition position }
+            if (info.autostart) {
+                prepare = prepare.concatMap { player.prepareForPosition info.position + offset }
+                                 .ignoreElements()
+            } else {
+                prepare = prepare.concatMap { player.prepareForPosition info.position }
+            }
         } else {
-            prepare = player.prepareForPosition(position)
+            prepare = player.prepareForPosition info.position
         }
 
-        prepare.doOnCompleted { sendMessage POST, READY }
-               .subscribe()
+        prepare = prepare.doOnCompleted { sendMessage POST, READY }
+
+        if (info.autostart && !info.seeking) {
+            prepare = prepare.mergeWith(Observable.timer(offset, TimeUnit.MILLISECONDS).map { (Object) null })
+                             .concatWith(player.start())
+        }
+
+        prepare.subscribe()
     }
 
     //region Chat

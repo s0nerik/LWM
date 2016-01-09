@@ -10,6 +10,7 @@ import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
+import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -122,12 +123,12 @@ class WebSocketMessageServer extends WebSocketServer {
                   .doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime - pingMeasurers[it].average) } }
     }
 
-    Observable<Collection<WebSocket>> prepareClients(int pos) {
-        waitForReadyClients().doOnSubscribe { sendAll POST, PREPARE, Utils.serializeLong(pos) }
+    Observable<Collection<WebSocket>> prepareClients(PrepareInfo info) {
+        waitForReadyClients().doOnSubscribe { sendAll POST, PREPARE, info.serialize() }
     }
 
-    Observable<WebSocket> prepareClient(WebSocket conn, int pos) {
-        waitForReadyClient(conn).doOnSubscribe { send conn, POST, PREPARE, Utils.serializeLong(pos) }
+    Observable<WebSocket> prepareClient(WebSocket conn, PrepareInfo info) {
+        waitForReadyClient(conn).doOnSubscribe { send conn, POST, PREPARE, info.serialize() }
     }
 
     private Observable<WebSocket> waitForReadyClient(WebSocket conn) {
@@ -135,12 +136,21 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private Observable<Collection<WebSocket>> waitForReadyClients() {
-        Observable.defer { clientReady.buffer(10, TimeUnit.SECONDS, connections().size()).take(1) }
+        Observable.defer {
+            def connectionsCnt = connections().size()
+            if (connectionsCnt)
+                return clientReady.buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
+            else
+                return Observable.just(connections())
+        }
     }
 
     long getRecommendedStartTime() {
-        def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }.average
-        return System.currentTimeMillis() + maxAvgPing + 2500
+        if (pingMeasurers) {
+            def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }?.average
+            return System.currentTimeMillis() + maxAvgPing + 2500
+        }
+        return System.currentTimeMillis()
     }
 
     private void initSubscribers() {
@@ -216,11 +226,11 @@ class WebSocketMessageServer extends WebSocketServer {
     private void processClientInfo(WebSocket conn, ClientInfo info) {
         clientInfoMap[conn] = info
 
-        def timeToPrepare = 10 * 1000
-        def preparePos = player.currentPosition + timeToPrepare
-
         if (player.playing) {
-            prepareClient(conn, preparePos).concatMap { startClients([it], recommendedStartTime) }.subscribe()
+            def prepareInfo = new PrepareInfo(song: player.currentSong,
+                                              position: player.currentPosition,
+                                              autostart: true)
+            prepareClient(conn, prepareInfo).subscribe()
         }
         bus.post new ClientConnectedEvent(info)
     }
@@ -237,7 +247,7 @@ class WebSocketMessageServer extends WebSocketServer {
 
     @Subscribe
     void onSeekTo(SeekToCommand cmd) {
-        sendAll POST, SEEK_TO, Utils.serializeLong(cmd.position)
+        sendAll POST, PREPARE, new PrepareInfo(player.currentSong, System.currentTimeMillis(), cmd.position as int, false, true).serialize()
     }
 
 }
