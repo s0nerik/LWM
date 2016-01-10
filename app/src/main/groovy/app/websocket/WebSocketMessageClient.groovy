@@ -9,7 +9,7 @@ import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
-import app.helper.TimeDifferenceMeasurer
+import app.helper.AveragingCollection
 import app.model.chat.ChatMessage
 import app.player.StreamPlayer
 import app.websocket.entities.ClientInfo
@@ -20,7 +20,9 @@ import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
+import org.java_websocket.WebSocket
 import org.java_websocket.client.WebSocketClient
+import org.java_websocket.framing.Framedata
 import org.java_websocket.handshake.ServerHandshake
 import ru.noties.debug.Debug
 import rx.Observable
@@ -53,12 +55,12 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private ClientInfo clientInfo
 
-    private TimeDifferenceMeasurer timeDifferenceMeasurer = new TimeDifferenceMeasurer()
+    private AveragingCollection<Long> timeDifferences = new AveragingCollection<>(10)
 
     private Subject<SocketMessage, SocketMessage> messages = PublishSubject.create().toSerialized()
 
     private Observable<SocketMessage> getMessages
-    private Observable<SocketMessage> postMessage
+    private Observable<SocketMessage> postMessages
 
     private Map<SocketMessage.Message, Observable<SocketMessage>> get = new HashMap<>()
     private Map<SocketMessage.Message, Observable<SocketMessage>> post = new HashMap<>()
@@ -74,11 +76,11 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     private void initObservables() {
         getMessages = messages.filter { it.type == GET }
-        postMessage = messages.filter { it.type == POST }
+        postMessages = messages.filter { it.type == POST }
 
         SocketMessage.Message.values().each { SocketMessage.Message m ->
             get[m] = getMessages.filter { it.message == m }
-            post[m] = postMessage.filter { it.message == m }
+            post[m] = postMessages.filter { it.message == m }
         }
     }
 
@@ -86,15 +88,27 @@ public class WebSocketMessageClient extends WebSocketClient {
         get[CURRENT_POSITION].subscribe { sendMessage POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition) }
         get[IS_PLAYING].subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
         get[CLIENT_INFO].subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
-        get[PING].doOnNext { timeDifferenceMeasurer.add Utils.deserializeLong(it.body) }
-//                 .doOnNext { Debug.d "time difference: ${timeDifferenceMeasurer.difference}" }
-                 .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
 
-        post[START].subscribe { bus.post new StartPlaybackDelayedCommand(timeDifferenceMeasurer.toLocalTime(Utils.deserializeLong(it.body))) }
+        post[START].subscribe { bus.post new StartPlaybackDelayedCommand(Utils.deserializeLong(it.body) - timeDifferences.average) }
         post[PAUSE].doOnNext { player.setPaused(true) }.subscribe()
         post[PREPARE].subscribe { prepare PrepareInfo.deserialize(it.body) }
         post[MESSAGE].subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
         post[CLIENT_INFO].subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
+
+//        post[TIMESTAMP].doOnNext { timeDifferences.add Utils.deserializeLong(it.body) }
+//                       .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
+
+
+        Observable<Long> timeDiffObservable = post[TIMESTAMP_REQUEST].map { Utils.deserializeLong(it.body) - System.currentTimeMillis() }
+                                                                     .doOnNext { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
+                                                                     .concatMap { t1 ->
+            post[TIMESTAMP_DIFFERENCE].take(1).map { ((Utils.deserializeLong(it.body) - (t1 as long)) / 2L) as long }
+        }
+
+        timeDiffObservable.subscribe { timeDifferences << it }
+
+//        post[TIMESTAMP_REQUEST].subscribe { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
+//        post[TIMESTAMP_DIFFERENCE].subscribe { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
 
         messages.filter { it.message != PING }
                 .subscribe { Debug.d "$it.type: $it.message" }
@@ -133,6 +147,18 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     void onError(Exception ex) {
         Debug.e ex as String
+    }
+
+    @Override
+    void onWebsocketPing(WebSocket conn, Framedata f) {
+        super.onWebsocketPing(conn, f)
+        Debug.d()
+    }
+
+    @Override
+    void onWebsocketPong(WebSocket conn, Framedata f) {
+        super.onWebsocketPong(conn, f)
+        Debug.d()
     }
 
     private void prepare(PrepareInfo info) {

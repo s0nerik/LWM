@@ -2,11 +2,8 @@ package app.websocket
 import app.Injector
 import app.Utils
 import app.commands.SeekToCommand
-import app.events.chat.ChatMessageReceivedEvent
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
-import app.helper.PingMeasurer
-import app.model.chat.ChatMessage
 import app.player.LocalPlayer
 import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
@@ -15,8 +12,6 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import org.apache.commons.lang3.tuple.ImmutablePair
-import org.apache.commons.lang3.tuple.Pair
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
@@ -37,23 +32,16 @@ import static app.websocket.SocketMessage.Type.POST
 class WebSocketMessageServer extends WebSocketServer {
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<WebSocket, ClientInfo>()
 
-    private Map<WebSocket, PingMeasurer> pingMeasurers = new HashMap<WebSocket, PingMeasurer>()
+//    private Map<WebSocket, PingMeasurer> pingMeasurers = new HashMap<WebSocket, PingMeasurer>()
 
-    private long lastMessageTime = -1
+    private Subject<SocketMessage, SocketMessage> messages = PublishSubject.create().toSerialized()
+    private Subject<WebSocket, WebSocket> clientDisconnectedSubject = PublishSubject.create().toSerialized()
 
-    private Subject<Pair<WebSocket, SocketMessage>, Pair<WebSocket, SocketMessage>> messages = PublishSubject.create().toSerialized()
+    private Observable<SocketMessage> getMessages
+    private Observable<SocketMessage> postMessages
 
-    private Observable<Pair<WebSocket, SocketMessage>> getMessages
-    private Observable<Pair<WebSocket, SocketMessage>> postMessages
-
-    private Observable<WebSocket> clientReady
-    private Observable<WebSocket> clientPong
-    private Observable<Pair<WebSocket, ClientInfo>> clientInfo
-    private Observable<Pair<WebSocket, ChatMessage>> chatMessage
-
-    private Observable<WebSocket> currentSongRequest
-    private Observable<WebSocket> currentPositionRequest
-    private Observable<WebSocket> playbackStatusRequest
+    private Map<SocketMessage.Message, Observable<SocketMessage>> get = new HashMap<>()
+    private Map<SocketMessage.Message, Observable<SocketMessage>> post = new HashMap<>()
 
     @Inject
     @PackageScope
@@ -93,24 +81,27 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private void initObservables() {
-        getMessages = messages.filter { it.value.type == GET }.cast(Pair)
-        postMessages = messages.filter { it.value.type == POST }.cast(Pair)
+        getMessages = messages.filter { it.type == GET }
+        postMessages = messages.filter { it.type == POST }
 
-        clientReady = postMessages.filter { it.value.message == READY }.map { it.key }
-        clientPong = postMessages.filter { it.value.message == PONG }.map { it.key }
+        SocketMessage.Message.values().each { SocketMessage.Message m ->
+            get[m] = getMessages.filter { it.message == m }
+            post[m] = postMessages.filter { it.message == m }
+        }
+    }
 
-        clientInfo = postMessages.filter { it.value.message == CLIENT_INFO }
-                                 .map { new ImmutablePair<WebSocket, ClientInfo>(it.key, ClientInfo.deserialize(it.value.body)) as Pair }
+    private void initSubscribers() {
+        get[CURRENT_POSITION].subscribe {
+            send it.socket, POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition)
+        }
 
-        chatMessage = postMessages.filter { it.value.message == MESSAGE }
-                                  .map { new ImmutablePair<WebSocket, ChatMessage>(it.key, ChatMessage.deserialize(it.value.body)) as Pair }
+        get[IS_PLAYING].subscribe {
+            send it.socket, POST, IS_PLAYING, Utils.serializeBool(player.playing)
+        }
 
-        currentSongRequest = getMessages.filter { it.value.message == CURRENT_SONG }.map { it.key }
-
-        currentPositionRequest = getMessages.filter { it.value.message == CURRENT_POSITION }
-                                            .map { it.key }
-
-        playbackStatusRequest = getMessages.filter { it.value.message == IS_PLAYING }.map { it.key }
+        get[CURRENT_SONG].subscribe {
+            send it.socket, POST, CURRENT_SONG, player.currentSong.serialize()
+        }
     }
 
     Observable pauseClients(Collection<WebSocket> clients) {
@@ -120,81 +111,93 @@ class WebSocketMessageServer extends WebSocketServer {
 
     Observable startClients(Collection<WebSocket> clients, long startTime) {
         Observable.empty()
-                  .doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime - pingMeasurers[it].average) } }
+                  .doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime) } }
     }
 
     Observable<Collection<WebSocket>> prepareClients(PrepareInfo info) {
         waitForReadyClients().doOnSubscribe { sendAll POST, PREPARE, info.serialize() }
     }
 
-    Observable<WebSocket> prepareClient(WebSocket conn, PrepareInfo info) {
+    Observable prepareClient(WebSocket conn, PrepareInfo info) {
         waitForReadyClient(conn).doOnSubscribe { send conn, POST, PREPARE, info.serialize() }
     }
 
-    private Observable<WebSocket> waitForReadyClient(WebSocket conn) {
-        clientReady.filter { it == conn }.timeout(10, TimeUnit.SECONDS).take(1)
+    private Observable<ClientInfo> requestClientInfo(WebSocket conn) {
+        post[CLIENT_INFO].filter { it.socket == conn }
+                         .map { ClientInfo.deserialize(it.body) }
+                         .doOnSubscribe { send conn, GET, CLIENT_INFO }
+    }
+
+    private Observable clientDisconnectAsObservable(WebSocket conn) {
+        clientDisconnectedSubject.filter { it == conn }
+    }
+
+    private Observable waitForReadyClient(WebSocket conn) {
+        post[READY].filter { it.socket == conn }
+                   .timeout(10, TimeUnit.SECONDS)
+                   .take(1)
+    }
+
+    private Observable<Long> measureTimeDiff(WebSocket conn) {
+        post[TIMESTAMP].filter { it.socket == conn }
+                       .take(1)
+                       .map { System.currentTimeMillis() - Utils.deserializeLong(it.body) }
+                       .doOnNext { send conn, POST, TIMESTAMP_DIFFERENCE, Utils.serializeLong(it) }
+                       .doOnSubscribe { send conn, POST, TIMESTAMP_REQUEST, Utils.serializeLong(System.currentTimeMillis()) }
+    }
+
+    private Observable<Long> measureTimeDiffRegular(WebSocket conn) {
+        Observable.interval(1, TimeUnit.SECONDS)
+                  .concatMap { measureTimeDiff(conn) }
+                  .takeUntil(clientDisconnectAsObservable(conn))
+    }
+
+    private Observable<Long> warmupTimeDiff(WebSocket conn) {
+        measureTimeDiff(conn).repeat(10)
+                             .takeLast(1)
+                             .takeUntil(clientDisconnectAsObservable(conn))
     }
 
     private Observable<Collection<WebSocket>> waitForReadyClients() {
         Observable.defer {
             def connectionsCnt = connections().size()
             if (connectionsCnt)
-                return clientReady.buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
+                return post[READY].buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
             else
                 return Observable.just(connections())
         }
     }
 
     long getRecommendedStartTime() {
-        if (pingMeasurers) {
-            def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }?.average
-            return System.currentTimeMillis() + maxAvgPing + 2500
-        }
-        return System.currentTimeMillis()
-    }
-
-    private void initSubscribers() {
-        clientPong.subscribe { pingMeasurers[it].pongReceived() }
-        clientInfo.subscribe { processClientInfo it.key, it.value }
-        chatMessage.subscribe { bus.post new ChatMessageReceivedEvent(it.value, it.key) }
-
-        currentPositionRequest.subscribe {
-            send it, POST, CURRENT_POSITION, Utils.serializeInt(player.currentPosition)
-        }
-
-        playbackStatusRequest.subscribe {
-            send it, POST, IS_PLAYING, Utils.serializeBool(player.playing)
-        }
-
-        currentSongRequest.subscribe {
-            send it, POST, CURRENT_SONG, player.currentSong.serialize()
-        }
+//        if (pingMeasurers) {
+//            def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }?.average
+//            return System.currentTimeMillis() + maxAvgPing + 2500
+//        }
+        return System.currentTimeMillis() + 2500
     }
 
     @Override
     void onOpen(WebSocket conn, ClientHandshake handshake) {
         Debug.d "connections.size() = ${connections().size()}"
 
-        pingMeasurers[conn] = new PingMeasurer({ send conn, GET, PING, Utils.serializeLong(System.currentTimeMillis()) })
-        pingMeasurers[conn].pingWarmupFinished.subscribe {
-            send conn, GET, CLIENT_INFO
-        }
-        pingMeasurers[conn].start()
+        warmupTimeDiff(conn).concatMap { requestClientInfo(conn) }
+                            .doOnCompleted { measureTimeDiffRegular(conn).subscribe() }
+                            .subscribe { processClientInfo(conn, it) }
     }
 
     @Override
     void onClose(WebSocket conn, int code, String reason, boolean remote) {
         Debug.d "connections.size() = ${connections().size()}"
-        bus.post new ClientDisconnectedEvent(clientInfoMap[conn])
+        clientDisconnectedSubject.onNext conn
 
-        pingMeasurers[conn].stop()
-        pingMeasurers.remove(conn)
+        bus.post new ClientDisconnectedEvent(clientInfoMap[conn])
     }
 
     @Override
     void onMessage(WebSocket conn, ByteBuffer message) {
-        messages.onNext new ImmutablePair<WebSocket, SocketMessage>(conn, SocketMessage.deserialize(message.array()))
-        lastMessageTime = System.currentTimeMillis()
+        def msg = SocketMessage.deserialize(message.array())
+        msg.socket = conn
+        messages.onNext msg
     }
 
     @Override
