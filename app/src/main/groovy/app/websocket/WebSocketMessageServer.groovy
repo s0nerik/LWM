@@ -105,20 +105,18 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     Observable pauseClients(Collection<WebSocket> clients) {
-        Observable.empty()
-                  .doOnSubscribe { clients.each { send it, POST, PAUSE } }
+        Observable.just(null).doOnSubscribe { clients.each { send it, POST, PAUSE } }
     }
 
     Observable startClients(Collection<WebSocket> clients, long startTime) {
-        Observable.empty()
-                  .doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime) } }
+        Observable.just(null).doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime) } }
     }
 
     Observable<Collection<WebSocket>> prepareClients(PrepareInfo info) {
         waitForReadyClients().doOnSubscribe { sendAll POST, PREPARE, info.serialize() }
     }
 
-    Observable prepareClient(WebSocket conn, PrepareInfo info) {
+    private Observable prepareClient(WebSocket conn, PrepareInfo info) {
         waitForReadyClient(conn).doOnSubscribe { send conn, POST, PREPARE, info.serialize() }
     }
 
@@ -141,12 +139,12 @@ class WebSocketMessageServer extends WebSocketServer {
     private Observable<Long> measureTimeDiff(WebSocket conn) {
         post[TIMESTAMP].filter { it.socket == conn }
                        .take(1)
-                       .map { System.currentTimeMillis() - Utils.deserializeLong(it.body) }
+                       .map { Utils.deserializeLong(it.body) - System.currentTimeMillis() }
                        .doOnNext { send conn, POST, TIMESTAMP_DIFFERENCE, Utils.serializeLong(it) }
                        .doOnSubscribe { send conn, POST, TIMESTAMP_REQUEST, Utils.serializeLong(System.currentTimeMillis()) }
     }
 
-    private Observable<Long> measureTimeDiffRegular(WebSocket conn) {
+    private Observable<Long> measureTimeDiffRegularly(WebSocket conn) {
         Observable.interval(1, TimeUnit.SECONDS)
                   .concatMap { measureTimeDiff(conn) }
                   .takeUntil(clientDisconnectAsObservable(conn))
@@ -162,9 +160,9 @@ class WebSocketMessageServer extends WebSocketServer {
         Observable.defer {
             def connectionsCnt = connections().size()
             if (connectionsCnt)
-                return post[READY].buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
+                post[READY].buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
             else
-                return Observable.just(connections())
+                Observable.just(connections())
         }
     }
 
@@ -173,7 +171,16 @@ class WebSocketMessageServer extends WebSocketServer {
 //            def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }?.average
 //            return System.currentTimeMillis() + maxAvgPing + 2500
 //        }
-        return System.currentTimeMillis() + 2500
+        return System.currentTimeMillis() + 3500
+    }
+
+    private Observable maybePrepareAutostartPlayback(WebSocket conn) {
+        if (player.playing)
+            prepareClient(conn, new PrepareInfo(song: player.currentSong,
+                                                position: player.currentPosition,
+                                                autostart: true))
+        else
+            Observable.empty()
     }
 
     @Override
@@ -181,8 +188,10 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.d "connections.size() = ${connections().size()}"
 
         warmupTimeDiff(conn).concatMap { requestClientInfo(conn) }
-                            .doOnCompleted { measureTimeDiffRegular(conn).subscribe() }
-                            .subscribe { processClientInfo(conn, it) }
+                            .doOnNext { clientInfoMap[conn] = it; bus.post new ClientConnectedEvent(it) }
+                            .concatMap { maybePrepareAutostartPlayback(conn) }
+                            .concatWith(measureTimeDiffRegularly(conn))
+                            .subscribe()
     }
 
     @Override
@@ -224,18 +233,6 @@ class WebSocketMessageServer extends WebSocketServer {
         for (WebSocket conn : connections()) {
             if (!conn.equals(exception)) send conn, type, msg, body
         }
-    }
-
-    private void processClientInfo(WebSocket conn, ClientInfo info) {
-        clientInfoMap[conn] = info
-
-        if (player.playing) {
-            def prepareInfo = new PrepareInfo(song: player.currentSong,
-                                              position: player.currentPosition,
-                                              autostart: true)
-            prepareClient(conn, prepareInfo).subscribe()
-        }
-        bus.post new ClientConnectedEvent(info)
     }
 
 //    @Subscribe
