@@ -46,8 +46,8 @@ abstract class BasePlayer extends RxExoPlayer {
     boolean shuffle = false
 
     abstract void startService()
-    abstract Song getCurrentSong()
 
+    Song currentSong
     protected Song lastSong
 
     protected DelayMeasurer prepareTimeMeasurer = new DelayMeasurer(10)
@@ -130,9 +130,9 @@ abstract class BasePlayer extends RxExoPlayer {
         playbackProgressNotifier = null
     }
 
-    Observable prepare() {
+    Observable prepare(Song song) {
         Observable.defer {
-            prepare(currentSong.sourceUri)
+            prepare(song.sourceUri).doOnSubscribe { currentSong = song }
         }
     }
 

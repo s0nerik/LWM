@@ -1,5 +1,4 @@
 package app
-
 import android.app.ActivityManager
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -20,7 +19,6 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import app.model.Song
-import app.player.LocalPlayer
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
@@ -114,10 +112,6 @@ class Utils extends Daggered {
 
     public static String getRandomColorString() {
         return String.format("#%06X", 0xFFFFFF & getRandomColor());
-    }
-
-    public static int getCurrentSongPosition(LocalPlayer player, List<Song> songList) {
-        return player.currentSong ? songList.indexOf(player.currentSong) : -1
     }
 
     public static void setSongAsRingtone(Context context, Song song) {

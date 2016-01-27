@@ -65,18 +65,14 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     Observable startAsObservable() {
-        def startHttpServer = Observable.empty().doOnSubscribe { httpStreamServer.start() }
-        def startWebSocketServer = Observable.empty().doOnSubscribe { start() }
-
-        Observable.merge(startHttpServer, startWebSocketServer)
+        Observable.just(true)
+                  .doOnSubscribe { httpStreamServer.start(); start() }
                   .doOnCompleted { started = true }
     }
 
     Observable stopAsObservable() {
-        def stopHttpServer = Observable.empty().doOnSubscribe { httpStreamServer.stop() }
-        def stopWebSocketServer = Observable.empty().doOnSubscribe { stop() }
-
-        Observable.merge(stopHttpServer, stopWebSocketServer)
+        Observable.just(true)
+                  .doOnSubscribe { httpStreamServer.stop(); stop() }
                   .doOnCompleted { started = false }
     }
 

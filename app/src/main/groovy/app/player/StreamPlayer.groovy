@@ -15,16 +15,11 @@ class StreamPlayer extends BasePlayer {
     @PackageScope
     Handler handler
 
-    Song song
-
-    Song currentSong
-
-    Observable prepareForPosition(int pos) {
+    Observable prepareForPosition(Song song, int pos) {
         reset().doOnSubscribe { Debug.d "prepareForPosition: ${pos}" }
-               .onErrorResumeNext(Observable.empty())
-               .doOnSubscribe { currentSong = song }
-               .concatWith(prepare())
-               .concatWith(seekTo(pos))
+               .onErrorResumeNext(Observable.just(PlayerEvent.IDLE))
+               .concatMap { prepare(song) }
+               .concatMap { seekTo(pos) }
     }
 
     @Override

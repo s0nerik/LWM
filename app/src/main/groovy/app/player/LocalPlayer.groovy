@@ -74,31 +74,26 @@ class LocalPlayer extends BasePlayer {
     }
     //endregion
 
-    Observable prepare(int position) {
-        Observable.concat(queueContainer.moveToAsObservable(position), prepare())
-                  .ignoreElements()
+    Observable prepare(Song song) {
+        reset().concatMap { super.prepare(song) }
+               .doOnError { Debug.e currentSong.toString() }
+               .onErrorResumeNext(queueContainer.moveToNextAsObservable(true)
+                                                .concatMap { prepare it })
     }
 
-    Observable prepare() {
-        Observable.concat(reset(), super.prepare())
-                  .ignoreElements()
-                  .doOnError {
-            Debug.e currentSong.toString()
-            Debug.e it
-
-            queueContainer.moveToNext(true)
-        }
-                  .retry(3)
+    Observable prepare(int position) {
+        queueContainer.moveToAsObservable(position)
+                      .concatMap { prepare(it) }
     }
 
     Observable prepareNextSong() {
-        Observable.concat(queueContainer.moveToNextAsObservable(), prepare())
-                  .ignoreElements()
+        queueContainer.moveToNextAsObservable()
+                      .concatMap { prepare(it) }
     }
 
     Observable preparePrevSong() {
-        Observable.concat(queueContainer.moveToPrevAsObservable(), prepare())
-                  .ignoreElements()
+        queueContainer.moveToPrevAsObservable()
+                      .concatMap { prepare(it) }
     }
 
     @Override

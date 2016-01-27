@@ -1,4 +1,5 @@
 package app.websocket
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -165,19 +166,17 @@ public class WebSocketMessageClient extends WebSocketClient {
         int offset = 10000
 
         Observable<Object> prepare
-        if (!info.seeking || player.song != info.song) {
-            prepare = Observable.just(info.song.toRemoteSong(uri.host))
-                                .doOnNext { player.song = it }
-                                .cast(Object)
+        if (!info.seeking || player.currentSong != info.song) {
+            def convertObservable = Observable.just(info.song.toRemoteSong(uri.host))
 
             if (info.autostart) {
-                prepare = prepare.concatMap { player.prepareForPosition info.position + offset }
-                                 .ignoreElements()
+                prepare = convertObservable.concatMap { player.prepareForPosition it, info.position + offset }
+                                           .ignoreElements()
             } else {
-                prepare = prepare.concatMap { player.prepareForPosition info.position }
+                prepare = convertObservable.concatMap { player.prepareForPosition it, info.position }
             }
         } else {
-            prepare = player.prepareForPosition info.position
+            prepare = player.prepareForPosition info.song, info.position
         }
 
         prepare = prepare.doOnCompleted { sendMessage POST, READY }
