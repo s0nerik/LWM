@@ -66,6 +66,8 @@ public class WebSocketMessageClient extends WebSocketClient {
     private Map<SocketMessage.Message, Observable<SocketMessage>> get = new HashMap<>()
     private Map<SocketMessage.Message, Observable<SocketMessage>> post = new HashMap<>()
 
+    private Observable<Long> timeDiffObservable
+
     WebSocketMessageClient(URI serverURI) {
         super(serverURI)
         Injector.inject this
@@ -83,6 +85,12 @@ public class WebSocketMessageClient extends WebSocketClient {
             get[m] = getMessages.filter { it.message == m }
             post[m] = postMessages.filter { it.message == m }
         }
+
+        timeDiffObservable = post[TIMESTAMP_REQUEST].map { Utils.deserializeLong(it.body) - System.currentTimeMillis() }
+                                                    .doOnNext { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
+                                                    .concatMap { t1 ->
+            post[TIMESTAMP_DIFFERENCE].take(1).map { ((Utils.deserializeLong(it.body) - (t1 as long)) / 2L) as long }
+        }
     }
 
     private void initSubscribers() {
@@ -96,20 +104,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         post[MESSAGE].subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
         post[CLIENT_INFO].subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
 
-//        post[TIMESTAMP].doOnNext { timeDifferences.add Utils.deserializeLong(it.body) }
-//                       .subscribe { sendMessage POST, PONG, Utils.serializeLong(System.currentTimeMillis()) }
-
-
-        Observable<Long> timeDiffObservable = post[TIMESTAMP_REQUEST].map { Utils.deserializeLong(it.body) - System.currentTimeMillis() }
-                                                                     .doOnNext { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
-                                                                     .concatMap { t1 ->
-            post[TIMESTAMP_DIFFERENCE].take(1).map { ((Utils.deserializeLong(it.body) - (t1 as long)) / 2L) as long }
-        }
-
         timeDiffObservable.subscribe { timeDifferences << it }
-
-//        post[TIMESTAMP_REQUEST].subscribe { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
-//        post[TIMESTAMP_DIFFERENCE].subscribe { sendMessage POST, TIMESTAMP, Utils.serializeLong(System.currentTimeMillis()) }
 
         messages.filter { it.message != PING }
                 .subscribe { Debug.d "$it.type: $it.message" }
