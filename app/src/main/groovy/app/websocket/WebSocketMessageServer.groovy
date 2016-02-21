@@ -31,6 +31,7 @@ import static app.websocket.SocketMessage.Type.POST
 @CompileStatic
 class WebSocketMessageServer extends WebSocketServer {
     private Map<WebSocket, ClientInfo> clientInfoMap = new HashMap<WebSocket, ClientInfo>()
+    private Map<WebSocket, Boolean> clientReadinessMap = new HashMap<WebSocket, Boolean>()
 
 //    private Map<WebSocket, PingMeasurer> pingMeasurers = new HashMap<WebSocket, PingMeasurer>()
 
@@ -98,14 +99,22 @@ class WebSocketMessageServer extends WebSocketServer {
         get[CURRENT_SONG].subscribe {
             send it.socket, POST, CURRENT_SONG, player.currentSong.serialize()
         }
+
+        post[READY].subscribe {
+            clientReadinessMap[it.socket] = true
+        }
     }
 
-    Observable pauseClients(Collection<WebSocket> clients) {
-        Observable.just(null).doOnSubscribe { clients.each { send it, POST, PAUSE } }
+    Observable pauseClients() {
+        Observable.just(null).doOnSubscribe { sendAll POST, PAUSE }
     }
 
     Observable startClients(Collection<WebSocket> clients, long startTime) {
         Observable.just(null).doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime) } }
+    }
+
+    Observable startClients(long startTime) {
+        Observable.just(null).doOnSubscribe { sendAll POST, START, Utils.serializeLong(startTime) }
     }
 
     Observable<Collection<WebSocket>> prepareClients(PrepareInfo info) {
@@ -154,7 +163,7 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private Observable<Collection<WebSocket>> waitForReadyClients() {
         Observable.defer {
-            def connectionsCnt = connections().size()
+            def connectionsCnt = clientInfoMap.size()
             if (connectionsCnt)
                 post[READY].buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
             else
@@ -220,13 +229,13 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     void sendAll(SocketMessage.Type type, SocketMessage.Message msg, byte[] body = null) {
-        for (WebSocket conn : connections()) {
+        for (WebSocket conn : clientInfoMap.keySet()) {
             send conn, type, msg, body
         }
     }
 
     void sendAllExcept(WebSocket exception, SocketMessage.Type type, SocketMessage.Message msg, byte[] body = null) {
-        for (WebSocket conn : connections()) {
+        for (WebSocket conn : clientInfoMap.keySet()) {
             if (!conn.equals(exception)) send conn, type, msg, body
         }
     }

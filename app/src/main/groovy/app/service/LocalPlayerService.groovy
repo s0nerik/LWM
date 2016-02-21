@@ -108,7 +108,7 @@ class LocalPlayerService extends Service {
 
         if (server.started)
             if (cmd.pause) {
-                observable = Observable.merge(player.setPaused(cmd.pause), server.pauseClients(server.connections()))
+                observable = Observable.merge(player.setPaused(cmd.pause), server.pauseClients())
             } else {
                 observable = Observable.defer {
                     server.prepareClients(new PrepareInfo(player.currentSong, System.currentTimeMillis(), player.currentPosition, false, false))
