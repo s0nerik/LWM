@@ -1,4 +1,5 @@
 package app.player
+
 import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
@@ -10,6 +11,7 @@ import app.events.player.playback.SongPlayingEvent
 import app.helper.DelayMeasurer
 import app.model.Song
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer
+import com.google.android.exoplayer.MediaCodecSelector
 import com.google.android.exoplayer.TrackRenderer
 import com.google.android.exoplayer.extractor.ExtractorSampleSource
 import com.google.android.exoplayer.upstream.DefaultAllocator
@@ -144,7 +146,7 @@ abstract class BasePlayer extends RxExoPlayer {
                                           new DefaultUriDataSource(context, "LWM"),
                                           allocator,
                                           bufferSegmentSize * bufferSegmentCount
-                )
+                ), MediaCodecSelector.DEFAULT
         )
     }
 

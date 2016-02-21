@@ -1,4 +1,5 @@
 package app.service
+
 import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
@@ -14,20 +15,16 @@ import app.player.LocalPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.ui.notification.NowPlayingNotification
 import app.websocket.WebSocketMessageServer
-import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
-import org.apache.commons.lang3.tuple.ImmutablePair
-import org.java_websocket.WebSocket
 import ru.noties.debug.Debug
 import rx.Observable
 
 import javax.inject.Inject
-import java.util.concurrent.TimeUnit
 
 import static app.events.player.playback.control.ControlButtonEvent.Type.*
 
@@ -54,6 +51,8 @@ class LocalPlayerService extends Service {
         Injector.inject this
 
         bus.register this
+
+        player.server = server
 
         mediaButtonsReceiver = new ComponentName(packageName,
                                                  MediaButtonIntentReceiver.canonicalName)
@@ -90,37 +89,25 @@ class LocalPlayerService extends Service {
     }
 
     @Subscribe
-    void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
-        Debug.d "cmd.startAt: $cmd.startAt"
-        Debug.d "System.currentTimeMillis(): ${System.currentTimeMillis()}"
-        def delay = cmd.startAt - System.currentTimeMillis()
-        Debug.d "delay: $delay"
-
-        player.start()
-              .delaySubscription(delay, TimeUnit.MILLISECONDS)
-              .doOnCompleted { Debug.d "LocalPlayer started playback with delay." }
-              .subscribe()
-    }
-
-    @Subscribe
     void onPauseStateChanged(ChangePauseStateCommand cmd) {
-        Observable observable
-
-        if (server.started)
-            if (cmd.pause) {
-                observable = Observable.merge(player.setPaused(cmd.pause), server.pauseClients())
-            } else {
-                observable = Observable.defer {
-                    server.prepareClients(new PrepareInfo(player.currentSong, System.currentTimeMillis(), player.currentPosition, false, false))
-                          .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
-                          .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
-                          .concatMap { server.startClients(it.left, it.right) }
-                }
-            }
-        else
-            observable = player.setPaused(cmd.pause)
-
-        observable.subscribe { Debug.d "LocalPlayer setPaused: $it" }
+        player.setPaused(cmd.pause).subscribe()
+//        Observable observable
+//
+//        if (server.started)
+//            if (cmd.pause) {
+//                observable = Observable.merge(player.setPaused(cmd.pause), server.pauseClients())
+//            } else {
+//                observable = Observable.defer {
+//                    server.prepareClients(new PrepareInfo(player.currentSong, System.currentTimeMillis(), player.currentPosition, false, false))
+//                          .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
+//                          .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
+//                          .concatMap { server.startClients(it.left, it.right) }
+//                }
+//            }
+//        else
+//            observable = player.setPaused(cmd.pause)
+//
+//        observable.subscribe { Debug.d "LocalPlayer setPaused: $it" }
     }
 
     @Subscribe
@@ -141,18 +128,6 @@ class LocalPlayerService extends Service {
 
     @Subscribe
     void playSongAtPosition(PlaySongAtPositionCommand cmd) {
-        Observable<Object> startPlayback
-        if (server.started) {
-            startPlayback = Observable.defer {
-                server.prepareClients(new PrepareInfo(player.currentSong, System.currentTimeMillis(), player.currentPosition, false, false))
-                      .map { new ImmutablePair<Collection<WebSocket>, Long>(it, server.recommendedStartTime) }
-                      .doOnNext { bus.post new StartPlaybackDelayedCommand(it.right) }
-                      .concatMap { server.startClients(it.left, it.right) }
-            }
-        } else {
-            startPlayback = player.start()
-        }
-
         Observable<Object> prepare = null
         switch (cmd.positionType) {
             case PlaySongAtPositionCommand.PositionType.NEXT:
@@ -166,7 +141,7 @@ class LocalPlayerService extends Service {
                 break
         }
 
-        prepare.concatWith(startPlayback)
+        prepare.concatMap { player.start() }
                .subscribe()
     }
 

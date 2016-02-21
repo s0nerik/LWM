@@ -1,4 +1,5 @@
 package app.websocket
+
 import app.Injector
 import app.Utils
 import app.commands.SeekToCommand
@@ -107,8 +108,14 @@ class WebSocketMessageServer extends WebSocketServer {
         }
     }
 
-    Observable pauseClients() {
-        Observable.just(null).doOnSubscribe { sendAll POST, PAUSE }
+    Observable pauseClients(Collection<WebSocket> clients = null) {
+        Observable.just(null)
+                  .doOnSubscribe {
+            if (clients != null)
+                clients.each { send it, POST, PAUSE }
+            else
+                sendAll POST, PAUSE
+        }
     }
 
     Observable startClients(Collection<WebSocket> clients = null) {
@@ -239,12 +246,13 @@ class WebSocketMessageServer extends WebSocketServer {
 
 //    @Subscribe
 //    void onPauseStateChanged(ChangePauseStateCommand cmd) {
-//        if (cmd.pause) {
-//            pauseClients(connections()).subscribe()
-////            sendAll POST, PAUSE
-//        } else {
-//            sendAll POST, PREPARE, Utils.serializeInt(player.currentPosition)
-//        }
+//        isPlaying = !cmd.pause
+////        if (cmd.pause) {
+////            pauseClients(connections()).subscribe()
+//////            sendAll POST, PAUSE
+////        } else {
+////            sendAll POST, PREPARE, Utils.serializeInt(player.currentPosition)
+////        }
 //    }
 
     @Subscribe

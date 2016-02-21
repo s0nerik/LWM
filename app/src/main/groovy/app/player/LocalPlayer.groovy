@@ -8,17 +8,12 @@ import app.service.LocalPlayerService
 import app.websocket.WebSocketMessageServer
 import app.websocket.entities.PrepareInfo
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
-
-import javax.inject.Inject
 
 @CompileStatic
 class LocalPlayer extends BasePlayer {
 
-    @Inject
-    @PackageScope
     WebSocketMessageServer server
 
     private Queue queueContainer = new Queue()
@@ -38,11 +33,11 @@ class LocalPlayer extends BasePlayer {
             stop().subscribe()
         }.subscribe()
 
-        errorSubject.subscribe {
-            Debug.e "RxExoPlayer error:"
-            Debug.e it
-            stop().subscribe()
-        }
+//        errorSubject.subscribe {
+//            Debug.e "RxExoPlayer error:"
+//            Debug.e it
+//            stop().subscribe()
+//        }
     }
 
     //region Queue manipulation
@@ -89,19 +84,28 @@ class LocalPlayer extends BasePlayer {
                                 .doOnError { Debug.e currentSong.toString() }
                                 .onErrorResumeNext(queueContainer.moveToNextAsObservable(true)
                                                                  .concatMap { prepare it })
-        if (server.started) {
+        if (server?.started)
             observable = observable.concatMap { server.prepareClients(new PrepareInfo(song)) }
-        }
+
         return observable
     }
 
     @Override
     Observable start() {
-        if (server.started)
+        if (server?.started)
             return server.startClients()
                          .concatMap { super.start() }
 
         return super.start()
+    }
+
+    @Override
+    Observable pause() {
+        if (server?.started)
+            return super.pause()
+                        .concatMap { server.pauseClients() }
+
+        return super.pause()
     }
 
     Observable prepare(int position) {
