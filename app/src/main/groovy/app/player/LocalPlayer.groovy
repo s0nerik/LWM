@@ -1,15 +1,25 @@
 package app.player
+
 import android.content.Intent
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.model.Song
 import app.service.LocalPlayerService
+import app.websocket.WebSocketMessageServer
+import app.websocket.entities.PrepareInfo
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
 
+import javax.inject.Inject
+
 @CompileStatic
 class LocalPlayer extends BasePlayer {
+
+    @Inject
+    @PackageScope
+    WebSocketMessageServer server
 
     private Queue queueContainer = new Queue()
 
@@ -28,11 +38,11 @@ class LocalPlayer extends BasePlayer {
             stop().subscribe()
         }.subscribe()
 
-//        errorSubject.subscribe {
-//            Debug.e "RxExoPlayer error:"
-//            Debug.e it
-//            stop().subscribe()
-//        }
+        errorSubject.subscribe {
+            Debug.e "RxExoPlayer error:"
+            Debug.e it
+            stop().subscribe()
+        }
     }
 
     //region Queue manipulation
@@ -75,10 +85,23 @@ class LocalPlayer extends BasePlayer {
     //endregion
 
     Observable prepare(Song song) {
-        reset().concatMap { super.prepare(song) }
-               .doOnError { Debug.e currentSong.toString() }
-               .onErrorResumeNext(queueContainer.moveToNextAsObservable(true)
-                                                .concatMap { prepare it })
+        def observable = reset().concatMap { super.prepare(song) }
+                                .doOnError { Debug.e currentSong.toString() }
+                                .onErrorResumeNext(queueContainer.moveToNextAsObservable(true)
+                                                                 .concatMap { prepare it })
+        if (server.started) {
+            observable = observable.concatMap { server.prepareClients(new PrepareInfo(song)) }
+        }
+        return observable
+    }
+
+    @Override
+    Observable start() {
+        if (server.started)
+            return server.startClients()
+                         .concatMap { super.start() }
+
+        return super.start()
     }
 
     Observable prepare(int position) {

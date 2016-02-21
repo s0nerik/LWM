@@ -44,6 +44,8 @@ class WebSocketMessageServer extends WebSocketServer {
     private Map<SocketMessage.Message, Observable<SocketMessage>> get = new HashMap<>()
     private Map<SocketMessage.Message, Observable<SocketMessage>> post = new HashMap<>()
 
+    private static final int startOffset = 5 * 1000
+
     @Inject
     @PackageScope
     LocalPlayer player
@@ -109,12 +111,15 @@ class WebSocketMessageServer extends WebSocketServer {
         Observable.just(null).doOnSubscribe { sendAll POST, PAUSE }
     }
 
-    Observable startClients(Collection<WebSocket> clients, long startTime) {
-        Observable.just(null).doOnSubscribe { clients.each { send it, POST, START, Utils.serializeLong(startTime) } }
-    }
-
-    Observable startClients(long startTime) {
-        Observable.just(null).doOnSubscribe { sendAll POST, START, Utils.serializeLong(startTime) }
+    Observable startClients(Collection<WebSocket> clients = null) {
+        def startTime = System.currentTimeMillis() + startOffset
+        Observable.timer(startOffset, TimeUnit.MILLISECONDS)
+                  .doOnSubscribe {
+            if (clients != null)
+                clients.each { send it, POST, START, Utils.serializeLong(startTime) }
+            else
+                sendAll POST, START, Utils.serializeLong(startTime)
+        }
     }
 
     Observable<Collection<WebSocket>> prepareClients(PrepareInfo info) {
@@ -169,14 +174,6 @@ class WebSocketMessageServer extends WebSocketServer {
             else
                 Observable.just(connections())
         }
-    }
-
-    long getRecommendedStartTime() {
-//        if (pingMeasurers) {
-//            def maxAvgPing = pingMeasurers.values().max { PingMeasurer m -> m.average }?.average
-//            return System.currentTimeMillis() + maxAvgPing + 2500
-//        }
-        return System.currentTimeMillis() + 3500
     }
 
     private Observable maybePrepareAutostartPlayback(WebSocket conn) {
