@@ -12,6 +12,7 @@ import app.Daggered
 import com.commit451.nativestackblur.NativeStackBlur
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import rx.Observable
 
 import javax.inject.Inject
 
@@ -57,6 +58,11 @@ class Blurer extends Daggered {
             return input;
         }
 
+    }
+
+    @SuppressLint("NewApi")
+    Observable<Bitmap> blurAsObservable(Bitmap input) {
+        Observable.fromCallable { blur(input) }
     }
 
 }

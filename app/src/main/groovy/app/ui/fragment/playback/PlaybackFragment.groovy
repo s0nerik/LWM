@@ -1,4 +1,5 @@
 package app.ui.fragment.playback
+
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -32,6 +33,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_playback, injectAllViews = true)
@@ -98,11 +100,6 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
         background.unregisterSensorManager()
     }
 
-    protected Observable<Bitmap> getBgBitmap(Song song) {
-        getCoverBitmap(song)
-        .map { blurer.blur it }
-    }
-
     protected void onSongPlaying(SongPlayingEvent event) {
         seekBar.progress = PlayerUtils.calculateProgressForSeekBar event.progress as int
         currentTime.text = player.currentPositionInMinutes
@@ -139,22 +136,24 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
         endTime.text = song.durationString
 
         getCoverBitmap(song)
+                .concatMap { Bitmap original -> blurer.blurAsObservable(original).map { new Tuple2(original, it) } }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { Bitmap b ->
-                    coverDrawable = new TransitionDrawable([coverDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
-                    cover.imageDrawable = coverDrawable
-                    coverDrawable.startTransition 1000
-                }
+                .subscribe { Tuple2<Bitmap, Bitmap> covers -> changeCover covers.first, covers.second }
+    }
 
-        getBgBitmap(song)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { Bitmap b ->
-                    bgDrawable = new TransitionDrawable([bgDrawable.getDrawable(1), new BitmapDrawable(b)] as Drawable[])
-                    background.imageDrawable = bgDrawable
-                    bgDrawable.startTransition 1000
-                }
+    private void changeCover(Bitmap newCover, Bitmap bg) {
+        coverDrawable = new TransitionDrawable([coverDrawable.getDrawable(1), new BitmapDrawable(newCover)] as Drawable[])
+        cover.imageDrawable = coverDrawable
+        coverDrawable.startTransition 1000
+
+        Observable.timer(500, TimeUnit.MILLISECONDS)
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe {
+            bgDrawable = new TransitionDrawable([bgDrawable.getDrawable(1), new BitmapDrawable(bg)] as Drawable[])
+            background.imageDrawable = bgDrawable
+            bgDrawable.startTransition 1000
+        }
     }
 
     private void setPlayButton(boolean playing) {
