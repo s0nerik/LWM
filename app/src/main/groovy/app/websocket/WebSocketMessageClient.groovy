@@ -98,7 +98,7 @@ public class WebSocketMessageClient extends WebSocketClient {
         get[IS_PLAYING].subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
         get[CLIENT_INFO].subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
 
-        post[START].subscribe { bus.post new StartPlaybackDelayedCommand(Utils.deserializeLong(it.body) - timeDifferences.average) }
+        post[START].subscribe { bus.post new StartPlaybackDelayedCommand(Utils.deserializeLong(it.body) + timeDifferences.average) }
         post[PAUSE].doOnNext { player.setPaused(true) }.subscribe()
         post[PREPARE].subscribe { prepare PrepareInfo.deserialize(it.body) }
         post[MESSAGE].subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
