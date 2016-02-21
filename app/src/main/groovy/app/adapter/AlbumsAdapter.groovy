@@ -43,7 +43,7 @@ class AlbumsAdapter extends ArrayAdapter<Album> {
     private PaletteApplier paletteApplier = new PaletteApplier(0.75f)
 
     public AlbumsAdapter(final Context context, List<Album> albums) {
-        super(context, R.layout.item_songs, albums as Album[])
+        super(context, R.layout.item_songs, albums as List<Album>)
         Injector.inject(this)
         this.context = context
         this.albums = albums

@@ -8,11 +8,11 @@ buildscript {
         maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-beta5'
+        classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 //        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.7-SNAPSHOT'
-        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.9-SNAPSHOT'
+        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.8'
 //        classpath 'com.github.groovy:groovy-android-gradle-plugin:bea6ca6'
 //        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.1.1'

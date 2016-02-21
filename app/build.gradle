@@ -22,16 +22,16 @@ repositories {
 //    maven { url 'http://repo.grousset.fr/snapshots' }
 }
 
-project.androidGroovy {
-    options {
-        sourceCompatibility = '1.6'
-        targetCompatibility = '1.6'
-        groovyOptions.configurationScript = file("$projectDir/config/groovy-compile-options.groovy")
-        groovyOptions.verbose = true
-//        groovyOptions.javaAnnotationProcessing = true
-        groovyOptions.optimizationOptions = [int: true]
-    }
-}
+//project.androidGroovy {
+//    options {
+//        sourceCompatibility = '1.6'
+//        targetCompatibility = '1.6'
+//        groovyOptions.configurationScript = file("$projectDir/config/groovy-compile-options.groovy")
+//        groovyOptions.verbose = true
+////        groovyOptions.javaAnnotationProcessing = true
+//        groovyOptions.optimizationOptions = [int: true]
+//    }
+//}
 
 android {
     compileSdkVersion "android-23"
@@ -51,10 +51,10 @@ android {
 //        preDexLibraries = false
         javaMaxHeapSize "4g"
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_6
+//        targetCompatibility JavaVersion.VERSION_1_6
+//    }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
