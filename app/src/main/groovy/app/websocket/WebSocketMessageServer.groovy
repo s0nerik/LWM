@@ -2,7 +2,6 @@ package app.websocket
 
 import app.Injector
 import app.Utils
-import app.commands.SeekToCommand
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.player.LocalPlayer
@@ -10,7 +9,6 @@ import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.java_websocket.WebSocket
@@ -185,9 +183,11 @@ class WebSocketMessageServer extends WebSocketServer {
 
     private Observable maybePrepareAutostartPlayback(WebSocket conn) {
         if (player.playing)
-            prepareClient(conn, new PrepareInfo(song: player.currentSong,
-                                                position: player.currentPosition,
-                                                autostart: true))
+            prepareClient(conn, PrepareInfo.builder()
+                                           .song(player.currentSong)
+                                           .position(player.currentPosition + 1000)
+                                           .build())
+                    .concatMap { startClients([conn]) }
         else
             Observable.empty()
     }
@@ -255,9 +255,9 @@ class WebSocketMessageServer extends WebSocketServer {
 ////        }
 //    }
 
-    @Subscribe
-    void onSeekTo(SeekToCommand cmd) {
-        sendAll POST, PREPARE, new PrepareInfo(player.currentSong, System.currentTimeMillis(), cmd.position as int, false, true).serialize()
-    }
+//    @Subscribe
+//    void onSeekTo(SeekToCommand cmd) {
+//        sendAll POST, PREPARE, new PrepareInfo(player.currentSong, System.currentTimeMillis(), cmd.position as int, false, true).serialize()
+//    }
 
 }

@@ -108,6 +108,21 @@ class LocalPlayer extends BasePlayer {
         return super.pause()
     }
 
+    @Override
+    Observable seekTo(int msec) {
+        if (server?.started)
+            return super.pause()
+                        .concatMap { super.seekTo(msec) }
+                        .concatMap { server.prepareClients(PrepareInfo.builder()
+                                                                      .song(currentSong)
+                                                                      .seeking(true)
+                                                                      .position(msec)
+                                                                      .build()) }
+                        .concatMap { start() }
+
+        return super.seekTo(msec)
+    }
+
     Observable prepare(int position) {
         queueContainer.moveToAsObservable(position)
                       .concatMap { prepare(it) }

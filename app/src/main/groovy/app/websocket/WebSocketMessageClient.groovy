@@ -32,7 +32,6 @@ import rx.subjects.Subject
 
 import javax.inject.Inject
 import java.nio.ByteBuffer
-import java.util.concurrent.TimeUnit
 
 import static app.websocket.SocketMessage.Message.*
 import static app.websocket.SocketMessage.Type.GET
@@ -158,30 +157,16 @@ public class WebSocketMessageClient extends WebSocketClient {
     }
 
     private void prepare(PrepareInfo info) {
-        int offset = 10000
-
-        Observable<Object> prepare
-        if (!info.seeking || player.currentSong != info.song) {
-            def convertObservable = Observable.just(info.song.toRemoteSong(uri.host))
-
-            if (info.autostart) {
-                prepare = convertObservable.concatMap { player.prepareForPosition it, info.position + offset }
-                                           .ignoreElements()
-            } else {
-                prepare = convertObservable.concatMap { player.prepareForPosition it, info.position }
-            }
-        } else {
-            prepare = player.prepareForPosition info.song, info.position
+        def convertObservable = Observable.just(info.song.toRemoteSong(uri.host))
+        def prepare = convertObservable.concatMap {
+            if (info.seeking && it == player.currentSong)
+                return player.pause()
+                             .concatMap { player.seekTo(info.position) }
+            else
+                player.prepareForPosition it, info.position
         }
 
-        prepare = prepare.doOnCompleted { sendMessage POST, READY }
-
-        if (info.autostart && !info.seeking) {
-            prepare = prepare.mergeWith(Observable.timer(offset, TimeUnit.MILLISECONDS).map { (Object) null })
-                             .concatWith(player.start())
-        }
-
-        prepare.subscribe()
+        prepare.subscribe { sendMessage POST, READY }
     }
 
     //region Chat
