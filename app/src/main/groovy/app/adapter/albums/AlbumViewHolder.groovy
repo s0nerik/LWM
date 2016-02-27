@@ -3,6 +3,7 @@ package app.adapter.albums
 import android.content.Intent
 import android.os.Parcelable
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import app.Injector
@@ -10,7 +11,6 @@ import app.R
 import app.Utils
 import app.model.Album
 import app.ui.activity.AlbumInfoActivity
-import app.ui.custom_view.SquareWidthImageView
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @CompileStatic
 class AlbumViewHolder extends FlexibleViewHolder {
     @InjectView(R.id.cover)
-    SquareWidthImageView cover
+    ImageView cover
     @InjectView(R.id.title)
     TextView title
     @InjectView(R.id.subtitle)
