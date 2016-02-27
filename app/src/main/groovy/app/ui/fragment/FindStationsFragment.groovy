@@ -13,7 +13,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
-import app.adapter.WiFiP2pStationsAdapter
+import app.adapter.stations.WiFiP2pStationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.helper.StationsExplorer

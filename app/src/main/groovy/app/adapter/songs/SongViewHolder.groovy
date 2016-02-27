@@ -9,10 +9,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import app.Injector
 import app.R
 import app.Utils
-import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.commands.PlaySongAtPositionCommand
 import app.model.Song
 import app.player.LocalPlayer
@@ -86,7 +86,25 @@ class SongViewHolder extends FlexibleViewHolder {
             menu.inflate(R.menu.songs_popup)
         }
 
-        menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(song))
+        menu.onMenuItemClickListener = {
+            switch (it.itemId) {
+                case R.id.action_remove_from_queue:
+                    player.removeFromQueue song
+                    Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT)
+                    toast.show()
+                    return true
+                case R.id.action_add_to_queue:
+                    player.addToQueue song
+                    Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT)
+                    toast.show()
+                    return true
+                case R.id.set_as_ringtone:
+                    Utils.setSongAsRingtone(context, song)
+                    return true
+                default:
+                    return false
+            }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             final ImageView imageView = (ImageView) v
