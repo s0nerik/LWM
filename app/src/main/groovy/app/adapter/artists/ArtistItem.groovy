@@ -3,13 +3,14 @@ package app.adapter.artists
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import app.R
-import app.adapter.base.MediaStoreItem
+import app.adapter.albums.AlbumItem
+import app.adapter.base.MediaStoreExpandableItem
 import app.model.Artist
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class ArtistItem extends MediaStoreItem<ArtistViewHolder> {
+class ArtistItem extends MediaStoreExpandableItem<ArtistViewHolder, AlbumItem> {
     Artist artist
 
     ArtistItem(Artist artist) {

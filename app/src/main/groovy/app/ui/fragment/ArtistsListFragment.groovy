@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -6,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
+import app.adapter.albums.AlbumItem
 import app.adapter.artists.ArtistItem
 import app.adapter.artists.ArtistsAdapter
 import app.helper.CollectionManager
@@ -59,7 +61,11 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
         mProgress.hide()
 
         this.artists.clear()
-        this.artists.addAll artists.collect { new ArtistItem(it) }
+        this.artists.addAll artists.collect {
+            def item = new ArtistItem(it)
+            item.setSubItems collectionManager.getAlbums(it).collect { new AlbumItem(it) }
+            item
+        }
         if (artists) {
             adapter.notifyDataSetChanged()
             mRecyclerView.show()

@@ -8,7 +8,6 @@ import groovy.transform.TupleConstructor
 @TupleConstructor
 @CompileStatic
 class MediaStoreItem<VH extends RecyclerView.ViewHolder> extends AbstractFlexibleItem<VH> {
-
     long id
 
     @Override
