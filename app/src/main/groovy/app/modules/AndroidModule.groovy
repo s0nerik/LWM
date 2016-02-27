@@ -15,13 +15,16 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
 import app.*
-import app.adapter.*
+import app.adapter.AlbumCoversAdapter
+import app.adapter.ArtistsAdapter
+import app.adapter.LocalMusicFragmentsAdapter
+import app.adapter.WiFiP2pStationsAdapter
+import app.adapter.albums.AlbumViewHolder
 import app.adapter.albums.AlbumsAdapter
-import app.adapter.songs.SongItem
+import app.adapter.songs.SongViewHolder
 import app.adapter.songs.SongsListAdapter
 import app.adapter.view_holders.ArtistViewHolder
 import app.adapter.view_holders.OnContextMenuItemClickListener
-import app.adapter.songs.SongViewHolder
 import app.adapter.view_holders.WifiP2pDeviceViewHolder
 import app.events.MainThreadBus
 import app.events.RxBus
@@ -75,7 +78,8 @@ import static android.content.Context.*
                 SocketMessage,
 
                 // ViewHolders
-                SongItem, SongViewHolder,
+                SongViewHolder,
+                AlbumViewHolder,
                 ArtistViewHolder,
                 WifiP2pDeviceViewHolder,
                 OnContextMenuItemClickListener,

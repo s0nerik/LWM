@@ -1,21 +1,20 @@
 package app.ui.fragment
-import android.content.Intent
+
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.GridView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
+import app.adapter.albums.AlbumItem
 import app.adapter.albums.AlbumsAdapter
 import app.helper.CollectionManager
 import app.model.Album
 import app.model.Artist
-import app.ui.activity.AlbumInfoActivity
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.github.s0nerik.betterknife.annotations.OnItemClick
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -27,7 +26,7 @@ import javax.inject.Inject
 @InjectLayout(value = R.layout.fragment_list_albums, injectAllViews = true)
 public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
-    GridView grid
+    RecyclerView recycler
     LinearLayout empty
     ProgressBar progress
 
@@ -36,7 +35,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     Artist artist
 
-    private List<Album> albums = new ArrayList<>();
+    private List<AlbumItem> albums = new ArrayList<>();
 
     public static Fragment create(Artist artist) {
         def fragment = new AlbumsListFragment()
@@ -55,58 +54,29 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
-        grid.adapter = new AlbumsAdapter(activity, albums)
+        recycler.adapter = new AlbumsAdapter(albums)
 
         loadAlbums()
     }
 
     private void loadAlbums() {
-        grid.hide()
+        recycler.hide()
         progress.show()
 
         onAlbumsLoaded(artist ? artist.albums : collectionManager.albums)
-
-//        Observable<Album> observable
-//
-//        if (artist) {
-//            observable = albumsManager.loadAllAlbums(artist)
-//        } else {
-//            observable = albumsManager.loadAllAlbums()
-//        }
-//
-//        // TODO: replace this with caching of supported songs inside SongsManager
-//        observable
-////                .concatMap {
-////                    def songsNum = it.songs.count().toBlocking().singleOrDefault(0)
-////
-////                    if (songsNum > 0) Observable.just it
-////                    else Observable.empty()
-////                }
-//                .toList()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe this.&onAlbumsLoaded
     }
 
     private void onAlbumsLoaded(List<Album> loadedAlbums) {
         progress.hide()
 
         albums.clear()
-        albums.addAll loadedAlbums
+        albums.addAll loadedAlbums.collect { new AlbumItem(it) }
 
         if (albums) {
-            grid.show()
+            recycler.show()
         } else {
-            grid.hide()
+            recycler.hide()
             empty.show()
         }
-    }
-
-    @OnItemClick(R.id.grid)
-    public void onItemClick(int position) {
-        def intent = new Intent(activity, AlbumInfoActivity)
-        intent.putExtra "album", albums[position] as Parcelable
-        startActivity intent
-        activity.overridePendingTransition R.anim.slide_in_right, R.anim.slide_out_left_long_alpha
     }
 }

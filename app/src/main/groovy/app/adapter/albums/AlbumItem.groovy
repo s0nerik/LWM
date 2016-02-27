@@ -19,7 +19,7 @@ class AlbumItem extends MediaStoreItem<AlbumViewHolder> {
 
     @Override
     int getLayoutRes() {
-        return R.layout.item_songs
+        return R.layout.item_albums
     }
 
     @Override

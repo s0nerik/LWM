@@ -1,5 +1,7 @@
 package app.adapter.albums
 
+import android.content.Intent
+import android.os.Parcelable
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -7,10 +9,12 @@ import app.Injector
 import app.R
 import app.Utils
 import app.model.Album
+import app.ui.activity.AlbumInfoActivity
 import app.ui.custom_view.SquareWidthImageView
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.betterknife.annotations.OnClick
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
@@ -37,6 +41,8 @@ class AlbumViewHolder extends FlexibleViewHolder {
     @PackageScope
     Utils utils
 
+    Album album
+
     AlbumViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
         Injector.inject this
@@ -44,6 +50,8 @@ class AlbumViewHolder extends FlexibleViewHolder {
     }
 
     void setAlbum(Album album) {
+        this.album = album
+
         title.text = album.title
         subtitle.text = utils.getArtistName album.artistName
 //        holder.mBottomBar.setBackgroundResource(R.color.grid_item_default_bg);
@@ -56,6 +64,14 @@ class AlbumViewHolder extends FlexibleViewHolder {
              .placeholder(R.color.grid_item_default_bg)
              .crossFade()
              .into(cover)
+    }
+
+    @OnClick(R.id.layout)
+    void onClick() {
+        def intent = new Intent(layout.context, AlbumInfoActivity)
+        intent.putExtra "album", album as Parcelable
+        layout.context.startActivity intent
+//        activity.overridePendingTransition R.anim.slide_in_right, R.anim.slide_out_left_long_alpha
     }
 
 }
