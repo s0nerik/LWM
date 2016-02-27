@@ -17,6 +17,7 @@ import android.view.WindowManager
 import app.adapter.LocalMusicFragmentsAdapter
 import app.adapter.albums.AlbumViewHolder
 import app.adapter.albums.AlbumsAdapter
+import app.adapter.albums.ArtistAlbumViewHolder
 import app.adapter.artists.ArtistViewHolder
 import app.adapter.artists.ArtistsAdapter
 import app.adapter.songs.SongViewHolder
@@ -75,6 +76,7 @@ import static android.content.Context.*
                 // ViewHolders
                 SongViewHolder,
                 AlbumViewHolder,
+                ArtistAlbumViewHolder,
                 ArtistViewHolder,
                 StationViewHolder,
 

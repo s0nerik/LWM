@@ -39,9 +39,9 @@ class AlbumViewHolder extends FlexibleViewHolder {
 
     @Inject
     @PackageScope
-    Utils utils
+    protected Utils utils
 
-    Album album
+    protected Album album
 
     AlbumViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
