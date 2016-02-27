@@ -1,4 +1,4 @@
-package app.modules
+package app
 
 import android.app.ActivityManager
 import android.app.NotificationManager
@@ -14,7 +14,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
-import app.*
 import app.adapter.AlbumCoversAdapter
 import app.adapter.ArtistsAdapter
 import app.adapter.LocalMusicFragmentsAdapter
