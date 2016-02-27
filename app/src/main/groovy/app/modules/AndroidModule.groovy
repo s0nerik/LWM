@@ -14,12 +14,9 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
-import app.App
-import app.Config
-import app.Daggered
-import app.PrefManager
-import app.Utils
+import app.*
 import app.adapter.*
+import app.adapter.items.SongItem
 import app.adapter.view_holders.ArtistViewHolder
 import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.adapter.view_holders.SongViewHolder
@@ -38,9 +35,8 @@ import app.player.StreamPlayer
 import app.receiver.MediaButtonIntentReceiver
 import app.receiver.PendingIntentReceiver
 import app.receiver.WiFiDirectBroadcastReceiver
-
-import app.server.MusicStation
 import app.server.HttpStreamServer
+import app.server.MusicStation
 import app.service.LocalPlayerService
 import app.service.MusicStationService
 import app.service.StreamPlayerService
@@ -77,7 +73,7 @@ import static android.content.Context.*
                 SocketMessage,
 
                 // ViewHolders
-                SongViewHolder,
+                SongItem, SongViewHolder,
                 ArtistViewHolder,
                 WifiP2pDeviceViewHolder,
                 OnContextMenuItemClickListener,

@@ -1,6 +1,5 @@
 package app.ui.fragment
 
-import android.view.View
 import app.R
 import app.events.player.queue.PlaylistAddedToQueueEvent
 import app.events.player.queue.QueueShuffledEvent
@@ -9,7 +8,6 @@ import app.events.player.queue.SongRemovedFromQueueEvent
 import app.model.Song
 import app.player.LocalPlayer
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -33,7 +31,7 @@ public final class QueueFragment extends BaseSongsListFragment {
     @Subscribe
     public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
         int startIndex = songs.size()
-        songs.addAll event.appendedSongs
+//        songs.addAll event.appendedSongs
 
         adapter.notifyItemRangeInserted startIndex, event.appendedSongs.size()
     }
@@ -41,13 +39,13 @@ public final class QueueFragment extends BaseSongsListFragment {
     @Subscribe
     public void onQueueShuffled(QueueShuffledEvent event) {
         songs.clear()
-        songs.addAll event.queue
+//        songs.addAll event.queue
         adapter.notifyDataSetChanged()
     }
 
     @Subscribe
     public void onSongAddedToQueue(SongAddedToQueueEvent event) {
-        songs.add event.song
+//        songs.add event.song
         adapter.notifyItemInserted songs.size() - 1
     }
 

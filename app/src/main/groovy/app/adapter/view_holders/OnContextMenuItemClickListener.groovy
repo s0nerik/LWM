@@ -16,9 +16,6 @@ import javax.inject.Inject
 
 @CompileStatic
 class OnContextMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-    private int position;
-    List<Song> songs;
-
     @PackageScope
     @Inject
     LocalPlayer player;
@@ -27,27 +24,28 @@ class OnContextMenuItemClickListener implements PopupMenu.OnMenuItemClickListene
     @Inject
     Context context
 
-    OnContextMenuItemClickListener(int pos, List<Song> songs) {
+    Song song
+
+    OnContextMenuItemClickListener(Song song) {
         Injector.inject(this)
-        position = pos
-        this.songs = songs
+        this.song = song
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_remove_from_queue:
-                player.removeFromQueue(songs.get(position));
+                player.removeFromQueue(song);
                 Toast toast = Toast.makeText(context, R.string.song_removed_from_queue, Toast.LENGTH_SHORT);
                 toast.show();
                 return true;
             case R.id.action_add_to_queue:
-                player.addToQueue(songs.get(position));
+                player.addToQueue(song);
                 Toast toast = Toast.makeText(context, R.string.song_added_to_queue, Toast.LENGTH_SHORT);
                 toast.show();
                 return true;
             case R.id.set_as_ringtone:
-                Utils.setSongAsRingtone(context, songs.get(position));
+                Utils.setSongAsRingtone(context, song);
                 return true;
             default:
                 return false;

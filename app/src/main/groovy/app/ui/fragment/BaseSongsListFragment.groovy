@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -6,7 +7,7 @@ import android.view.View
 import android.widget.Toast
 import app.R
 import app.adapter.SongsListAdapter
-import app.commands.SetQueueAndPlayCommand
+import app.adapter.items.SongItem
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -40,7 +41,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     @Inject
     LocalPlayer player
 
-    List<Song> songs = new ArrayList<>()
+    List<SongItem> songs = new ArrayList<>()
     Song currentSong
 
     SongsListAdapter adapter
@@ -53,7 +54,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         setBusListeners new BusListener(), this
-        adapter = new SongsListAdapter(activity, songs)
+
+        adapter = new SongsListAdapter(songs)
     }
 
     @Override
@@ -77,36 +79,36 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
         if (isVisibleToUser) {
             bus.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, {
-                bus.post new SetQueueAndPlayCommand(songs, 0, true)
+//                bus.post new SetQueueAndPlayCommand(songs, 0, true)
             })
         }
     }
 
-    protected void setSelection(Song song) {
-        if (songs) {
-            int index = songs.indexOf song
-            if (index >= 0) {
-                setSelection(index)
-            }
-        }
-    }
+//    protected void setSelection(Song song) {
+//        if (songs) {
+//            int index = songs.indexOf song
+//            if (index >= 0) {
+//                setSelection(index)
+//            }
+//        }
+//    }
 
-    protected void setSelection(int position) {
-        int prevSelection = adapter.selection
-        adapter.selection = position
-        if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
-                position > layoutManager.findLastCompletelyVisibleItemPosition()) {
-            if (Math.abs(prevSelection - adapter.selection) <= 100) {
-                twoWayView.smoothScrollToPosition position
-            } else {
-                twoWayView.scrollToPosition position
-            }
-        }
-    }
+//    protected void setSelection(int position) {
+//        int prevSelection = adapter.selection
+//        adapter.selection = position
+//        if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
+//                position > layoutManager.findLastCompletelyVisibleItemPosition()) {
+//            if (Math.abs(prevSelection - adapter.selection) <= 100) {
+//                twoWayView.smoothScrollToPosition position
+//            } else {
+//                twoWayView.scrollToPosition position
+//            }
+//        }
+//    }
 
     protected void shuffleAll() {
         if (songs) {
-            bus.post new SetQueueAndPlayCommand(songs, 0, true)
+//            bus.post new SetQueueAndPlayCommand(songs, 0, true)
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
         }
@@ -114,7 +116,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
     protected void onSongsLoaded(List<Song> loadedSongs) {
         songs.clear()
-        songs.addAll loadedSongs
+        songs.addAll loadedSongs.collect { new SongItem(it) }
 
         progress.hide()
         updateSongsList()
@@ -123,7 +125,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     private void updateSongsList() {
         if (songs) {
             adapter.notifyDataSetChanged()
-            selection = currentSong
+//            selection = currentSong
 
             twoWayView.show()
 
@@ -139,19 +141,19 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         @Subscribe
         public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
             currentSong = event.song
-            setSelection currentSong
+//            setSelection currentSong
         }
 
         @Subscribe
         public void onSongPlaybackStarted(PlaybackStartedEvent event) {
             currentSong = event.song
-            setSelection currentSong
-            adapter.updateEqualizerState(true)
+//            setSelection currentSong
+//            adapter.updateEqualizerState(true)
         }
 
         @Subscribe
         public void onSongPlaybackPaused(PlaybackPausedEvent event) {
-            adapter.updateEqualizerState(false)
+//            adapter.updateEqualizerState(false)
         }
 
         @Subscribe

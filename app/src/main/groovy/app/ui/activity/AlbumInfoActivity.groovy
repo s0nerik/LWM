@@ -20,6 +20,7 @@ import app.R
 import app.R.layout
 import app.Utils
 import app.adapter.SongsListAdapter
+import app.adapter.items.SongItem
 import app.commands.EnqueueCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -94,7 +95,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
         songs = album.songs
 
-        def adapter = new SongsListAdapter(this, songs)
+//        def adapter = new SongsListAdapter(this, songs)
+        def adapter = new SongsListAdapter(songs.collect { new SongItem(it) })
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         recycler.adapter = adapter
