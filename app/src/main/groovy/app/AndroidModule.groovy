@@ -15,14 +15,14 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
 import app.adapter.AlbumCoversAdapter
-import app.adapter.ArtistsAdapter
+import app.adapter.artists.ArtistsAdapter
 import app.adapter.LocalMusicFragmentsAdapter
 import app.adapter.WiFiP2pStationsAdapter
 import app.adapter.albums.AlbumViewHolder
 import app.adapter.albums.AlbumsAdapter
 import app.adapter.songs.SongViewHolder
 import app.adapter.songs.SongsListAdapter
-import app.adapter.view_holders.ArtistViewHolder
+import app.adapter.artists.ArtistViewHolder
 import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.adapter.view_holders.WifiP2pDeviceViewHolder
 import app.events.MainThreadBus

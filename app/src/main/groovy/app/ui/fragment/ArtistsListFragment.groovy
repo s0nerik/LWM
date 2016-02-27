@@ -6,7 +6,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
-import app.adapter.ArtistsAdapter
+import app.adapter.artists.ArtistItem
+import app.adapter.artists.ArtistsAdapter
 import app.helper.CollectionManager
 import app.model.Artist
 import app.ui.base.DaggerOttoOnCreateFragment
@@ -32,7 +33,7 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     @PackageScope
     CollectionManager collectionManager
 
-    private List<Artist> artists = new ArrayList<>()
+    private List<ArtistItem> artists = new ArrayList<>()
 
     private ArtistsAdapter adapter
 
@@ -41,7 +42,7 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
         super.onViewCreated(view, savedInstanceState)
         mRecyclerView.layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        adapter = new ArtistsAdapter(activity, artists)
+        adapter = new ArtistsAdapter(artists)
         mRecyclerView.adapter = adapter
         mRecyclerView.hasFixedSize = true
 
@@ -51,19 +52,14 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     private loadArtists() {
         mRecyclerView.hide()
         mProgress.show()
-        onArtistsLoaded(collectionManager.artists)
-//        artistsManager.loadAllArtists()
-//                .toList()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe this.&onArtistsLoaded
+        onArtistsLoaded collectionManager.artists
     }
 
     private void onArtistsLoaded(List<Artist> artists) {
         mProgress.hide()
 
         this.artists.clear()
-        this.artists.addAll artists
+        this.artists.addAll artists.collect { new ArtistItem(it) }
         if (artists) {
             adapter.notifyDataSetChanged()
             mRecyclerView.show()
