@@ -15,14 +15,13 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.WindowManager
 import app.adapter.LocalMusicFragmentsAdapter
-import app.adapter.stations.WiFiP2pStationsAdapter
 import app.adapter.albums.AlbumViewHolder
 import app.adapter.albums.AlbumsAdapter
 import app.adapter.artists.ArtistViewHolder
 import app.adapter.artists.ArtistsAdapter
 import app.adapter.songs.SongViewHolder
 import app.adapter.songs.SongsListAdapter
-import app.adapter.stations.WifiP2pStationViewHolder
+import app.adapter.stations.StationViewHolder
 import app.events.MainThreadBus
 import app.events.RxBus
 import app.helper.CollectionManager
@@ -69,7 +68,6 @@ import static android.content.Context.*
                 Daggered,
                 MusicCollection,
                 PaletteApplier,
-                WiFiP2pStationsAdapter,
                 WiFiDirectBroadcastReceiver,
                 MusicStation,
                 SocketMessage,
@@ -78,7 +76,7 @@ import static android.content.Context.*
                 SongViewHolder,
                 AlbumViewHolder,
                 ArtistViewHolder,
-                WifiP2pStationViewHolder,
+                StationViewHolder,
 
                 // WebSocket
                 WebSocketMessageServer,

@@ -13,11 +13,11 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
-import app.adapter.stations.WiFiP2pStationsAdapter
+import app.adapter.stations.StationItem
+import app.adapter.stations.StationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.helper.StationsExplorer
-import app.model.Station
 import app.ui.activity.RemotePlaybackActivity
 import app.ui.base.DaggerOttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
@@ -61,8 +61,8 @@ public class FindStationsFragment extends DaggerOttoOnCreateFragment {
     @InjectView(R.id.recycler)
     RecyclerView recycler
 
-    private WiFiP2pStationsAdapter adapter
-    private List<Station> stations = new ArrayList<>();
+    private StationsAdapter adapter
+    private List<StationItem> stations = new ArrayList<>();
 
     private boolean isRefreshing = false
 
@@ -70,7 +70,7 @@ public class FindStationsFragment extends DaggerOttoOnCreateFragment {
     void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = new WiFiP2pStationsAdapter(stations)
+        adapter = new StationsAdapter(stations)
 
         recycler.layoutManager = new LinearLayoutManager(activity)
         recycler.adapter = adapter
@@ -114,7 +114,7 @@ public class FindStationsFragment extends DaggerOttoOnCreateFragment {
     @Subscribe
     void onStationsListUpdated(StationsListUpdatedEvent event) {
         stations.clear()
-        stations.addAll event.stations
+        stations.addAll event.stations.collect { new StationItem(it) }
         adapter.notifyDataSetChanged()
     }
 

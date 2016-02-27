@@ -1,6 +1,5 @@
-package app.adapter.view_holders
+package app.adapter.stations
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import app.Injector
@@ -11,13 +10,15 @@ import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
+import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
-class WifiP2pDeviceViewHolder extends RecyclerView.ViewHolder {
+class StationViewHolder extends FlexibleViewHolder {
 
     @Inject
     @PackageScope
@@ -33,18 +34,23 @@ class WifiP2pDeviceViewHolder extends RecyclerView.ViewHolder {
     @InjectView(R.id.subtitle)
     TextView subtitle
 
-    private final List<Station> stations
+    Station station
 
-    WifiP2pDeviceViewHolder(View itemView, List<Station> stations) {
-        super(itemView)
-        this.stations = stations
+    StationViewHolder(View view, FlexibleAdapter adapter) {
+        super(view, adapter)
         Injector.inject this
         BetterKnife.inject this, itemView
     }
 
+    void setStation(Station station) {
+        this.station = station
+
+        title.text = station.info.name
+    }
+
     @OnClick(R.id.item)
     void onItemClicked(View item) {
-        explorer.connect(stations[adapterPosition].device)
+        explorer.connect(station.device)
     }
 
 }
