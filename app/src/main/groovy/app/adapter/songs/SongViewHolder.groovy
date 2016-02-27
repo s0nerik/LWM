@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import app.Injector
 import app.R
+import app.Utils
 import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.commands.PlaySongAtPositionCommand
 import app.model.Song
@@ -30,17 +31,17 @@ import javax.inject.Inject
 @CompileStatic
 class SongViewHolder extends FlexibleViewHolder {
     @InjectView(R.id.title)
-    TextView title;
+    TextView title
     @InjectView(R.id.artist)
-    TextView artist;
+    TextView artist
     @InjectView(R.id.duration)
-    TextView duration;
+    TextView duration
     @InjectView(R.id.contextMenu)
-    ImageView contextMenu;
+    ImageView contextMenu
     @InjectView(R.id.playIcon)
-    EqualizerView playIcon;
+    EqualizerView playIcon
     @InjectView(R.id.container)
-    RelativeLayout container;
+    RelativeLayout container
 
     @PackageScope
     @Inject
@@ -54,39 +55,51 @@ class SongViewHolder extends FlexibleViewHolder {
     @Inject
     Context context
 
+    @PackageScope
+    @Inject
+    Utils utils
+
     Song song
 
     SongViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
-        Injector.inject(this)
-        BetterKnife.inject(this, view)
+        Injector.inject this
+        BetterKnife.inject this, view
+    }
+
+    void setSong(Song song) {
+        this.song = song
+
+        title.text = song.title
+        artist.text = utils.getArtistName(song.artistName)
+        duration.text = song.durationString
     }
 
     @OnClick(R.id.contextMenu)
-    public void onContextMenuClicked(View v) {
+    void onContextMenuClicked(View v) {
         def wrapper = new ContextThemeWrapper(context, R.style.AppTheme)
         def menu = new PopupMenu(wrapper, v)
 
         if (player.isSongInQueue(song)) {
-            menu.inflate(R.menu.songs_popup_in_queue);
+            menu.inflate(R.menu.songs_popup_in_queue)
         } else {
-            menu.inflate(R.menu.songs_popup);
+            menu.inflate(R.menu.songs_popup)
         }
 
-        menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(song));
+        menu.setOnMenuItemClickListener(new OnContextMenuItemClickListener(song))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            final ImageView imageView = (ImageView) v;
-            final ColorFilter oldFilter = imageView.getColorFilter();
-            imageView.setColorFilter(context.getResources().getColor(R.color.accent));
+            final ImageView imageView = (ImageView) v
+            final ColorFilter oldFilter = imageView.getColorFilter()
+            imageView.setColorFilter(context.getResources().getColor(R.color.accent))
             menu.onDismissListener = {PopupMenu m -> imageView.setColorFilter(oldFilter)}
         }
 
-        menu.show();
+        menu.show()
     }
 
     @OnClick(R.id.container)
-    public void onClicked() {
+    void onClicked() {
 //            player.prepare(song)
         bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.EXACT, adapterPosition)
     }

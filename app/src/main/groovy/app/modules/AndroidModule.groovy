@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import app.*
 import app.adapter.*
+import app.adapter.albums.AlbumsAdapter
 import app.adapter.songs.SongItem
 import app.adapter.songs.SongsListAdapter
 import app.adapter.view_holders.ArtistViewHolder

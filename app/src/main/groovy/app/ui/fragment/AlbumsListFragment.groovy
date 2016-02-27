@@ -8,7 +8,7 @@ import android.widget.GridView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
-import app.adapter.AlbumsAdapter
+import app.adapter.albums.AlbumsAdapter
 import app.helper.CollectionManager
 import app.model.Album
 import app.model.Artist
