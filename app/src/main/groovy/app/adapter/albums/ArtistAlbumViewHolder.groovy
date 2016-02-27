@@ -22,6 +22,8 @@ class ArtistAlbumViewHolder extends AlbumViewHolder {
     void setAlbum(Album album) {
         super.setAlbum album
 
+        subtitle.text = album.year ? "$album.year • ${album.songs.size()} songs" : "${album.songs.size()} songs"
+
         shadowTop.hide()
         shadowBottom.hide()
 
