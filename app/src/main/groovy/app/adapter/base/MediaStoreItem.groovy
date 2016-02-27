@@ -1,4 +1,4 @@
-package app.adapter.items
+package app.adapter.base
 
 import android.support.v7.widget.RecyclerView
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem

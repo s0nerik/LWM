@@ -19,8 +19,8 @@ import android.widget.Toast
 import app.R
 import app.R.layout
 import app.Utils
-import app.adapter.SongsListAdapter
-import app.adapter.items.SongItem
+import app.adapter.songs.SongsListAdapter
+import app.adapter.songs.SongItem
 import app.commands.EnqueueCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent

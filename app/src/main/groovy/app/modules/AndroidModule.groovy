@@ -16,10 +16,11 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import app.*
 import app.adapter.*
-import app.adapter.items.SongItem
+import app.adapter.songs.SongItem
+import app.adapter.songs.SongsListAdapter
 import app.adapter.view_holders.ArtistViewHolder
 import app.adapter.view_holders.OnContextMenuItemClickListener
-import app.adapter.view_holders.SongViewHolder
+import app.adapter.songs.SongViewHolder
 import app.adapter.view_holders.WifiP2pDeviceViewHolder
 import app.events.MainThreadBus
 import app.events.RxBus

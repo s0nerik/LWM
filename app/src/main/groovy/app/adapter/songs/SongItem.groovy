@@ -1,11 +1,11 @@
-package app.adapter.items
+package app.adapter.songs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import app.Injector
 import app.R
 import app.Utils
-import app.adapter.view_holders.SongViewHolder
+import app.adapter.base.MediaStoreItem
 import app.model.Song
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import groovy.transform.CompileStatic

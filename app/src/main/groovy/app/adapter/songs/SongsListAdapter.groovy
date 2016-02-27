@@ -1,7 +1,6 @@
-package app.adapter
+package app.adapter.songs
 
 import android.support.annotation.NonNull
-import app.adapter.items.SongItem
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope

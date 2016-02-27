@@ -1,4 +1,4 @@
-package app.adapter.view_holders
+package app.adapter.songs
 
 import android.content.Context
 import android.graphics.ColorFilter
@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import app.Injector
 import app.R
+import app.adapter.view_holders.OnContextMenuItemClickListener
 import app.commands.PlaySongAtPositionCommand
 import app.model.Song
 import app.player.LocalPlayer

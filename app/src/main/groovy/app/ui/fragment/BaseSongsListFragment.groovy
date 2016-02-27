@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import app.R
-import app.adapter.SongsListAdapter
-import app.adapter.items.SongItem
+import app.adapter.songs.SongsListAdapter
+import app.adapter.songs.SongItem
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
