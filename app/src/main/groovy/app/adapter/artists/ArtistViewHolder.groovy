@@ -49,9 +49,20 @@ class ArtistViewHolder extends ExpandableViewHolder {
         this.artist = artist
 
         def artistName = utils.getArtistName artist.name
+        def shortName = artistName.replaceAll("\\p{P}|\\p{S}", "")
+                                  .replaceAll("  ", " ")
+                                  .split(" ")
+                                  .collect { String s -> s[0] }
+                                  .join("")
+
+        int fontSize = 24 + Math.round(56f / (shortName.size()**1.25f)) as int
 
         def drawable = TextDrawable.builder()
-                                   .buildRound(WordUtils.capitalize(artistName[0..1]),
+                                   .beginConfig()
+                                   .toUpperCase()
+                                   .fontSize(fontSize)
+                                   .endConfig()
+                                   .buildRound(WordUtils.capitalize(shortName),
                                                ColorGenerator.DEFAULT.getColor(artistName))
 
         title.text = artistName
