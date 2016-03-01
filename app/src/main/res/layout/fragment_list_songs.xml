@@ -12,10 +12,8 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/item_songs" />
 
-    <app.ui.custom_view.FastScroller
+    <eu.davidea.fastscroller.FastScroller
         android:id="@+id/fast_scroller"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignTop="@id/twoWayView"

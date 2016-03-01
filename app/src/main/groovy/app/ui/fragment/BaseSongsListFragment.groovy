@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import app.R
-import app.adapter.songs.SongsListAdapter
 import app.adapter.songs.SongItem
+import app.adapter.songs.SongsListAdapter
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -16,9 +16,9 @@ import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
-import app.ui.custom_view.FastScroller
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe
+import eu.davidea.fastscroller.FastScroller
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import rx.Observable
@@ -67,7 +67,9 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
 
-        fastScroller.hide()
+        adapter.setFastScroller fastScroller, resources.getColor(R.color.md_deep_purple_600)
+
+//        fastScroller.hide()
         twoWayView.hide()
         progress.show()
         loadSongs().subscribe this.&onSongsLoaded
@@ -129,11 +131,11 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
 
             twoWayView.show()
 
-            fastScroller.recyclerView = twoWayView
-            fastScroller.show()
+//            fastScroller.recyclerView = twoWayView
+//            fastScroller.show()
         } else {
             emptyView.show()
-            fastScroller.hide()
+//            fastScroller.hide()
         }
     }
 
