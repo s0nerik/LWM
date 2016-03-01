@@ -104,5 +104,6 @@
     <string name="rate_app">Rate this app!</string>
 
     <string name="local_music">Local music</string>
+    <string name="action_search">Search</string>
 
 </resources>

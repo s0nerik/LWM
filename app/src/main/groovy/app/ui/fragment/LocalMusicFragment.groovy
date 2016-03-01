@@ -1,4 +1,5 @@
 package app.ui.fragment
+
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -6,6 +7,7 @@ import android.support.annotation.Nullable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.animation.Animation
@@ -15,7 +17,9 @@ import app.PrefManager
 import app.R
 import app.adapter.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
-import app.events.player.playback.*
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongPlayingEvent
 import app.events.ui.ChangeFabActionCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.service.StreamPlayerService
@@ -25,7 +29,9 @@ import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.*
+import com.squareup.otto.Bus
+import com.squareup.otto.Produce
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import rx.Subscription
@@ -49,6 +55,7 @@ public class LocalMusicFragment extends DaggerFragment {
     ViewPager pager
     FloatingActionButton fab
     NowPlayingFragment nowPlayingFragment
+    SearchView searchView
     protected CoordinatorLayout coordinator
 
     private Subscription radialEqualizerViewSubscription
@@ -99,7 +106,17 @@ public class LocalMusicFragment extends DaggerFragment {
 
     protected void initToolbar() {
         toolbar.setTitle getString(R.string.local_music)
-//        toolbar.inflateMenu R.menu.local_broadcast
+        searchView.hide()
+
+        toolbar.inflateMenu R.menu.search
+        toolbar.onMenuItemClickListener = {
+                switch (it.itemId) {
+                    case R.id.action_search:
+                        searchView.show()
+                        return true
+                }
+                return false
+            }
     }
 
     @OnClick(R.id.fab)
