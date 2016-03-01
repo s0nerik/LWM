@@ -69,7 +69,7 @@
         <item>Songs</item>
         <item>Artists</item>
         <item>Albums</item>
-        <item>Queue</item>
+        <!--<item>Queue</item>-->
     </string-array>
 
     // Navigation Drawer titles

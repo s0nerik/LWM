@@ -28,7 +28,8 @@ class LocalMusicFragmentsAdapter extends FragmentStatePagerAdapter {
     private Fragment[] fragments = [new SongsListFragment(),
                                     new ArtistsListFragment(),
                                     new AlbumsListFragment(),
-                                    new QueueFragment()] as Fragment[]
+//                                    new QueueFragment()
+    ] as Fragment[]
 
     LocalMusicFragmentsAdapter(FragmentManager fm) {
         super(fm)
