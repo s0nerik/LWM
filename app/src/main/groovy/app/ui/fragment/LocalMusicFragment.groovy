@@ -99,7 +99,7 @@ public class LocalMusicFragment extends DaggerFragment {
 
     protected void initToolbar() {
         toolbar.setTitle getString(R.string.local_music)
-        toolbar.inflateMenu R.menu.local_broadcast
+//        toolbar.inflateMenu R.menu.local_broadcast
     }
 
     @OnClick(R.id.fab)
