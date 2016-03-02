@@ -12,6 +12,7 @@ import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.events.ui.ChangeFabActionCommand
+import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
 import app.model.Song
 import app.player.LocalPlayer
@@ -42,6 +43,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     LocalPlayer player
 
     List<SongItem> songs = new ArrayList<>()
+    List<SongItem> filteredSongs = new ArrayList<>()
     Song currentSong
 
     SongsListAdapter adapter
@@ -120,6 +122,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         songs.clear()
         songs.addAll loadedSongs.collect { new SongItem(it) }
 
+        filteredSongs = new ArrayList(songs)
+
         progress.hide()
         updateSongsList()
     }
@@ -163,6 +167,11 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
             shuffleAll()
         }
 
+        @Subscribe
+        public void onEvent(FilterLocalMusicCommand cmd) {
+            adapter.searchText = cmd.constraint
+            adapter.filterItems(filteredSongs)
+        }
     }
 
 }

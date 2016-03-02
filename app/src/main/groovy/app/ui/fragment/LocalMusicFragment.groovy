@@ -24,6 +24,7 @@ import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.events.ui.ChangeFabActionCommand
+import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.helper.MenuTint
 import app.service.StreamPlayerService
@@ -140,12 +141,19 @@ public class LocalMusicFragment extends DaggerFragment {
         def searchTextState = RxTextView.textChanges(searchText).map { it.length() as boolean }
         def searchTextStateChange = searchTextState.startWith(false).buffer(2, 1).filter { it[0] != it[1] }
 
+        RxTextView.textChanges(searchText)
+                  .subscribe { bus.post new FilterLocalMusicCommand(it) }
+
         searchIcon.onClick {
             if (searchToggle.progress > 0)
                 searchText.text = ""
         }
 
-        btnClose.onClick { searchView.hide() }
+
+        btnClose.onClick {
+            searchText.text = ""
+            searchView.hide()
+        }
 
         searchTextStateChange
                 .filter { !it[0] && it[1] }

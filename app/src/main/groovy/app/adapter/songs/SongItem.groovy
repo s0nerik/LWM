@@ -6,10 +6,11 @@ import app.R
 import app.adapter.base.MediaStoreItem
 import app.model.Song
 import eu.davidea.flexibleadapter.FlexibleAdapter
+import eu.davidea.flexibleadapter.items.IFilterable
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class SongItem extends MediaStoreItem<SongViewHolder> {
+class SongItem extends MediaStoreItem<SongViewHolder> implements IFilterable {
     Song song
 
     SongItem(Song song) {
@@ -30,5 +31,10 @@ class SongItem extends MediaStoreItem<SongViewHolder> {
     @Override
     void bindViewHolder(FlexibleAdapter adapter, SongViewHolder holder, int position, List payloads) {
         holder.song = song
+    }
+
+    @Override
+    boolean filter(String constraint) {
+        return song.title?.toLowerCase()?.contains(constraint.toLowerCase()) || song.artistName?.toLowerCase()?.contains(constraint.toLowerCase())
     }
 }
