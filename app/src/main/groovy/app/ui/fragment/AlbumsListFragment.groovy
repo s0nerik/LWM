@@ -10,11 +10,13 @@ import android.widget.ProgressBar
 import app.R
 import app.adapter.albums.AlbumItem
 import app.adapter.albums.AlbumsAdapter
+import app.events.ui.FilterLocalMusicCommand
 import app.helper.CollectionManager
 import app.model.Album
 import app.model.Artist
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -35,7 +37,10 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
 
     Artist artist
 
-    private List<AlbumItem> albums = new ArrayList<>();
+    private List<AlbumItem> albums = new ArrayList<>()
+    private List<AlbumItem> filteredAlbums = new ArrayList<>()
+
+    private AlbumsAdapter adapter
 
     public static Fragment create(Artist artist) {
         def fragment = new AlbumsListFragment()
@@ -54,7 +59,8 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
-        recycler.adapter = new AlbumsAdapter(albums)
+        adapter = new AlbumsAdapter(albums)
+        recycler.adapter = adapter
 
         loadAlbums()
     }
@@ -72,11 +78,19 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
         albums.clear()
         albums.addAll loadedAlbums.collect { new AlbumItem(it) }
 
+        filteredAlbums = new ArrayList(albums)
+
         if (albums) {
             recycler.show()
         } else {
             recycler.hide()
             empty.show()
         }
+    }
+
+    @Subscribe
+    void onEvent(FilterLocalMusicCommand cmd) {
+        adapter.searchText = cmd.constraint
+        adapter.filterItems(filteredAlbums)
     }
 }
