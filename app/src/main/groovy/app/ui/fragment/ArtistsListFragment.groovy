@@ -10,11 +10,13 @@ import app.R
 import app.adapter.albums.ArtistAlbumItem
 import app.adapter.artists.ArtistItem
 import app.adapter.artists.ArtistsAdapter
+import app.events.ui.FilterLocalMusicCommand
 import app.helper.CollectionManager
 import app.model.Artist
 import app.ui.base.DaggerOttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
@@ -36,6 +38,7 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     CollectionManager collectionManager
 
     private List<ArtistItem> artists = new ArrayList<>()
+    private List<ArtistItem> filteredArtists = new ArrayList<>()
 
     private ArtistsAdapter adapter
 
@@ -66,12 +69,21 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
             item.setSubItems collectionManager.getAlbums(it).collect { new ArtistAlbumItem(it) }
             item
         }
+
+        filteredArtists = new ArrayList(this.artists)
+
         if (artists) {
             adapter.notifyDataSetChanged()
             mRecyclerView.show()
         } else {
             mEmpty.show()
         }
+    }
+
+    @Subscribe
+    void onEvent(FilterLocalMusicCommand cmd) {
+        adapter.searchText = cmd.constraint
+        adapter.filterItems(filteredArtists)
     }
 
 }
