@@ -25,6 +25,7 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.events.ui.ChangeFabActionCommand
 import app.events.ui.ShouldStartArtistInfoActivity
+import app.helper.MenuTint
 import app.service.StreamPlayerService
 import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
@@ -124,6 +125,10 @@ public class LocalMusicFragment extends DaggerFragment {
             }
             return false
         }
+
+        MenuTint.on(toolbar.menu)
+                .setMenuItemIconColor(resources.getColor(R.color.md_white))
+                .apply(activity)
 
         initSearchView()
     }
