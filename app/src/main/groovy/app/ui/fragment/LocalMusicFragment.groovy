@@ -116,7 +116,7 @@ public class LocalMusicFragment extends DaggerFragment {
     protected void initToolbar() {
         toolbar.setTitle getString(R.string.local_music)
 
-        toolbar.inflateMenu R.menu.search
+        toolbar.inflateMenu R.menu.local_music
         toolbar.onMenuItemClickListener = {
             switch (it.itemId) {
                 case R.id.action_search:

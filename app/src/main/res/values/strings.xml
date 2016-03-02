@@ -105,5 +105,6 @@
 
     <string name="local_music">Local music</string>
     <string name="action_search">Search</string>
+    <string name="action_sort">Sort</string>
 
 </resources>
