@@ -150,6 +150,7 @@ dependencies {
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.2.4'
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'eu.davidea:flexible-adapter:5.0.0-b4'
+    compile 'com.github.renaudcerrato:ToggleDrawable:1.0.2'
 
     // Image loading
     compile 'com.github.bumptech.glide:glide:3.6.1'

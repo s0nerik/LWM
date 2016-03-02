@@ -1,5 +1,6 @@
 package app.ui.fragment
 
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -7,11 +8,13 @@ import android.support.annotation.Nullable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewPager
-import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import app.PrefManager
 import app.R
@@ -29,6 +32,8 @@ import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
+import com.jakewharton.rxbinding.widget.RxTextView
+import com.mypopsy.drawable.SearchCrossDrawable
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
@@ -55,7 +60,10 @@ public class LocalMusicFragment extends DaggerFragment {
     ViewPager pager
     FloatingActionButton fab
     NowPlayingFragment nowPlayingFragment
-    SearchView searchView
+    ViewGroup searchView
+    EditText searchText
+    ImageView searchIcon
+    View btnClose
     protected CoordinatorLayout coordinator
 
     private Subscription radialEqualizerViewSubscription
@@ -106,17 +114,55 @@ public class LocalMusicFragment extends DaggerFragment {
 
     protected void initToolbar() {
         toolbar.setTitle getString(R.string.local_music)
-        searchView.hide()
 
         toolbar.inflateMenu R.menu.search
         toolbar.onMenuItemClickListener = {
-                switch (it.itemId) {
-                    case R.id.action_search:
-                        searchView.show()
-                        return true
-                }
-                return false
+            switch (it.itemId) {
+                case R.id.action_search:
+                    searchView.show()
+                    return true
             }
+            return false
+        }
+
+        initSearchView()
+    }
+
+    private void initSearchView() {
+        def searchToggle = new SearchCrossDrawable(context)
+        searchIcon.imageDrawable = searchToggle
+
+        def searchTextState = RxTextView.textChanges(searchText).map { it.length() as boolean }
+        def searchTextStateChange = searchTextState.startWith(false).buffer(2, 1).filter { it[0] != it[1] }
+
+        searchIcon.onClick {
+            if (searchToggle.progress > 0)
+                searchText.text = ""
+        }
+
+        btnClose.onClick { searchView.hide() }
+
+        searchTextStateChange
+                .filter { !it[0] && it[1] }
+                .subscribe {
+            def animator = ValueAnimator.ofFloat(0f, 1f)
+            animator.duration = 500
+            animator.addUpdateListener {
+                searchToggle.progress = it.animatedValue as float
+            }
+            animator.start()
+        }
+
+        searchTextStateChange
+                .filter { it[0] && !it[1] }
+                .subscribe {
+            def animator = ValueAnimator.ofFloat(1f, 0f)
+            animator.duration = 500
+            animator.addUpdateListener {
+                searchToggle.progress = it.animatedValue as float
+            }
+            animator.start()
+        }
     }
 
     @OnClick(R.id.fab)
