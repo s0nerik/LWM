@@ -1,6 +1,7 @@
 package app.ui.fragment
 
 import android.os.Bundle
+import android.support.annotation.IdRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -27,7 +28,7 @@ import rx.Observable
 import javax.inject.Inject
 
 @CompileStatic
-abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
+abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implements SortableFragment {
 
     @InjectView(R.id.twoWayView)
     RecyclerView twoWayView
@@ -47,6 +48,9 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
     Song currentSong
 
     SongsListAdapter adapter
+
+    private int sortActionId
+    private boolean orderAscending
 
     private LinearLayoutManager layoutManager
 
@@ -174,4 +178,44 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment {
         }
     }
 
+    @Override
+    int getSortMenuId() {
+        return R.menu.sort_songs
+    }
+
+    @Override
+    int getSortActionId() {
+        return sortActionId
+    }
+
+    @Override
+    void setSortActionId(@IdRes int id) {
+        sortActionId = id
+    }
+
+    @Override
+    boolean isOrderAscending() {
+        return orderAscending
+    }
+
+    @Override
+    void setOrderAscending(boolean value) {
+        orderAscending = value
+    }
+
+    @Override
+    int getSortIconId() {
+        return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
+
+        if (sortActionId == R.id.songs_sort_year) {
+            return orderAscending ? R.drawable.sort_1_9 : R.drawable.sort_9_1
+        } else {
+            return orderAscending ? R.drawable.sort_a_z : R.drawable.sort_z_a
+        }
+    }
+
+    @Override
+    void sortItems() {
+
+    }
 }

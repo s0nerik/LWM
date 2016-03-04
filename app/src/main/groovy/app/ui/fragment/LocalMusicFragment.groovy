@@ -7,8 +7,12 @@ import android.os.Parcelable
 import android.support.annotation.Nullable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.Toolbar
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -44,6 +48,8 @@ import groovy.transform.PackageScope
 import rx.Subscription
 
 import javax.inject.Inject
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_local_music, injectAllViews = true)
@@ -77,6 +83,9 @@ public class LocalMusicFragment extends DaggerFragment {
 
     private boolean canShowFab = true
 
+    Fragment currentFragment
+    SortableFragment currentSortableFragment
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,12 +98,15 @@ public class LocalMusicFragment extends DaggerFragment {
         super.onViewCreated view, savedInstanceState
         initToolbar()
         bus.register(this)
-        pager.adapter = new LocalMusicFragmentsAdapter(childFragmentManager)
+
+        def adapter = new LocalMusicFragmentsAdapter(childFragmentManager)
+        pager.adapter = adapter
         tabs.viewPager = pager
 
         nowPlayingFragment = childFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
         childFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
 
+        currentFragment = adapter.getItem(0)
         tabs.onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             void onPageScrollStateChanged(int state) {
@@ -105,6 +117,11 @@ public class LocalMusicFragment extends DaggerFragment {
                         break
                 }
             }
+
+            @Override
+            void onPageSelected(int position) {
+                currentFragment = adapter.getItem(position)
+            }
         }
     }
 
@@ -112,6 +129,64 @@ public class LocalMusicFragment extends DaggerFragment {
     public void onDestroyView() {
         super.onDestroyView()
         bus.unregister this
+    }
+
+    private void showSortPopup(View anchor) {
+        if (!currentSortableFragment) return
+
+        def menu = new PopupMenu(activity, anchor, GravityCompat.END)
+        menu.inflate currentSortableFragment.sortMenuId
+
+        try {
+            Class<?> classPopupMenu = Class.forName(menu.class.name)
+            Field mPopup = classPopupMenu.getDeclaredField("mPopup")
+            mPopup.setAccessible(true)
+            Object menuPopupHelper = mPopup.get(menu)
+            Class<?> classPopupHelper = Class.forName(menuPopupHelper.class.name)
+            Method setForceIcons = classPopupHelper.getMethod("setForceShowIcon", boolean.class)
+            setForceIcons.invoke(menuPopupHelper, true)
+        } catch (Exception e) {
+            e.printStackTrace()
+        }
+
+        for (int i = 0; i < menu.menu.size(); i++) {
+            menu.menu.getItem(i).icon = null
+        }
+        MenuItem currentSortItem
+        if (currentSortableFragment.sortActionId > 0)
+            currentSortItem = menu.menu.findItem(currentSortableFragment.sortActionId)
+        else
+            currentSortItem = menu.menu.getItem(0)
+
+        if (currentSortableFragment.orderAscending) {
+            currentSortItem?.icon = resources.getDrawable(currentSortableFragment.sortIconId)
+        } else {
+            currentSortItem?.icon = resources.getDrawable(currentSortableFragment.sortIconId)
+        }
+
+        menu.onMenuItemClickListener = {
+            def orderAscending = true
+
+            if (currentSortableFragment.sortActionId == it.itemId)
+                orderAscending = !currentSortableFragment.orderAscending
+
+            currentSortableFragment.orderAscending = orderAscending
+            currentSortableFragment.sortActionId = it.itemId
+            currentSortableFragment.sortItems()
+
+            return false
+        }
+
+        menu.show()
+    }
+
+    void setCurrentFragment(Fragment fragment) {
+        if (fragment instanceof SortableFragment && fragment.sortMenuId > 0) {
+            currentSortableFragment = fragment as SortableFragment
+            toolbar.menu.findItem(R.id.action_sort).visible = true
+        } else {
+            toolbar.menu.findItem(R.id.action_sort).visible = false
+        }
     }
 
     protected void initToolbar() {
@@ -122,6 +197,9 @@ public class LocalMusicFragment extends DaggerFragment {
             switch (it.itemId) {
                 case R.id.action_search:
                     searchView.show()
+                    return true
+                case R.id.action_sort:
+                    showSortPopup activity.findViewById(R.id.action_sort)
                     return true
             }
             return false

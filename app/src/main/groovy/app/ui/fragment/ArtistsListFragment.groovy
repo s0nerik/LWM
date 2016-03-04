@@ -1,6 +1,7 @@
 package app.ui.fragment
 
 import android.os.Bundle
+import android.support.annotation.IdRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(R.layout.fragment_list_artists)
-class ArtistsListFragment extends DaggerOttoOnCreateFragment {
+class ArtistsListFragment extends DaggerOttoOnCreateFragment implements SortableFragment {
 
     @InjectView(R.id.empty)
     LinearLayout mEmpty
@@ -41,6 +42,9 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
     private List<ArtistItem> filteredArtists = new ArrayList<>()
 
     private ArtistsAdapter adapter
+
+    private int sortActionId
+    private boolean orderAscending
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
@@ -86,4 +90,38 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment {
         adapter.filterItems(filteredArtists)
     }
 
+    @Override
+    int getSortMenuId() {
+        return 0
+    }
+
+    @Override
+    int getSortActionId() {
+        return sortActionId
+    }
+
+    @Override
+    void setSortActionId(@IdRes int id) {
+        sortActionId = id
+    }
+
+    @Override
+    boolean isOrderAscending() {
+        return orderAscending
+    }
+
+    @Override
+    void setOrderAscending(boolean value) {
+        orderAscending = value
+    }
+
+    @Override
+    int getSortIconId() {
+        return 0
+    }
+
+    @Override
+    void sortItems() {
+
+    }
 }

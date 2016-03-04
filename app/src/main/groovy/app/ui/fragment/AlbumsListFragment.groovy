@@ -2,6 +2,7 @@ package app.ui.fragment
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.annotation.IdRes
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -26,7 +27,7 @@ import javax.inject.Inject
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
 @InjectLayout(value = R.layout.fragment_list_albums, injectAllViews = true)
-public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
+public class AlbumsListFragment extends DaggerOttoOnResumeFragment implements SortableFragment {
 
     RecyclerView recycler
     LinearLayout empty
@@ -41,6 +42,9 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     private List<AlbumItem> filteredAlbums = new ArrayList<>()
 
     private AlbumsAdapter adapter
+
+    private int sortActionId
+    private boolean orderAscending
 
     public static Fragment create(Artist artist) {
         def fragment = new AlbumsListFragment()
@@ -92,5 +96,40 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment {
     void onEvent(FilterLocalMusicCommand cmd) {
         adapter.searchText = cmd.constraint
         adapter.filterItems(filteredAlbums)
+    }
+
+    @Override
+    int getSortMenuId() {
+        return 0
+    }
+
+    @Override
+    int getSortActionId() {
+        return sortActionId
+    }
+
+    @Override
+    void setSortActionId(@IdRes int id) {
+        sortActionId = id
+    }
+
+    @Override
+    boolean isOrderAscending() {
+        return orderAscending
+    }
+
+    @Override
+    void setOrderAscending(boolean value) {
+        orderAscending = value
+    }
+
+    @Override
+    int getSortIconId() {
+        return 0
+    }
+
+    @Override
+    void sortItems() {
+
     }
 }
