@@ -11,6 +11,7 @@ import android.widget.ProgressBar
 import app.R
 import app.adapter.albums.AlbumItem
 import app.adapter.albums.AlbumsAdapter
+import app.adapter.songs.SongItem
 import app.events.ui.FilterLocalMusicCommand
 import app.helper.CollectionManager
 import app.model.Album
@@ -45,6 +46,12 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment implements So
 
     private int sortActionId
     private boolean orderAscending
+
+    Map<Integer, Comparator<AlbumItem>> sortComparators = [
+            (R.id.albums_sort_title): { AlbumItem l, AlbumItem r -> l.album.title.compareTo(r.album.title) } as Comparator<AlbumItem>,
+            (R.id.albums_sort_artist): { AlbumItem l, AlbumItem r -> l.album.artistName.compareTo(r.album.artistName) } as Comparator<AlbumItem>,
+            (R.id.albums_sort_year): { AlbumItem l, AlbumItem r -> l.album.year?.compareTo(r.album.year) } as Comparator<AlbumItem>,
+    ]
 
     public static Fragment create(Artist artist) {
         def fragment = new AlbumsListFragment()
@@ -100,7 +107,7 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment implements So
 
     @Override
     int getSortMenuId() {
-        return 0
+        return R.menu.sort_albums
     }
 
     @Override
@@ -125,11 +132,16 @@ public class AlbumsListFragment extends DaggerOttoOnResumeFragment implements So
 
     @Override
     int getSortIconId() {
-        return 0
+        return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
     }
 
     @Override
     void sortItems() {
+        albums.sort true, sortComparators[sortActionId]
+        if (!orderAscending)
+            albums.reverse true
 
+        filteredAlbums = new ArrayList<>(albums)
+        adapter.notifyDataSetChanged()
     }
 }

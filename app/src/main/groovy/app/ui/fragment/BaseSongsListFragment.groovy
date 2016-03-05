@@ -198,13 +198,6 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     @Override
     void setSortActionId(@IdRes int id) {
         sortActionId = id
-
-        songs.sort true, sortComparators[sortActionId]
-        if (!orderAscending)
-            songs.reverse true
-
-        filteredSongs = new ArrayList<>(songs)
-        adapter.notifyDataSetChanged()
     }
 
     @Override
@@ -230,6 +223,11 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
 
     @Override
     void sortItems() {
+        songs.sort true, sortComparators[sortActionId]
+        if (!orderAscending)
+            songs.reverse true
 
+        filteredSongs = new ArrayList<>(songs)
+        adapter.notifyDataSetChanged()
     }
 }
