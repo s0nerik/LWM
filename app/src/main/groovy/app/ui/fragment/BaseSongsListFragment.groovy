@@ -52,6 +52,13 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     private int sortActionId
     private boolean orderAscending
 
+    Map<Integer, Comparator<SongItem>> sortComparators = [
+            (R.id.songs_sort_title): { SongItem l, SongItem r -> l.song.title.compareTo(r.song.title) } as Comparator<SongItem>,
+            (R.id.songs_sort_artist): { SongItem l, SongItem r -> l.song.artistName.compareTo(r.song.artistName) } as Comparator<SongItem>,
+            (R.id.songs_sort_album): { SongItem l, SongItem r -> l.song.albumName.compareTo(r.song.albumName) } as Comparator<SongItem>,
+            (R.id.songs_sort_year): { SongItem l, SongItem r -> l.song?.album?.year?.compareTo(r.song?.album?.year) } as Comparator<SongItem>,
+    ]
+
     private LinearLayoutManager layoutManager
 
     protected abstract Observable<List<Song>> loadSongs()
@@ -191,6 +198,13 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     @Override
     void setSortActionId(@IdRes int id) {
         sortActionId = id
+
+        songs.sort true, sortComparators[sortActionId]
+        if (!orderAscending)
+            songs.reverse true
+
+        filteredSongs = new ArrayList<>(songs)
+        adapter.notifyDataSetChanged()
     }
 
     @Override
