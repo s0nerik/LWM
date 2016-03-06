@@ -78,6 +78,16 @@ class SongViewHolder extends FlexibleViewHolder {
         title.text = song.title
         artist.text = utils.getArtistName(song.artistName)
         duration.text = song.durationString
+
+        updateSelectedState()
+    }
+
+    void updateSelectedState() {
+        if (mAdapter.isSelected(adapterPosition)) {
+            playIcon.show()
+        } else {
+            playIcon.hide()
+        }
     }
 
     @OnClick(R.id.contextMenu)
@@ -124,8 +134,7 @@ class SongViewHolder extends FlexibleViewHolder {
     @OnClick(R.id.container)
     void onClicked() {
         bus.post new RequestPlaySongCommand(song)
-//            player.prepare(song)
-//        bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.EXACT, adapterPosition)
+        mAdapter.toggleSelection(adapterPosition)
+        updateSelectedState()
     }
-
 }
