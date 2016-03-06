@@ -47,7 +47,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
 
     List<SongItem> songs = new ArrayList<>()
     List<SongItem> filteredSongs = new ArrayList<>()
-    Song currentSong
+    protected Song currentSong
 
     SongsListAdapter adapter
 
@@ -71,6 +71,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
         setBusListeners new BusListener(), this
 
         adapter = new SongsListAdapter(songs)
+        adapter.mode = SongsListAdapter.MODE_SINGLE
     }
 
     @Override
@@ -120,30 +121,26 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     private void updateSongsList() {
         if (songs) {
             adapter.notifyDataSetChanged()
-//            selection = currentSong
-
             twoWayView.show()
-
-//            fastScroller.recyclerView = twoWayView
-//            fastScroller.show()
         } else {
             emptyView.show()
-//            fastScroller.hide()
         }
+    }
+
+    void setCurrentSong(Song song) {
+        this.@currentSong = song
+        adapter.toggleSelection(filteredSongs.collect {it.song}.indexOf(currentSong))
     }
 
     private class BusListener {
         @Subscribe
         public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
             currentSong = event.song
-//            setSelection currentSong
         }
 
         @Subscribe
         public void onSongPlaybackStarted(PlaybackStartedEvent event) {
             currentSong = event.song
-//            setSelection currentSong
-//            adapter.updateEqualizerState(true)
         }
 
         @Subscribe
