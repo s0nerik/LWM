@@ -13,7 +13,8 @@ import android.widget.Toast
 import app.Injector
 import app.R
 import app.Utils
-import app.commands.PlaySongAtPositionCommand
+import app.commands.RequestPlaySongCommand
+import app.model.MusicCollection
 import app.model.Song
 import app.player.LocalPlayer
 import com.github.s0nerik.betterknife.BetterKnife
@@ -46,6 +47,10 @@ class SongViewHolder extends FlexibleViewHolder {
     @PackageScope
     @Inject
     LocalPlayer player
+
+    @PackageScope
+    @Inject
+    MusicCollection collection
 
     @PackageScope
     @Inject
@@ -118,8 +123,9 @@ class SongViewHolder extends FlexibleViewHolder {
 
     @OnClick(R.id.container)
     void onClicked() {
+        bus.post new RequestPlaySongCommand(song)
 //            player.prepare(song)
-        bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.EXACT, adapterPosition)
+//        bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.EXACT, adapterPosition)
     }
 
 }

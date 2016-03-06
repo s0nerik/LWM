@@ -9,6 +9,8 @@ import android.widget.Toast
 import app.R
 import app.adapter.songs.SongItem
 import app.adapter.songs.SongsListAdapter
+import app.commands.RequestPlaySongCommand
+import app.commands.SetQueueAndPlayCommand
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -123,7 +125,7 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
 
     protected void shuffleAll() {
         if (songs) {
-//            bus.post new SetQueueAndPlayCommand(songs, 0, true)
+            bus.post new SetQueueAndPlayCommand(filteredSongs.collect {it.song}, 0, true)
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
         }
@@ -182,6 +184,12 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
         public void onEvent(FilterLocalMusicCommand cmd) {
             adapter.searchText = cmd.constraint
             adapter.filterItems(filteredSongs)
+        }
+
+        @Subscribe
+        public void onEvent(RequestPlaySongCommand cmd) {
+            def queue = filteredSongs.collect { it.song }
+            bus.post new SetQueueAndPlayCommand(queue, queue.indexOf(cmd.song))
         }
     }
 
