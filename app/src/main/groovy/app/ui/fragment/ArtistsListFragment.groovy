@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
+import app.adapter.albums.AlbumItem
 import app.adapter.albums.ArtistAlbumItem
 import app.adapter.artists.ArtistItem
 import app.adapter.artists.ArtistsAdapter
@@ -45,6 +46,13 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment implements Sortable
 
     private int sortActionId
     private boolean orderAscending
+
+    Map<Integer, Comparator<ArtistItem>> sortComparators = [
+            (R.id.artists_sort_name)        : { ArtistItem l, ArtistItem r -> l.artist.name.compareTo(r.artist.name) } as Comparator<ArtistItem>,
+            (R.id.artists_sort_recent_album): { ArtistItem l, ArtistItem r ->
+                l.artist.albums.sort { it.year }.last().year.compareTo(r.artist.albums.sort { it.year }.last().year)
+            } as Comparator<AlbumItem>,
+    ]
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
@@ -92,7 +100,7 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment implements Sortable
 
     @Override
     int getSortMenuId() {
-        return 0
+        return R.menu.sort_artists
     }
 
     @Override
@@ -117,11 +125,16 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment implements Sortable
 
     @Override
     int getSortIconId() {
-        return 0
+        return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
     }
 
     @Override
     void sortItems() {
+        artists.sort true, sortComparators[sortActionId]
+        if (!orderAscending)
+            artists.reverse true
 
+        filteredArtists = new ArrayList<>(artists)
+        adapter.notifyDataSetChanged()
     }
 }

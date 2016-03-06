@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/artists_sort_name"
+        app:showAsAction="always|withText"
+        android:title="By name" />
+    <item
+        android:id="@+id/artists_sort_recent_album"
+        app:showAsAction="always|withText"
+        android:title="By recent album" />
+</menu>
