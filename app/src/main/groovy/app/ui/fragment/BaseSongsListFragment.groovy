@@ -95,36 +95,12 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
         super.setUserVisibleHint(isVisibleToUser)
 
         if (isVisibleToUser) {
-            bus.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, {
-//                bus.post new SetQueueAndPlayCommand(songs, 0, true)
-            })
+            bus.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, this.&shuffleAll)
         }
     }
 
-//    protected void setSelection(Song song) {
-//        if (songs) {
-//            int index = songs.indexOf song
-//            if (index >= 0) {
-//                setSelection(index)
-//            }
-//        }
-//    }
-
-//    protected void setSelection(int position) {
-//        int prevSelection = adapter.selection
-//        adapter.selection = position
-//        if (position < layoutManager.findFirstCompletelyVisibleItemPosition() ||
-//                position > layoutManager.findLastCompletelyVisibleItemPosition()) {
-//            if (Math.abs(prevSelection - adapter.selection) <= 100) {
-//                twoWayView.smoothScrollToPosition position
-//            } else {
-//                twoWayView.scrollToPosition position
-//            }
-//        }
-//    }
-
     protected void shuffleAll() {
-        if (songs) {
+        if (filteredSongs) {
             bus.post new SetQueueAndPlayCommand(filteredSongs.collect {it.song}, 0, true)
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
