@@ -100,6 +100,7 @@ public class LocalMusicFragment extends DaggerFragment {
         bus.register(this)
 
         def adapter = new LocalMusicFragmentsAdapter(childFragmentManager)
+        pager.offscreenPageLimit = 3
         pager.adapter = adapter
         tabs.viewPager = pager
 
