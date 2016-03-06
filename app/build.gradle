@@ -1,34 +1,54 @@
 apply plugin: "com.android.application"
-apply plugin: "crashlytics"
-//apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'com.stanfy.android.apt'
-//apply plugin: "me.tatarka.retrolambda"
+apply plugin: 'groovyx.grooid.groovy-android'
+apply plugin: 'net.kaleidos.gradle.plugins.emerger'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'io.fabric'
+apply plugin: 'com.fernandocejas.frodo'
 
 repositories {
     flatDir {
         dirs '../libs'
     }
+    jcenter()
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
+    maven { url "http://dl.bintray.com/s0nerik/maven" }
+    maven { url "http://dl.bintray.com/tbruyelle/tbruyelle" }
+    maven { url "https://jitpack.io" }
+//    maven { url 'http://repo.grousset.fr/snapshots' }
 }
 
-//retrolambda {
-//    jdk System.getenv("JAVA8_HOME") ?: "/usr/lib/jvm/java-8-jdk"
+//project.androidGroovy {
+//    options {
+//        sourceCompatibility = '1.6'
+//        targetCompatibility = '1.6'
+//        groovyOptions.configurationScript = file("$projectDir/config/groovy-compile-options.groovy")
+//        groovyOptions.verbose = true
+////        groovyOptions.javaAnnotationProcessing = true
+//        groovyOptions.optimizationOptions = [int: true]
+//    }
 //}
 
 android {
-    compileSdkVersion "android-22"
-    buildToolsVersion "22.0.1"
+    compileSdkVersion "android-23"
+    buildToolsVersion '23.0.2'
     defaultConfig {
-        minSdkVersion 16
+        applicationId "com.lwm.app"
+        minSdkVersion 21
         targetSdkVersion 22
         versionCode 4
         versionName '0.7'
-        renderscriptTargetApi 22
+        renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
+        multiDexEnabled true
+    }
+    dexOptions {
+        incremental true
+        preDexLibraries = true
+        javaMaxHeapSize "4g"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -39,44 +59,79 @@ android {
             applicationIdSuffix ".debug"
         }
 
-        release {
-
-        }
+        release {}
     }
+    flavorDimensions "type", "crashlytics"
     productFlavors {
+        dev {
+            dimension "type"
+        }
+        prod {
+            dimension "type"
+        }
+
         withCrashlytics {
+            dimension "crashlytics"
             buildConfigField "boolean", "CRASHLYTICS", "true"
         }
         noCrashlytics {
+            dimension "crashlytics"
             buildConfigField "boolean", "CRASHLYTICS", "false"
         }
     }
     packagingOptions {
+        exclude 'META-INF/services/org.codehaus.groovy.transform.ASTTransformation'
+        exclude 'META-INF/services/org.codehaus.groovy.runtime.ExtensionModule'
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/groovy-release-info.properties'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/DISCLAIMER'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
     lintOptions {
+        disable 'InvalidPackage'
         abortOnError false
     }
+//    signingConfigs {
+//        debug {
+//            storeFile file("debug.keystore")
+//            storePassword 'android'
+//            keyAlias 'androiddebugkey'
+//            keyPassword 'android'
+//        }
+//    }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
     compile fileTree(include: '*.jar', dir: '../libs')
 
+    compile 'org.codehaus.groovy:groovy:2.4.5:grooid'
+    compile('org.codehaus.groovy:groovy-json:2.4.5') {
+        transitive = false
+    }
+
     // Support libs
-    compile 'com.android.support:appcompat-v7:22.1.0'
-    compile 'com.android.support:support-v4:22.1.0'
-    compile 'com.android.support:recyclerview-v7:22.1.0'
-    compile 'com.android.support:cardview-v7:22.1.0'
-    compile 'com.android.support:palette-v7:22.1.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.android.support:palette-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
 
     // GMS
-    compile 'com.google.android.gms:play-services-plus:+'
-    compile 'com.google.android.gms:play-services-identity:+'
+    compile 'com.google.android.gms:play-services-plus:8.3.0'
+    compile 'com.google.android.gms:play-services-identity:8.3.0'
 
     // Compatibility
-    compile 'uk.me.lewisdeane.ldialogs:ldialogs@aar'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
+        transitive = true
+    }
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.traex.rippleeffect:library:1.2.3'
+    compile 'com.commit451:NativeStackBlur:1.0.2'
 
     // UI elements
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
@@ -84,57 +139,74 @@ dependencies {
     }
     compile 'com.jpardogo.materialtabstrip:library:1.0.7'
     compile 'com.github.nirhart:parallaxscroll:1.0'
-    compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.flaviofaria:kenburnsview:1.0.5'
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.0'
-    compile 'com.bignerdranch.android:recyclerview-multiselect:0.1'
-    compile 'org.lucasr.twowayview:core:1.0.0-SNAPSHOT@aar'
-    compile 'org.lucasr.twowayview:layouts:1.0.0-SNAPSHOT@aar'
     compile 'uk.co.chrisjenx:calligraphy:2.0.2'
     compile 'com.github.claucookie.miniequalizer:library:1.0.0'
     compile 'com.wada811:android-material-design-colors:2.0.0'
     compile 'com.nvanbenschoten.motion:library:1.0.2'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
-    compile 'xyz.danoz:recyclerviewfastscroller:0.1.2'
+    compile 'com.github.jakob-grabner:Circle-Progress-View:v1.2.4'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
+    compile 'eu.davidea:flexible-adapter:5.0.0-b4'
+    compile 'com.github.renaudcerrato:ToggleDrawable:1.0.2'
+
+    // Image loading
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'jp.wasabeef:glide-transformations:1.4.0'
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.3.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile ('com.github.florent37:materialimageloading:1.0.1@aar'){
+        transitive = true
+    }
+    compile 'com.github.florent37:glidepalette:1.0.2@aar'
 
     // Networking
-    compile 'com.koushikdutta.ion:ion:2.+'
+    compile 'com.nanohttpd:nanohttpd:2.1.1'
     compile 'org.java-websocket:Java-WebSocket:1.3.0'
+    compile 'com.koushikdutta.ion:ion:+'
 
-    // Crash reports
-    compile 'com.crashlytics.android:crashlytics:1.1.13'
+    // Crashlytics kit
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+        transitive = true
+    }
 
     // Thanks, Square!
     compile 'com.squareup.dagger:dagger:1.2.2'
-    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-//    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile 'com.squareup:otto:1.3.5'
-    compile 'com.jakewharton:butterknife:6.0.0'
+    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'com.squareup:otto:1.3.8'
+
+    // Thanks, Apache!
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'org.apache.commons:commons-collections4:4.0'
 
     // Misc
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
-    compile 'org.apache.commons:commons-lang3:3.3.2'
-    compile('com.joanzapata.android.asyncservice:android-asyncservice:0.0.5@aar') {
-        transitive = true
-    }
     compile 'ru.noties:debug:1.1.3'
 
-    // F*CK YOU, BOILERPLATE! =)
-//    apt 'pl.mg6.hrisey:hrisey:0.3.1'
-    provided 'pl.mg6.hrisey:hrisey:0.3.1'
-//    apt 'com.pushtorefresh:javac-warning-annotation:1.0.0'
-    provided 'com.pushtorefresh:javac-warning-annotation:1.0.0'
-    compile 'com.github.talenguyen:prettybundle:1.0.2-SNAPSHOT'
-    provided 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
-//    apt 'com.github.talenguyen:prettybundleprocessor:1.0.2-SNAPSHOT'
-    compile 'com.hannesdorfmann.fragmentargs:annotation:2.0.1'
-    provided 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
-//    apt 'com.hannesdorfmann.fragmentargs:processor:2.0.1'
-
     // Animations
-    compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.easing:library:1.0.1@aar'
     compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+
+    // Rx
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxjava-math:+'
+//    compile('io.reactivex:rxgroovy:1.0.0') {
+//        transitive = false
+//    }
+    compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'io.reactivex:rxjava-debug:1.0.3'
+    compile 'com.github.akarnokd:rxjava-completable:1.0.0'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.2.0@aar'
+    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-design:0.3.0'
+
+    compile('com.github.s0nerik.betterknife:BetterKnife:1.3.13@aar') {
+        transitive = false
+    }
+
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
 }

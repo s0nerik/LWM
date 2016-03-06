@@ -4,16 +4,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:background="@color/grid_item_default_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.lwm.app.ui.custom_view.SquareWidthImageView
+    <app.ui.custom_view.SquareWidthImageView
         android:id="@+id/cover"
         android:scaleType="centerCrop"
         android:layout_gravity="left"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        tools:src="@drawable/no_cover"
         android:src="@color/grid_item_default_bg" />
 
     <View
@@ -25,19 +28,22 @@
     <LinearLayout
         style="@style/GridItemDescription"
         android:id="@+id/bottom_bar"
-        android:layout_below="@+id/cover"
+        android:layout_alignBottom="@+id/cover"
+        android:gravity="bottom"
         android:orientation="vertical"
-        android:background="@color/grid_item_default_bg"
+        android:background="#aa000000"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="68dp">
 
         <TextView
             style="@style/GridItemText.Title"
             tools:text="Title"
+            android:textColor="@color/md_grey_50"
             android:id="@+id/title" />
 
         <TextView
             style="@style/GridItemText.Subtitle"
+            android:layout_marginBottom="8dp"
             tools:text="Subtitle"
             android:id="@+id/subtitle" />
 

@@ -3,37 +3,131 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <android.support.v7.widget.Toolbar
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        tools:title="Title"
-        android:paddingTop="@dimen/toolbar_padding_top"
-        android:background="?attr/colorPrimary"
-        android:id="@+id/toolbar"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        android:layout_below="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <FrameLayout
+                android:animateLayoutChanges="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                >
+                <android.support.v7.widget.Toolbar
+                    tools:title="Title"
+                    android:background="?attr/colorPrimary"
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/search_view"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    tools:visibility="gone">
+
+                    <RelativeLayout
+                        android:animateLayoutChanges="true"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/search_icon"
+                            android:padding="8dp"
+                            android:layout_marginRight="-8dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            tools:visibility="visible" />
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/search_text"
+                            android:layout_width="match_parent"
+                            android:layout_toRightOf="@+id/search_icon"
+                            android:background="#00ffffff"
+                            android:hint="Search..."
+                            android:layout_marginLeft="16dp"
+                            tools:text="Hello"
+                            android:textColor="@color/md_grey_900"
+                            android:textColorHint="@color/md_grey_600"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/btn_close"
+                            android:layout_alignParentRight="true"
+                            android:tint="@color/md_grey_900"
+                            android:src="@drawable/close_circle"
+                            android:padding="12dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            tools:visibility="visible" />
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+            </FrameLayout>
+
+            <com.astuetz.PagerSlidingTabStrip
+                android:id="@+id/tabs"
+                android:layout_below="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="?attr/colorPrimary"
+                android:textColorPrimary="@android:color/white"
+                app:pstsShouldExpand="true" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_below="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_height="56dp"
+            android:layout_width="56dp"
+            android:src="@drawable/ic_shuffle_white_24dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+
+            app:elevation="4dp"
+            app:backgroundTint="?attr/colorPrimary"
+
+            app:layout_anchor="@id/pager"
+            app:layout_anchorGravity="bottom|right|end"
+            app:layout_behavior="app.ui.behavior.ScrollAwareFABBehavior1"
+
+            android:clickable="true"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <fragment
+        android:name="app.ui.fragment.NowPlayingFragment"
+        android:id="@+id/nowPlayingFragment"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?attr/colorPrimary"
-        android:textColorPrimary="@android:color/white"
-        app:pstsShouldExpand="true"
-        />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_below="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <include
-        android:layout_below="@+id/tabs"
-        layout="@layout/toolbar_shadow"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+
+        android:layout_alignParentBottom="true"
+
+        tools:layout="@layout/fragment_now_playing" />
 
 </RelativeLayout>

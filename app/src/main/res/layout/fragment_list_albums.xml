@@ -1,22 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.lwm.app.ui.fragment.LocalMusicFragment$AlbumsListFragment">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                tools:context="app.ui.fragment.AlbumsListFragment">
 
-    <GridView
-        android:id="@+id/grid"
-        android:verticalSpacing="@dimen/padding_grid"
-        android:horizontalSpacing="@dimen/padding_grid"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
         android:clipToPadding="false"
-        android:stretchMode="columnWidth"
-        android:numColumns="2"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:spanCount="2"
         tools:listitem="@layout/item_albums"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:id="@android:id/empty"
+        android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

@@ -1,0 +1,3 @@
+moduleName=app-dsl
+moduleVersion=1.0
+extensionClasses=app.extensions.LongSparseArrayExtension,app.extensions.SerializationExtensions

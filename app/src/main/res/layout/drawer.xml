@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.lwm.app.ui.custom_view.ScrimInsetsFrameLayout
+<app.ui.custom_view.ScrimInsetsFrameLayout
     android:id="@+id/scrimInsetsFrameLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -168,4 +168,4 @@
         </LinearLayout>
 
     </RelativeLayout>
-</com.lwm.app.ui.custom_view.ScrimInsetsFrameLayout>
+</app.ui.custom_view.ScrimInsetsFrameLayout>

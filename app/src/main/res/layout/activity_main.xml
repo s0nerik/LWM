@@ -6,36 +6,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_above="@+id/nowPlayingFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            tools:visibility="visible"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/nowPlayingFrame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <fragment
-                android:id="@+id/nowPlayingFragment"
-                android:name="com.lwm.app.ui.fragment.NowPlayingFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_now_playing" />
-        </FrameLayout>
-
-    </RelativeLayout>
-
-    <include layout="@layout/drawer" />
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:maxWidth="256dp"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/navigation" />
 
 </android.support.v4.widget.DrawerLayout>

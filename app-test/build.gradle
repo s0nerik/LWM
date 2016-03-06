@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:1.1.0"
-        classpath 'se.centril.robospock:gradle-plugin-robospock:1.0.1'
+        classpath 'com.android.tools.build:gradle:2.0.0-beta5'
+        classpath 'com.github.s0nerik:gradle-plugin-robospock:1.0.2'
     }
 }
 

@@ -1,0 +1,124 @@
+package app.ui.activity
+
+import android.media.AudioManager
+import android.os.Bundle
+import android.support.annotation.IdRes
+import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.Toolbar
+import android.view.Gravity
+import android.view.KeyEvent
+import app.PrefManager
+import app.R
+import app.ui.base.DaggerActivity
+import app.ui.fragment.LocalMusicFragment
+import app.ui.fragment.StationsAroundFragment
+import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+
+import javax.inject.Inject
+
+import static android.media.AudioManager.*
+import static android.view.KeyEvent.KEYCODE_VOLUME_DOWN
+import static android.view.KeyEvent.KEYCODE_VOLUME_UP
+
+@CompileStatic
+@InjectLayout(value = R.layout.activity_main, injectAllViews = true)
+public class MainActivity extends DaggerActivity {
+
+    int BUFFER_SEGMENT_SIZE = 1024
+    int BUFFER_SEGMENT_COUNT = 512
+
+    @Inject
+    @PackageScope
+    Bus bus
+
+    @Inject
+    @PackageScope
+    AudioManager audio
+
+    @Inject
+    @PackageScope
+    PrefManager prefManager
+
+    DrawerLayout drawerLayout
+    NavigationView navigation
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy()
+        bus.unregister(this)
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState)
+        bus.register this
+        initNavigationDrawer()
+    }
+
+    private void showFragmentFromDrawer(@IdRes int id) {
+        Fragment fragment
+        switch (id) {
+            case R.id.local_music:
+                fragment = new LocalMusicFragment()
+                break
+            case R.id.stations_around:
+                fragment = new StationsAroundFragment()
+                break
+            default:
+                fragment = new LocalMusicFragment()
+                break
+        }
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit()
+    }
+
+    protected void initNavigationDrawer() {
+        navigation.navigationItemSelectedListener = {
+            prefManager.drawerSelection().put(it.itemId).apply()
+            drawerLayout.closeDrawer Gravity.LEFT
+            showFragmentFromDrawer it.itemId
+
+            return true
+        }
+
+        int activeFragment = prefManager.drawerSelection().getOr(R.id.local_music)
+        showFragmentFromDrawer activeFragment
+    }
+
+    @Subscribe
+    public void onToolbarAvailable(Toolbar toolbar) {
+        def drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close
+        );
+        drawerLayout.drawerListener = drawerToggle
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT)
+        drawerToggle.syncState()
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KEYCODE_VOLUME_UP:
+                audio.adjustStreamVolume(STREAM_MUSIC, ADJUST_RAISE, FLAG_SHOW_UI)
+                return true
+            case KEYCODE_VOLUME_DOWN:
+                audio.adjustStreamVolume(STREAM_MUSIC, ADJUST_LOWER, FLAG_SHOW_UI)
+                return true
+            default:
+                return super.onKeyDown(keyCode, event)
+        }
+    }
+
+}

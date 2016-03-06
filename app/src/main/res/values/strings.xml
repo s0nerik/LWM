@@ -69,7 +69,7 @@
         <item>Songs</item>
         <item>Artists</item>
         <item>Albums</item>
-        <item>Queue</item>
+        <!--<item>Queue</item>-->
     </string-array>
 
     // Navigation Drawer titles
@@ -104,5 +104,7 @@
     <string name="rate_app">Rate this app!</string>
 
     <string name="local_music">Local music</string>
+    <string name="action_search">Search</string>
+    <string name="action_sort">Sort</string>
 
 </resources>

@@ -3,13 +3,19 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://jitpack.io" }
+        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:1.1.3"
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.7'
-//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-        classpath 'com.stanfy.android:gradle-android-apt:1.0.0'
-//        classpath 'me.tatarka:gradle-retrolambda:3.0.1'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+//        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.7-SNAPSHOT'
+        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.8'
+//        classpath 'com.github.groovy:groovy-android-gradle-plugin:bea6ca6'
+//        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
+        classpath "com.fernandocejas.frodo:frodo-plugin:0.8.1"
+        classpath 'net.kaleidos.gradle.plugins:emerger:0.0.2' // Emerger
     }
 }

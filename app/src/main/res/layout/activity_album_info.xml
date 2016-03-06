@@ -1,111 +1,190 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.activity.AlbumInfoActivity">
+    >
 
-    <com.nirhart.parallaxscroll.views.ParallaxScrollView
-        android:id="@+id/scrollView"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".ui.activity.AlbumInfoActivity"
+        >
 
-        <RelativeLayout
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:fitsSystemWindows="true"
+            app:expanded="true"
+            >
 
-            <include
-                android:id="@+id/parallaxed"
-                layout="@layout/album_info_header" />
-
-            <RelativeLayout
-                android:id="@+id/listLayout"
-                android:layout_below="@+id/parallaxed"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-28dp"
-                android:orientation="vertical">
+                android:fitsSystemWindows="true"
+                android:minHeight="80dp"
+                app:contentScrim="@color/primaryDark"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:statusBarScrim="@color/primaryDark"
+                app:titleEnabled="false"
+                >
 
-                <com.lwm.app.ui.custom_view.ExpandedListView
-                    android:id="@+id/twoWayView"
-                    android:layout_below="@+id/overlay"
+                <app.ui.custom_view.SquareWidthImageView
+                    android:id="@+id/image"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:layout_height="200dp"
-                    tools:listItem="@layout/list_item_songs_simple"
-                    android:choiceMode="singleChoice"
-                    android:divider="@null"
-                    android:dividerHeight="0dp"
-                    android:background="@android:color/white"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/no_cover"
+                    app:layout_collapseMode="parallax"
                     />
 
-                <View
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
                     android:layout_gravity="bottom"
-                    android:background="@drawable/header_overlay_shadow_top"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="24dp"
-                    android:layout_height="2dp" />
+                    android:background="#88000000"
+                    app:layout_collapseMode="none"
+                    >
 
-                <include
-                    layout="@layout/album_info_header_overlay"
-                    android:id="@+id/overlay"
-                    android:layout_marginTop="26dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <RelativeLayout
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
 
-                <View
-                    android:layout_below="@id/overlay"
-                    android:background="@drawable/bottom_shadow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:id="@+id/descriptionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:orientation="vertical"
+                            >
 
-                <com.melnykov.fab.FloatingActionButton
-                    android:id="@+id/fab"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginRight="24dp"
-                    android:tint="#fff"
-                    android:src="@drawable/ic_av_play_arrow"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerHorizontal="true"
-                    app:fab_shadow="true"
-                    app:fab_colorNormal="@color/primaryDark"
-                    app:fab_colorPressed="@color/primary" />
+                            <TextView
+                                android:id="@+id/title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/md_grey_200"
+                                android:textSize="20sp"
+                                tools:text="In The Wake Of Chaos"/>
 
-                <com.andexert.library.RippleView
-                    app:rv_alpha="255"
-                    app:rv_color="@color/primary"
-                    app:rv_centered="true"
-                    app:rv_rippleDuration="250"
-                    android:id="@+id/overflowMenu"
-                    android:clickable="true"
-                    android:layout_alignRight="@id/overlay"
-                    android:layout_alignBottom="@id/overlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:padding="8dp"
-                        android:scaleType="center"
-                        android:src="@drawable/ic_more_vert_grey600_24dp"
-                        android:tint="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </com.andexert.library.RippleView>
+                            <TextView
+                                android:id="@+id/subtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/md_grey_400"
+                                android:textSize="16sp"
+                                tools:text="Andy James • 2015"/>
 
-            </RelativeLayout>
+                        </LinearLayout>
 
-        </RelativeLayout>
+                        <ImageView
+                            android:layout_width="56dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="-4dp"
+                            tools:layout_marginTop="6dp"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_core_overflow"
+                            android:tint="@color/md_white"/>
 
-    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
+                    </RelativeLayout>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:paddingTop="@dimen/toolbar_padding_top"
+                </android.support.v7.widget.Toolbar>
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+            <!--<RelativeLayout-->
+            <!--android:id="@+id/description"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!-->-->
+
+            <!--<LinearLayout-->
+            <!--android:id="@+id/descriptionText"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!-->-->
+
+            <!--<TextView-->
+            <!--tools:text="In The Wake Of Chaos"-->
+            <!--android:id="@+id/title"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@color/md_grey_200"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
+
+            <!--<TextView-->
+            <!--tools:text="Andy James • 2015"-->
+            <!--android:id="@+id/subtitle"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/md_grey_400"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<ImageView-->
+            <!--android:src="@drawable/ic_core_overflow"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginTop="12dp"-->
+            <!--android:layout_marginRight="24dp"-->
+            <!--android:tint="@color/md_white"-->
+            <!--android:scaleType="center"-->
+            <!--android:layout_width="36dp"-->
+            <!--android:layout_height="36dp" />-->
+
+            <!--</RelativeLayout>-->
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingTop="8dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/item_songs"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_shuffle_white_24dp"
+            app:backgroundTint="@color/primaryDark"
+            app:layout_anchor="@id/toolbar"
+            app:layout_anchorGravity="bottom|right|end"
+            tools:visibility="visible"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <fragment
+        android:id="@+id/nowPlayingFragment"
+        android:name="app.ui.fragment.NowPlayingFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        />
+
+        android:layout_alignParentBottom="true"
+
+        tools:layout="@layout/fragment_now_playing"/>
 
 </RelativeLayout>

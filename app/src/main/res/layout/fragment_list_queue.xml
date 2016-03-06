@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lwm.app.ui.fragment.QueueFragment">
+    tools:context="app.ui.fragment.QueueFragment">
 
     <android.support.v7.widget.RecyclerView
         style="@style/ListOfSongs"
@@ -10,12 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
+    <app.ui.custom_view.FastScroller
         android:id="@+id/fast_scroller"
-        android:layout_width="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        />
+        android:layout_alignTop="@id/twoWayView"
+        android:layout_alignBottom="@id/twoWayView"
+        android:layout_alignParentRight="true" />
 
     <LinearLayout
         android:id="@+id/emptyView"

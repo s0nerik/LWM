@@ -8,49 +8,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <!--<com.lwm.app.ui.custom_view.SquareWidthImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:id="@+id/cover" />-->
-
-    <ImageView
-        tools:src="@drawable/bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/now_playing_layout"
-        android:scaleType="centerCrop"
-        android:id="@+id/cover" />
-
-    <!--<com.flaviofaria.kenburnsview.KenBurnsView-->
-        <!--tools:src="@drawable/bg"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignBottom="@+id/now_playing_layout"-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:id="@+id/cover" />-->
-
     <RelativeLayout
-        android:background="@color/now_playing_bg"
-        android:id="@+id/now_playing_layout"
+        android:id="@+id/mainGroup"
+        android:paddingTop="30dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
-        <!--<View-->
-            <!--android:background="@color/now_playing_bg"-->
-            <!--android:id="@+id/now_playing_layout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
+        <ImageView
+            android:src="@color/md_black"
+            tools:src="@drawable/bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/layout"
+            android:layout_alignBottom="@+id/layout"
+            android:scaleType="centerCrop"
+            android:id="@+id/cover" />
 
         <LinearLayout
             android:id="@+id/layout"
+            android:background="@drawable/shadow_playback_fragment_bottom"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
-                tools:background="@color/primary"
+                android:background="#88000000"
                 android:id="@+id/shadow"
                 android:paddingLeft="16dp"
                 android:paddingTop="2dp"
@@ -96,5 +79,38 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fabGroup"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <app.ui.custom_view.RadialEqualizerView
+            android:id="@+id/radialEqualizerView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+
+            app:rew_color="@color/md_orange_a700"
+            app:rew_bars_count="15"
+            app:rew_min_scale="70"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/playbackFab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_pause_24dp"
+            android:tint="@android:color/white"
+            android:layout_gravity="center"
+
+            app:fabSize="normal"
+            app:elevation="4dp"
+            app:backgroundTint="?attr/colorPrimary"
+
+            android:clickable="true"/>
+
+    </FrameLayout>
 
 </RelativeLayout>

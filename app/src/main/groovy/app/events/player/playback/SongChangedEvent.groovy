@@ -1,0 +1,14 @@
+package app.events.player.playback;
+
+import app.model.Song
+import groovy.transform.CompileStatic;
+
+@CompileStatic
+public class SongChangedEvent {
+
+    Song song;
+
+    public SongChangedEvent(Song song) {
+        this.song = song;
+    }
+}

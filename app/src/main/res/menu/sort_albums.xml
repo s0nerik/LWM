@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/albums_sort_title"
+        app:showAsAction="always|withText"
+        android:title="By title" />
+    <item
+        android:id="@+id/albums_sort_artist"
+        app:showAsAction="always|withText"
+        android:title="By artist" />
+    <item
+        android:id="@+id/albums_sort_year"
+        app:showAsAction="always|withText"
+        android:title="By year" />
+</menu>
