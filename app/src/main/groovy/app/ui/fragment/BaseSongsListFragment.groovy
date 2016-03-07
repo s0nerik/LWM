@@ -54,11 +54,18 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     private int sortActionId
     private boolean orderAscending
 
-    Map<Integer, Comparator<SongItem>> sortComparators = [
-            (R.id.songs_sort_title): { SongItem l, SongItem r -> l.song.title.compareTo(r.song.title) } as Comparator<SongItem>,
-            (R.id.songs_sort_artist): { SongItem l, SongItem r -> l.song.artistName.compareTo(r.song.artistName) } as Comparator<SongItem>,
-            (R.id.songs_sort_album): { SongItem l, SongItem r -> l.song.albumName.compareTo(r.song.albumName) } as Comparator<SongItem>,
-            (R.id.songs_sort_year): { SongItem l, SongItem r -> l.song?.album?.year?.compareTo(r.song?.album?.year) } as Comparator<SongItem>,
+    Map<Integer, Closure> sortFieldProviders = [
+            (R.id.songs_sort_title): { SongItem it -> it.song.title },
+            (R.id.songs_sort_artist): { SongItem it -> it.song.artistName },
+            (R.id.songs_sort_album): { SongItem it -> it.song.albumName },
+            (R.id.songs_sort_year): { SongItem it -> it.song?.album?.year },
+    ]
+
+    Map<Integer, Closure<String>> bubbleTextProviders = [
+            (R.id.songs_sort_title): { SongItem it -> it.song.title[0] },
+            (R.id.songs_sort_artist): { SongItem it -> it.song.artistName[0] },
+            (R.id.songs_sort_album): { SongItem it -> it.song.albumName[0] },
+            (R.id.songs_sort_year): { SongItem it -> (it.song?.album?.year as String)[0..3] },
     ]
 
     private LinearLayoutManager layoutManager
@@ -194,17 +201,13 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     @Override
     int getSortIconId() {
         return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
-
-        if (sortActionId == R.id.songs_sort_year) {
-            return orderAscending ? R.drawable.sort_1_9 : R.drawable.sort_9_1
-        } else {
-            return orderAscending ? R.drawable.sort_a_z : R.drawable.sort_z_a
-        }
     }
 
     @Override
     void sortItems() {
-        songs.sort true, sortComparators[sortActionId]
+        adapter.bubbleTextProvider = bubbleTextProviders[sortActionId]
+
+        songs.sort true, sortFieldProviders[sortActionId]
         if (!orderAscending)
             songs.reverse true
 
