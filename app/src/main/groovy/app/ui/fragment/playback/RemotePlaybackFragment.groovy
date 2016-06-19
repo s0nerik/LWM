@@ -1,4 +1,5 @@
 package app.ui.fragment.playback
+
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
@@ -10,7 +11,8 @@ import app.models.Song
 import app.players.BasePlayer
 import app.players.StreamPlayer
 import app.ui.Blurer
-import com.koushikdutta.ion.Ion
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -51,10 +53,11 @@ class RemotePlaybackFragment extends PlaybackFragment {
         Observable.create({ Subscriber<Bitmap> subscriber ->
             Bitmap bmp = null
             try {
-                bmp = Ion.with(this)
-                         .load("${player.currentSong.albumArtUri}?${player.currentSong.id}")
-                         .asBitmap()
-                         .get()
+                bmp = Glide.with(this)
+                        .load("${player.currentSong.albumArtUri}?${player.currentSong.id}")
+                        .asBitmap()
+                        .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get()
             } catch (ignored) {}
 
             bmp = bmp ?: utils.noCoverBitmap

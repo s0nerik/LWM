@@ -53,7 +53,6 @@ import app.ui.notification.NowPlayingNotification
 import app.websocket.SocketMessage
 import app.websocket.WebSocketMessageClient
 import app.websocket.WebSocketMessageServer
-import com.google.gson.Gson
 import com.squareup.otto.Bus
 import com.squareup.otto.ThreadEnforcer
 import dagger.Module
@@ -231,12 +230,6 @@ public class AndroidModule {
     @Singleton
     Blurer provideBlurer() {
         return new Blurer();
-    }
-
-    @Provides
-    @Singleton
-    Gson provideGson() {
-        return new Gson();
     }
 
     @Provides

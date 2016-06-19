@@ -4,6 +4,7 @@ apply plugin: 'net.kaleidos.gradle.plugins.emerger'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.fernandocejas.frodo'
+//apply plugin: 'com.getkeepsafe.dexcount'
 
 repositories {
     flatDir {
@@ -126,7 +127,6 @@ dependencies {
     // Networking
     compile 'com.nanohttpd:nanohttpd:2.1.1'
     compile 'org.java-websocket:Java-WebSocket:1.3.0'
-    compile 'com.koushikdutta.ion:ion:+'
 
     // Crashlytics kit
     compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
@@ -143,7 +143,6 @@ dependencies {
     compile 'org.apache.commons:commons-collections4:4.0'
 
     // Misc
-    compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.github.talenguyen:prettysharedpreferences:1.0.2'
     compile 'ru.noties:debug:1.1.3'
 
