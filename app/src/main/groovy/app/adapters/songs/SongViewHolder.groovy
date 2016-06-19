@@ -21,7 +21,6 @@ import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
-import es.claucookie.miniequalizerlibrary.EqualizerView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
@@ -39,8 +38,8 @@ class SongViewHolder extends FlexibleViewHolder {
     TextView duration
     @InjectView(R.id.contextMenu)
     ImageView contextMenu
-    @InjectView(R.id.playIcon)
-    EqualizerView playIcon
+//    @InjectView(R.id.playIcon)
+//    EqualizerView playIcon
     @InjectView(R.id.container)
     RelativeLayout container
 
@@ -83,11 +82,11 @@ class SongViewHolder extends FlexibleViewHolder {
     }
 
     void updateSelectedState() {
-        if (mAdapter.isSelected(adapterPosition)) {
-            playIcon.show()
-        } else {
-            playIcon.hide()
-        }
+//        if (mAdapter.isSelected(adapterPosition)) {
+//            playIcon.show()
+//        } else {
+//            playIcon.hide()
+//        }
     }
 
     @OnClick(R.id.contextMenu)

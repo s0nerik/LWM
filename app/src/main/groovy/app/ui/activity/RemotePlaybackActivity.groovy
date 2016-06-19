@@ -22,7 +22,7 @@ import app.events.chat.SetUnreadMessagesEvent;
 import app.events.client.SocketClosedEvent;
 import app.models.Song;
 import app.players.StreamPlayer;
-import app.ui.Croutons;
+
 import app.ui.fragment.playback.RemotePlaybackFragment;
 import ru.noties.debug.Debug;
 
@@ -79,7 +79,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
 
     @Subscribe
     public void onChatMessageReceived(ChatMessageReceivedEvent event) {
-        Croutons.messageReceived(this, event.getMessage(), R.id.albumArtLayout).show();
+//        Croutons.messageReceived(this, event.getMessage(), R.id.albumArtLayout).show();
         unreadMessagesCount += 1;
         newMessagesCounter.setVisibility(View.VISIBLE);
         newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));

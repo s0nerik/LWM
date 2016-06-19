@@ -1,11 +1,11 @@
 package app.ui.activity
+
 import android.media.AudioManager
 import android.view.KeyEvent
-import app.ui.Croutons
 import app.ui.base.DaggerActivity
-import app.websocket.entities.ClientInfo
 import com.squareup.otto.Bus
-import groovy.transform.*
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -51,13 +51,13 @@ abstract class BaseLocalActivity extends DaggerActivity {
 ////        toggleNowPlayingBar();
 //    }
 
-    protected void onClientConnected(ClientInfo info) {
-        Croutons.clientConnected(this, info).show();
-    }
-
-    protected void onClientDisconnected(ClientInfo info) {
-        Croutons.clientDisconnected(this, info).show();
-    }
+//    protected void onClientConnected(ClientInfo info) {
+//        Croutons.clientConnected(this, info).show();
+//    }
+//
+//    protected void onClientDisconnected(ClientInfo info) {
+//        Croutons.clientDisconnected(this, info).show();
+//    }
 
 //    public void showNowPlayingBar(boolean show){
 //        FragmentManager fragmentManager = getSupportFragmentManager();

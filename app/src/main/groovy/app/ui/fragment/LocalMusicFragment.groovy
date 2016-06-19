@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.support.annotation.Nullable
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
@@ -23,7 +24,6 @@ import android.widget.RelativeLayout
 import app.PrefManager
 import app.R
 import app.adapters.LocalMusicFragmentsAdapter
-import app.events.chat.ChatMessageReceivedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongPlayingEvent
@@ -32,10 +32,8 @@ import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.helpers.MenuTint
 import app.services.StreamPlayerService
-import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
-import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.jakewharton.rxbinding.widget.RxTextView
@@ -64,7 +62,7 @@ public class LocalMusicFragment extends DaggerFragment {
     Bus bus
 
     Toolbar toolbar
-    PagerSlidingTabStrip tabs
+    TabLayout tabs
     ViewPager pager
     FloatingActionButton fab
     NowPlayingFragment nowPlayingFragment
@@ -102,28 +100,24 @@ public class LocalMusicFragment extends DaggerFragment {
         def adapter = new LocalMusicFragmentsAdapter(childFragmentManager)
         pager.offscreenPageLimit = 3
         pager.adapter = adapter
-        tabs.viewPager = pager
+        tabs.setupWithViewPager pager
 
         nowPlayingFragment = childFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
         childFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
 
         currentFragment = adapter.getItem(0)
-        tabs.onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            void onPageScrollStateChanged(int state) {
-                if (!canShowFab) return
-                switch (state) {
-                    case ViewPager.SCROLL_STATE_DRAGGING:
-                        fab.hide()
-                        break
-                }
+            void onTabSelected(TabLayout.Tab tab) {
+                currentFragment = adapter.getItem(tab.position)
             }
 
             @Override
-            void onPageSelected(int position) {
-                currentFragment = adapter.getItem(position)
-            }
-        }
+            void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            void onTabReselected(TabLayout.Tab tab) {}
+        })
     }
 
     @Override
@@ -312,10 +306,10 @@ public class LocalMusicFragment extends DaggerFragment {
         return toolbar
     }
 
-    @Subscribe
-    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
-        Croutons.messageReceived activity, event.message
-    }
+//    @Subscribe
+//    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+//        Croutons.messageReceived activity, event.message
+//    }
 
     @Subscribe
     public void onStartArtistInfoActivity(ShouldStartArtistInfoActivity event) {

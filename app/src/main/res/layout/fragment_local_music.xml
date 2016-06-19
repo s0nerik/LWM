@@ -83,14 +83,14 @@
                 </android.support.v7.widget.CardView>
             </FrameLayout>
 
-            <com.astuetz.PagerSlidingTabStrip
+            <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_below="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="?attr/colorPrimary"
                 android:textColorPrimary="@android:color/white"
-                app:pstsShouldExpand="true" />
+                />
 
         </android.support.design.widget.AppBarLayout>
 

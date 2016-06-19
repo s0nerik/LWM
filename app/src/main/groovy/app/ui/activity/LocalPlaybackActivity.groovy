@@ -1,14 +1,10 @@
-package app.ui.activity;
+package app.ui.activity
 
-import android.os.Bundle;
-
-import app.R;
-import app.events.server.ClientConnectedEvent;
-import app.events.server.ClientDisconnectedEvent;
-import com.squareup.otto.Subscribe
+import android.os.Bundle
+import app.R
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
+import groovy.transform.PackageScopeTarget
 
 @CompileStatic
 @PackageScope(PackageScopeTarget.FIELDS)
@@ -26,15 +22,15 @@ public class LocalPlaybackActivity extends PlaybackActivity {
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
     }
 
-    @Subscribe
-    @Override
-    protected void onClientConnected(ClientConnectedEvent event) {
-        super.onClientConnected(event);
-    }
+//    @Subscribe
+//    @Override
+//    protected void onClientConnected(ClientConnectedEvent event) {
+//        super.onClientConnected(event);
+//    }
 
-    @Subscribe
-    @Override
-    protected void onClientDisconnected(ClientDisconnectedEvent event) {
-        super.onClientDisconnected(event);
-    }
+//    @Subscribe
+//    @Override
+//    protected void onClientDisconnected(ClientDisconnectedEvent event) {
+//        super.onClientDisconnected(event);
+//    }
 }

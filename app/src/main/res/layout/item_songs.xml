@@ -57,15 +57,15 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_more_vert_grey600_24dp" />
 
-    <es.claucookie.miniequalizerlibrary.EqualizerView
-        android:id="@+id/playIcon"
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        app:foregroundColor="@android:color/black"
-        app:animDuration="3500" />
+    <!--<es.claucookie.miniequalizerlibrary.EqualizerView-->
+        <!--android:id="@+id/playIcon"-->
+        <!--tools:visibility="visible"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_width="32dp"-->
+        <!--android:layout_height="32dp"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--app:foregroundColor="@android:color/black"-->
+        <!--app:animDuration="3500" />-->
 
 </RelativeLayout>

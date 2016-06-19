@@ -1,15 +1,11 @@
-package app.ui.activity;
+package app.ui.activity
 
-import android.os.Bundle;
-
-import app.Utils;
-import app.events.server.ClientConnectedEvent;
-import app.events.server.ClientDisconnectedEvent;
-import app.ui.Croutons;
+import android.os.Bundle
+import app.Utils
 import app.ui.base.DaggerActivity
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
 @CompileStatic
 public abstract class PlaybackActivity extends DaggerActivity {
@@ -22,12 +18,12 @@ public abstract class PlaybackActivity extends DaggerActivity {
         super.onCreate(savedInstanceState);
     }
 
-    protected void onClientConnected(ClientConnectedEvent event) {
-        Croutons.clientConnected(this, event.getClientInfo()).show();
-    }
-
-    protected void onClientDisconnected(ClientDisconnectedEvent event) {
-        Croutons.clientDisconnected(this, event.getClientInfo()).show();
-    }
+//    protected void onClientConnected(ClientConnectedEvent event) {
+//        Croutons.clientConnected(this, event.getClientInfo()).show();
+//    }
+//
+//    protected void onClientDisconnected(ClientDisconnectedEvent event) {
+//        Croutons.clientDisconnected(this, event.getClientInfo()).show();
+//    }
 
 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.support.annotation.Nullable
+import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -13,7 +14,6 @@ import app.adapters.PlayersAroundPagerAdapter
 import app.events.wifi.WifiStateChangedEvent
 import app.services.LocalPlayerService
 import app.ui.base.DaggerFragment
-import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
@@ -41,7 +41,7 @@ class StationsAroundFragment extends DaggerFragment {
     Utils utils
 
     Toolbar toolbar
-    PagerSlidingTabStrip tabs
+    TabLayout tabs
     ViewPager pager
     View noWifiFrame
 
@@ -69,7 +69,7 @@ class StationsAroundFragment extends DaggerFragment {
         super.onViewCreated view, savedInstanceState
         toolbar.title = R.string.stations_around
         pager.adapter = new PlayersAroundPagerAdapter(childFragmentManager)
-        tabs.viewPager = pager
+        tabs.setupWithViewPager pager
     }
 
     @Override
