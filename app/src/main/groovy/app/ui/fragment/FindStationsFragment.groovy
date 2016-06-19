@@ -13,11 +13,11 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.R
-import app.adapter.stations.StationItem
-import app.adapter.stations.StationsAdapter
+import app.adapters.stations.StationItem
+import app.adapters.stations.StationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
-import app.helper.StationsExplorer
+import app.helpers.StationsExplorer
 import app.ui.activity.RemotePlaybackActivity
 import app.ui.base.DaggerOttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout

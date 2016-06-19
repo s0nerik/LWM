@@ -1,6 +1,6 @@
 package app.events.ui;
 
-import app.model.Artist
+import app.models.Artist
 import groovy.transform.CompileStatic;
 
 @CompileStatic

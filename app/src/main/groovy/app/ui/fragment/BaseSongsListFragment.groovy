@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import app.R
-import app.adapter.songs.SongItem
-import app.adapter.songs.SongsListAdapter
+import app.adapters.songs.SongItem
+import app.adapters.songs.SongsListAdapter
 import app.commands.RequestPlaySongCommand
 import app.commands.SetQueueAndPlayCommand
 import app.events.player.playback.PlaybackPausedEvent
@@ -17,8 +17,8 @@ import app.events.player.service.CurrentSongAvailableEvent
 import app.events.ui.ChangeFabActionCommand
 import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
-import app.model.Song
-import app.player.LocalPlayer
+import app.models.Song
+import app.players.LocalPlayer
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe

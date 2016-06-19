@@ -1,6 +1,6 @@
 package app.events.p2p
 
-import app.model.Station
+import app.models.Station
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 

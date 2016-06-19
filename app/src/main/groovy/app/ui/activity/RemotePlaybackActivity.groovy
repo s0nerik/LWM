@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import app.R
-import app.service.StreamPlayerService;
+import app.services.StreamPlayerService;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
@@ -20,8 +20,8 @@ import javax.inject.Inject;
 import app.events.chat.ChatMessageReceivedEvent;
 import app.events.chat.SetUnreadMessagesEvent;
 import app.events.client.SocketClosedEvent;
-import app.model.Song;
-import app.player.StreamPlayer;
+import app.models.Song;
+import app.players.StreamPlayer;
 import app.ui.Croutons;
 import app.ui.fragment.playback.RemotePlaybackFragment;
 import ru.noties.debug.Debug;

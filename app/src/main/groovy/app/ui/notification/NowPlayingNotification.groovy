@@ -17,9 +17,9 @@ import android.widget.RemoteViews
 import app.Injector
 import app.R
 import app.Utils
-import app.model.Song
-import app.player.LocalPlayer
-import app.receiver.PendingIntentReceiver
+import app.models.Song
+import app.players.LocalPlayer
+import app.receivers.PendingIntentReceiver
 import app.ui.PaletteHelper
 import app.ui.activity.LocalPlaybackActivity
 import groovy.transform.PackageScope

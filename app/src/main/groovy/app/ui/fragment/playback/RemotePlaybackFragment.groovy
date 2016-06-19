@@ -6,9 +6,9 @@ import app.R
 import app.Utils
 import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
-import app.model.Song
-import app.player.BasePlayer
-import app.player.StreamPlayer
+import app.models.Song
+import app.players.BasePlayer
+import app.players.StreamPlayer
 import app.ui.Blurer
 import com.koushikdutta.ion.Ion
 import com.squareup.otto.Subscribe

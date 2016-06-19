@@ -5,8 +5,8 @@ import android.graphics.BitmapFactory
 import app.Injector
 import app.R
 import app.Utils
-import app.model.Song
-import app.player.LocalPlayer
+import app.models.Song
+import app.players.LocalPlayer
 import com.squareup.otto.Bus
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.Response

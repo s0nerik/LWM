@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import app.PrefManager
 import app.R
-import app.adapter.LocalMusicFragmentsAdapter
+import app.adapters.LocalMusicFragmentsAdapter
 import app.events.chat.ChatMessageReceivedEvent
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -30,8 +30,8 @@ import app.events.player.playback.SongPlayingEvent
 import app.events.ui.ChangeFabActionCommand
 import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldStartArtistInfoActivity
-import app.helper.MenuTint
-import app.service.StreamPlayerService
+import app.helpers.MenuTint
+import app.services.StreamPlayerService
 import app.ui.Croutons
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment

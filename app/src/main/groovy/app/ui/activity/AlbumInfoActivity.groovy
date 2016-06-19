@@ -19,13 +19,13 @@ import android.widget.Toast
 import app.R
 import app.R.layout
 import app.Utils
-import app.adapter.songs.SongsListAdapter
-import app.adapter.songs.SongItem
+import app.adapters.songs.SongsListAdapter
+import app.adapters.songs.SongItem
 import app.commands.EnqueueCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
-import app.model.Album
-import app.model.Song
+import app.models.Album
+import app.models.Song
 import app.ui.fragment.NowPlayingFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife

@@ -4,7 +4,7 @@ import app.Injector
 import app.Utils
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
-import app.player.LocalPlayer
+import app.players.LocalPlayer
 import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo

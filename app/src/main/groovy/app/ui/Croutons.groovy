@@ -3,7 +3,7 @@ package app.ui;
 import android.app.Activity;
 
 import app.R;
-import app.model.chat.ChatMessage;
+import app.models.chat.ChatMessage;
 import app.websocket.entities.ClientInfo;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;

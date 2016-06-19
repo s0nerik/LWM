@@ -1,6 +1,6 @@
 package app.events.player.playback;
 
-import app.model.Song
+import app.models.Song
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 

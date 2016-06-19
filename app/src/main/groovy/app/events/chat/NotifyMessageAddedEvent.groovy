@@ -1,6 +1,6 @@
 package app.events.chat;
 
-import app.model.chat.ChatMessage
+import app.models.chat.ChatMessage
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic;
 

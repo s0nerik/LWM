@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import app.R
 import app.Utils
-import app.model.Artist
+import app.models.Artist
 import app.ui.fragment.AlbumsListFragment
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.github.s0nerik.betterknife.BetterKnife

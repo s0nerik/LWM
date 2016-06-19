@@ -1,6 +1,6 @@
 package app.websocket.entities
 
-import app.model.Song
+import app.models.Song
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder

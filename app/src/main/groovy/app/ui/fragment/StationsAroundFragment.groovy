@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import app.R
 import app.Utils
-import app.adapter.PlayersAroundPagerAdapter
+import app.adapters.PlayersAroundPagerAdapter
 import app.events.wifi.WifiStateChangedEvent
-import app.service.LocalPlayerService
+import app.services.LocalPlayerService
 import app.ui.base.DaggerFragment
 import com.astuetz.PagerSlidingTabStrip
 import com.github.s0nerik.betterknife.annotations.InjectLayout

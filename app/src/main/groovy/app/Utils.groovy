@@ -18,7 +18,7 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
-import app.model.Song
+import app.models.Song
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic

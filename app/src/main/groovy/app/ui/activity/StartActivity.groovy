@@ -3,7 +3,7 @@ package app.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.Nullable
-import app.helper.CollectionManager
+import app.helpers.CollectionManager
 import app.ui.base.DaggerActivity
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope

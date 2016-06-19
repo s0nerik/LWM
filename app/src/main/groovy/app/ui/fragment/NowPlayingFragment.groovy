@@ -10,10 +10,9 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.*
 import app.R
 import app.Utils
-import app.commands.ChangePauseStateCommand
 import app.events.player.playback.*
-import app.model.Song
-import app.player.LocalPlayer
+import app.models.Song
+import app.players.LocalPlayer
 import app.ui.BlurTransformation
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.DaggerFragment

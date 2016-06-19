@@ -1,5 +1,5 @@
 package app.events.player.queue
-import app.model.Song
+import app.models.Song
 import groovy.transform.CompileStatic
 
 @CompileStatic

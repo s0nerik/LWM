@@ -18,10 +18,10 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.events.player.queue.QueueShuffledEvent
-import app.model.Song
-import app.player.BasePlayer
-import app.player.LocalPlayer
-import app.player.PlayerUtils
+import app.models.Song
+import app.players.BasePlayer
+import app.players.LocalPlayer
+import app.players.PlayerUtils
 import app.ui.Blurer
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus

@@ -36,14 +36,14 @@
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
-        <receiver android:name="app.receiver.MediaButtonIntentReceiver" >
+        <receiver android:name="app.receivers.MediaButtonIntentReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
 
         <receiver
-            android:name="app.receiver.PendingIntentReceiver"
+            android:name="app.receivers.PendingIntentReceiver"
             android:permission="MANAGE_PLAYER" >
             <intent-filter>
                 <action android:name="com.lwm.app.player.close" />
@@ -54,13 +54,13 @@
         </receiver>
 
         <service
-            android:name="app.service.LocalPlayerService" />
+            android:name="app.services.LocalPlayerService" />
 
         <service
-            android:name="app.service.StreamPlayerService" />
+            android:name="app.services.StreamPlayerService" />
 
         <service
-            android:name="app.service.MusicStationService" />
+            android:name="app.services.MusicStationService" />
 
         <activity
             android:screenOrientation="portrait"

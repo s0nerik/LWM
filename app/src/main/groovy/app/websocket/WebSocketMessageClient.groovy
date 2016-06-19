@@ -10,9 +10,9 @@ import app.events.chat.*
 import app.events.client.ClientInfoReceivedEvent
 import app.events.client.SocketClosedEvent
 import app.events.client.SocketOpenedEvent
-import app.helper.AveragingCollection
-import app.model.chat.ChatMessage
-import app.player.StreamPlayer
+import app.helpers.AveragingCollection
+import app.models.chat.ChatMessage
+import app.players.StreamPlayer
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus

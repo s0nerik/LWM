@@ -1,7 +1,7 @@
 package app.events.player
 
-import app.model.Song
-import app.player.BasePlayer
+import app.models.Song
+import app.players.BasePlayer
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 

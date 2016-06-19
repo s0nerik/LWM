@@ -1,7 +1,7 @@
 package app.ui.fragment
 import app.R
-import app.helper.CollectionManager
-import app.model.Song
+import app.helpers.CollectionManager
+import app.models.Song
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic

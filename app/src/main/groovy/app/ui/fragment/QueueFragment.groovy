@@ -5,8 +5,8 @@ import app.events.player.queue.PlaylistAddedToQueueEvent
 import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
-import app.model.Song
-import app.player.LocalPlayer
+import app.models.Song
+import app.players.LocalPlayer
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
