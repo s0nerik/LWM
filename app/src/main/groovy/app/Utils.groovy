@@ -1,4 +1,5 @@
 package app
+
 import android.app.ActivityManager
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -19,8 +20,6 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import app.models.Song
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.PackageScopeTarget
@@ -218,14 +217,6 @@ class Utils extends Daggered {
             }
         }
         return false
-    }
-
-    public static <T> T fromJson(String json) {
-        return (new JsonSlurper().parseText(json) as T)
-    }
-
-    public static String toJson(Object obj) {
-        JsonOutput.toJson(obj)
     }
 
     public static byte[] serializeInt(int value) {

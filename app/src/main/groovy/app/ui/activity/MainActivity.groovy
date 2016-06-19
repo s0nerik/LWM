@@ -10,8 +10,8 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.KeyEvent
-import app.PrefManager
 import app.R
+import app.prefs.MainPrefs
 import app.ui.base.DaggerActivity
 import app.ui.fragment.LocalMusicFragment
 import app.ui.fragment.StationsAroundFragment
@@ -23,7 +23,10 @@ import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
-import static android.media.AudioManager.*
+import static android.media.AudioManager.ADJUST_LOWER
+import static android.media.AudioManager.ADJUST_RAISE
+import static android.media.AudioManager.FLAG_SHOW_UI
+import static android.media.AudioManager.STREAM_MUSIC
 import static android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import static android.view.KeyEvent.KEYCODE_VOLUME_UP
 
@@ -44,7 +47,7 @@ public class MainActivity extends DaggerActivity {
 
     @Inject
     @PackageScope
-    PrefManager prefManager
+    MainPrefs mainPrefs
 
     DrawerLayout drawerLayout
     NavigationView navigation
@@ -82,15 +85,14 @@ public class MainActivity extends DaggerActivity {
 
     protected void initNavigationDrawer() {
         navigation.navigationItemSelectedListener = {
-            prefManager.drawerSelection().put(it.itemId).apply()
+            mainPrefs.drawerSelection = it.itemId
             drawerLayout.closeDrawer Gravity.LEFT
             showFragmentFromDrawer it.itemId
 
             return true
         }
 
-        int activeFragment = prefManager.drawerSelection().getOr(R.id.local_music)
-        showFragmentFromDrawer activeFragment
+        showFragmentFromDrawer mainPrefs.drawerSelection
     }
 
     @Subscribe

@@ -34,6 +34,7 @@ import app.helpers.wifi.WifiUtils
 import app.models.*
 import app.players.LocalPlayer
 import app.players.StreamPlayer
+import app.prefs.MainPrefs
 import app.receivers.MediaButtonIntentReceiver
 import app.receivers.PendingIntentReceiver
 import app.receivers.WiFiDirectBroadcastReceiver
@@ -276,8 +277,8 @@ public class AndroidModule {
 
     @Provides
     @Singleton
-    PrefManager providePrefManager() {
-        return new PrefManager(application);
+    MainPrefs provideMainPrefs() {
+        return MainPrefs.create(application)
     }
 
     @Provides

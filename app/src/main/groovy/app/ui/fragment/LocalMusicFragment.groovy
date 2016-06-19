@@ -21,7 +21,6 @@ import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import app.PrefManager
 import app.R
 import app.adapters.LocalMusicFragmentsAdapter
 import app.events.player.playback.PlaybackPausedEvent
@@ -31,6 +30,7 @@ import app.events.ui.ChangeFabActionCommand
 import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.helpers.MenuTint
+import app.prefs.MainPrefs
 import app.services.StreamPlayerService
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.DaggerFragment
@@ -55,7 +55,7 @@ public class LocalMusicFragment extends DaggerFragment {
 
     @Inject
     @PackageScope
-    PrefManager prefManager
+    MainPrefs mainPrefs
 
     @Inject
     @PackageScope
