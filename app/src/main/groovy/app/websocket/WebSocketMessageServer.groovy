@@ -172,7 +172,7 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
     private Observable<Collection<WebSocket>> waitForReadyClients() {
-        Observable.defer {
+        Observable.<Collection<WebSocket>>defer {
             def connectionsCnt = clientInfoMap.size()
             if (connectionsCnt)
                 post[READY].buffer(10, TimeUnit.SECONDS, connectionsCnt).take(1)
