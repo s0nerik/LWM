@@ -13,7 +13,7 @@ import app.Utils
 import app.events.player.playback.*
 import app.models.Song
 import app.players.LocalPlayer
-import app.ui.BlurTransformation
+
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.DaggerFragment
 import app.ui.custom_view.RadialEqualizerView
@@ -23,6 +23,7 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.*
+import jp.wasabeef.glide.transformations.BlurTransformation
 import rx.*
 import rx.android.schedulers.AndroidSchedulers
 

@@ -24,7 +24,6 @@ import app.players.PlayerUtils
 import app.ui.Blurer
 import app.ui.base.DaggerOttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.nvanbenschoten.motion.ParallaxImageView
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import ru.noties.debug.Debug
@@ -51,7 +50,7 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     @PackageScope
     Utils utils
 
-    ParallaxImageView background
+    ImageView background
     ImageView cover
     FrameLayout albumArtLayout
     TextView currentTime
@@ -91,13 +90,6 @@ abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
     void onResume() {
         super.onResume()
         initView()
-        background.registerSensorManager()
-    }
-
-    @Override
-    void onPause() {
-        super.onPause()
-        background.unregisterSensorManager()
     }
 
     protected void onSongPlaying(SongPlayingEvent event) {

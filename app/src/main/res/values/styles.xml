@@ -314,8 +314,8 @@
         <!-- Required for Lollipop. -->
         <item name="android:overlapAnchor">true</item>
 
-        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+        <!--<item name="android:windowEnterAnimation">@anim/popup_enter</item>-->
+        <!--<item name="android:windowExitAnimation">@anim/popup_exit</item>-->
     </style>
 
     <style name="item_artists_album">
