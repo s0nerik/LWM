@@ -2,22 +2,19 @@ package app.ui.activity
 
 import android.media.AudioManager
 import android.view.KeyEvent
-import app.ui.base.DaggerActivity
+import app.ui.base.BaseActivity
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
-abstract class BaseLocalActivity extends DaggerActivity {
+abstract class BaseLocalActivity extends BaseActivity {
 
     @Inject
-    @PackageScope
     protected Bus bus
 
     @Inject
-    @PackageScope
     protected AudioManager audioManager
 
     @Override

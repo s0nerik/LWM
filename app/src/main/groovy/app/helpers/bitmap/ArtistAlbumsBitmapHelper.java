@@ -45,7 +45,7 @@
 //    private Bitmap shadow;
 //
 //    public ArtistAlbumsBitmapHelper(Artist artist) {
-//        Injector.inject(this);
+//        App.get().inject(this);
 //        this.artist = artist;
 //        initThumbnailSize();
 //        initShadow();

@@ -1,8 +1,9 @@
 package app.services
+
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import app.Injector
+import app.App
 import app.commands.StartPlaybackDelayedCommand
 import app.events.player.ReadyToStartPlaybackEvent
 import app.players.StreamPlayer
@@ -10,8 +11,6 @@ import app.websocket.WebSocketMessageClient
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
@@ -20,22 +19,21 @@ import java.util.concurrent.TimeUnit
 import static app.websocket.SocketMessage.Message.READY
 import static app.websocket.SocketMessage.Type.POST
 
-@PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
 class StreamPlayerService extends Service {
 
     @Inject
-    Bus bus
+    protected Bus bus
 
     @Inject
-    StreamPlayer player
+    protected StreamPlayer player
 
     private WebSocketMessageClient webSocketMessageClient
 
     @Override
     void onCreate() {
         super.onCreate()
-        Injector.inject this
+        App.get().inject this
         bus.register this
     }
 

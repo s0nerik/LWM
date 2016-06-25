@@ -1,4 +1,5 @@
 package app.ui.fragment.playback
+
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
+import app.App
 import app.R
 import app.Utils
 import app.commands.ChangePauseStateCommand
@@ -27,28 +29,25 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.Observable
 import rx.Subscriber
 
 import javax.inject.Inject
 
-import static app.commands.PlaySongAtPositionCommand.PositionType.*
+import static app.commands.PlaySongAtPositionCommand.PositionType.NEXT
+import static app.commands.PlaySongAtPositionCommand.PositionType.PREVIOUS
 
 @CompileStatic
 class LocalPlaybackFragment extends PlaybackFragment {
 
     @Inject
-    @PackageScope
-    LocalPlayer player
+    protected LocalPlayer player
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
 //    @Inject
 //    @PackageScope
@@ -56,18 +55,21 @@ class LocalPlaybackFragment extends PlaybackFragment {
 
     // TODO: Remove this when error with non-existing blurer property problem in LocalPlaybackFragment is gone
     @Inject
-    @PackageScope
-    Blurer blurer
+    protected Blurer blurer
 
     @Inject
-    @PackageScope
-    WindowManager windowManager
+    protected WindowManager windowManager
 
     @Inject
-    @PackageScope
-    ContentResolver contentResolver
+    protected ContentResolver contentResolver
 
     private View chatButton
+
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        App.get().inject(this)
+    }
 
     @Override
     void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

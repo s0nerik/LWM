@@ -2,6 +2,7 @@ package app.helpers.db
 import android.net.Uri
 import android.provider.MediaStore.Audio.Media
 import android.support.annotation.NonNull
+import app.App
 import app.models.Album
 import app.models.Song
 import groovy.transform.CompileStatic
@@ -37,14 +38,18 @@ final class SongsCursorGetter extends CursorGetter {
     private static String supportedMimeTypesString = "('" + Song.SUPPORTED_MIME_TYPES.join("','") + "')"
 
     //region Constructors
-    SongsCursorGetter() {}
+    SongsCursorGetter() {
+        App.get().inject(this)
+    }
 
     SongsCursorGetter(@NonNull Album album) {
+        this()
         this.album = album
         selection << ("$Media.ALBUM_ID = $album.id" as String)
     }
 
     SongsCursorGetter(@NonNull SortOrder sortOrder) {
+        this()
         this.sortOrder = sortOrder
     }
 

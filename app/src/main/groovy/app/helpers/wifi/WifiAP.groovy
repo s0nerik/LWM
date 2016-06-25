@@ -55,7 +55,7 @@
 //    private boolean alwaysEnableWifi = true; //set to false if you want to try and set wifiManager state back to what it was before wifiManager ap enabling, true will result in the wifiManager always being enabled after wifiManager ap is disabled
 //
 //    public WifiAP() {
-//        Injector.inject(this);
+//        App.get().inject(this);
 //    }
 //
 //    public void toggleWiFiAP() {

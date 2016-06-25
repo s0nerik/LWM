@@ -114,7 +114,7 @@
 
             app:layout_anchor="@id/pager"
             app:layout_anchorGravity="bottom|right|end"
-            app:layout_behavior="app.ui.behavior.ScrollAwareFABBehavior1"
+            app:layout_behavior="app.ui.behaviors.ScrollAwareFABBehavior1"
 
             android:clickable="true"/>
 

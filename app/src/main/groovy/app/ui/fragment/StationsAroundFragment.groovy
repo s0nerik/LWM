@@ -8,37 +8,34 @@ import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.view.View
+import app.App
 import app.R
 import app.Utils
 import app.adapters.PlayersAroundPagerAdapter
 import app.events.wifi.WifiStateChangedEvent
 import app.services.LocalPlayerService
-import app.ui.base.DaggerFragment
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_stations_around, injectAllViews = true)
-class StationsAroundFragment extends DaggerFragment {
+class StationsAroundFragment extends BaseFragment {
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    WifiManager wifiManager
+    protected WifiManager wifiManager
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     Toolbar toolbar
     TabLayout tabs
@@ -61,6 +58,7 @@ class StationsAroundFragment extends DaggerFragment {
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate savedInstanceState
+        App.get().inject this
         activity.stopService new Intent(activity, LocalPlayerService)
     }
 

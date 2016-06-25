@@ -21,6 +21,7 @@ import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import app.App
 import app.R
 import app.adapters.LocalMusicFragmentsAdapter
 import app.events.player.playback.PlaybackPausedEvent
@@ -33,7 +34,7 @@ import app.helpers.MenuTint
 import app.prefs.MainPrefs
 import app.services.StreamPlayerService
 import app.ui.activity.ArtistInfoActivity
-import app.ui.base.DaggerFragment
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.jakewharton.rxbinding.widget.RxTextView
@@ -42,7 +43,6 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.Subscription
 
 import javax.inject.Inject
@@ -51,15 +51,13 @@ import java.lang.reflect.Method
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_local_music, injectAllViews = true)
-public class LocalMusicFragment extends DaggerFragment {
+public class LocalMusicFragment extends BaseFragment {
 
     @Inject
-    @PackageScope
-    MainPrefs mainPrefs
+    protected MainPrefs mainPrefs
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     Toolbar toolbar
     TabLayout tabs
@@ -87,6 +85,7 @@ public class LocalMusicFragment extends DaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.get().inject this
         streamPlayerServiceIntent = new Intent(activity, StreamPlayerService)
         activity.stopService streamPlayerServiceIntent
     }

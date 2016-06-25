@@ -3,7 +3,6 @@ package app.players
 import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
-import app.Injector
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
@@ -18,7 +17,6 @@ import com.google.android.exoplayer.upstream.DefaultAllocator
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.Subscription
@@ -33,15 +31,12 @@ import static com.google.android.exoplayer.ExoPlayer.STATE_IDLE
 abstract class BasePlayer extends RxExoPlayer {
 
     @Inject
-    @PackageScope
     protected AudioManager audioManager
 
     @Inject
-    @PackageScope
     protected Bus bus
 
     @Inject
-    @PackageScope
     protected Context context
 
     public boolean repeat = false
@@ -74,7 +69,7 @@ abstract class BasePlayer extends RxExoPlayer {
     private Subscription playbackProgressNotifier
 
     BasePlayer() {
-        Injector.inject this
+        injectDependencies()
 
         playerSubject.subscribe {
             //noinspection GroovyFallthrough
@@ -108,6 +103,8 @@ abstract class BasePlayer extends RxExoPlayer {
 
         startService()
     }
+
+    protected abstract void injectDependencies()
 
     String getCurrentPositionInMinutes() {
         int seconds = (currentPosition / 1000) as int

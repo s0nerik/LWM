@@ -5,7 +5,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.media.AudioManager
 import android.os.IBinder
-import app.Injector
+import app.App
 import app.commands.*
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
@@ -19,8 +19,6 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 import rx.Observable
 
@@ -28,27 +26,26 @@ import javax.inject.Inject
 
 import static app.events.player.playback.control.ControlButtonEvent.Type.*
 
-@PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
 class LocalPlayerService extends Service {
 
     @Inject
-    Bus bus
+    protected Bus bus
 
     @Inject
-    LocalPlayer player
+    protected LocalPlayer player
 
     @Inject
-    AudioManager audioManager
+    protected AudioManager audioManager
 
     @Inject
-    WebSocketMessageServer server
+    protected WebSocketMessageServer server
 
     ComponentName mediaButtonsReceiver
 
     @Override
     void onCreate() {
-        Injector.inject this
+        App.get().inject this
 
         bus.register this
 

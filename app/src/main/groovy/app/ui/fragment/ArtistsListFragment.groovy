@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import app.App
 import app.R
 import app.adapters.albums.AlbumItem
 import app.adapters.albums.ArtistAlbumItem
@@ -15,7 +16,7 @@ import app.adapters.artists.ArtistsAdapter
 import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
 import app.models.Artist
-import app.ui.base.DaggerOttoOnCreateFragment
+import app.ui.base.OttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe
@@ -26,7 +27,7 @@ import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(R.layout.fragment_list_artists)
-class ArtistsListFragment extends DaggerOttoOnCreateFragment implements SortableFragment {
+class ArtistsListFragment extends OttoOnCreateFragment implements SortableFragment {
 
     @InjectView(R.id.empty)
     LinearLayout mEmpty
@@ -36,8 +37,7 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment implements Sortable
     ProgressBar mProgress
 
     @Inject
-    @PackageScope
-    CollectionManager collectionManager
+    protected CollectionManager collectionManager
 
     private List<ArtistItem> artists = new ArrayList<>()
     private List<ArtistItem> filteredArtists = new ArrayList<>()
@@ -53,6 +53,12 @@ class ArtistsListFragment extends DaggerOttoOnCreateFragment implements Sortable
                 l.artist.albums.sort { it.year }.last().year.compareTo(r.artist.albums.sort { it.year }.last().year)
             } as Comparator<AlbumItem>,
     ]
+
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        App.get().inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {

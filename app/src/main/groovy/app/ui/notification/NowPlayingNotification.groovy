@@ -13,8 +13,7 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.TaskStackBuilder
 import android.support.v7.graphics.Palette
 import android.widget.RemoteViews
-
-import app.Injector
+import app.App
 import app.R
 import app.Utils
 import app.models.Song
@@ -22,7 +21,6 @@ import app.players.LocalPlayer
 import app.receivers.PendingIntentReceiver
 import app.ui.PaletteHelper
 import app.ui.activity.LocalPlaybackActivity
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -38,24 +36,19 @@ class NowPlayingNotification {
     public static final int ALBUM_ART_SIZE = 120
 
     @Inject
-    @PackageScope
-    LocalPlayer player
+    protected LocalPlayer player
 
     @Inject
-    @PackageScope
-    ContentResolver contentResolver
+    protected ContentResolver contentResolver
 
     @Inject
-    @PackageScope
-    Resources resources
+    protected Resources resources
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     @Inject
-    @PackageScope
-    Context context
+    protected Context context
 
     private Song song
 
@@ -65,7 +58,7 @@ class NowPlayingNotification {
     private final PendingIntent nextIntent
 
     public NowPlayingNotification(Song song) {
-        Injector.inject(this)
+        App.get().inject(this)
 
         closeIntent = PendingIntent.getBroadcast(context, 0, createIntent(context, ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT)
         prevIntent = PendingIntent.getBroadcast(context, 1, createIntent(context, ACTION_PREV), PendingIntent.FLAG_UPDATE_CURRENT)

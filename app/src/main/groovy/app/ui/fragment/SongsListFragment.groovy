@@ -1,11 +1,12 @@
 package app.ui.fragment
+
+import android.os.Bundle
+import app.App
 import app.R
 import app.helpers.CollectionManager
 import app.models.Song
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.Observable
 
 import javax.inject.Inject
@@ -15,12 +16,13 @@ import javax.inject.Inject
 final class SongsListFragment extends BaseSongsListFragment {
 
     @Inject
-    @PackageScope
-    CollectionManager collectionManager
+    protected CollectionManager collectionManager
 
-    @Inject
-    @PackageScope
-    Bus bus
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        App.get().inject(this)
+    }
 
     @Override
     protected Observable<List<Song>> loadSongs() {

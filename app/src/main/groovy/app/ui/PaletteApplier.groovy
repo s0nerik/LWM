@@ -12,14 +12,14 @@ import javax.inject.Inject
 
 @InheritConstructors
 @CompileStatic
-class PaletteApplier extends Daggered {
+class PaletteApplier {
 
     @Inject
-    @PackageScope
-    Resources resources
+    protected Resources resources
 
     PaletteApplier(float bgAlpha) {
         super()
+        App.get().inject(this)
         this.bgAlpha = bgAlpha
     }
 

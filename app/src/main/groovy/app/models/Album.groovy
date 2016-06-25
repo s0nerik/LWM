@@ -1,11 +1,11 @@
 package app.models
+
 import android.database.Cursor
-import app.Daggered
-import app.helpers.db.cursor_constructor.CursorInitializable
+import app.App
 import app.helpers.CollectionManager
+import app.helpers.db.cursor_constructor.CursorInitializable
 import com.github.s0nerik.betterknife.annotations.Parcelable
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import groovy.transform.builder.Builder
 
 import javax.inject.Inject
@@ -21,11 +21,10 @@ import static android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID
 @CompileStatic
 @Builder
 @Parcelable(exclude = {metaClass; artist; songs; collectionManager})
-final class Album extends Daggered implements CursorInitializable, Serializable {
+final class Album implements CursorInitializable, Serializable {
 
     @Inject
-    @PackageScope
-    transient CollectionManager collectionManager
+    protected transient CollectionManager collectionManager
 
     long id
     int year
@@ -35,6 +34,10 @@ final class Album extends Daggered implements CursorInitializable, Serializable 
     String albumArtPath
 
     long artistId
+
+    Album() {
+        App.get().inject(this)
+    }
 
     Artist getArtist() {
         collectionManager.getArtist this

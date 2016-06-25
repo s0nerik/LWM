@@ -1,4 +1,5 @@
 package app.ui.activity
+
 import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.Nullable
@@ -19,8 +20,8 @@ import android.widget.Toast
 import app.R
 import app.R.layout
 import app.Utils
-import app.adapters.songs.SongsListAdapter
 import app.adapters.songs.SongItem
+import app.adapters.songs.SongsListAdapter
 import app.commands.EnqueueCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
@@ -34,7 +35,6 @@ import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.jakewharton.rxbinding.support.design.widget.RxAppBarLayout
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.subscriptions.CompositeSubscription
 
@@ -57,12 +57,10 @@ class AlbumInfoActivity extends BaseLocalActivity {
     FloatingActionButton fab
 
     @Inject
-    @PackageScope
-    LayoutInflater inflater
+    protected LayoutInflater inflater
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     @Extra
     Album album

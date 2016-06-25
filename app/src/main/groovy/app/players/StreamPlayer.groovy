@@ -1,8 +1,9 @@
 package app.players
+
 import android.os.Handler
+import app.App
 import app.models.Song
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
 
@@ -12,8 +13,12 @@ import javax.inject.Inject
 class StreamPlayer extends BasePlayer {
 
     @Inject
-    @PackageScope
-    Handler handler
+    protected Handler handler
+
+    @Override
+    protected void injectDependencies() {
+        App.get().inject(this)
+    }
 
     Observable prepareForPosition(Song song, int pos) {
         reset().doOnSubscribe { Debug.d "prepareForPosition: ${pos}" }

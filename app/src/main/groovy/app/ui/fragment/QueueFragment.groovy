@@ -1,32 +1,27 @@
 package app.ui.fragment
 
+import android.os.Bundle
+import app.App
 import app.R
 import app.events.player.queue.PlaylistAddedToQueueEvent
 import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.models.Song
-import app.players.LocalPlayer
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.Observable
-
-import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(R.layout.fragment_list_queue)
-public final class QueueFragment extends BaseSongsListFragment {
+final class QueueFragment extends BaseSongsListFragment {
 
-    @Inject
-    @PackageScope
-    LocalPlayer player
-
-    @Inject
-    @PackageScope
-    Bus bus
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        App.get().inject(this)
+    }
 
     @Subscribe
     public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {

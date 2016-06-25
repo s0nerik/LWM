@@ -1,19 +1,17 @@
-package app.ui.base;
+package app.ui.base
 
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope;
 
-import javax.inject.Inject;
+import javax.inject.Inject
 
 @CompileStatic
-abstract class DaggerOttoOnResumeFragment extends DaggerFragment {
+abstract class OttoOnResumeFragment extends BaseFragment {
 
     private Object[] busListeners = [ this ]
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Override
     void onResume() {

@@ -3,27 +3,30 @@ package app.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import app.Daggered
+import app.App
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapResource
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import jp.wasabeef.glide.transformations.BlurTransformation
 import rx.Observable
 
 import javax.inject.Inject
 
 @CompileStatic
-class Blurer extends Daggered {
+class Blurer {
 
     static final int RADIUS = 25
 
     @Inject
-    @PackageScope
-    Context context
+    protected Context context
+
+    Blurer() {
+        App.get().inject this
+    }
 
     @SuppressLint("NewApi")
     Bitmap blur(Bitmap input) {
-        return new BlurTransformation(context, RADIUS).transform(new BitmapResource(input, null), input.width, input.height).get();
+        return new BlurTransformation(context, RADIUS).transform(new BitmapResource(input, Glide.get(context).getBitmapPool()), input.width, input.height).get();
 //        try {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                RenderScript rs = RenderScript.create(context);

@@ -1,5 +1,6 @@
 package app.helpers.db
 import android.net.Uri
+import app.App
 import groovy.transform.CompileStatic
 
 import static android.provider.BaseColumns._ID
@@ -23,9 +24,11 @@ final class ArtistsCursorGetter extends CursorGetter {
     SortOrder sortOrder = new StringSortOrder(DEFAULT_SORT_ORDER)
 
     ArtistsCursorGetter() {
+        App.get().inject(this)
     }
 
     ArtistsCursorGetter(long id) {
+        this()
         selection << ("$_ID = $id" as String)
     }
 }

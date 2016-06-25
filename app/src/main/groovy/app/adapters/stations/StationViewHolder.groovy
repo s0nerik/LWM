@@ -2,7 +2,7 @@ package app.adapters.stations
 
 import android.view.View
 import android.widget.TextView
-import app.Injector
+import app.App
 import app.R
 import app.helpers.StationsExplorer
 import app.models.Station
@@ -13,7 +13,6 @@ import com.squareup.otto.Bus
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -21,12 +20,10 @@ import javax.inject.Inject
 class StationViewHolder extends FlexibleViewHolder {
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    StationsExplorer explorer
+    protected StationsExplorer explorer
 
     @InjectView(R.id.title)
     TextView title
@@ -38,7 +35,7 @@ class StationViewHolder extends FlexibleViewHolder {
 
     StationViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
-        Injector.inject this
+        App.get().inject this
         BetterKnife.inject this, itemView
     }
 

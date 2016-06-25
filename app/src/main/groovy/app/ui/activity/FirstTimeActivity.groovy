@@ -1,17 +1,11 @@
-package app.ui.activity;
-
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+package app.ui.activity
 
 import app.R
-import groovy.transform.CompileStatic;
+import app.ui.base.BaseActivity
+import com.github.s0nerik.betterknife.annotations.InjectLayout
+import groovy.transform.CompileStatic
 
 @CompileStatic
-public class FirstTimeActivity extends FragmentActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_time);
-    }
+@InjectLayout(value = R.layout.activity_first_time, injectAllViews = true)
+public class FirstTimeActivity extends BaseActivity {
 }

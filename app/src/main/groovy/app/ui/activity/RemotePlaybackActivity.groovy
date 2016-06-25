@@ -1,34 +1,29 @@
 package app.ui.activity
 
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-
+import android.content.DialogInterface
+import android.os.Bundle
+import android.support.v7.app.AlertDialog
+import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import app.App
 import app.R
-import app.services.StreamPlayerService;
-import com.squareup.otto.Bus;
+import app.events.chat.ChatMessageReceivedEvent
+import app.events.chat.SetUnreadMessagesEvent
+import app.events.client.SocketClosedEvent
+import app.models.Song
+import app.players.StreamPlayer
+import app.services.StreamPlayerService
+import app.ui.fragment.playback.RemotePlaybackFragment
+import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget;
+import ru.noties.debug.Debug
 
-import javax.inject.Inject;
-
-import app.events.chat.ChatMessageReceivedEvent;
-import app.events.chat.SetUnreadMessagesEvent;
-import app.events.client.SocketClosedEvent;
-import app.models.Song;
-import app.players.StreamPlayer;
-
-import app.ui.fragment.playback.RemotePlaybackFragment;
-import ru.noties.debug.Debug;
+import javax.inject.Inject
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-public class RemotePlaybackActivity extends PlaybackActivity {
+class RemotePlaybackActivity extends PlaybackActivity {
 
     private int duration;
     private String durationString;
@@ -42,10 +37,10 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     private TextView newMessagesCounter;
 
     @Inject
-    Bus bus;
+    protected Bus bus
 
     @Inject
-    StreamPlayer player;
+    protected StreamPlayer player
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -57,6 +52,7 @@ public class RemotePlaybackActivity extends PlaybackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.get().inject(this)
         Debug.d("RemotePlaybackActivity.onCreate()");
         setContentView(R.layout.activity_remote_playback);
     }

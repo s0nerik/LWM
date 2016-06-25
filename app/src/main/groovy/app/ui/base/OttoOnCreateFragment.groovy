@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic;
 import javax.inject.Inject;
 
 @CompileStatic
-public abstract class DaggerOttoOnCreateFragment extends DaggerFragment {
+public abstract class OttoOnCreateFragment extends BaseFragment {
 
     private Object[] busListeners = [ this ]
 

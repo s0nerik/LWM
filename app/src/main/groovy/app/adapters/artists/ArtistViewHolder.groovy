@@ -3,7 +3,7 @@ package app.adapters.artists
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import app.Injector
+import app.App
 import app.R
 import app.Utils
 import app.models.Artist
@@ -15,7 +15,6 @@ import com.squareup.otto.Bus
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.ExpandableViewHolder
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.apache.commons.lang3.text.WordUtils
 
 import javax.inject.Inject
@@ -30,18 +29,16 @@ class ArtistViewHolder extends ExpandableViewHolder {
     ImageView imageView
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     Artist artist
 
     ArtistViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
-        Injector.inject this
+        App.get().inject this
         BetterKnife.inject this, view
     }
 

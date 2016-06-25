@@ -3,6 +3,7 @@ package app.ui.fragment.playback
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import app.App
 import app.R
 import app.Utils
 import app.events.player.playback.SongChangedEvent
@@ -15,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.Observable
 import rx.Subscriber
 
@@ -25,17 +25,20 @@ import javax.inject.Inject
 class RemotePlaybackFragment extends PlaybackFragment {
 
     @Inject
-    @PackageScope
-    StreamPlayer player
+    protected StreamPlayer player
 
     // TODO: remove this when error in Groovy is fixed
     @Inject
-    @PackageScope
-    Blurer blurer
+    protected Blurer blurer
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
+
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        App.get().inject(this)
+    }
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {

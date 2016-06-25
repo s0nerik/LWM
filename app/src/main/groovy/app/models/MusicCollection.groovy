@@ -1,13 +1,13 @@
 package app.models
+
 import android.content.Context
-import app.Daggered
+import app.App
 import app.helpers.GroovyLongSparseArray
 import app.helpers.db.AlbumsCursorGetter
 import app.helpers.db.ArtistsCursorGetter
 import app.helpers.db.SongsCursorGetter
 import app.helpers.db.cursor_constructor.CursorConstructor
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.Subscriber
@@ -15,20 +15,23 @@ import rx.Subscriber
 import javax.inject.Inject
 
 @CompileStatic
-class MusicCollection extends Daggered implements Serializable {
+class MusicCollection implements Serializable {
     GroovyLongSparseArray<Song> songs = new GroovyLongSparseArray<>()
     GroovyLongSparseArray<Album> albums = new GroovyLongSparseArray<>()
     GroovyLongSparseArray<Artist> artists = new GroovyLongSparseArray<>()
 
     @Inject
-    @PackageScope
-    transient Context context
+    protected transient Context context
 
     class FetchingMediaStoreStartedNotification {}
     class FetchingMediaStoreCompletedNotification {}
     class SongsLoadedNotification {}
     class ArtistsLoadedNotification {}
     class AlbumsLoadedNotification {}
+
+    MusicCollection() {
+        App.get().inject(this)
+    }
 
     Observable<Object> init() {
         clear()

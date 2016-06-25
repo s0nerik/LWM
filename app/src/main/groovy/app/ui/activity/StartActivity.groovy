@@ -3,21 +3,26 @@ package app.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.Nullable
+import app.App
 import app.helpers.CollectionManager
-import app.ui.base.DaggerActivity
+import app.ui.base.BaseActivity
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 import javax.inject.Inject
 
 @CompileStatic
-class StartActivity extends DaggerActivity {
+class StartActivity extends BaseActivity {
 
     @Inject
-    @PackageScope
-    CollectionManager collectionManager
+    protected CollectionManager collectionManager
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        App.get().inject(this)
+    }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {

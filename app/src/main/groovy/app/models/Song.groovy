@@ -1,10 +1,11 @@
 package app.models
+
 import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import app.App
 import app.Config
-import app.Daggered
 import app.helpers.CollectionManager
 import app.helpers.db.cursor_constructor.CursorInitializable
 import com.github.s0nerik.betterknife.annotations.Parcelable
@@ -12,7 +13,6 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.PackageScope
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
 import org.apache.commons.lang3.SerializationUtils
@@ -30,11 +30,10 @@ import static android.provider.MediaStore.MediaColumns.TITLE
 @CompileStatic
 @Builder
 @Parcelable(exclude = {metaClass; album; artist; albumArtUri; sourceUri; durationString; collectionManager})
-class Song extends Daggered implements CursorInitializable, Serializable {
+class Song implements CursorInitializable, Serializable {
 
     @Inject
-    @PackageScope
-    transient CollectionManager collectionManager
+    protected transient CollectionManager collectionManager
 
     static final String[] SUPPORTED_MIME_TYPES = [
             MimeTypeMap.singleton.getMimeTypeFromExtension("mp3"),
@@ -58,6 +57,10 @@ class Song extends Daggered implements CursorInitializable, Serializable {
     int duration
 
     String mimeType
+
+    Song() {
+        App.get().inject(this)
+    }
 
     String getDurationString() {
         int seconds = duration / 1000 as int

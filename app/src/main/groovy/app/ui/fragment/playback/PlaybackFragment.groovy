@@ -22,7 +22,7 @@ import app.models.Song
 import app.players.BasePlayer
 import app.players.PlayerUtils
 import app.ui.Blurer
-import app.ui.base.DaggerOttoOnResumeFragment
+import app.ui.base.OttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -36,19 +36,16 @@ import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_playback, injectAllViews = true)
-abstract class PlaybackFragment extends DaggerOttoOnResumeFragment {
+abstract class PlaybackFragment extends OttoOnResumeFragment {
 
     @Inject
-    @PackageScope
-    Resources res
+    protected Resources res
 
     @Inject
-    @PackageScope
-    Blurer blurer
+    protected Blurer blurer
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     ImageView background
     ImageView cover

@@ -1,8 +1,9 @@
 package app.server
+
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import app.Injector
+import app.App
 import app.R
 import app.Utils
 import app.models.Song
@@ -13,7 +14,6 @@ import fi.iki.elonen.NanoHTTPD.Response
 import fi.iki.elonen.NanoHTTPD.ResponseException
 import fi.iki.elonen.NanoHTTPD.IHTTPSession
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
@@ -31,24 +31,20 @@ class HttpStreamServer extends NanoHTTPD {
     }
 
     @Inject
-    @PackageScope
-    ContentResolver contentResolver
+    protected ContentResolver contentResolver
 
     @Inject
-    @PackageScope
-    LocalPlayer localPlayer
+    protected LocalPlayer localPlayer
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    Utils utils
+    protected Utils utils
 
     HttpStreamServer(int port) {
         super(port)
-        Injector.inject this
+        App.get().inject this
     }
 
     @Override

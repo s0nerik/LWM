@@ -2,17 +2,19 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
-        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
+        maven { url 'https://maven.fabric.io/public' }
+//        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.2'
+//        classpath 'org.codehaus.groovy:groovy-android-gradle-plugin:1.0.0'
+        classpath 'com.github.groovy:groovy-android-gradle-plugin:9ed9d0e'
         classpath 'io.fabric.tools:gradle:1.21.7'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.10'
         classpath "com.fernandocejas.frodo:frodo-plugin:0.8.1"
-        classpath 'net.kaleidos.gradle.plugins:emerger:0.0.2'
+//        classpath 'net.kaleidos.gradle.plugins:emerger:0.0.2'
+        classpath 'com.github.s0nerik:emerger:noPublishing-SNAPSHOT'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.4'
     }
 }
@@ -20,8 +22,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
         maven { url "https://jitpack.io" }
+        maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 

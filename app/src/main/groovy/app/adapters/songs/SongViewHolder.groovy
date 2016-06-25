@@ -10,11 +10,11 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
-import app.Injector
+import app.App
 import app.R
 import app.Utils
 import app.commands.RequestPlaySongCommand
-import app.models.MusicCollection
+import app.helpers.CollectionManager
 import app.models.Song
 import app.players.LocalPlayer
 import com.github.s0nerik.betterknife.BetterKnife
@@ -24,7 +24,6 @@ import com.squareup.otto.Bus
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -43,31 +42,26 @@ class SongViewHolder extends FlexibleViewHolder {
     @InjectView(R.id.container)
     RelativeLayout container
 
-    @PackageScope
     @Inject
-    LocalPlayer player
+    protected LocalPlayer player
 
-    @PackageScope
     @Inject
-    MusicCollection collection
+    protected CollectionManager collectionManager
 
-    @PackageScope
     @Inject
-    Bus bus
+    protected Bus bus
 
-    @PackageScope
     @Inject
-    Context context
+    protected Context context
 
-    @PackageScope
     @Inject
-    Utils utils
+    protected Utils utils
 
     Song song
 
     SongViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
-        Injector.inject this
+        App.get().inject this
         BetterKnife.inject this, view
     }
 

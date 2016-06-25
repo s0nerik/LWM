@@ -1,13 +1,13 @@
 package app.receivers
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import app.Injector
+import app.App
 import app.events.player.playback.control.ControlButtonEvent
 import app.services.LocalPlayerService
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -23,12 +23,11 @@ import static app.ui.notification.NowPlayingNotification.ACTION_PREV
 class PendingIntentReceiver extends BroadcastReceiver {
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     PendingIntentReceiver() {
         super()
-        Injector.inject(this)
+        App.get().inject(this)
     }
 
     @Override

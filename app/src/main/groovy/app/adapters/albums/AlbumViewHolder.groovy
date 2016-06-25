@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import app.Injector
+import app.App
 import app.R
 import app.Utils
 import app.models.Album
@@ -18,7 +18,6 @@ import com.github.s0nerik.betterknife.annotations.OnClick
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -38,14 +37,13 @@ class AlbumViewHolder extends FlexibleViewHolder {
     View layout
 
     @Inject
-    @PackageScope
     protected Utils utils
 
     protected Album album
 
     AlbumViewHolder(View view, FlexibleAdapter adapter) {
         super(view, adapter)
-        Injector.inject this
+        App.get().inject this
         BetterKnife.inject this, view
     }
 

@@ -1,6 +1,7 @@
 package app.players
 
 import android.content.Intent
+import app.App
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.models.Song
@@ -38,6 +39,11 @@ class LocalPlayer extends BasePlayer {
 //            Debug.e it
 //            stop().subscribe()
 //        }
+    }
+
+    @Override
+    protected void injectDependencies() {
+        App.get().inject(this)
     }
 
     //region Queue manipulation

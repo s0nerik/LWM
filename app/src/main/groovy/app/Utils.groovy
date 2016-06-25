@@ -21,8 +21,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import app.models.Song
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
@@ -34,20 +32,23 @@ import static java.lang.reflect.Modifier.PUBLIC
 import static java.lang.reflect.Modifier.STATIC
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
-class Utils extends Daggered {
+class Utils {
 
     @Inject
-    Resources resources
+    protected Resources resources
 
     @Inject
-    WindowManager windowManager
+    protected WindowManager windowManager
 
     @Inject
-    ActivityManager activityManager
+    protected ActivityManager activityManager
 
     @Inject
-    ContentResolver contentResolver
+    protected ContentResolver contentResolver
+
+    Utils() {
+        App.get().inject this
+    }
 
     public String getArtistName(String name) {
         if ("<unknown>".equals(name)) {

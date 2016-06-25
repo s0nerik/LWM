@@ -1,11 +1,11 @@
 package app.helpers.wifi
+
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
-import app.Injector
+import app.App
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -13,15 +13,13 @@ import javax.inject.Inject
 public class WifiUtils {
 
     @Inject
-    @PackageScope
-    WifiManager wifiManager
+    protected WifiManager wifiManager
 
     @Inject
-    @PackageScope
-    ConnectivityManager connectivityManager
+    protected ConnectivityManager connectivityManager
 
     WifiUtils() {
-        Injector.inject(this)
+        App.get().inject(this)
     }
 
     void connectToStation(String apName){

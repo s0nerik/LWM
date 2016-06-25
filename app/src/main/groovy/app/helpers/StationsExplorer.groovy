@@ -1,4 +1,5 @@
 package app.helpers
+
 import android.content.Context
 import android.content.IntentFilter
 import android.net.NetworkInfo
@@ -6,7 +7,7 @@ import android.net.wifi.WpsInfo
 import android.net.wifi.p2p.*
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest
 import android.os.Handler
-import app.Daggered
+import app.App
 import app.events.p2p.P2PBroadcastReceivedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.models.Station
@@ -16,8 +17,6 @@ import app.services.StreamPlayerService
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
@@ -26,28 +25,29 @@ import static android.net.wifi.p2p.WifiP2pManager.*
 import static app.server.MusicStation.INSTANCE_NAME
 import static app.server.MusicStation.SERVICE_TYPE
 import static com.github.s0nerik.betterknife.dsl.AndroidContextDSL.intent
-import static java.lang.reflect.Modifier.*
+import static java.lang.reflect.Modifier.FINAL
+import static java.lang.reflect.Modifier.PUBLIC
+import static java.lang.reflect.Modifier.STATIC
 
-@PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
-class StationsExplorer extends Daggered {
+class StationsExplorer {
 
     @Inject
-    WifiP2pManager manager
+    protected WifiP2pManager manager
 
     @Inject
-    Context context
+    protected Context context
 
     @Inject
-    Bus bus
+    protected Bus bus
 
     @Inject
-    Handler handler
+    protected Handler handler
 
     WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance(INSTANCE_NAME, SERVICE_TYPE)
 
     StationsExplorer() {
-        super()
+        App.get().inject(this)
         initIntentFilter()
     }
 

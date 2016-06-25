@@ -1,19 +1,17 @@
 package app.helpers.db
+
 import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
-import app.Daggered
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
-abstract class CursorGetter extends Daggered {
+abstract class CursorGetter {
 
     @Inject
-    @PackageScope
-    ContentResolver contentResolver
+    protected ContentResolver contentResolver
 
     abstract Uri getContentUri()
     abstract List<String> getProjection()

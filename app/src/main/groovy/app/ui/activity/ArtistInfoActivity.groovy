@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
+import app.App
 import app.R
 import app.Utils
 import app.models.Artist
@@ -11,35 +12,30 @@ import app.ui.fragment.AlbumsListFragment
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
+import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
+@InjectLayout(value = R.layout.activity_artist_info, injectAllViews = true)
 public class ArtistInfoActivity extends BaseLocalActivity {
 
     @Inject
-    @PackageScope
-    Bus bus;
-
-    @Inject
-    @PackageScope
-    Utils utils;
+    protected Utils utils
 
     @InjectView(R.id.toolbar)
-    Toolbar mToolbar;
+    Toolbar mToolbar
 
     @Extra
-    Artist artist;
+    Artist artist
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        contentView = R.layout.activity_artist_info
-        BetterKnife.loadExtras this
+        App.get().inject(this)
+        BetterKnife.loadExtras(this)
 
         mToolbar.setTitle utils.getArtistName(artist.name)
         mToolbar.setSubtitle "Albums: ${artist.numberOfAlbums}, Songs: ${artist.numberOfSongs}"

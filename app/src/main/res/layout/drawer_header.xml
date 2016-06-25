@@ -56,11 +56,11 @@
                 android:textSize="14sp"/>
         </LinearLayout>
 
-        <app.ui.custom_view.BroadcastButton
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!--<app.ui.custom_view.BroadcastButton-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
 
     </RelativeLayout>
 

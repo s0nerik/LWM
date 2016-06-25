@@ -19,18 +19,17 @@ import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
 import app.models.Song
 import app.players.LocalPlayer
-import app.ui.base.DaggerOttoOnResumeFragment
+import app.ui.base.OttoOnResumeFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Subscribe
 import eu.davidea.fastscroller.FastScroller
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import rx.Observable
 
 import javax.inject.Inject
 
 @CompileStatic
-abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implements SortableFragment {
+abstract class BaseSongsListFragment extends OttoOnResumeFragment implements SortableFragment {
 
     @InjectView(R.id.twoWayView)
     RecyclerView twoWayView
@@ -41,9 +40,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
     @InjectView(R.id.progress)
     View progress
 
-    @PackageScope
     @Inject
-    LocalPlayer player
+    protected LocalPlayer player
 
     List<SongItem> songs = new ArrayList<>()
     List<SongItem> filteredSongs = new ArrayList<>()
@@ -103,7 +101,8 @@ abstract class BaseSongsListFragment extends DaggerOttoOnResumeFragment implemen
         super.setUserVisibleHint(isVisibleToUser)
 
         if (isVisibleToUser) {
-            bus.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, this.&shuffleAll)
+            // TODO: learn why bus is null at this point
+            bus?.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, this.&shuffleAll)
         }
     }
 

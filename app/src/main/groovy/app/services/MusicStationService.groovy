@@ -1,13 +1,13 @@
 package app.services
+
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import app.Injector
+import app.App
 import app.server.MusicStation
 import com.github.s0nerik.betterknife.annotations.Profile
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
@@ -15,17 +15,15 @@ import javax.inject.Inject
 class MusicStationService extends Service {
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    MusicStation musicStation
+    protected MusicStation musicStation
 
     @Profile
     @Override
     public void onCreate() {
-        Injector.inject this
+        App.get().inject this
         bus.register this
     }
 

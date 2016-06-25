@@ -1,37 +1,31 @@
 package app.receivers
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.view.KeyEvent
-import app.Injector
+import app.App
 import app.events.player.playback.control.ControlButtonEvent
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 import static android.content.Intent.ACTION_MEDIA_BUTTON
 import static android.content.Intent.EXTRA_KEY_EVENT
-import static android.view.KeyEvent.ACTION_DOWN
-import static android.view.KeyEvent.KEYCODE_MEDIA_NEXT
-import static android.view.KeyEvent.KEYCODE_MEDIA_PAUSE
-import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY
-import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-import static android.view.KeyEvent.KEYCODE_MEDIA_PREVIOUS
+import static android.view.KeyEvent.*
 import static app.events.player.playback.control.ControlButtonEvent.Type.NEXT
 import static app.events.player.playback.control.ControlButtonEvent.Type.PREV
 import static app.events.player.playback.control.ControlButtonEvent.Type.TOGGLE_PAUSE
 
 @CompileStatic
-public class MediaButtonIntentReceiver extends BroadcastReceiver {
+class MediaButtonIntentReceiver extends BroadcastReceiver {
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     MediaButtonIntentReceiver() {
-        Injector.inject(this)
+        App.get().inject(this)
     }
 
     @Override

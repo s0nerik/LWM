@@ -4,23 +4,21 @@ import android.content.res.Resources
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import app.App
+import app.R
+import app.ui.fragment.AlbumsListFragment
+import app.ui.fragment.ArtistsListFragment
+import app.ui.fragment.SongsListFragment
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
-import app.Injector
-import app.R
-import app.ui.fragment.AlbumsListFragment
-import app.ui.fragment.ArtistsListFragment
-import app.ui.fragment.SongsListFragment
-
 @CompileStatic
 class LocalMusicFragmentsAdapter extends FragmentStatePagerAdapter {
 
     @Inject
-    @PackageScope
-    Resources resources
+    protected Resources resources
 
     private String[] names
 
@@ -32,7 +30,7 @@ class LocalMusicFragmentsAdapter extends FragmentStatePagerAdapter {
 
     LocalMusicFragmentsAdapter(FragmentManager fm) {
         super(fm)
-        Injector.inject(this)
+        App.get().inject(this)
         names = resources.getStringArray(R.array.local_music_tabs)
     }
 

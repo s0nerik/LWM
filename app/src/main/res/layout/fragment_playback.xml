@@ -6,15 +6,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <com.nvanbenschoten.motion.ParallaxImageView
+    <ImageView
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@android:color/black"
-        android:x="0dp"
-        android:y="0dp" />
+        android:src="@android:color/black" />
 
     <View
         android:background="@drawable/shadow_playback_fragment_top"

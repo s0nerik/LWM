@@ -3,7 +3,7 @@ package app.websocket
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import app.Injector
+import app.App
 import app.Utils
 import app.commands.StartPlaybackDelayedCommand
 import app.events.chat.*
@@ -19,8 +19,6 @@ import com.squareup.otto.Bus
 import com.squareup.otto.Produce
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 import org.java_websocket.WebSocket
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.framing.Framedata
@@ -38,17 +36,16 @@ import static app.websocket.SocketMessage.Type.GET
 import static app.websocket.SocketMessage.Type.POST
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 public class WebSocketMessageClient extends WebSocketClient {
 
     @Inject
-    Context context
+    protected Context context
     @Inject
-    StreamPlayer player
+    protected StreamPlayer player
     @Inject
-    Bus bus
+    protected Bus bus
     @Inject
-    SharedPreferences sharedPreferences
+    protected SharedPreferences sharedPreferences
 
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
@@ -69,7 +66,7 @@ public class WebSocketMessageClient extends WebSocketClient {
 
     WebSocketMessageClient(URI serverURI) {
         super(serverURI)
-        Injector.inject this
+        App.get().inject this
         clientInfo = new ClientInfo(sharedPreferences.getString("client_name", Build.MODEL))
 
         initObservables()

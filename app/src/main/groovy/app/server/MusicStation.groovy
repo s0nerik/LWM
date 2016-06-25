@@ -1,41 +1,39 @@
 package app.server
+
 import android.content.Context
 import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
+import app.App
 import app.Config
-import app.Daggered
 import app.websocket.WebSocketMessageServer
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import groovy.transform.TupleConstructor
 import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
-import static java.lang.reflect.Modifier.*
+import static java.lang.reflect.Modifier.FINAL
+import static java.lang.reflect.Modifier.PUBLIC
+import static java.lang.reflect.Modifier.STATIC
 
 @CompileStatic
-class MusicStation extends Daggered {
+class MusicStation {
 
     enum State { CHANGING, DISABLED, ENABLED }
 
     @Inject
-    @PackageScope
-    WifiP2pManager manager
+    protected WifiP2pManager manager
 
     @Inject
-    @PackageScope
-    Context context
+    protected Context context
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    WebSocketMessageServer server
+    protected WebSocketMessageServer server
 
     public static final String INSTANCE_NAME = "_LWM";
     public static final String SERVICE_TYPE = "_http._tcp";
@@ -44,6 +42,10 @@ class MusicStation extends Daggered {
     private WifiP2pDnsSdServiceInfo serviceInfo
 
     State state = State.DISABLED
+
+    MusicStation() {
+        App.get().inject(this)
+    }
 
     private String getCause(int code) {
         manager.class.declaredFields.find {

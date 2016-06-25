@@ -19,36 +19,31 @@ import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.helpers.StationsExplorer
 import app.ui.activity.RemotePlaybackActivity
-import app.ui.base.DaggerOttoOnCreateFragment
+import app.ui.base.OttoOnCreateFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(R.layout.page_stations_around)
-public class FindStationsFragment extends DaggerOttoOnCreateFragment {
+public class FindStationsFragment extends OttoOnCreateFragment {
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     @Inject
-    @PackageScope
-    ConnectivityManager connectivityManager
+    protected ConnectivityManager connectivityManager
 
     @Inject
-    @PackageScope
-    Handler handler
+    protected Handler handler
 
     @Inject
-    @PackageScope
-    StationsExplorer explorer
+    protected StationsExplorer explorer
 
     @InjectView(R.id.refreshLayout)
     SwipeRefreshLayout mRefreshLayout

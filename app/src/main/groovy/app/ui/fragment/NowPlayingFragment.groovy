@@ -7,40 +7,44 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.FragmentManager
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import app.App
 import app.R
 import app.Utils
-import app.events.player.playback.*
+import app.events.player.playback.PlaybackPausedEvent
+import app.events.player.playback.PlaybackStartedEvent
+import app.events.player.playback.SongChangedEvent
 import app.models.Song
 import app.players.LocalPlayer
-
 import app.ui.activity.LocalPlaybackActivity
-import app.ui.base.DaggerFragment
+import app.ui.base.BaseFragment
 import app.ui.custom_view.RadialEqualizerView
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
-import groovy.transform.*
+import groovy.transform.CompileStatic
 import jp.wasabeef.glide.transformations.BlurTransformation
-import rx.*
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
 @CompileStatic
-@PackageScope(PackageScopeTarget.FIELDS)
 @InjectLayout(value = R.layout.fragment_now_playing, injectAllViews = true)
-class NowPlayingFragment extends DaggerFragment {
+class NowPlayingFragment extends BaseFragment {
 
     @Inject
-    Utils utils
+    protected Utils utils
     @Inject
-    Bus bus
+    protected Bus bus
     @Inject
-    LocalPlayer player
+    protected LocalPlayer player
 
     ImageView cover
     TextView title
@@ -63,6 +67,7 @@ class NowPlayingFragment extends DaggerFragment {
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
+        App.get().inject this
         bus.register this
     }
 

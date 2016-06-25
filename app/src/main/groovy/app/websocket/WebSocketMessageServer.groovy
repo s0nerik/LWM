@@ -1,6 +1,6 @@
 package app.websocket
 
-import app.Injector
+import app.App
 import app.Utils
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
@@ -10,7 +10,6 @@ import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo
 import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
@@ -46,22 +45,19 @@ class WebSocketMessageServer extends WebSocketServer {
     private static final int startOffset = 5 * 1000
 
     @Inject
-    @PackageScope
-    LocalPlayer player
+    protected LocalPlayer player
 
     @Inject
-    @PackageScope
-    HttpStreamServer httpStreamServer
+    protected HttpStreamServer httpStreamServer
 
     @Inject
-    @PackageScope
-    Bus bus
+    protected Bus bus
 
     boolean started
 
     WebSocketMessageServer(InetSocketAddress address) {
         super(address)
-        Injector.inject this
+        App.get().inject this
         initObservables()
         initSubscribers()
     }

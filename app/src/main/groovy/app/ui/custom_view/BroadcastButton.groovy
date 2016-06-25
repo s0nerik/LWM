@@ -1,11 +1,12 @@
 package app.ui.custom_view
+
 import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
-import app.Injector
+import app.App
 import app.R
 import app.Utils
 import app.server.MusicStation
@@ -15,29 +16,23 @@ import com.github.s0nerik.betterknife.annotations.InjectView
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
-import ru.noties.debug.Debug
 
 import javax.inject.Inject
 
-import static app.server.MusicStation.State.*
+import static app.server.MusicStation.State.CHANGING
+import static app.server.MusicStation.State.ENABLED
 
-@PackageScope(PackageScopeTarget.FIELDS)
 @CompileStatic
 class BroadcastButton extends RelativeLayout {
 
     @Inject
-    Bus bus
-
+    protected Bus bus
     @Inject
-    MusicStation musicStation
-
+    protected MusicStation musicStation
     @Inject
-    Utils utils
-
+    protected Utils utils
     @Inject
-    Resources resources
+    protected Resources resources
 
     @InjectView(R.id.icon)
     ImageView icon
@@ -62,10 +57,12 @@ class BroadcastButton extends RelativeLayout {
     private void init() {
         inflate context, R.layout.layout_btn_broadcast, this
         BetterKnife.inject this, this
-        Injector.inject this
-        broadcastState = musicStation.state
-        onClickListener = {
-            musicStation.toggleEnabledState()
+        if (!inEditMode) {
+            App.get().inject this
+            broadcastState = musicStation.state
+            onClickListener = {
+                musicStation.toggleEnabledState()
+            }
         }
     }
 
@@ -86,15 +83,15 @@ class BroadcastButton extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow()
-        Debug.d "BroadcastButton onAttachedToWindow"
-        bus.register this
+        if (!inEditMode)
+            bus.register this
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        Debug.d "BroadcastButton onDetachedFromWindow"
-        bus.unregister this
+        if (!inEditMode)
+            bus.unregister this
     }
 
     @Subscribe
