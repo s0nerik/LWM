@@ -13,7 +13,7 @@ import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.players.LocalPlayer
 import app.receivers.MediaButtonIntentReceiver
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.notification.NowPlayingNotification
 import app.websocket.WebSocketMessageServer
 import groovy.transform.CompileStatic

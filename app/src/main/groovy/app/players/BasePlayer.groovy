@@ -9,7 +9,7 @@ import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.helpers.DelayMeasurer
 import app.models.Song
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer
 import com.google.android.exoplayer.MediaCodecSelector
 import com.google.android.exoplayer.TrackRenderer

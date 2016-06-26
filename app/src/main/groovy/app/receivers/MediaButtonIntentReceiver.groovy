@@ -6,7 +6,7 @@ import android.content.Intent
 import android.view.KeyEvent
 import app.App
 import app.events.player.playback.control.ControlButtonEvent
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import groovy.transform.CompileStatic
 
 import static android.content.Intent.ACTION_MEDIA_BUTTON

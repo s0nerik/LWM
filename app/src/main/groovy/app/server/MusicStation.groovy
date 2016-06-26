@@ -6,7 +6,7 @@ import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import app.App
 import app.Config
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.websocket.WebSocketMessageServer
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor

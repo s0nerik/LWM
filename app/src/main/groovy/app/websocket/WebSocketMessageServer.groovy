@@ -5,7 +5,7 @@ import app.Utils
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.players.LocalPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo

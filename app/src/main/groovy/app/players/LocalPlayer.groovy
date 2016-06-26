@@ -5,7 +5,7 @@ import app.App
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.models.Song
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.services.LocalPlayerService
 import app.websocket.WebSocketMessageServer
 import app.websocket.entities.PrepareInfo

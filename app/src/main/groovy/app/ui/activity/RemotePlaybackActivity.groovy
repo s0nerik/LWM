@@ -13,7 +13,7 @@ import app.events.chat.SetUnreadMessagesEvent
 import app.events.client.SocketClosedEvent
 import app.models.Song
 import app.players.StreamPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.services.StreamPlayerService
 import app.ui.fragment.playback.RemotePlaybackFragment
 import groovy.transform.CompileStatic

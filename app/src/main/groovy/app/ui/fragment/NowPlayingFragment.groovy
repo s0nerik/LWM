@@ -17,7 +17,7 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
 import app.models.Song
 import app.players.LocalPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.BaseFragment
 import app.ui.custom_view.RadialEqualizerView

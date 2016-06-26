@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import app.App
 import app.R
 import app.Utils
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.server.MusicStation
 import app.server.MusicStation.BroadcastStateChangedEvent
 import com.github.s0nerik.betterknife.BetterKnife

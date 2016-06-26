@@ -16,7 +16,7 @@ import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
 import app.models.Album
 import app.models.Artist
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import groovy.transform.CompileStatic

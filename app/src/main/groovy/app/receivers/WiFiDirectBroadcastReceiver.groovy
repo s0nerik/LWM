@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import app.App
 import app.events.p2p.P2PBroadcastReceivedEvent
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 

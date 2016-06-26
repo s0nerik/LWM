@@ -26,7 +26,7 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.models.Album
 import app.models.Song
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.fragment.NowPlayingFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife

@@ -13,7 +13,7 @@ import app.R
 import app.Utils
 import app.adapters.PlayersAroundPagerAdapter
 import app.events.wifi.WifiStateChangedEvent
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.services.LocalPlayerService
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout

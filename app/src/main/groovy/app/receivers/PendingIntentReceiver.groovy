@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import app.App
 import app.events.player.playback.control.ControlButtonEvent
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.services.LocalPlayerService
 import groovy.transform.CompileStatic
 

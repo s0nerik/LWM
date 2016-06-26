@@ -8,7 +8,7 @@ import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.models.Song
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import groovy.transform.CompileStatic
 import rx.Observable

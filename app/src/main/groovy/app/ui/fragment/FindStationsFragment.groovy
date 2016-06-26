@@ -18,7 +18,7 @@ import app.adapters.stations.StationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.helpers.StationsExplorer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.activity.RemotePlaybackActivity
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout

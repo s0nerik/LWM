@@ -7,7 +7,7 @@ import app.App
 import app.commands.StartPlaybackDelayedCommand
 import app.events.player.ReadyToStartPlaybackEvent
 import app.players.StreamPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.websocket.WebSocketMessageClient
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug

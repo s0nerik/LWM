@@ -14,7 +14,7 @@ import android.view.KeyEvent
 import app.App
 import app.R
 import app.prefs.MainPrefs
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.base.BaseActivity
 import app.ui.fragment.LocalMusicFragment
 import app.ui.fragment.StationsAroundFragment

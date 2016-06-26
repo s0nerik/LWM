@@ -19,7 +19,7 @@ import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
 import app.models.Song
 import app.players.LocalPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
 import eu.davidea.fastscroller.FastScroller

@@ -32,7 +32,7 @@ import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.helpers.MenuTint
 import app.prefs.MainPrefs
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.services.StreamPlayerService
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.BaseFragment

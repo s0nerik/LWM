@@ -17,7 +17,7 @@ import app.commands.RequestPlaySongCommand
 import app.helpers.CollectionManager
 import app.models.Song
 import app.players.LocalPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick

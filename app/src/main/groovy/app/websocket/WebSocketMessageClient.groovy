@@ -13,7 +13,7 @@ import app.events.client.SocketOpenedEvent
 import app.helpers.AveragingCollection
 import app.models.chat.ChatMessage
 import app.players.StreamPlayer
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo
 import groovy.transform.CompileStatic

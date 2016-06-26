@@ -21,7 +21,7 @@ import app.events.player.queue.QueueShuffledEvent
 import app.models.Song
 import app.players.BasePlayer
 import app.players.PlayerUtils
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.Blurer
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout

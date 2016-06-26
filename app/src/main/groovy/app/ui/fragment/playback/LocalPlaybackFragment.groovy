@@ -18,7 +18,7 @@ import app.models.Song
 import app.players.BasePlayer
 import app.players.LocalPlayer
 import app.players.PlayerUtils
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.ui.Blurer
 import com.github.s0nerik.betterknife.annotations.OnClick
 import groovy.transform.CompileStatic

@@ -13,7 +13,7 @@ import app.events.p2p.StationsListUpdatedEvent
 import app.models.Station
 import app.models.StationInfo
 import app.receivers.WiFiDirectBroadcastReceiver
-import app.rx.RxBus
+import com.github.s0nerik.rxbus.RxBus
 import app.services.StreamPlayerService
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
