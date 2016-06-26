@@ -16,18 +16,16 @@ import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
 import app.models.Album
 import app.models.Artist
-import app.ui.base.OttoOnResumeFragment
+import app.rx.RxBus
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
-import groovy.transform.PackageScopeTarget
 
 import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_list_albums, injectAllViews = true)
-class AlbumsListFragment extends OttoOnResumeFragment implements SortableFragment {
+class AlbumsListFragment extends BaseFragment implements SortableFragment {
 
     RecyclerView recycler
     LinearLayout empty
@@ -65,6 +63,10 @@ class AlbumsListFragment extends OttoOnResumeFragment implements SortableFragmen
         super.onCreate(savedInstanceState)
         App.get().inject(this)
         artist = arguments?.getParcelable("artist") as Artist
+
+        RxBus.on(FilterLocalMusicCommand)
+                .bindToLifecycle(this)
+                .subscribe(this.&onFilter)
     }
 
     @Override
@@ -99,8 +101,7 @@ class AlbumsListFragment extends OttoOnResumeFragment implements SortableFragmen
         }
     }
 
-    @Subscribe
-    void onEvent(FilterLocalMusicCommand cmd) {
+    private void onFilter(FilterLocalMusicCommand cmd) {
         adapter.searchText = cmd.constraint
         adapter.filterItems(filteredAlbums)
     }

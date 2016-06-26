@@ -3,16 +3,12 @@ package app.ui.activity
 import android.media.AudioManager
 import android.view.KeyEvent
 import app.ui.base.BaseActivity
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
 
 @CompileStatic
 abstract class BaseLocalActivity extends BaseActivity {
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected AudioManager audioManager

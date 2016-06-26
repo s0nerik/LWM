@@ -11,7 +11,7 @@ import groovy.transform.CompileStatic
 class LocalPlaybackActivity extends PlaybackActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         App.get().inject(this)
     }

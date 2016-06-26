@@ -8,8 +8,8 @@ import app.events.player.queue.QueueShuffledEvent
 import app.events.player.queue.SongAddedToQueueEvent
 import app.events.player.queue.SongRemovedFromQueueEvent
 import app.models.Song
+import app.rx.RxBus
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import rx.Observable
 
@@ -23,32 +23,40 @@ final class QueueFragment extends BaseSongsListFragment {
         App.get().inject(this)
     }
 
-    @Subscribe
-    public void onPlaylistAddedToQueueEvent(PlaylistAddedToQueueEvent event) {
+    @Override
+    protected void initEventHandlersOnCreate() {
+        RxBus.on(PlaylistAddedToQueueEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(QueueShuffledEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SongAddedToQueueEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SongRemovedFromQueueEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+    }
+
+    // region Event handlers
+
+    private void onEvent(PlaylistAddedToQueueEvent event) {
         int startIndex = songs.size()
 //        songs.addAll event.appendedSongs
 
         adapter.notifyItemRangeInserted startIndex, event.appendedSongs.size()
     }
 
-    @Subscribe
-    public void onQueueShuffled(QueueShuffledEvent event) {
+    private void onEvent(QueueShuffledEvent event) {
         songs.clear()
 //        songs.addAll event.queue
         adapter.notifyDataSetChanged()
     }
 
-    @Subscribe
-    public void onSongAddedToQueue(SongAddedToQueueEvent event) {
+    private void onEvent(SongAddedToQueueEvent event) {
 //        songs.add event.song
         adapter.notifyItemInserted songs.size() - 1
     }
 
-    @Subscribe
-    public void onSongRemovedFromQueue(SongRemovedFromQueueEvent event) {
+    private void onEvent(SongRemovedFromQueueEvent event) {
         songs.remove event.song
         adapter.notifyItemRemoved songs.size()
     }
+
+    // endregion
 
     @Override
     protected Observable<List<Song>> loadSongs() {

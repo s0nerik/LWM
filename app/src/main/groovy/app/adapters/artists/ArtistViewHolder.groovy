@@ -11,7 +11,6 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.squareup.otto.Bus
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.ExpandableViewHolder
 import groovy.transform.CompileStatic
@@ -27,9 +26,6 @@ class ArtistViewHolder extends ExpandableViewHolder {
     TextView subtitle
     @InjectView(R.id.imageView)
     ImageView imageView
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected Utils utils

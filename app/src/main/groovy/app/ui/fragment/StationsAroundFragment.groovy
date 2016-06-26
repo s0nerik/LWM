@@ -13,13 +13,11 @@ import app.R
 import app.Utils
 import app.adapters.PlayersAroundPagerAdapter
 import app.events.wifi.WifiStateChangedEvent
+import app.rx.RxBus
 import app.services.LocalPlayerService
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.Bus
-import com.squareup.otto.Produce
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
@@ -27,9 +25,6 @@ import javax.inject.Inject
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_stations_around, injectAllViews = true)
 class StationsAroundFragment extends BaseFragment {
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected WifiManager wifiManager
@@ -68,6 +63,8 @@ class StationsAroundFragment extends BaseFragment {
         toolbar.title = R.string.stations_around
         pager.adapter = new PlayersAroundPagerAdapter(childFragmentManager)
         tabs.setupWithViewPager pager
+
+        RxBus.post toolbar
     }
 
     @Override
@@ -75,15 +72,13 @@ class StationsAroundFragment extends BaseFragment {
         super.onResume()
 //        activity.registerReceiver onBroadcast, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
 //        activity.registerReceiver onBroadcast, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
-        bus.register this
         toggleNoWifiFrame()
     }
 
     @Override
-    void onPause() {
-        super.onPause()
-//        activity.unregisterReceiver onBroadcast
-        bus.unregister this
+    protected void initEventHandlersOnResume() {
+        super.initEventHandlersOnResume()
+        RxBus.on(WifiStateChangedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     private void toggleNoWifiFrame() {
@@ -96,14 +91,8 @@ class StationsAroundFragment extends BaseFragment {
         }
     }
 
-    @Subscribe
-    void onWifiStateChanged(WifiStateChangedEvent event) {
+    private void onEvent(WifiStateChangedEvent event) {
         toggleNoWifiFrame()
-    }
-
-    @Produce
-    Toolbar produceToolbar() {
-        return toolbar
     }
 
     @OnClick(R.id.no_wifi_frame)

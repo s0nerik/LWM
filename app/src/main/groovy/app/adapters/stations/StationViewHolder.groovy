@@ -9,7 +9,6 @@ import app.models.Station
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.Bus
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
@@ -18,9 +17,6 @@ import javax.inject.Inject
 
 @CompileStatic
 class StationViewHolder extends FlexibleViewHolder {
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected StationsExplorer explorer

@@ -2,14 +2,12 @@ package app.prefs
 
 import android.support.annotation.IdRes
 import app.R
-import groovy.transform.CompileStatic
-import net.yslibrary.simplepreferences.annotation.Key
-import net.yslibrary.simplepreferences.annotation.Preferences
+import org.jraf.android.prefs.DefaultInt
+import org.jraf.android.prefs.Prefs
 
-@Preferences
-@CompileStatic
+@Prefs
 class Main {
+    @DefaultInt(0)
     @IdRes
-    @Key
-    protected int drawerSelection = R.id.local_music
+    protected Integer drawerSelection = R.id.local_music
 }

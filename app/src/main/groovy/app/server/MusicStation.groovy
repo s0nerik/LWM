@@ -6,8 +6,8 @@ import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import app.App
 import app.Config
+import app.rx.RxBus
 import app.websocket.WebSocketMessageServer
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 import ru.noties.debug.Debug
@@ -28,9 +28,6 @@ class MusicStation {
 
     @Inject
     protected Context context
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected WebSocketMessageServer server
@@ -122,7 +119,7 @@ class MusicStation {
 
     private void setState(State newState) {
         state = newState
-        bus.post new BroadcastStateChangedEvent(newState)
+        RxBus.post new BroadcastStateChangedEvent(newState)
     }
 
     private void removeServiceRegistrationAndGroup() {

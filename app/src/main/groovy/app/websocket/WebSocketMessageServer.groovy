@@ -5,10 +5,10 @@ import app.Utils
 import app.events.server.ClientConnectedEvent
 import app.events.server.ClientDisconnectedEvent
 import app.players.LocalPlayer
+import app.rx.RxBus
 import app.server.HttpStreamServer
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
@@ -49,9 +49,6 @@ class WebSocketMessageServer extends WebSocketServer {
 
     @Inject
     protected HttpStreamServer httpStreamServer
-
-    @Inject
-    protected Bus bus
 
     boolean started
 
@@ -193,7 +190,7 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.d "connections.size() = ${connections().size()}"
 
         warmupTimeDiff(conn).concatMap { requestClientInfo(conn) }
-                            .doOnNext { clientInfoMap[conn] = it; bus.post new ClientConnectedEvent(it) }
+                            .doOnNext { clientInfoMap[conn] = it; RxBus.post new ClientConnectedEvent(it) }
                             .concatMap { maybePrepareAutostartPlayback(conn) }
                             .concatWith(measureTimeDiffRegularly(conn))
                             .subscribe()
@@ -204,7 +201,7 @@ class WebSocketMessageServer extends WebSocketServer {
         Debug.d "connections.size() = ${connections().size()}"
         clientDisconnectedSubject.onNext conn
 
-        bus.post new ClientDisconnectedEvent(clientInfoMap[conn])
+        RxBus.post new ClientDisconnectedEvent(clientInfoMap[conn])
     }
 
     @Override
@@ -241,7 +238,7 @@ class WebSocketMessageServer extends WebSocketServer {
     }
 
 //    @Subscribe
-//    void onPauseStateChanged(ChangePauseStateCommand cmd) {
+//    void onEvent(ChangePauseStateCommand cmd) {
 //        isPlaying = !cmd.pause
 ////        if (cmd.pause) {
 ////            pauseClients(connections()).subscribe()

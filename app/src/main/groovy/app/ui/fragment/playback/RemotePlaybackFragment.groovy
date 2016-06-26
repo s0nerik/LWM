@@ -6,15 +6,12 @@ import android.view.View
 import app.App
 import app.R
 import app.Utils
-import app.events.player.playback.SongChangedEvent
-import app.events.player.playback.SongPlayingEvent
 import app.models.Song
 import app.players.BasePlayer
 import app.players.StreamPlayer
 import app.ui.Blurer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import rx.Observable
 import rx.Subscriber
@@ -68,17 +65,5 @@ class RemotePlaybackFragment extends PlaybackFragment {
             subscriber.onNext bmp
             subscriber.onCompleted()
         } as Observable.OnSubscribe<Bitmap>)
-    }
-
-    @Subscribe
-    @Override
-    void onSongChanged(SongChangedEvent event) {
-        super.onSongChanged(event);
-    }
-
-    @Subscribe
-    @Override
-    void onSongPlaying(SongPlayingEvent event) {
-        super.onSongPlaying(event)
     }
 }

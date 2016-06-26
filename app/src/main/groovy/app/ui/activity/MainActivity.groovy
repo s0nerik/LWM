@@ -14,12 +14,11 @@ import android.view.KeyEvent
 import app.App
 import app.R
 import app.prefs.MainPrefs
+import app.rx.RxBus
 import app.ui.base.BaseActivity
 import app.ui.fragment.LocalMusicFragment
 import app.ui.fragment.StationsAroundFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
@@ -39,9 +38,6 @@ public class MainActivity extends BaseActivity {
     int BUFFER_SEGMENT_COUNT = 512
 
     @Inject
-    protected Bus bus
-
-    @Inject
     protected AudioManager audio
 
     @Inject
@@ -51,22 +47,21 @@ public class MainActivity extends BaseActivity {
     NavigationView navigation
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         App.get().inject(this)
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy()
-        bus.unregister(this)
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState)
+        initNavigationDrawer()
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState)
-        bus.register this
-        initNavigationDrawer()
+    protected void initEventHandlersOnCreate() {
+        super.initEventHandlersOnCreate()
+        RxBus.on(Toolbar).compose(bindToLifecycle()).subscribe(this.&onEvent)
     }
 
     private void showFragmentFromDrawer(@IdRes int id) {
@@ -89,7 +84,7 @@ public class MainActivity extends BaseActivity {
 
     protected void initNavigationDrawer() {
         navigation.navigationItemSelectedListener = {
-            mainPrefs.drawerSelection = it.itemId
+            mainPrefs.putDrawerSelection it.itemId
             drawerLayout.closeDrawer Gravity.LEFT
             showFragmentFromDrawer it.itemId
 
@@ -97,20 +92,6 @@ public class MainActivity extends BaseActivity {
         }
 
         showFragmentFromDrawer mainPrefs.drawerSelection
-    }
-
-    @Subscribe
-    public void onToolbarAvailable(Toolbar toolbar) {
-        def drawerToggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                toolbar,
-                R.string.drawer_open,
-                R.string.drawer_close
-        );
-        drawerLayout.drawerListener = drawerToggle
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT)
-        drawerToggle.syncState()
     }
 
     @Override
@@ -127,4 +108,20 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    // region Event handlers
+
+    private void onEvent(Toolbar toolbar) {
+        def drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close
+        );
+        drawerLayout.drawerListener = drawerToggle
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT)
+        drawerToggle.syncState()
+    }
+
+    // endregion
 }

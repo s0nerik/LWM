@@ -13,10 +13,9 @@ import app.events.chat.SetUnreadMessagesEvent
 import app.events.client.SocketClosedEvent
 import app.models.Song
 import app.players.StreamPlayer
+import app.rx.RxBus
 import app.services.StreamPlayerService
 import app.ui.fragment.playback.RemotePlaybackFragment
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 
@@ -25,42 +24,38 @@ import javax.inject.Inject
 @CompileStatic
 class RemotePlaybackActivity extends PlaybackActivity {
 
-    private int duration;
-    private String durationString;
-    private String title;
-    private String artist;
-    private String album;
-    private RemotePlaybackFragment playbackFragment;
+    private int duration
+    private String durationString
+    private String title
+    private String artist
+    private String album
+    private RemotePlaybackFragment playbackFragment
 
-    private int unreadMessagesCount = 0;
-    private MenuItem chatButton;
-    private TextView newMessagesCounter;
-
-    @Inject
-    protected Bus bus
+    private int unreadMessagesCount = 0
+    private MenuItem chatButton
+    private TextView newMessagesCounter
 
     @Inject
     protected StreamPlayer player
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+        super.onPostCreate(savedInstanceState)
 
-        playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback);
+        playbackFragment = (RemotePlaybackFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_playback)
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
         App.get().inject(this)
-        Debug.d("RemotePlaybackActivity.onCreate()");
-        setContentView(R.layout.activity_remote_playback);
+        Debug.d("RemotePlaybackActivity.onCreate()")
+        setContentView(R.layout.activity_remote_playback)
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        bus.register(this);
+    void onResume() {
+        super.onResume()
         Song song = player.currentSong
         if (song != null) {
 //            setSongInfo(song);
@@ -68,35 +63,45 @@ class RemotePlaybackActivity extends PlaybackActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        bus.unregister(this);
+    protected void onDestroy() {
+        if(player.isPlaying()) {
+            player.stop()
+        }
+        stopService intent(StreamPlayerService)
+        super.onDestroy()
     }
 
-    @Subscribe
-    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+    @Override
+    protected void initEventHandlersOnResume() {
+        super.initEventHandlersOnResume()
+        RxBus.on(ChatMessageReceivedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SetUnreadMessagesEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SocketClosedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+    }
+
+    // region Event handlers
+
+    private void onEvent(ChatMessageReceivedEvent event) {
 //        Croutons.messageReceived(this, event.getMessage(), R.id.albumArtLayout).show();
-        unreadMessagesCount += 1;
-        newMessagesCounter.setVisibility(View.VISIBLE);
-        newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));
+        unreadMessagesCount += 1
+        newMessagesCounter.setVisibility(View.VISIBLE)
+        newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"))
     }
 
-    @Subscribe
-    public void setUnreadMessagesCount(SetUnreadMessagesEvent event) {
-        unreadMessagesCount = event.getCount();
+    private void onEvent(SetUnreadMessagesEvent event) {
+        unreadMessagesCount = event.getCount()
         if (newMessagesCounter != null) {
             if (unreadMessagesCount > 0) {
-                newMessagesCounter.setVisibility(View.VISIBLE);
-                newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"));
+                newMessagesCounter.setVisibility(View.VISIBLE)
+                newMessagesCounter.setText(String.valueOf(unreadMessagesCount < 10 ? unreadMessagesCount : "+"))
             } else {
-                newMessagesCounter.setVisibility(View.GONE);
+                newMessagesCounter.setVisibility(View.GONE)
             }
         }
     }
 
-    @Subscribe
-    public void onSocketClosed(SocketClosedEvent event) {
-        String title = "Station stopped broadcasting";
+    private void onEvent(SocketClosedEvent event) {
+        String title = "Station stopped broadcasting"
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -105,15 +110,8 @@ class RemotePlaybackActivity extends PlaybackActivity {
                         finish()
                     }
                 })
-                .show();
+                .show()
     }
 
-    @Override
-    protected void onDestroy() {
-        if(player.isPlaying()) {
-            player.stop();
-        }
-        stopService intent(StreamPlayerService)
-        super.onDestroy();
-    }
+    // endregion
 }

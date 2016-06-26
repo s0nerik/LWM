@@ -13,11 +13,9 @@ import app.events.client.SocketOpenedEvent
 import app.helpers.AveragingCollection
 import app.models.chat.ChatMessage
 import app.players.StreamPlayer
+import app.rx.RxBus
 import app.websocket.entities.ClientInfo
 import app.websocket.entities.PrepareInfo
-import com.squareup.otto.Bus
-import com.squareup.otto.Produce
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import org.java_websocket.WebSocket
 import org.java_websocket.client.WebSocketClient
@@ -27,6 +25,7 @@ import ru.noties.debug.Debug
 import rx.Observable
 import rx.subjects.PublishSubject
 import rx.subjects.Subject
+import rx.subscriptions.CompositeSubscription
 
 import javax.inject.Inject
 import java.nio.ByteBuffer
@@ -36,16 +35,16 @@ import static app.websocket.SocketMessage.Type.GET
 import static app.websocket.SocketMessage.Type.POST
 
 @CompileStatic
-public class WebSocketMessageClient extends WebSocketClient {
+class WebSocketMessageClient extends WebSocketClient {
 
     @Inject
     protected Context context
     @Inject
     protected StreamPlayer player
     @Inject
-    protected Bus bus
-    @Inject
     protected SharedPreferences sharedPreferences
+
+    private CompositeSubscription sub = new CompositeSubscription()
 
     private List<ChatMessage> chatMessages = new ArrayList<>()
     private int unreadMessages = 0
@@ -94,11 +93,11 @@ public class WebSocketMessageClient extends WebSocketClient {
         get[IS_PLAYING].subscribe { sendMessage POST, IS_PLAYING, Utils.serializeBool(player.playing) }
         get[CLIENT_INFO].subscribe { sendMessage POST, CLIENT_INFO, clientInfo.serialize() }
 
-        post[START].subscribe { bus.post new StartPlaybackDelayedCommand(Utils.deserializeLong(it.body) + timeDifferences.average) }
+        post[START].subscribe { RxBus.post new StartPlaybackDelayedCommand(Utils.deserializeLong(it.body) + timeDifferences.average) }
         post[PAUSE].doOnNext { player.setPaused(true) }.subscribe()
         post[PREPARE].subscribe { prepare PrepareInfo.deserialize(it.body) }
-        post[MESSAGE].subscribe { bus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
-        post[CLIENT_INFO].subscribe { bus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
+        post[MESSAGE].subscribe { RxBus.post new ChatMessageReceivedEvent(ChatMessage.deserialize(it.body), connection) }
+        post[CLIENT_INFO].subscribe { RxBus.post new ClientInfoReceivedEvent(connection, ClientInfo.deserialize(it.body)) }
 
         timeDiffObservable.subscribe { timeDifferences << it }
 
@@ -109,8 +108,17 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     void onOpen(ServerHandshake handshakedata) {
         Debug.d "Status: $handshakedata.httpStatus, Message: $handshakedata.httpStatusMessage"
-        bus.register this
-        bus.post new SocketOpenedEvent()
+        initEventHandlers()
+        RxBus.post new SocketOpenedEvent()
+    }
+
+    private void initEventHandlers() {
+        sub.add RxBus.on(SendChatMessageEvent).subscribe(this.&onEvent)
+        sub.add RxBus.on(ChatMessageReceivedEvent).subscribe(this.&onEvent)
+        sub.add RxBus.on(ResetUnreadMessagesEvent).subscribe(this.&onEvent)
+
+        RxBus.post new ChatMessagesAvailableEvent(chatMessages)
+        RxBus.post new SetUnreadMessagesEvent(unreadMessages)
     }
 
     @Override
@@ -132,8 +140,8 @@ public class WebSocketMessageClient extends WebSocketClient {
     @Override
     void onClose(int code, String reason, boolean remote) {
         Debug.d "Code: $code, Reason: $reason"
-        bus.post new SocketClosedEvent()
-        bus.unregister this
+        RxBus.post new SocketClosedEvent()
+        sub.clear()
     }
 
     @Override
@@ -166,39 +174,26 @@ public class WebSocketMessageClient extends WebSocketClient {
         prepare.subscribe { sendMessage POST, READY }
     }
 
-    //region Chat
+    // region Event handlers
 
-    @Subscribe
-    void onSendChatMessage(SendChatMessageEvent event) {
+    private void onEvent(SendChatMessageEvent event) {
         ChatMessage message = event.message
         sendMessage POST, MESSAGE, message.serialize()
         chatMessages << message
-        bus.post new NotifyMessageAddedEvent(message)
+        RxBus.post new NotifyMessageAddedEvent(message)
     }
 
-    @Subscribe
-    void onChatMessageReceived(ChatMessageReceivedEvent event) {
+    private void onEvent(ChatMessageReceivedEvent event) {
         unreadMessages += 1
         ChatMessage msg = event.message;
         chatMessages << msg
-        bus.post new NotifyMessageAddedEvent(msg)
+        RxBus.post new NotifyMessageAddedEvent(msg)
     }
 
-    @Subscribe
-    void onResetUnreadMessages(ResetUnreadMessagesEvent event) {
+    private void onEvent(ResetUnreadMessagesEvent event) {
         unreadMessages = 0
     }
 
-    @Produce
-    ChatMessagesAvailableEvent produceChatMessages() {
-        new ChatMessagesAvailableEvent(chatMessages)
-    }
-
-    @Produce
-    SetUnreadMessagesEvent produceUnreadMessages() {
-        new SetUnreadMessagesEvent(unreadMessages)
-    }
-
-    //endregion
+    // endregion
 
 }

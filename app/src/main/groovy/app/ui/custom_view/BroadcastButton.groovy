@@ -9,13 +9,13 @@ import android.widget.RelativeLayout
 import app.App
 import app.R
 import app.Utils
+import app.rx.RxBus
 import app.server.MusicStation
 import app.server.MusicStation.BroadcastStateChangedEvent
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
+import rx.Subscription
 
 import javax.inject.Inject
 
@@ -25,8 +25,8 @@ import static app.server.MusicStation.State.ENABLED
 @CompileStatic
 class BroadcastButton extends RelativeLayout {
 
-    @Inject
-    protected Bus bus
+    private Subscription subscription
+
     @Inject
     protected MusicStation musicStation
     @Inject
@@ -84,18 +84,17 @@ class BroadcastButton extends RelativeLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!inEditMode)
-            bus.register this
+            subscription = RxBus.on(BroadcastStateChangedEvent).subscribe(this.&onEvent)
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow()
         if (!inEditMode)
-            bus.unregister this
+            subscription?.unsubscribe()
     }
 
-    @Subscribe
-    void onMusicStationStateChangedEvent(BroadcastStateChangedEvent event) {
+    private void onEvent(BroadcastStateChangedEvent event) {
         broadcastState = event.state
     }
 }

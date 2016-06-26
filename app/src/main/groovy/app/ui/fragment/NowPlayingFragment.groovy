@@ -17,14 +17,13 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
 import app.models.Song
 import app.players.LocalPlayer
+import app.rx.RxBus
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.BaseFragment
 import app.ui.custom_view.RadialEqualizerView
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import jp.wasabeef.glide.transformations.BlurTransformation
 import rx.Observable
@@ -41,8 +40,6 @@ class NowPlayingFragment extends BaseFragment {
 
     @Inject
     protected Utils utils
-    @Inject
-    protected Bus bus
     @Inject
     protected LocalPlayer player
 
@@ -68,13 +65,13 @@ class NowPlayingFragment extends BaseFragment {
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         App.get().inject this
-        bus.register this
+        initEventHandlers()
     }
 
-    @Override
-    void onDestroy() {
-        bus.unregister this
-        super.onDestroy()
+    private void initEventHandlers() {
+        RxBus.on(SongChangedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackPausedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     Observable<Integer> show(FragmentManager fragmentManager) {
@@ -129,13 +126,13 @@ class NowPlayingFragment extends BaseFragment {
         player.togglePause()
     }
 
-    @Subscribe
-    void onSongChanged(SongChangedEvent event) {
+    // region Event handlers
+
+    private void onEvent(SongChangedEvent event) {
         songInfo = event.song
     }
 
-    @Subscribe
-    void onSongPlaybackStarted(PlaybackStartedEvent e) {
+    private void onEvent(PlaybackStartedEvent e) {
         (playbackFab as ImageView).imageResource = R.drawable.ic_pause_24dp
 
         radialEqualizerViewSubscription?.unsubscribe()
@@ -147,10 +144,11 @@ class NowPlayingFragment extends BaseFragment {
         }
     }
 
-    @Subscribe
-    void onSongPlaybackStarted(PlaybackPausedEvent e) {
+    private void onEvent(PlaybackPausedEvent e) {
         (playbackFab as ImageView).imageResource = R.drawable.ic_play_arrow_24dp
 
         radialEqualizerViewSubscription?.unsubscribe()
     }
+
+    // endregion
 }

@@ -5,6 +5,7 @@ import app.App
 import app.events.player.RepeatStateChangedEvent
 import app.events.player.queue.*
 import app.models.Song
+import app.rx.RxBus
 import app.services.LocalPlayerService
 import app.websocket.WebSocketMessageServer
 import app.websocket.entities.PrepareInfo
@@ -20,8 +21,6 @@ class LocalPlayer extends BasePlayer {
     private Queue queueContainer = new Queue()
 
     LocalPlayer() {
-        bus.register this
-
         def playerEvents = playerSubject.distinctUntilChanged()
 
         playerEvents.filter { it == PlayerEvent.ENDED }
@@ -49,7 +48,7 @@ class LocalPlayer extends BasePlayer {
     //region Queue manipulation
     void shuffleQueue() {
         queueContainer.shuffle()
-        bus.post new QueueShuffledEvent(queue: queue)
+        RxBus.post new QueueShuffledEvent(queue: queue)
     }
 
     List<Song> getQueue() { queueContainer.queue }
@@ -61,27 +60,27 @@ class LocalPlayer extends BasePlayer {
 
     void shuffleQueueExceptPlayed() {
         queueContainer.shuffleExceptPlayed()
-        bus.post(new QueueShuffledEvent(queue: queue))
+        RxBus.post(new QueueShuffledEvent(queue: queue))
     }
 
     void addToQueue(List<Song> songs) {
         queueContainer.addSongs(songs)
-        bus.post(new PlaylistAddedToQueueEvent(queue, songs))
+        RxBus.post(new PlaylistAddedToQueueEvent(queue, songs))
     }
 
     void addToQueue(Song song) {
         queueContainer.addSong(song)
-        bus.post(new SongAddedToQueueEvent(queue, song))
+        RxBus.post(new SongAddedToQueueEvent(queue, song))
     }
 
     void removeFromQueue(Song song) {
         queueContainer.removeSong(song)
-        bus.post(new SongRemovedFromQueueEvent(queue, song))
+        RxBus.post(new SongRemovedFromQueueEvent(queue, song))
     }
 
     void removeFromQueue(List<Song> songs) {
         queueContainer.removeSongs(songs)
-        bus.post new PlaylistRemovedFromQueueEvent(queue, songs)
+        RxBus.post new PlaylistRemovedFromQueueEvent(queue, songs)
     }
     //endregion
 
@@ -158,7 +157,7 @@ class LocalPlayer extends BasePlayer {
 
     void setRepeat(boolean flag) {
         this.@repeat = flag
-        bus.post new RepeatStateChangedEvent(flag)
+        RxBus.post new RepeatStateChangedEvent(flag)
     }
 
     int getCurrentQueuePosition() { queueContainer.currentIndex }

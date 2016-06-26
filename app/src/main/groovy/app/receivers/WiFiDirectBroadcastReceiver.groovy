@@ -5,18 +5,12 @@ import android.content.Context
 import android.content.Intent
 import app.App
 import app.events.p2p.P2PBroadcastReceivedEvent
-import com.squareup.otto.Bus
+import app.rx.RxBus
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 
-import javax.inject.Inject
-
 @CompileStatic
-public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
-
-    @Inject
-    protected Bus bus
+class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
     WiFiDirectBroadcastReceiver() {
         super()
@@ -27,6 +21,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     void onReceive(Context context, Intent intent) {
         String action = intent.action
         Debug.d action
-        bus.post new P2PBroadcastReceivedEvent(intent)
+        RxBus.post new P2PBroadcastReceivedEvent(intent)
     }
 }

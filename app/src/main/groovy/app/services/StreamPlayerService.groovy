@@ -7,11 +7,11 @@ import app.App
 import app.commands.StartPlaybackDelayedCommand
 import app.events.player.ReadyToStartPlaybackEvent
 import app.players.StreamPlayer
+import app.rx.RxBus
 import app.websocket.WebSocketMessageClient
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
+import rx.subscriptions.CompositeSubscription
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
@@ -22,8 +22,7 @@ import static app.websocket.SocketMessage.Type.POST
 @CompileStatic
 class StreamPlayerService extends Service {
 
-    @Inject
-    protected Bus bus
+    private CompositeSubscription sub = new CompositeSubscription()
 
     @Inject
     protected StreamPlayer player
@@ -34,13 +33,18 @@ class StreamPlayerService extends Service {
     void onCreate() {
         super.onCreate()
         App.get().inject this
-        bus.register this
+        initEventHandlers()
+    }
+
+    private void initEventHandlers() {
+        RxBus.on(ReadyToStartPlaybackEvent).subscribe(this.&onEvent)
+        RxBus.on(StartPlaybackDelayedCommand).subscribe(this.&onEvent)
     }
 
     @Override
     void onDestroy() {
         stopWebSocketClient()
-        bus.unregister this
+        sub.clear()
         super.onDestroy()
     }
 
@@ -68,13 +72,13 @@ class StreamPlayerService extends Service {
         webSocketMessageClient.connect()
     }
 
-    @Subscribe
-    void onReadyToStartPlayback(ReadyToStartPlaybackEvent event) {
+    // region Event handlers
+
+    private void onEvent(ReadyToStartPlaybackEvent event) {
         webSocketMessageClient.sendMessage POST, READY
     }
 
-    @Subscribe
-    void startPlaybackDelayed(StartPlaybackDelayedCommand cmd) {
+    private void onEvent(StartPlaybackDelayedCommand cmd) {
         Debug.d "cmd.startAt: $cmd.startAt"
         Debug.d "System.currentTimeMillis(): ${System.currentTimeMillis()}"
         def delay = cmd.startAt - System.currentTimeMillis()
@@ -85,5 +89,7 @@ class StreamPlayerService extends Service {
               .doOnCompleted { Debug.d "StreamPlayer started playback with delay." }
               .subscribe()
     }
+
+    // endregion
 
 }

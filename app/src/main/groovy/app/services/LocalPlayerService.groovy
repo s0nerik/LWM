@@ -13,14 +13,13 @@ import app.events.player.playback.control.ControlButtonEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.players.LocalPlayer
 import app.receivers.MediaButtonIntentReceiver
+import app.rx.RxBus
 import app.ui.notification.NowPlayingNotification
 import app.websocket.WebSocketMessageServer
-import com.squareup.otto.Bus
-import com.squareup.otto.Produce
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.Observable
+import rx.subscriptions.CompositeSubscription
 
 import javax.inject.Inject
 
@@ -29,12 +28,10 @@ import static app.events.player.playback.control.ControlButtonEvent.Type.*
 @CompileStatic
 class LocalPlayerService extends Service {
 
-    @Inject
-    protected Bus bus
+    private CompositeSubscription sub = new CompositeSubscription()
 
     @Inject
     protected LocalPlayer player
-
     @Inject
     protected AudioManager audioManager
 
@@ -46,11 +43,8 @@ class LocalPlayerService extends Service {
     @Override
     void onCreate() {
         App.get().inject this
-
-        bus.register this
-
+        initEventHandlers()
         player.server = server
-
         mediaButtonsReceiver = new ComponentName(packageName,
                                                  MediaButtonIntentReceiver.canonicalName)
         audioManager.registerMediaButtonEventReceiver mediaButtonsReceiver
@@ -59,12 +53,22 @@ class LocalPlayerService extends Service {
     @Override
     void onDestroy() {
         stopForeground true
-
         player.stop()
-
-        bus.unregister this
-
+        sub.clear()
         audioManager.unregisterMediaButtonEventReceiver mediaButtonsReceiver
+    }
+
+    private void initEventHandlers() {
+        RxBus.on(ChangePauseStateCommand).subscribe(this.&onEvent)
+        RxBus.on(SeekToCommand).subscribe(this.&onEvent)
+        RxBus.on(SetQueueAndPlayCommand).subscribe(this.&onEvent)
+        RxBus.on(PlaySongAtPositionCommand).subscribe(this.&onEvent)
+        RxBus.on(EnqueueCommand).subscribe(this.&onEvent)
+        RxBus.on(ControlButtonEvent).subscribe(this.&onEvent)
+        RxBus.on(PlaybackStartedEvent).subscribe(this.&onEvent)
+        RxBus.on(PlaybackPausedEvent).subscribe(this.&onEvent)
+
+        RxBus.post new CurrentSongAvailableEvent(player.currentSong)
     }
 
     @Override
@@ -80,13 +84,9 @@ class LocalPlayerService extends Service {
         startForeground 1337, new NowPlayingNotification(player.currentSong).create(isPlaying)
     }
 
-    @Produce
-    CurrentSongAvailableEvent produceCurrentSong() {
-        new CurrentSongAvailableEvent(player.currentSong)
-    }
+    // region Event handlers
 
-    @Subscribe
-    void onPauseStateChanged(ChangePauseStateCommand cmd) {
+    private void onEvent(ChangePauseStateCommand cmd) {
         player.setPaused(cmd.pause).subscribe()
 //        Observable observable
 //
@@ -107,15 +107,13 @@ class LocalPlayerService extends Service {
 //        observable.subscribe { Debug.d "LocalPlayer setPaused: $it" }
     }
 
-    @Subscribe
-    void seekTo(SeekToCommand cmd) {
+    private void onEvent(SeekToCommand cmd) {
         player.seekTo(cmd.position as int).subscribe {
             Debug.d "Player sought to: $it"
         }
     }
 
-    @Subscribe
-    void setQueueAndPlayCommand(SetQueueAndPlayCommand cmd) {
+    private void onEvent(SetQueueAndPlayCommand cmd) {
         player.queue = cmd.queue
         if (cmd.shuffle) player.shuffleQueue()
 
@@ -123,8 +121,7 @@ class LocalPlayerService extends Service {
                   .subscribe { Debug.d "LocalPlayer prepared and started playback" }
     }
 
-    @Subscribe
-    void playSongAtPosition(PlaySongAtPositionCommand cmd) {
+    private void onEvent(PlaySongAtPositionCommand cmd) {
         Observable<Object> prepare = null
         switch (cmd.positionType) {
             case PlaySongAtPositionCommand.PositionType.NEXT:
@@ -142,8 +139,7 @@ class LocalPlayerService extends Service {
                .subscribe()
     }
 
-    @Subscribe
-    void enqueue(EnqueueCommand cmd) {
+    private void onEvent(EnqueueCommand cmd) {
         player.addToQueue cmd.playlist
     }
 
@@ -160,15 +156,14 @@ class LocalPlayerService extends Service {
 //        }
 //    }
 
-    @Subscribe
-    void onControlButton(ControlButtonEvent event) {
+    private void onEvent(ControlButtonEvent event) {
         Debug.d event as String
         switch (event.type) {
             case NEXT:
-                bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.NEXT)
+                RxBus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.NEXT)
                 break
             case PREV:
-                bus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.PREVIOUS)
+                RxBus.post new PlaySongAtPositionCommand(PlaySongAtPositionCommand.PositionType.PREVIOUS)
                 break
             case PLAY:
             case PAUSE:
@@ -178,14 +173,14 @@ class LocalPlayerService extends Service {
         }
     }
 
-    @Subscribe
-    void onPlaybackStarted(PlaybackStartedEvent event) {
+    private void onEvent(PlaybackStartedEvent event) {
         makeForeground true
     }
 
-    @Subscribe
-    void onPlaybackPaused(PlaybackPausedEvent event) {
+    private void onEvent(PlaybackPausedEvent event) {
         makeForeground false
     }
+
+    // endregion
 
 }

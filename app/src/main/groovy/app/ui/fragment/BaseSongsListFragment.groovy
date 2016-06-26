@@ -19,9 +19,9 @@ import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
 import app.models.Song
 import app.players.LocalPlayer
-import app.ui.base.OttoOnResumeFragment
+import app.rx.RxBus
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.squareup.otto.Subscribe
 import eu.davidea.fastscroller.FastScroller
 import groovy.transform.CompileStatic
 import rx.Observable
@@ -29,7 +29,7 @@ import rx.Observable
 import javax.inject.Inject
 
 @CompileStatic
-abstract class BaseSongsListFragment extends OttoOnResumeFragment implements SortableFragment {
+abstract class BaseSongsListFragment extends BaseFragment implements SortableFragment {
 
     @InjectView(R.id.twoWayView)
     RecyclerView twoWayView
@@ -73,10 +73,15 @@ abstract class BaseSongsListFragment extends OttoOnResumeFragment implements Sor
     @Override
     void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        setBusListeners new BusListener(), this
-
         adapter = new SongsListAdapter(songs)
         adapter.mode = SongsListAdapter.MODE_SINGLE
+
+        RxBus.on(CurrentSongAvailableEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackPausedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(ShouldShuffleSongsEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(FilterLocalMusicCommand).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(RequestPlaySongCommand).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     @Override
@@ -101,14 +106,13 @@ abstract class BaseSongsListFragment extends OttoOnResumeFragment implements Sor
         super.setUserVisibleHint(isVisibleToUser)
 
         if (isVisibleToUser) {
-            // TODO: learn why bus is null at this point
-            bus?.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, this.&shuffleAll)
+            RxBus.post new ChangeFabActionCommand(R.drawable.ic_shuffle_white_24dp, this.&shuffleAll)
         }
     }
 
     protected void shuffleAll() {
         if (filteredSongs) {
-            bus.post new SetQueueAndPlayCommand(filteredSongs.collect {it.song}, 0, true)
+            RxBus.post new SetQueueAndPlayCommand(filteredSongs.collect {it.song}, 0, true)
         } else {
             Toast.makeText(activity, R.string.nothing_to_shuffle, Toast.LENGTH_LONG).show()
         }
@@ -138,39 +142,35 @@ abstract class BaseSongsListFragment extends OttoOnResumeFragment implements Sor
         adapter.toggleSelection(filteredSongs.collect {it.song}.indexOf(currentSong))
     }
 
-    private class BusListener {
-        @Subscribe
-        public void onCurrentSongAvailable(CurrentSongAvailableEvent event) {
-            currentSong = event.song
-        }
+    // region Event handlers
 
-        @Subscribe
-        public void onSongPlaybackStarted(PlaybackStartedEvent event) {
-            currentSong = event.song
-        }
-
-        @Subscribe
-        public void onSongPlaybackPaused(PlaybackPausedEvent event) {
-//            adapter.updateEqualizerState(false)
-        }
-
-        @Subscribe
-        public void onShuffleSongs(ShouldShuffleSongsEvent event) {
-            shuffleAll()
-        }
-
-        @Subscribe
-        public void onEvent(FilterLocalMusicCommand cmd) {
-            adapter.searchText = cmd.constraint
-            adapter.filterItems(filteredSongs)
-        }
-
-        @Subscribe
-        public void onEvent(RequestPlaySongCommand cmd) {
-            def queue = filteredSongs.collect { it.song }
-            bus.post new SetQueueAndPlayCommand(queue, queue.indexOf(cmd.song))
-        }
+    protected void onEvent(CurrentSongAvailableEvent event) {
+        currentSong = event.song
     }
+
+    protected void onEvent(PlaybackStartedEvent event) {
+        currentSong = event.song
+    }
+
+    protected void onEvent(PlaybackPausedEvent event) {
+//            adapter.updateEqualizerState(false)
+    }
+
+    protected void onEvent(ShouldShuffleSongsEvent event) {
+        shuffleAll()
+    }
+
+    protected void onEvent(FilterLocalMusicCommand cmd) {
+        adapter.searchText = cmd.constraint
+        adapter.filterItems(filteredSongs)
+    }
+
+    protected void onEvent(RequestPlaySongCommand cmd) {
+        def queue = filteredSongs.collect { it.song }
+        RxBus.post new SetQueueAndPlayCommand(queue, queue.indexOf(cmd.song))
+    }
+
+    // endregion
 
     @Override
     int getSortMenuId() {

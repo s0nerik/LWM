@@ -5,11 +5,9 @@ import android.content.Context
 import android.content.Intent
 import app.App
 import app.events.player.playback.control.ControlButtonEvent
+import app.rx.RxBus
 import app.services.LocalPlayerService
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
-
-import javax.inject.Inject
 
 import static app.events.player.playback.control.ControlButtonEvent.Type.NEXT
 import static app.events.player.playback.control.ControlButtonEvent.Type.PREV
@@ -21,9 +19,6 @@ import static app.ui.notification.NowPlayingNotification.ACTION_PREV
 
 @CompileStatic
 class PendingIntentReceiver extends BroadcastReceiver {
-
-    @Inject
-    protected Bus bus
 
     PendingIntentReceiver() {
         super()
@@ -37,13 +32,13 @@ class PendingIntentReceiver extends BroadcastReceiver {
                 context.stopService new Intent(context, LocalPlayerService)
                 break
             case ACTION_PREV:
-                bus.post new ControlButtonEvent(PREV)
+                RxBus.post new ControlButtonEvent(PREV)
                 break
             case ACTION_PLAY_PAUSE:
-                bus.post new ControlButtonEvent(TOGGLE_PAUSE)
+                RxBus.post new ControlButtonEvent(TOGGLE_PAUSE)
                 break
             case ACTION_NEXT:
-                bus.post new ControlButtonEvent(NEXT)
+                RxBus.post new ControlButtonEvent(NEXT)
                 break
         }
     }

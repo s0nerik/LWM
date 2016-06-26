@@ -18,23 +18,19 @@ import app.adapters.stations.StationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.helpers.StationsExplorer
+import app.rx.RxBus
 import app.ui.activity.RemotePlaybackActivity
-import app.ui.base.OttoOnCreateFragment
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
 
 @CompileStatic
 @InjectLayout(R.layout.page_stations_around)
-public class FindStationsFragment extends OttoOnCreateFragment {
-
-    @Inject
-    protected Bus bus
+class FindStationsFragment extends BaseFragment {
 
     @Inject
     protected ConnectivityManager connectivityManager
@@ -60,6 +56,17 @@ public class FindStationsFragment extends OttoOnCreateFragment {
     private List<StationItem> stations = new ArrayList<>();
 
     private boolean isRefreshing = false
+
+    @Override
+    void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        RxBus.on(StationsListUpdatedEvent)
+                .bindToLifecycle(this)
+                .subscribe(this.&onEvent)
+        RxBus.on(SocketOpenedEvent)
+                .bindToLifecycle(this)
+                .subscribe(this.&onEvent)
+    }
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
@@ -106,21 +113,23 @@ public class FindStationsFragment extends OttoOnCreateFragment {
         mRefreshLayout.refreshing = false
     }
 
-    @Subscribe
-    void onStationsListUpdated(StationsListUpdatedEvent event) {
+    // region Event handlers
+
+    private void onEvent(StationsListUpdatedEvent event) {
         stations.clear()
         stations.addAll event.stations.collect { new StationItem(it) }
         adapter.notifyDataSetChanged()
     }
 
+    private void onEvent(SocketOpenedEvent event) {
+        startStreamActivity()
+    }
+
+    // endregion
+
     @OnClick(R.id.btn_discover)
     void discoverClicked() {
 //        discoverStations()
-    }
-
-    @Subscribe
-    void onSocketOpened(SocketOpenedEvent event) {
-        startStreamActivity()
     }
 
 }

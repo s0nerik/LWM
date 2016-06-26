@@ -8,7 +8,6 @@ import app.R
 import app.Utils
 import app.models.Song
 import app.players.LocalPlayer
-import com.squareup.otto.Bus
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.Response
 import fi.iki.elonen.NanoHTTPD.ResponseException
@@ -35,9 +34,6 @@ class HttpStreamServer extends NanoHTTPD {
 
     @Inject
     protected LocalPlayer localPlayer
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected Utils utils

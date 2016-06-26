@@ -32,6 +32,7 @@ import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldStartArtistInfoActivity
 import app.helpers.MenuTint
 import app.prefs.MainPrefs
+import app.rx.RxBus
 import app.services.StreamPlayerService
 import app.ui.activity.ArtistInfoActivity
 import app.ui.base.BaseFragment
@@ -39,9 +40,6 @@ import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
 import com.jakewharton.rxbinding.widget.RxTextView
 import com.mypopsy.drawable.SearchCrossDrawable
-import com.squareup.otto.Bus
-import com.squareup.otto.Produce
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import rx.Subscription
 
@@ -55,9 +53,6 @@ public class LocalMusicFragment extends BaseFragment {
 
     @Inject
     protected MainPrefs mainPrefs
-
-    @Inject
-    protected Bus bus
 
     Toolbar toolbar
     TabLayout tabs
@@ -88,13 +83,21 @@ public class LocalMusicFragment extends BaseFragment {
         App.get().inject this
         streamPlayerServiceIntent = new Intent(activity, StreamPlayerService)
         activity.stopService streamPlayerServiceIntent
+        initEventHandlers()
+    }
+
+    private void initEventHandlers() {
+        RxBus.on(PlaybackPausedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SongPlayingEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(ChangeFabActionCommand).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(ShouldStartArtistInfoActivity).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated view, savedInstanceState
         initToolbar()
-        bus.register(this)
 
         def adapter = new LocalMusicFragmentsAdapter(childFragmentManager)
         pager.offscreenPageLimit = 3
@@ -117,12 +120,6 @@ public class LocalMusicFragment extends BaseFragment {
             @Override
             void onTabReselected(TabLayout.Tab tab) {}
         })
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView()
-        bus.unregister this
     }
 
     private void showSortPopup(View anchor) {
@@ -204,6 +201,8 @@ public class LocalMusicFragment extends BaseFragment {
                 .apply(activity)
 
         initSearchView()
+
+        RxBus.post toolbar
     }
 
     private void initSearchView() {
@@ -214,7 +213,7 @@ public class LocalMusicFragment extends BaseFragment {
         def searchTextStateChange = searchTextState.startWith(false).buffer(2, 1).filter { it[0] != it[1] }
 
         RxTextView.textChanges(searchText)
-                  .subscribe { bus.post new FilterLocalMusicCommand(it) }
+                  .subscribe { RxBus.post new FilterLocalMusicCommand(it) }
 
         searchIcon.onClick {
             if (searchToggle.progress > 0)
@@ -255,19 +254,18 @@ public class LocalMusicFragment extends BaseFragment {
         fabAction()
     }
 
-    @Subscribe
-    void onSongPlaybackPaused(PlaybackPausedEvent e) {
+    // region Event handlers
+
+    private void onEvent(PlaybackPausedEvent e) {
         radialEqualizerViewSubscription?.unsubscribe()
     }
 
-    @Subscribe
-    void onSongPlaying(SongPlayingEvent e) {
+    private void onEvent(SongPlayingEvent e) {
 //        radialEqualizerView.randomize()
 //        radialEqualizerView.value = (e.progress / (float) e.duration) * 100 as float
     }
 
-    @Subscribe
-    void onChangeFabAction(ChangeFabActionCommand c) {
+    private void onEvent(ChangeFabActionCommand c) {
         if (!canShowFab) return
 
         fabAction = c.action
@@ -275,8 +273,7 @@ public class LocalMusicFragment extends BaseFragment {
         fab.show()
     }
 
-    @Subscribe
-    void onSongPlaybackStarted(PlaybackStartedEvent e) {
+    private void onEvent(PlaybackStartedEvent e) {
         if (canShowFab) {
             fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
                 @Override
@@ -300,21 +297,16 @@ public class LocalMusicFragment extends BaseFragment {
         }
     }
 
-    @Produce
-    public Toolbar produceToolbar() {
-        return toolbar
-    }
-
-//    @Subscribe
-//    public void onChatMessageReceived(ChatMessageReceivedEvent event) {
+//    private void onEvent(ChatMessageReceivedEvent event) {
 //        Croutons.messageReceived activity, event.message
 //    }
 
-    @Subscribe
-    public void onStartArtistInfoActivity(ShouldStartArtistInfoActivity event) {
+    private void onEvent(ShouldStartArtistInfoActivity event) {
         Intent intent = new Intent(activity, ArtistInfoActivity)
         intent.putExtra 'artist', event.artist as Parcelable
         startActivity intent
     }
+
+    // endregion
 
 }

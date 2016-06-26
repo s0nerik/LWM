@@ -6,10 +6,8 @@ import android.content.Intent
 import android.view.KeyEvent
 import app.App
 import app.events.player.playback.control.ControlButtonEvent
-import com.squareup.otto.Bus
+import app.rx.RxBus
 import groovy.transform.CompileStatic
-
-import javax.inject.Inject
 
 import static android.content.Intent.ACTION_MEDIA_BUTTON
 import static android.content.Intent.EXTRA_KEY_EVENT
@@ -20,9 +18,6 @@ import static app.events.player.playback.control.ControlButtonEvent.Type.TOGGLE_
 
 @CompileStatic
 class MediaButtonIntentReceiver extends BroadcastReceiver {
-
-    @Inject
-    protected Bus bus
 
     MediaButtonIntentReceiver() {
         App.get().inject(this)
@@ -36,15 +31,15 @@ class MediaButtonIntentReceiver extends BroadcastReceiver {
             if (keyEvent.action == ACTION_DOWN) {
                 switch (keyEvent.keyCode) {
                     case KEYCODE_MEDIA_NEXT:
-                        bus.post new ControlButtonEvent(NEXT)
+                        RxBus.post new ControlButtonEvent(NEXT)
                         break
                     case KEYCODE_MEDIA_PREVIOUS:
-                        bus.post new ControlButtonEvent(PREV)
+                        RxBus.post new ControlButtonEvent(PREV)
                         break
                     case KEYCODE_MEDIA_PLAY:
                     case KEYCODE_MEDIA_PAUSE:
                     case KEYCODE_MEDIA_PLAY_PAUSE:
-                        bus.post new ControlButtonEvent(TOGGLE_PAUSE)
+                        RxBus.post new ControlButtonEvent(TOGGLE_PAUSE)
                         break
                 }
             }

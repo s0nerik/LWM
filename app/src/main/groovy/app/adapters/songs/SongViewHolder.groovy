@@ -17,10 +17,10 @@ import app.commands.RequestPlaySongCommand
 import app.helpers.CollectionManager
 import app.models.Song
 import app.players.LocalPlayer
+import app.rx.RxBus
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.Bus
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.viewholders.FlexibleViewHolder
 import groovy.transform.CompileStatic
@@ -47,9 +47,6 @@ class SongViewHolder extends FlexibleViewHolder {
 
     @Inject
     protected CollectionManager collectionManager
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected Context context
@@ -126,7 +123,7 @@ class SongViewHolder extends FlexibleViewHolder {
 
     @OnClick(R.id.container)
     void onClicked() {
-        bus.post new RequestPlaySongCommand(song)
+        RxBus.post new RequestPlaySongCommand(song)
         mAdapter.toggleSelection(adapterPosition)
         updateSelectedState()
     }

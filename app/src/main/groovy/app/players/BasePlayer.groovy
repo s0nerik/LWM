@@ -9,13 +9,13 @@ import app.events.player.playback.SongChangedEvent
 import app.events.player.playback.SongPlayingEvent
 import app.helpers.DelayMeasurer
 import app.models.Song
+import app.rx.RxBus
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer
 import com.google.android.exoplayer.MediaCodecSelector
 import com.google.android.exoplayer.TrackRenderer
 import com.google.android.exoplayer.extractor.ExtractorSampleSource
 import com.google.android.exoplayer.upstream.DefaultAllocator
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
-import com.squareup.otto.Bus
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.Observable
@@ -32,9 +32,6 @@ abstract class BasePlayer extends RxExoPlayer {
 
     @Inject
     protected AudioManager audioManager
-
-    @Inject
-    protected Bus bus
 
     @Inject
     protected Context context
@@ -76,11 +73,11 @@ abstract class BasePlayer extends RxExoPlayer {
             switch (it) {
                 case PlayerEvent.STARTED:
                     gainAudioFocus()
-                    bus.post new PlaybackStartedEvent(currentSong, innerPlayer.currentPosition)
+                    RxBus.post new PlaybackStartedEvent(currentSong, innerPlayer.currentPosition)
                     startNotifyingPlaybackProgress()
                     break
                 case PlayerEvent.PAUSED:
-                    bus.post new PlaybackPausedEvent(currentSong, innerPlayer.currentPosition)
+                    RxBus.post new PlaybackPausedEvent(currentSong, innerPlayer.currentPosition)
                 case PlayerEvent.ENDED:
                 case PlayerEvent.IDLE:
                     abandonAudioFocus()
@@ -92,7 +89,7 @@ abstract class BasePlayer extends RxExoPlayer {
         playerSubject.subscribe {
             if (currentSong != lastSong) {
                 lastSong = currentSong
-                bus.post new SongChangedEvent(currentSong)
+                RxBus.post new SongChangedEvent(currentSong)
             }
         }
 
@@ -120,7 +117,7 @@ abstract class BasePlayer extends RxExoPlayer {
     protected void startNotifyingPlaybackProgress() {
         playbackProgressNotifier = Observable.interval(NOTIFY_INTERVAL, TimeUnit.MILLISECONDS)
                                              .subscribe {
-                                                 if (currentSong) bus.post new SongPlayingEvent(currentPosition, currentSong.duration)
+                                                 if (currentSong) RxBus.post new SongPlayingEvent(currentPosition, currentSong.duration)
                                              }
     }
 

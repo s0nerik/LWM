@@ -18,7 +18,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import app.R
-import app.R.layout
 import app.Utils
 import app.adapters.songs.SongItem
 import app.adapters.songs.SongsListAdapter
@@ -27,13 +26,13 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.models.Album
 import app.models.Song
+import app.rx.RxBus
 import app.ui.fragment.NowPlayingFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.jakewharton.rxbinding.support.design.widget.RxAppBarLayout
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.subscriptions.CompositeSubscription
@@ -41,7 +40,7 @@ import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 @CompileStatic
-@InjectLayout(value = layout.activity_album_info, injectAllViews = true)
+@InjectLayout(value = R.layout.activity_album_info, injectAllViews = true)
 class AlbumInfoActivity extends BaseLocalActivity {
 
     private List<Song> songs
@@ -107,8 +106,13 @@ class AlbumInfoActivity extends BaseLocalActivity {
         supportFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
 
         initHeader album
+    }
 
-        bus.register this
+    @Override
+    protected void initEventHandlersOnCreate() {
+        super.initEventHandlersOnCreate()
+        RxBus.on(CurrentSongAvailableEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     private void subscribeToScrollEvents() {
@@ -193,7 +197,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_add_to_queue:
-                bus.post new EnqueueCommand(songs)
+                RxBus.post new EnqueueCommand(songs)
                 Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT)
                 toast.show()
                 return true
@@ -203,19 +207,18 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     @Override
     protected void onDestroy() {
-        bus.unregister(this)
         unsubscribeFromScrollEvents()
         super.onDestroy()
     }
 
-    @Subscribe
-    void onSongAvailable(CurrentSongAvailableEvent event) {
+    // region Event handlers
+
+    private void onEvent(CurrentSongAvailableEvent event) {
         if (event.song)
-            playbackStarted null
+            onEvent new PlaybackStartedEvent()
     }
 
-    @Subscribe
-    void playbackStarted(PlaybackStartedEvent event) {
+    private void onEvent(PlaybackStartedEvent event) {
         nowPlayingFragment.show(supportFragmentManager).subscribe { int height ->
             def a = new Animation() {
                 @Override
@@ -232,8 +235,5 @@ class AlbumInfoActivity extends BaseLocalActivity {
 //        highlightCurrentSong event.song
     }
 
-    @Subscribe
-    void currentSongAvailable(CurrentSongAvailableEvent event) {
-//        highlightCurrentSong event.song
-    }
+    // endregion
 }

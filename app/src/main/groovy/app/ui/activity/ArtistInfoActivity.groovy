@@ -32,7 +32,7 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     Artist artist
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         App.get().inject(this)
         BetterKnife.loadExtras(this)
@@ -66,18 +66,6 @@ public class ArtistInfoActivity extends BaseLocalActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left_33_alpha, R.anim.slide_out_right);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bus.register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        bus.unregister(this);
     }
 
 //    @Subscribe

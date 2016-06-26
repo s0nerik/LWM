@@ -16,25 +16,21 @@ import app.adapters.artists.ArtistsAdapter
 import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
 import app.models.Artist
-import app.ui.base.OttoOnCreateFragment
+import app.rx.RxBus
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.InjectView
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 import javax.inject.Inject
 
 @CompileStatic
-@InjectLayout(R.layout.fragment_list_artists)
-class ArtistsListFragment extends OttoOnCreateFragment implements SortableFragment {
+@InjectLayout(value = R.layout.fragment_list_artists, injectAllViews = true)
+class ArtistsListFragment extends BaseFragment implements SortableFragment {
 
-    @InjectView(R.id.empty)
-    LinearLayout mEmpty
-    @InjectView(R.id.twoWayView)
-    RecyclerView mRecyclerView
-    @InjectView(R.id.progress)
-    ProgressBar mProgress
+    LinearLayout empty
+    RecyclerView twoWayView
+    ProgressBar progress
 
     @Inject
     protected CollectionManager collectionManager
@@ -56,30 +52,34 @@ class ArtistsListFragment extends OttoOnCreateFragment implements SortableFragme
 
     @Override
     void onCreate(Bundle savedInstanceState) {
-        App.get().inject(this)
         super.onCreate(savedInstanceState)
+        App.get().inject(this)
+
+        RxBus.on(FilterLocalMusicCommand)
+                .bindToLifecycle(this)
+                .subscribe(this.&onFilter)
     }
 
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
-        mRecyclerView.layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        twoWayView.layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         adapter = new ArtistsAdapter(artists)
-        mRecyclerView.adapter = adapter
-        mRecyclerView.hasFixedSize = true
+        twoWayView.adapter = adapter
+        twoWayView.hasFixedSize = true
 
         loadArtists()
     }
 
     private loadArtists() {
-        mRecyclerView.hide()
-        mProgress.show()
+        twoWayView.hide()
+        progress.show()
         onArtistsLoaded collectionManager.artists
     }
 
     private void onArtistsLoaded(List<Artist> artists) {
-        mProgress.hide()
+        progress.hide()
 
         this.artists.clear()
         this.artists.addAll artists.collect {
@@ -92,14 +92,13 @@ class ArtistsListFragment extends OttoOnCreateFragment implements SortableFragme
 
         if (artists) {
             adapter.notifyDataSetChanged()
-            mRecyclerView.show()
+            twoWayView.show()
         } else {
-            mEmpty.show()
+            empty.show()
         }
     }
 
-    @Subscribe
-    void onEvent(FilterLocalMusicCommand cmd) {
+    private void onFilter(FilterLocalMusicCommand cmd) {
         adapter.searchText = cmd.constraint
         adapter.filterItems(filteredArtists)
     }

@@ -14,20 +14,13 @@ import app.Utils
 import app.commands.ChangePauseStateCommand
 import app.commands.PlaySongAtPositionCommand
 import app.commands.SeekToCommand
-import app.events.player.RepeatStateChangedEvent
-import app.events.player.playback.PlaybackPausedEvent
-import app.events.player.playback.PlaybackStartedEvent
-import app.events.player.playback.SongChangedEvent
-import app.events.player.playback.SongPlayingEvent
-import app.events.player.queue.QueueShuffledEvent
 import app.models.Song
 import app.players.BasePlayer
 import app.players.LocalPlayer
 import app.players.PlayerUtils
+import app.rx.RxBus
 import app.ui.Blurer
 import com.github.s0nerik.betterknife.annotations.OnClick
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import rx.Observable
 import rx.Subscriber
@@ -45,9 +38,6 @@ class LocalPlaybackFragment extends PlaybackFragment {
 
     @Inject
     protected Utils utils
-
-    @Inject
-    protected Bus bus
 
 //    @Inject
 //    @PackageScope
@@ -92,13 +82,13 @@ class LocalPlaybackFragment extends PlaybackFragment {
     void onClickControls(View btn) {
         switch (btn.getId()) {
             case R.id.btnNext:
-                bus.post new PlaySongAtPositionCommand(NEXT)
+                RxBus.post new PlaySongAtPositionCommand(NEXT)
                 break;
             case R.id.btnPrev:
-                bus.post new PlaySongAtPositionCommand(PREVIOUS)
+                RxBus.post new PlaySongAtPositionCommand(PREVIOUS)
                 break;
             case R.id.btnPlayPause:
-                bus.post new ChangePauseStateCommand(!player.paused)
+                RxBus.post new ChangePauseStateCommand(!player.paused)
                 break
             case R.id.btnShuffle:
                 player.shuffleQueueExceptPlayed()
@@ -135,42 +125,6 @@ class LocalPlaybackFragment extends PlaybackFragment {
 //        chatButtonVisibility = event.state == ENABLED
 //    }
 
-    @Subscribe
-    @Override
-    void onSongChanged(SongChangedEvent event) {
-        super.onSongChanged(event);
-    }
-
-    @Subscribe
-    @Override
-    void onPlaybackStarted(PlaybackStartedEvent event) {
-        super.onPlaybackStarted(event);
-    }
-
-    @Subscribe
-    @Override
-    void onPlaybackPaused(PlaybackPausedEvent event) {
-        super.onPlaybackPaused(event);
-    }
-
-    @Subscribe
-    @Override
-    void onSongPlaying(SongPlayingEvent event) {
-        super.onSongPlaying(event);
-    }
-
-    @Subscribe
-    @Override
-    void onQueueShuffled(QueueShuffledEvent event) {
-        super.onQueueShuffled(event);
-    }
-
-    @Subscribe
-    @Override
-    void onRepeatStateChanged(RepeatStateChangedEvent event) {
-        super.onRepeatStateChanged(event);
-    }
-
     class PlayerProgressOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
 
         PlayerProgressOnSeekBarChangeListener() {}
@@ -178,7 +132,7 @@ class LocalPlaybackFragment extends PlaybackFragment {
         @Override
         void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (fromUser) {
-                bus.post new SeekToCommand(PlayerUtils.convertSeekBarToProgress(progress))
+                RxBus.post new SeekToCommand(PlayerUtils.convertSeekBarToProgress(progress))
             }
         }
 

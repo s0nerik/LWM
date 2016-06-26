@@ -13,11 +13,11 @@ import app.events.p2p.StationsListUpdatedEvent
 import app.models.Station
 import app.models.StationInfo
 import app.receivers.WiFiDirectBroadcastReceiver
+import app.rx.RxBus
 import app.services.StreamPlayerService
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
+import rx.subscriptions.CompositeSubscription
 
 import javax.inject.Inject
 
@@ -32,15 +32,12 @@ import static java.lang.reflect.Modifier.STATIC
 @CompileStatic
 class StationsExplorer {
 
+    private CompositeSubscription sub = new CompositeSubscription()
+
     @Inject
     protected WifiP2pManager manager
-
     @Inject
     protected Context context
-
-    @Inject
-    protected Bus bus
-
     @Inject
     protected Handler handler
 
@@ -62,16 +59,20 @@ class StationsExplorer {
 
     void startStationsDiscovery() {
         if (discoveryStarted) return
-        bus.register this
+        initEventHandlers()
         context.registerReceiver receiver, intentFilter
         init()
         rediscover()
         discoveryStarted = true
     }
 
+    private void initEventHandlers() {
+        RxBus.on(P2PBroadcastReceivedEvent).subscribe(this.&onEvent)
+    }
+
     void stopStationsDiscovery() {
         if (!discoveryStarted) return
-        bus.unregister this
+        sub.clear()
         context.unregisterReceiver receiver
         manager.stopPeerDiscovery channel, debugP2PActionListener("stopPeerDiscovery")
         discoveryStarted = false
@@ -147,8 +148,7 @@ class StationsExplorer {
         intentFilter.addAction WIFI_P2P_THIS_DEVICE_CHANGED_ACTION
     }
 
-    @Subscribe
-    void onP2PBroadcastReceived(P2PBroadcastReceivedEvent event) {
+    private void onEvent(P2PBroadcastReceivedEvent event) {
         Debug.d "onP2PBroadcastReceived"
 
         switch (event.intent.action) {
@@ -164,7 +164,7 @@ class StationsExplorer {
                             peerList.deviceList.contains(it.device)
                         }
 
-                        bus.post new StationsListUpdatedEvent(stations)
+                        RxBus.post new StationsListUpdatedEvent(stations)
                     }
                 }, 1000)
                 break

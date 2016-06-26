@@ -17,8 +17,6 @@ import android.view.WindowManager
 import app.App
 import app.Config
 import app.Utils
-import app.events.MainThreadBus
-import app.events.RxBus
 import app.helpers.CollectionManager
 import app.helpers.StationsExplorer
 import app.helpers.wifi.WifiUtils
@@ -29,8 +27,6 @@ import app.server.HttpStreamServer
 import app.server.MusicStation
 import app.ui.Blurer
 import app.websocket.WebSocketMessageServer
-import com.squareup.otto.Bus
-import com.squareup.otto.ThreadEnforcer
 import dagger.Module
 import dagger.Provides
 import groovy.transform.CompileStatic
@@ -116,18 +112,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    Bus provideBus() {
-        return new MainThreadBus(ThreadEnforcer.ANY);
-    }
-
-    @Provides
-    @Singleton
-    RxBus provideRxBus() {
-        return new RxBus();
-    }
-
-    @Provides
-    @Singleton
     Blurer provideBlurer() {
         return new Blurer();
     }
@@ -177,7 +161,7 @@ class AppModule {
     @Provides
     @Singleton
     MainPrefs provideMainPrefs() {
-        return MainPrefs.create(application)
+        return MainPrefs.get(application)
     }
 
     @Provides

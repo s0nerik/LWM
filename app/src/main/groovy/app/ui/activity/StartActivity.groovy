@@ -19,7 +19,7 @@ class StartActivity extends BaseActivity {
     protected CollectionManager collectionManager
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         App.get().inject(this)
     }

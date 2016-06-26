@@ -21,22 +21,22 @@ import app.events.player.queue.QueueShuffledEvent
 import app.models.Song
 import app.players.BasePlayer
 import app.players.PlayerUtils
+import app.rx.RxBus
 import app.ui.Blurer
-import app.ui.base.OttoOnResumeFragment
+import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import rx.functions.Func1
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_playback, injectAllViews = true)
-abstract class PlaybackFragment extends OttoOnResumeFragment {
+abstract class PlaybackFragment extends BaseFragment {
 
     @Inject
     protected Resources res
@@ -89,31 +89,15 @@ abstract class PlaybackFragment extends OttoOnResumeFragment {
         initView()
     }
 
-    protected void onSongPlaying(SongPlayingEvent event) {
-        seekBar.progress = PlayerUtils.calculateProgressForSeekBar event.progress as int
-        currentTime.text = player.currentPositionInMinutes
-    }
-
-    protected void onSongChanged(SongChangedEvent event) {
-        setSongInfo event.song
-    }
-
-    protected void onPlaybackStarted(PlaybackStartedEvent event) {
-        Debug.d()
-        setPlayButton true
-    }
-
-    protected void onPlaybackPaused(PlaybackPausedEvent event) {
-        Debug.d()
-        setPlayButton false
-    }
-
-    protected void onQueueShuffled(QueueShuffledEvent event) {
-        setShuffleButton player.shuffle
-    }
-
-    protected void onRepeatStateChanged(RepeatStateChangedEvent event) {
-        setRepeatButton player.repeat
+    @Override
+    protected void initEventHandlersOnResume() {
+        super.initEventHandlersOnResume()
+        RxBus.on(SongPlayingEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SongChangedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(PlaybackPausedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(QueueShuffledEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(RepeatStateChangedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     protected void setSongInfo(final Song song) {
@@ -125,9 +109,8 @@ abstract class PlaybackFragment extends OttoOnResumeFragment {
         endTime.text = song.durationString
 
         getCoverBitmap(song)
-                .concatMap { Bitmap original -> blurer.blurAsObservable(original).map { new Tuple2(original, it) } }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .concatMap({ Bitmap original -> blurer.blurAsObservable(original).map { new Tuple2(original, it) } } as Func1)
+                .applySchedulers()
                 .subscribe { Tuple2<Bitmap, Bitmap> covers -> changeCover covers.first, covers.second }
     }
 
@@ -169,5 +152,36 @@ abstract class PlaybackFragment extends OttoOnResumeFragment {
         setShuffleButton player.shuffle
         setRepeatButton player.repeat
     }
+
+    // region Event handlers
+
+    protected void onEvent(SongPlayingEvent event) {
+        seekBar.progress = PlayerUtils.calculateProgressForSeekBar event.progress as int
+        currentTime.text = player.currentPositionInMinutes
+    }
+
+    protected void onEvent(SongChangedEvent event) {
+        setSongInfo event.song
+    }
+
+    protected void onEvent(PlaybackStartedEvent event) {
+        Debug.d()
+        setPlayButton true
+    }
+
+    protected void onEvent(PlaybackPausedEvent event) {
+        Debug.d()
+        setPlayButton false
+    }
+
+    protected void onEvent(QueueShuffledEvent event) {
+        setShuffleButton player.shuffle
+    }
+
+    protected void onEvent(RepeatStateChangedEvent event) {
+        setRepeatButton player.repeat
+    }
+
+    // endregion
 
 }
