@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import app.R
+import app.helpers.providers.BubbleTextProviders
+import app.helpers.providers.SorterProviders
 import app.adapters.songs.SongItem
 import app.adapters.songs.SongsListAdapter
 import app.commands.RequestPlaySongCommand
@@ -51,20 +53,6 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
 
     private int sortActionId
     private boolean orderAscending
-
-    Map<Integer, Closure> sortFieldProviders = [
-            (R.id.songs_sort_title): { SongItem it -> it.song.title },
-            (R.id.songs_sort_artist): { SongItem it -> it.song.artistName },
-            (R.id.songs_sort_album): { SongItem it -> it.song.albumName },
-            (R.id.songs_sort_year): { SongItem it -> it.song?.album?.year },
-    ]
-
-    Map<Integer, Closure<String>> bubbleTextProviders = [
-            (R.id.songs_sort_title): { SongItem it -> it.song.title[0] },
-            (R.id.songs_sort_artist): { SongItem it -> it.song.artistName[0] },
-            (R.id.songs_sort_album): { SongItem it -> it.song.albumName[0] },
-            (R.id.songs_sort_year): { SongItem it -> (it.song?.album?.year as String)[0..3] },
-    ]
 
     private LinearLayoutManager layoutManager
 
@@ -208,9 +196,9 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
 
     @Override
     void sortItems() {
-        adapter.bubbleTextProvider = bubbleTextProviders[sortActionId]
+        adapter.bubbleTextProvider = BubbleTextProviders.SONGS[sortActionId]
 
-        songs.sort true, sortFieldProviders[sortActionId]
+        songs.sort true, SorterProviders.SONGS[sortActionId]
         if (!orderAscending)
             songs.reverse true
 
