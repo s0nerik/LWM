@@ -114,7 +114,7 @@ dependencies {
     compile 'com.wada811:android-material-design-colors:2.0.0'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
-    compile 'eu.davidea:flexible-adapter:5.0.0-b4'
+    compile 'eu.davidea:flexible-adapter:5.0.0-b7'
     compile 'com.github.renaudcerrato:ToggleDrawable:1.0.2'
 
     // Image loading

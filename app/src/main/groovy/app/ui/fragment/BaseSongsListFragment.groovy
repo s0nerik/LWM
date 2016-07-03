@@ -76,6 +76,8 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
         adapter = new SongsListAdapter(songs)
         adapter.mode = SongsListAdapter.MODE_SINGLE
 
+        sortActionId = R.id.songs_sort_title
+
         RxBus.on(CurrentSongAvailableEvent).bindToLifecycle(this).subscribe(this.&onEvent)
         RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
         RxBus.on(PlaybackPausedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
@@ -121,6 +123,8 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
     protected void onSongsLoaded(List<Song> loadedSongs) {
         songs.clear()
         songs.addAll loadedSongs.collect { new SongItem(it) }
+
+        sortItems()
 
         filteredSongs = new ArrayList(songs)
 
