@@ -14,6 +14,7 @@ import app.adapters.albums.AlbumItem
 import app.adapters.albums.AlbumsAdapter
 import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
+import app.helpers.providers.SorterProviders
 import app.models.Album
 import app.models.Artist
 import app.rx.RxBus
@@ -40,15 +41,6 @@ class AlbumsListFragment extends BaseFragment implements SortableFragment {
     private List<AlbumItem> filteredAlbums = new ArrayList<>()
 
     private AlbumsAdapter adapter
-
-    private int sortActionId
-    private boolean orderAscending
-
-    Map<Integer, Comparator<AlbumItem>> sortComparators = [
-            (R.id.albums_sort_title): { AlbumItem l, AlbumItem r -> l.album.title.compareTo(r.album.title) } as Comparator<AlbumItem>,
-            (R.id.albums_sort_artist): { AlbumItem l, AlbumItem r -> l.album.artistName.compareTo(r.album.artistName) } as Comparator<AlbumItem>,
-            (R.id.albums_sort_year): { AlbumItem l, AlbumItem r -> l.album.year?.compareTo(r.album.year) } as Comparator<AlbumItem>,
-    ]
 
     public static Fragment create(Artist artist) {
         def fragment = new AlbumsListFragment()
@@ -107,42 +99,15 @@ class AlbumsListFragment extends BaseFragment implements SortableFragment {
     }
 
     @Override
-    int getSortMenuId() {
-        return R.menu.sort_albums
-    }
+    int getSortMenuId() { R.menu.sort_albums }
 
-    @Override
-    int getSortActionId() {
-        return sortActionId
-    }
-
-    @Override
-    void setSortActionId(@IdRes int id) {
-        sortActionId = id
-    }
-
-    @Override
-    boolean isOrderAscending() {
-        return orderAscending
-    }
-
-    @Override
-    void setOrderAscending(boolean value) {
-        orderAscending = value
-    }
-
-    @Override
-    int getSortIconId() {
-        return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
-    }
-
-    @Override
-    void sortItems() {
-        albums.sort true, sortComparators[sortActionId]
-        if (!orderAscending)
-            albums.reverse true
-
-        filteredAlbums = new ArrayList<>(albums)
-        adapter.notifyDataSetChanged()
-    }
+//    @Override
+//    void sortItems() {
+//        albums.sort true, SorterProviders.ALBUMS[sortActionId]
+//        if (!orderAscending)
+//            albums.reverse true
+//
+//        filteredAlbums = new ArrayList<>(albums)
+//        adapter.notifyDataSetChanged()
+//    }
 }

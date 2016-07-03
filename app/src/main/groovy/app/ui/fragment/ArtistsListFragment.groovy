@@ -1,7 +1,6 @@
 package app.ui.fragment
 
 import android.os.Bundle
-import android.support.annotation.IdRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -9,17 +8,16 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import app.App
 import app.R
-import app.adapters.albums.AlbumItem
 import app.adapters.albums.ArtistAlbumItem
 import app.adapters.artists.ArtistItem
 import app.adapters.artists.ArtistsAdapter
 import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
+import app.helpers.providers.SorterProviders
 import app.models.Artist
 import app.rx.RxBus
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.github.s0nerik.betterknife.annotations.InjectView
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
@@ -36,19 +34,9 @@ class ArtistsListFragment extends BaseFragment implements SortableFragment {
     protected CollectionManager collectionManager
 
     private List<ArtistItem> artists = new ArrayList<>()
-    private List<ArtistItem> filteredArtists = new ArrayList<>()
+    private List<ArtistItem> unfilteredArtists = new ArrayList<>()
 
     private ArtistsAdapter adapter
-
-    private int sortActionId
-    private boolean orderAscending
-
-    Map<Integer, Comparator<ArtistItem>> sortComparators = [
-            (R.id.artists_sort_name)        : { ArtistItem l, ArtistItem r -> l.artist.name.compareTo(r.artist.name) } as Comparator<ArtistItem>,
-            (R.id.artists_sort_recent_album): { ArtistItem l, ArtistItem r ->
-                l.artist.albums.sort { it.year }.last().year.compareTo(r.artist.albums.sort { it.year }.last().year)
-            } as Comparator<AlbumItem>,
-    ]
 
     @Override
     void onCreate(Bundle savedInstanceState) {
@@ -88,7 +76,7 @@ class ArtistsListFragment extends BaseFragment implements SortableFragment {
             item
         }
 
-        filteredArtists = new ArrayList(this.artists)
+        unfilteredArtists = new ArrayList(this.artists)
 
         if (artists) {
             adapter.notifyDataSetChanged()
@@ -100,46 +88,28 @@ class ArtistsListFragment extends BaseFragment implements SortableFragment {
 
     private void onFilter(FilterLocalMusicCommand cmd) {
         adapter.searchText = cmd.constraint
-        adapter.filterItems(filteredArtists)
+        adapter.filterItems(unfilteredArtists)
     }
 
     @Override
-    int getSortMenuId() {
-        return R.menu.sort_artists
-    }
+    int getSortMenuId() { R.menu.sort_artists }
 
     @Override
-    int getSortActionId() {
-        return sortActionId
-    }
+    List<?> getSortableList() { artists }
 
     @Override
-    void setSortActionId(@IdRes int id) {
-        sortActionId = id
-    }
+    Map<?, ?> getSorters() { SorterProviders.ARTISTS }
 
     @Override
-    boolean isOrderAscending() {
-        return orderAscending
-    }
+    RecyclerView.Adapter getAdapter() { adapter }
 
-    @Override
-    void setOrderAscending(boolean value) {
-        orderAscending = value
-    }
-
-    @Override
-    int getSortIconId() {
-        return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
-    }
-
-    @Override
-    void sortItems() {
-        artists.sort true, sortComparators[sortActionId]
-        if (!orderAscending)
-            artists.reverse true
-
-        filteredArtists = new ArrayList<>(artists)
-        adapter.notifyDataSetChanged()
-    }
+//    @Override
+//    void sortItems() {
+//        artists.sort true, SorterProviders.ARTISTS[sortActionId]
+//        if (!orderAscending)
+//            artists.reverse true
+//
+//        unfilteredArtists = new ArrayList<>(artists)
+//        adapter.notifyDataSetChanged()
+//    }
 }
