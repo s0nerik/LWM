@@ -6,7 +6,6 @@ import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Button
@@ -68,7 +67,6 @@ class FindStationsFragment extends BaseFragment {
 
         adapter = new StationsAdapter(stations)
 
-        recycler.layoutManager = new LinearLayoutManager(activity)
         recycler.adapter = adapter
 
         refreshLayout.setColorSchemeResources(

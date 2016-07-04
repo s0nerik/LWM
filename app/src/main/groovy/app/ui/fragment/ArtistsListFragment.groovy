@@ -1,7 +1,6 @@
 package app.ui.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
@@ -51,7 +50,6 @@ class ArtistsListFragment extends BaseFragment implements SortableFragment {
     @Override
     void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState)
-        twoWayView.layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         adapter = new ArtistsAdapter(artists)
         twoWayView.adapter = adapter

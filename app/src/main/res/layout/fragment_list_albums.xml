@@ -8,7 +8,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
         android:clipToPadding="false"
-        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:layoutManager="@string/layout_manager_grid"
         app:spanCount="2"
         tools:listitem="@layout/item_albums"
         android:layout_width="match_parent"

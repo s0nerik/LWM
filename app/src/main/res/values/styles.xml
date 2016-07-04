@@ -199,6 +199,7 @@
         <item name="android:cacheColorHint">#00000000</item>
         <item name="android:fadingEdge">none</item>
         <item name="android:requiresFadingEdge">none</item>
+        <item name="layoutManager">@string/layout_manager_linear</item>
     </style>
 
 

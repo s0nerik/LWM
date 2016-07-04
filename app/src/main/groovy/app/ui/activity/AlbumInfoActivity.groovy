@@ -26,12 +26,12 @@ import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
 import app.models.Album
 import app.models.Song
-import com.github.s0nerik.rxbus.RxBus
 import app.ui.fragment.NowPlayingFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.github.s0nerik.rxbus.RxBus
 import com.jakewharton.rxbinding.support.design.widget.RxAppBarLayout
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
@@ -66,7 +66,6 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     private CompositeSubscription scrollSubscribers
 
-    private LinearLayoutManager layoutManager
     private RecyclerView.OnScrollListener recyclerScrollListener = new RecyclerView.OnScrollListener() {
         private int lastDy = 0
 
@@ -74,7 +73,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
         void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE
                     && lastDy < 0
-                    && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 ) {
+                    && ((LinearLayoutManager) recyclerView.layoutManager).findFirstCompletelyVisibleItemPosition() == 0 ) {
                 appBarLayout.setExpanded(true, true)
             }
         }
@@ -94,10 +93,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
 //        def adapter = new SongsListAdapter(this, songs)
         def adapter = new SongsListAdapter(songs.collect { new SongItem(it) })
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         recycler.adapter = adapter
-        recycler.layoutManager = this.layoutManager
         recycler.hasFixedSize = true
 
         subscribeToScrollEvents()

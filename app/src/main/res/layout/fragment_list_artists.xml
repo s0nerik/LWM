@@ -11,7 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="8dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        app:layoutManager="@string/layout_manager_linear"
+        tools:listitem="@layout/item_artists"
+        />
 
     <LinearLayout
         android:id="@+id/empty"

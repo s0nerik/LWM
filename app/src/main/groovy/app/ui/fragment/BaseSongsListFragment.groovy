@@ -1,7 +1,6 @@
 package app.ui.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
@@ -52,8 +51,6 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
     private int sortActionId
     private boolean orderAscending
 
-    private LinearLayoutManager layoutManager
-
     protected abstract Observable<List<Song>> loadSongs()
 
     @Override
@@ -77,8 +74,6 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
         super.onViewCreated(view, savedInstanceState)
 
         twoWayView.adapter = adapter
-        layoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        twoWayView.layoutManager = layoutManager
         twoWayView.hasFixedSize = true
 
         adapter.setFastScroller fastScroller, resources.getColor(R.color.md_deep_purple_600)

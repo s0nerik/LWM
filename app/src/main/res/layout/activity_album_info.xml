@@ -162,6 +162,7 @@
             android:overScrollMode="never"
             android:paddingTop="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layoutManager="@string/layout_manager_linear"
             tools:listitem="@layout/item_songs"/>
 
         <android.support.design.widget.FloatingActionButton

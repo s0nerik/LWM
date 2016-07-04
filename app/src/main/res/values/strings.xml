@@ -107,4 +107,7 @@
     <string name="action_search">Search</string>
     <string name="action_sort">Sort</string>
 
+    <string name="layout_manager_linear">android.support.v7.widget.LinearLayoutManager</string>
+    <string name="layout_manager_grid">android.support.v7.widget.GridLayoutManager</string>
+    
 </resources>
