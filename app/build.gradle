@@ -19,18 +19,11 @@ android {
         renderscriptSupportModeEnabled true
         multiDexEnabled true
     }
-//    dexOptions {
-//        incremental true
-//        preDexLibraries = true
-//        javaMaxHeapSize "4g"
-//    }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_7
-//        targetCompatibility JavaVersion.VERSION_1_7
-//    }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+//            minifyEnabled = true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         release {}
