@@ -18,18 +18,17 @@ import app.adapters.stations.StationsAdapter
 import app.events.client.SocketOpenedEvent
 import app.events.p2p.StationsListUpdatedEvent
 import app.helpers.StationsExplorer
-import com.github.s0nerik.rxbus.RxBus
 import app.ui.activity.RemotePlaybackActivity
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
-import com.github.s0nerik.betterknife.annotations.InjectView
 import com.github.s0nerik.betterknife.annotations.OnClick
+import com.github.s0nerik.rxbus.RxBus
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
 
 @CompileStatic
-@InjectLayout(R.layout.page_stations_around)
+@InjectLayout(value = R.layout.page_stations_around, injectAllViews = true)
 class FindStationsFragment extends BaseFragment {
 
     @Inject
@@ -41,15 +40,10 @@ class FindStationsFragment extends BaseFragment {
     @Inject
     protected StationsExplorer explorer
 
-    @InjectView(R.id.refreshLayout)
-    SwipeRefreshLayout mRefreshLayout
-    @InjectView(R.id.progressBar)
-    ProgressBar mProgressBar
-    @InjectView(R.id.btnRefresh)
-    Button mBtnRefresh
-    @InjectView(R.id.emptyView)
-    LinearLayout mEmptyView
-    @InjectView(R.id.recycler)
+    SwipeRefreshLayout refreshLayout
+    ProgressBar progressBar
+    Button btnRefresh
+    LinearLayout emptyView
     RecyclerView recycler
 
     private StationsAdapter adapter
@@ -77,13 +71,13 @@ class FindStationsFragment extends BaseFragment {
         recycler.layoutManager = new LinearLayoutManager(activity)
         recycler.adapter = adapter
 
-        mRefreshLayout.setColorSchemeResources(
+        refreshLayout.setColorSchemeResources(
                 R.color.pull_to_refresh_1,
                 R.color.pull_to_refresh_2,
                 R.color.pull_to_refresh_3,
                 R.color.pull_to_refresh_4
         )
-        mRefreshLayout.onRefreshListener = this.&onRefresh
+        refreshLayout.onRefreshListener = this.&onRefresh
     }
 
     @Override
@@ -110,7 +104,7 @@ class FindStationsFragment extends BaseFragment {
 
     private void onRefresh() {
         explorer.rediscover()
-        mRefreshLayout.refreshing = false
+        refreshLayout.refreshing = false
     }
 
     // region Event handlers

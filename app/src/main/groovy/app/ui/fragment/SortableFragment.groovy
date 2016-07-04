@@ -10,16 +10,36 @@ import groovy.transform.CompileStatic
 trait SortableFragment {
 
     @IdRes
-    int sortActionId
-    boolean orderAscending
+    int sortActionId = defaultSortActionId
+    boolean orderAscending = true
 
     @IdRes
     abstract int getSortMenuId()
+    @IdRes
+    abstract int getDefaultSortActionId()
     @NonNull
     abstract List<?> getSortableList()
 
     abstract Map<Integer, Closure> getSorters()
     abstract RecyclerView.Adapter getAdapter()
+
+    @IdRes
+    int getSortActionId() {
+        sortActionId
+    }
+
+    @IdRes
+    void setSortActionId(int i) {
+        sortActionId = i
+    }
+
+    boolean getOrderAscending() {
+        orderAscending
+    }
+
+    void setOrderAscending(boolean b) {
+        orderAscending = b
+    }
 
     @IdRes
     int getSortIconId() {

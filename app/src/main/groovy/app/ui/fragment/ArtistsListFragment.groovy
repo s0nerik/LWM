@@ -15,9 +15,9 @@ import app.events.ui.FilterLocalMusicCommand
 import app.helpers.CollectionManager
 import app.helpers.providers.SorterProviders
 import app.models.Artist
-import com.github.s0nerik.rxbus.RxBus
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.github.s0nerik.rxbus.RxBus
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
@@ -95,10 +95,13 @@ class ArtistsListFragment extends BaseFragment implements SortableFragment {
     int getSortMenuId() { R.menu.sort_artists }
 
     @Override
-    List<?> getSortableList() { artists }
+    int getDefaultSortActionId() { R.id.artists_sort_name }
 
     @Override
-    Map<?, ?> getSorters() { SorterProviders.ARTISTS }
+    List<ArtistItem> getSortableList() { artists }
+
+    @Override
+    Map<Integer, Closure> getSorters() { SorterProviders.ARTISTS }
 
     @Override
     RecyclerView.Adapter getAdapter() { adapter }

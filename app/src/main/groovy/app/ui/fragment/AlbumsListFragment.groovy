@@ -2,7 +2,6 @@ package app.ui.fragment
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.IdRes
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -17,9 +16,9 @@ import app.helpers.CollectionManager
 import app.helpers.providers.SorterProviders
 import app.models.Album
 import app.models.Artist
-import com.github.s0nerik.rxbus.RxBus
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectLayout
+import com.github.s0nerik.rxbus.RxBus
 import groovy.transform.CompileStatic
 
 import javax.inject.Inject
@@ -101,13 +100,21 @@ class AlbumsListFragment extends BaseFragment implements SortableFragment {
     @Override
     int getSortMenuId() { R.menu.sort_albums }
 
-//    @Override
-//    void sortItems() {
-//        albums.sort true, SorterProviders.ALBUMS[sortActionId]
-//        if (!orderAscending)
-//            albums.reverse true
-//
-//        filteredAlbums = new ArrayList<>(albums)
-//        adapter.notifyDataSetChanged()
-//    }
+    @Override
+    int getDefaultSortActionId() { R.id.albums_sort_title }
+
+    @Override
+    RecyclerView.Adapter getAdapter() {
+        adapter
+    }
+
+    @Override
+    List<AlbumItem> getSortableList() {
+        albums
+    }
+
+    @Override
+    Map<Integer, Closure> getSorters() {
+        SorterProviders.ALBUMS
+    }
 }

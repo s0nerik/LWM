@@ -1,14 +1,11 @@
 package app.ui.fragment
 
 import android.os.Bundle
-import android.support.annotation.IdRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
 import app.R
-import app.helpers.providers.BubbleTextProviders
-import app.helpers.providers.SorterProviders
 import app.adapters.songs.SongItem
 import app.adapters.songs.SongsListAdapter
 import app.commands.RequestPlaySongCommand
@@ -19,11 +16,12 @@ import app.events.player.service.CurrentSongAvailableEvent
 import app.events.ui.ChangeFabActionCommand
 import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
+import app.helpers.providers.SorterProviders
 import app.models.Song
 import app.players.LocalPlayer
-import com.github.s0nerik.rxbus.RxBus
 import app.ui.base.BaseFragment
 import com.github.s0nerik.betterknife.annotations.InjectView
+import com.github.s0nerik.rxbus.RxBus
 import eu.davidea.fastscroller.FastScroller
 import groovy.transform.CompileStatic
 import rx.Observable
@@ -49,7 +47,7 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
     List<SongItem> filteredSongs = new ArrayList<>()
     protected Song currentSong
 
-    SongsListAdapter adapter
+    protected SongsListAdapter adapter
 
     private int sortActionId
     private boolean orderAscending
@@ -88,7 +86,7 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
 //        fastScroller.hide()
         twoWayView.hide()
         progress.show()
-        loadSongs().subscribe this.&onSongsLoaded
+        loadSongs().subscribe this.&onSongsLoaded, { log("Error loading songs" ,it) }
     }
 
     @Override
@@ -165,44 +163,17 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
     // endregion
 
     @Override
-    int getSortMenuId() {
-        return R.menu.sort_songs
-    }
+    RecyclerView.Adapter getAdapter() { adapter }
 
     @Override
-    int getSortActionId() {
-        return sortActionId
-    }
+    Map<Integer, Closure> getSorters() { SorterProviders.SONGS }
 
     @Override
-    void setSortActionId(@IdRes int id) {
-        sortActionId = id
-    }
+    List<SongItem> getSortableList() { songs }
 
     @Override
-    boolean isOrderAscending() {
-        return orderAscending
-    }
+    int getSortMenuId() { R.menu.sort_songs }
 
     @Override
-    void setOrderAscending(boolean value) {
-        orderAscending = value
-    }
-
-    @Override
-    int getSortIconId() {
-        return orderAscending ? R.drawable.sort_ascending : R.drawable.sort_descending
-    }
-
-    @Override
-    void sortItems() {
-        adapter.bubbleTextProvider = BubbleTextProviders.SONGS[sortActionId]
-
-        songs.sort true, SorterProviders.SONGS[sortActionId]
-        if (!orderAscending)
-            songs.reverse true
-
-        filteredSongs = new ArrayList<>(songs)
-        adapter.notifyDataSetChanged()
-    }
+    int getDefaultSortActionId() { R.id.songs_sort_title }
 }
