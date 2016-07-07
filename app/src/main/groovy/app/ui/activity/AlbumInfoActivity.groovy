@@ -16,7 +16,6 @@ import android.view.animation.Transformation
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import app.R
 import app.Utils
 import app.adapters.songs.SongItem
@@ -24,14 +23,15 @@ import app.adapters.songs.SongsListAdapter
 import app.commands.EnqueueCommand
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.service.CurrentSongAvailableEvent
+import app.helpers.CollectionManager
 import app.models.Album
-import app.models.Song
 import app.ui.fragment.NowPlayingFragment
 import com.bumptech.glide.Glide
 import com.github.s0nerik.betterknife.BetterKnife
 import com.github.s0nerik.betterknife.annotations.Extra
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.rxbus.RxBus
+import com.github.s0nerik.rxlist.RxList
 import com.jakewharton.rxbinding.support.design.widget.RxAppBarLayout
 import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
@@ -42,8 +42,6 @@ import javax.inject.Inject
 @CompileStatic
 @InjectLayout(value = R.layout.activity_album_info, injectAllViews = true)
 class AlbumInfoActivity extends BaseLocalActivity {
-
-    private List<Song> songs
 
     Toolbar toolbar
     AppBarLayout appBarLayout
@@ -61,8 +59,14 @@ class AlbumInfoActivity extends BaseLocalActivity {
     @Inject
     protected Utils utils
 
+    @Inject
+    protected CollectionManager collectionManager
+
     @Extra
     Album album
+
+    private RxList<SongItem> songItems = new RxList<>()
+    private SongsListAdapter songsAdapter = new SongsListAdapter(songItems)
 
     private CompositeSubscription scrollSubscribers
 
@@ -89,15 +93,12 @@ class AlbumInfoActivity extends BaseLocalActivity {
         super.onPostCreate(savedInstanceState)
         BetterKnife.loadExtras this
 
-        songs = album.songs
+        songItems.addAll(album.songs.collect { new SongItem(it) })
 
-//        def adapter = new SongsListAdapter(this, songs)
-        def adapter = new SongsListAdapter(songs.collect { new SongItem(it) })
-
-        recycler.adapter = adapter
+        recycler.adapter = songsAdapter
         recycler.hasFixedSize = true
 
-        subscribeToScrollEvents()
+//        subscribeToScrollEvents()
 
         nowPlayingFragment = supportFragmentManager.findFragmentById(R.id.nowPlayingFragment) as NowPlayingFragment
         supportFragmentManager.beginTransaction().hide(nowPlayingFragment).commit()
@@ -194,9 +195,8 @@ class AlbumInfoActivity extends BaseLocalActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_add_to_queue:
-                RxBus.post new EnqueueCommand(songs)
-                Toast toast = Toast.makeText(this, R.string.album_added_to_queue, Toast.LENGTH_SHORT)
-                toast.show()
+                RxBus.post new EnqueueCommand(album.songs)
+                toast getString(R.string.album_added_to_queue)
                 return true
         }
         return super.onOptionsItemSelected(item)
@@ -204,7 +204,7 @@ class AlbumInfoActivity extends BaseLocalActivity {
 
     @Override
     protected void onDestroy() {
-        unsubscribeFromScrollEvents()
+//        unsubscribeFromScrollEvents()
         super.onDestroy()
     }
 

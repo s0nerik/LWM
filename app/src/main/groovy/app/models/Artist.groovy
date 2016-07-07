@@ -18,7 +18,7 @@ import static android.provider.MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS
 @CompileStatic
 @Builder
 @Parcelable(exclude = {metaClass; albums; collectionManager})
-class Artist implements CursorInitializable, Serializable {
+final class Artist implements CursorInitializable, Serializable {
 
     @Inject
     protected transient CollectionManager collectionManager

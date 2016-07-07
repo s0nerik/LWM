@@ -148,8 +148,10 @@ dependencies {
     compile 'com.github.s0nerik:rxlifecycle-groovy:8fa38dd060'
     compile 'com.github.s0nerik:rxandroid-groovy:-SNAPSHOT'
     compile 'com.github.s0nerik:rxbus:1.0.0'
+    compile 'com.github.s0nerik:rxlist:1.0.0'
+    compile 'com.github.s0nerik:rxlist-binder:1.0.0'
 
-    compile('com.github.s0nerik.betterknife:BetterKnife:1.3.13@aar') {
+    compile('com.github.s0nerik:BetterKnife:ee23dbd') {
         transitive = false
     }
 
