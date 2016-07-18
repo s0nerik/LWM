@@ -20,6 +20,8 @@ import groovy.transform.CompileStatic
 import ru.noties.debug.Debug
 import rx.Observable
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 import javax.inject.Inject
 import java.util.concurrent.TimeUnit
@@ -116,6 +118,7 @@ abstract class BasePlayer extends RxExoPlayer {
 
     protected void startNotifyingPlaybackProgress() {
         playbackProgressNotifier = Observable.interval(NOTIFY_INTERVAL, TimeUnit.MILLISECONDS)
+                                             .applySchedulers(Schedulers.computation(), AndroidSchedulers.mainThread())
                                              .subscribe {
                                                  if (currentSong) RxBus.post new SongPlayingEvent(currentPosition, currentSong.duration)
                                              }

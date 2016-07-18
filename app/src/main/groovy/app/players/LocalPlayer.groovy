@@ -84,11 +84,16 @@ class LocalPlayer extends BasePlayer {
     }
     //endregion
 
-    Observable prepare(Song song) {
+    Observable prepare(Song song, int retriesLeft = 3) {
         def observable = reset().concatMap { super.prepare(song) }
                                 .doOnError { Debug.e currentSong.toString() }
-                                .onErrorResumeNext(queueContainer.moveToNextAsObservable(true)
-                                                                 .concatMap { prepare it })
+
+        if (retriesLeft > 0)
+            observable = observable.onErrorResumeNext(
+                    queueContainer.moveToNextAsObservable(true)
+                                  .concatMap { prepare it, retriesLeft - 1 }
+            )
+
         if (server?.started)
             observable = observable.concatMap { server.prepareClients(new PrepareInfo(song)) }
 
