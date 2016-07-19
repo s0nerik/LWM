@@ -155,5 +155,5 @@ dependencies {
         transitive = false
     }
 
-    compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.9'
 }
