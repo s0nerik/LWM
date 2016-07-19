@@ -4,6 +4,7 @@ import android.support.annotation.IdRes
 import android.support.annotation.NonNull
 import android.support.v7.widget.RecyclerView
 import app.R
+import app.adapters.BubbleTextProvider
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -31,6 +32,8 @@ trait SortableFragment {
     @IdRes
     void setSortActionId(int i) {
         sortActionId = i
+        if (adapter instanceof BubbleTextProvider && sortingBubbleTextProviders)
+            adapter.bubbleTextProvider = sortingBubbleTextProviders[sortActionId]
     }
 
     boolean getOrderAscending() {
@@ -60,4 +63,6 @@ trait SortableFragment {
 //        unfilteredArtists = new ArrayList<>(artists)
 //        adapter.notifyDataSetChanged()
     }
+
+    Map<Integer, Closure<String>> getSortingBubbleTextProviders() { null }
 }

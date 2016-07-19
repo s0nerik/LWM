@@ -15,6 +15,7 @@ import app.events.player.service.CurrentSongAvailableEvent
 import app.events.ui.ChangeFabActionCommand
 import app.events.ui.FilterLocalMusicCommand
 import app.events.ui.ShouldShuffleSongsEvent
+import app.helpers.providers.BubbleTextProviders
 import app.helpers.providers.SorterProviders
 import app.models.Song
 import app.players.LocalPlayer
@@ -171,4 +172,7 @@ abstract class BaseSongsListFragment extends BaseFragment implements SortableFra
 
     @Override
     int getDefaultSortActionId() { R.id.songs_sort_title }
+
+    @Override
+    Map<Integer, Closure<String>> getSortingBubbleTextProviders() { BubbleTextProviders.SONGS }
 }
