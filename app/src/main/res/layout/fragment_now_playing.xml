@@ -6,13 +6,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:layout_width="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    tools:layout_gravity="bottom"
+    tools:layout_marginBottom="48dp"
+    >
+
+    <ImageView
+        android:id="@+id/circleProgressBg"
+        android:layout_width="62dp"
+        android:layout_height="62dp"
+        android:src="@drawable/oval"
+        android:tint="@color/md_grey_400"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="2dp"
+        />
+
+    <ProgressBar
+        android:id="@+id/mainProgress"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        tools:progress="600"
+        android:layout_marginTop="30dp"
+        android:background="@color/md_grey_400"
+        android:max="1000"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        />
 
     <RelativeLayout
         android:id="@+id/mainGroup"
-        android:paddingTop="30dp"
+        android:paddingTop="33dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <ImageView
             android:src="@color/md_black"
@@ -30,7 +56,8 @@
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            >
 
             <TextView
                 android:background="#88000000"
@@ -81,35 +108,39 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/fabGroup"
+        android:id="@+id/btnPlayPause"
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <app.ui.custom_view.RadialEqualizerView
-            android:id="@+id/radialEqualizerView"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-
-            app:rew_color="@color/md_orange_a700"
-            app:rew_bars_count="15"
-            app:rew_min_scale="70"
-            />
+        android:layout_height="wrap_content"
+        >
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/playbackFab"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:src="@drawable/ic_pause_24dp"
-            android:tint="@android:color/white"
             android:layout_gravity="center"
 
-            app:fabSize="normal"
-            app:elevation="4dp"
+            android:tint="@android:color/white"
             app:backgroundTint="?attr/colorPrimary"
+            app:elevation="4dp"
 
-            android:clickable="true"/>
+            app:fabSize="normal"
+            />
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/circleProgress"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            app:cpv_animAutostart="false"
+            app:cpv_indeterminate="false"
+            app:cpv_startAngle="180"
+            app:cpv_maxProgress="200"
+            app:cpv_animDuration="0"
+            app:cpv_animSwoopDuration="0"
+            app:cpv_animSyncDuration="0"
+            />
 
     </FrameLayout>
 

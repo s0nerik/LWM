@@ -3,8 +3,8 @@
 
     <color name="primary">#673ab7</color>
     <color name="primaryDark">#512da8</color>
-    <color name="accent">#FFE83F</color>
-    <color name="accentDark">#FCE010</color>
+    <color name="accent">#FF5252</color>
+    <color name="accentDark">#FF5722</color>
 
     <color name="drawer_item_text_inactive">#59585B</color>
     <color name="drawer_background">#fff</color>

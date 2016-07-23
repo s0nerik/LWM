@@ -50,7 +50,7 @@ abstract class BasePlayer extends RxExoPlayer {
 
     protected int lastState = STATE_IDLE
 
-    static final int NOTIFY_INTERVAL = 1000
+    static final int NOTIFY_INTERVAL = 256
 
     private OnAudioFocusChangeListener afListener = { int focusChange ->
         switch (focusChange) {

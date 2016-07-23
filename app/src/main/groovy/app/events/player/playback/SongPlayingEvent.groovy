@@ -5,7 +5,11 @@ import groovy.transform.CompileStatic;
 
 @Canonical
 @CompileStatic
-public class SongPlayingEvent {
+class SongPlayingEvent {
     long progress
     int duration
+
+    float getProgressPercent() {
+        return progress * 100f / duration
+    }
 }

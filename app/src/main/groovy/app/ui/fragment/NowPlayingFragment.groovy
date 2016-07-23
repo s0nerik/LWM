@@ -1,6 +1,7 @@
 package app.ui.fragment
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.annotation.Nullable
 import android.support.design.widget.FloatingActionButton
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentManager
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import app.App
 import app.R
@@ -15,24 +17,24 @@ import app.Utils
 import app.events.player.playback.PlaybackPausedEvent
 import app.events.player.playback.PlaybackStartedEvent
 import app.events.player.playback.SongChangedEvent
+import app.events.player.playback.SongPlayingEvent
 import app.models.Song
 import app.players.LocalPlayer
-import com.github.s0nerik.rxbus.RxBus
 import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.BaseFragment
 import app.ui.custom_view.RadialEqualizerView
 import com.bumptech.glide.Glide
+import com.github.rahatarmanahmed.cpv.CircularProgressView
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
+import com.github.s0nerik.rxbus.RxBus
 import groovy.transform.CompileStatic
 import jp.wasabeef.glide.transformations.BlurTransformation
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 
 import javax.inject.Inject
-import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @InjectLayout(value = R.layout.fragment_now_playing, injectAllViews = true)
@@ -46,11 +48,15 @@ class NowPlayingFragment extends BaseFragment {
     ImageView cover
     TextView title
     TextView artist
-    View fabGroup
+    View btnPlayPause
     View mainGroup
     View layout
     RadialEqualizerView radialEqualizerView
     FloatingActionButton playbackFab
+
+    ProgressBar mainProgress
+    CircularProgressView circleProgress
+    View circleProgressBg
 
     private Subscription radialEqualizerViewSubscription
 
@@ -72,6 +78,7 @@ class NowPlayingFragment extends BaseFragment {
         RxBus.on(SongChangedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
         RxBus.on(PlaybackStartedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
         RxBus.on(PlaybackPausedEvent).bindToLifecycle(this).subscribe(this.&onEvent)
+        RxBus.on(SongPlayingEvent).bindToLifecycle(this).subscribe(this.&onEvent)
     }
 
     Observable<Integer> show(FragmentManager fragmentManager) {
@@ -80,8 +87,8 @@ class NowPlayingFragment extends BaseFragment {
             view.visibility = View.VISIBLE
 
             mainGroup.translationY = mainGroup.height
-            fabGroup.scaleX = 0
-            fabGroup.scaleY = 0
+            btnPlayPause.scaleX = 0
+            btnPlayPause.scaleY = 0
 
             mainGroup.animate()
                     .translationY(0)
@@ -91,7 +98,7 @@ class NowPlayingFragment extends BaseFragment {
                         subscriber.onNext(mainGroup.height - mainGroup.paddingTop)
                         subscriber.onCompleted()
 
-                        fabGroup.animate()
+                        btnPlayPause.animate()
                                 .scaleX(1)
                                 .scaleY(1)
                                 .setDuration(250)
@@ -135,13 +142,13 @@ class NowPlayingFragment extends BaseFragment {
     private void onEvent(PlaybackStartedEvent e) {
         (playbackFab as ImageView).imageResource = R.drawable.ic_pause_24dp
 
-        radialEqualizerViewSubscription?.unsubscribe()
-
-        radialEqualizerViewSubscription = Observable.interval(200, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-            radialEqualizerView.randomize()
-        }
+//        radialEqualizerViewSubscription?.unsubscribe()
+//
+//        radialEqualizerViewSubscription = Observable.interval(200, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe {
+//            radialEqualizerView.randomize()
+//        }
     }
 
     private void onEvent(PlaybackPausedEvent e) {
@@ -150,5 +157,27 @@ class NowPlayingFragment extends BaseFragment {
         radialEqualizerViewSubscription?.unsubscribe()
     }
 
+    private void onEvent(SongPlayingEvent e) {
+        progress = e.progressPercent
+    }
+
     // endregion
+
+    private void setProgress(float progress) {
+        Rect circleRect = new Rect()
+        playbackFab.getGlobalVisibleRect(circleRect)
+        float circleStartPercent = 100f - (mainProgress.width - circleRect.left) / (float) mainProgress.width * 100f as float
+        float circleEndPercent = 100f - (mainProgress.width - circleRect.right) / (float) mainProgress.width * 100f as float
+        if (progress > circleStartPercent && progress < circleEndPercent) {
+            float circlePercents = circleEndPercent - circleStartPercent
+            circleProgress.progress = ((progress - circleStartPercent) / circlePercents) * 100f as float
+            mainProgress.progress = ((circleEndPercent + circleStartPercent) / 2f) * 10f as int
+        } else if (progress <= circleStartPercent) {
+            mainProgress.progress = progress * 10f as int
+            circleProgress.progress = 0f
+        } else if (progress >= circleEndPercent) {
+            mainProgress.progress = progress * 10f as int
+            circleProgress.progress = 100f
+        }
+    }
 }
