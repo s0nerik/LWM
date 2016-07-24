@@ -24,6 +24,9 @@ import app.ui.activity.LocalPlaybackActivity
 import app.ui.base.BaseFragment
 import app.ui.custom_view.RadialEqualizerView
 import com.bumptech.glide.Glide
+import com.facebook.rebound.SimpleSpringListener
+import com.facebook.rebound.Spring
+import com.facebook.rebound.SpringSystem
 import com.github.rahatarmanahmed.cpv.CircularProgressView
 import com.github.s0nerik.betterknife.annotations.InjectLayout
 import com.github.s0nerik.betterknife.annotations.OnClick
@@ -57,6 +60,7 @@ class NowPlayingFragment extends BaseFragment {
     ProgressBar mainProgress
     CircularProgressView circleProgress
     View circleProgressBg
+    View circleProgressShadow
 
     private Subscription radialEqualizerViewSubscription
 
@@ -90,6 +94,12 @@ class NowPlayingFragment extends BaseFragment {
             btnPlayPause.scaleX = 0
             btnPlayPause.scaleY = 0
 
+            circleProgressBg.scaleX = 0
+            circleProgressBg.scaleY = 0
+
+            circleProgressShadow.scaleX = 0
+            circleProgressShadow.scaleY = 0
+
             mainGroup.animate()
                     .translationY(0)
                     .setDuration(500)
@@ -98,11 +108,26 @@ class NowPlayingFragment extends BaseFragment {
                         subscriber.onNext(mainGroup.height - mainGroup.paddingTop)
                         subscriber.onCompleted()
 
-                        btnPlayPause.animate()
-                                .scaleX(1)
-                                .scaleY(1)
-                                .setDuration(250)
-                                .start()
+                        SpringSystem springSystem = SpringSystem.create()
+                        Spring spring = springSystem.createSpring()
+                        spring.addListener(new SimpleSpringListener() {
+                            @Override
+                            public void onSpringUpdate(Spring s) {
+                                float value = (float) s.currentValue
+//                                float scale = 1f - (value * 0.5f)
+                                float scale = value
+
+                                btnPlayPause.scaleX = scale
+                                btnPlayPause.scaleY = scale
+
+                                circleProgressBg.scaleX = scale
+                                circleProgressBg.scaleY = scale
+
+                                circleProgressShadow.scaleX = scale
+                                circleProgressShadow.scaleY = scale
+                            }
+                        })
+                        spring.endValue = 1
                     })
                     .start()
         } as Observable.OnSubscribe<Integer>)

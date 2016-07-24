@@ -39,4 +39,7 @@
 
     <color name="album_info_header_overlay_bg">#eee</color>
 
+    <color name="now_playing_progress_bar_bg">#ffffff</color>
+    <color name="now_playing_progress_bar_color">@color/accent</color>
+
 </resources>
